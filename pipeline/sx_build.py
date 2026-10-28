@@ -78,9 +78,9 @@ def m_lineups():
     for r in top:
         flip='<i class="dtag">Cost the win</i>' if r['flip'] and r['bench']['pts']-r['start']['pts']>=r['them']-r['me'] else ''
         mx=40
-        def ln(q,lab,cls):return f'<div class="dln"><span class="dlb">{lab}</span><span class="dnm">{pz(q["pos"])}<b>{e(q["name"])}</b></span>{hbar(q["pts"],mx,cls)}<em class="{cls}">{q["pts"]:.1f}</em></div>'
-        li.append(f'<div class="dcl"><div class="dch"><span>Wk {r["w"]} · {e(r["team"])}</span><b>+{r["swing"]:.1f}</b></div>'
-                  +ln(r['bench'],'Bench','up')+ln(r['start'],'Started','dn')+flip+'</div>')
+        def ln(q,lab,cls):return f'<div class="dln dln2"><span class="dlb">{lab}</span><span class="dnm">{pz(q["pos"])}<b>{e(q["name"])}</b></span><em class="{cls}">{q["pts"]:.1f}</em></div>'
+        li.append(f'<div class="dcl dcl2"><div class="dch dch2"><i class="dwk">Wk {r["w"]}</i><span class="dtm">{e(r["team"])}</span><span class="dsw"><b>+{r["swing"]:.1f}</b><small>pts lost</small></span></div>'
+                  +ln(r['bench'],'Bench','up')+ln(r['start'],'Started','dn')+(f'<div class="dft">{flip}</div>' if flip else '')+'</div>')
     mxl=max(v['lost'] for v in PER.values())
     rows=[[nmb(t,hbar(PER[t]['lost'],mxl,'am')),f'<span class="sxv">{PER[t]["lost"]:.1f}</span>',f'<span class="sxv">{PER[t]["lost"]/G:.1f}</span>',f'<span class="sxv b {"dn" if PER[t]["flip"] else "z"}">{PER[t]["flip"]}</span>'] for t in sorted(TEAMS,key=lambda t:(-PER[t]['flip'],-PER[t]['lost']))]
     return (head('Costliest lineup calls','Biggest single bench-for-starter swaps')+''.join(li)+

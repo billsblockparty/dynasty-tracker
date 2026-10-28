@@ -162,3 +162,25 @@
 .rcol span:first-child{grid-column:1!important}
 #rs-g:checked~.rop .rcol span:nth-child(2){color:var(--dim)!important}
 #rs-g:checked~.rop .rcol span:nth-child(3){color:var(--chalk)!important}
+/* ---- Oct 28 evening ---- */
+/* stop iOS Safari text autosizing (it enlarged some paragraphs when the glossary opened) */
+html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+/* names: room for descenders (g, y, p) inside the ellipsis box */
+.cnm b>span,.nmx,.cnm b span{padding-block:.14em;margin-block:-.14em;line-height:1.1}
+/* Rosters: position group totals larger */
+.rgh>b{font-size:17px!important;color:var(--chalk)!important}
+.rgh>b small{font-size:12px!important;color:var(--steel)!important}
+/* Costliest lineup calls: framed cards, week pill, team name, one framed delta; player points plain */
+.dcl2{background:var(--deck-2);border:1px solid var(--hair);border-radius:10px;padding:10px 12px 8px;margin:0 0 8px}
+.dcl2+.dcl2{border-top:1px solid var(--hair)!important}
+.dch2{display:flex!important;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--hair)}
+.dch2 .dwk{font-style:normal;font-family:var(--display);font-weight:700;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--label);background:var(--hair);border-radius:5px;padding:3px 7px 2px;flex:none}
+.dch2 .dtm{flex:1;min-width:0;font-size:15px!important;font-weight:600;color:var(--chalk)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dch2 .dsw{flex:none;display:inline-flex;align-items:baseline;gap:5px;padding:4px 9px 3px;border-radius:7px;background:var(--hair);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.dch2 .dsw b{font-size:17px!important;color:var(--chalk)!important}
+.dch2 .dsw small{font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}
+.dln2{display:grid!important;grid-template-columns:62px minmax(0,1fr) auto!important;align-items:center;column-gap:8px;padding:4px 0}
+.dln2 .dlb{font-size:12px!important}
+.dln2 .dnm b{font-size:15px}
+.dln2 em{font-size:15px!important;font-weight:600!important;opacity:.9}
+.dft{margin-top:6px}
