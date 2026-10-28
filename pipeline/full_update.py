@@ -3,7 +3,8 @@ import os as _dt_os;__DTP__=_dt_os.path.dirname(_dt_os.path.abspath(__file__)).r
 import json,re,csv,math
 from datetime import date
 P=__DTP__+''
-DONE=7;NOW=DONE+1;TODAY=date(2026,10,27)
+import sys as _sys
+DONE=int(_sys.argv[1]) if len(_sys.argv)>1 else 7;NOW=DONE+1;TODAY=date.today()
 L=lambda f:json.load(open(P+f,encoding='utf-8'))
 M7=L('pull_m7.json');A=L('pull_pts.json');X8=L('pull8.json');X8a=L('pull8a.json')
 PJ,META,S8,K8=X8['PJ'],X8['META'],X8['S8'],X8['K8']
@@ -83,7 +84,7 @@ for t in NF:  # make win% pairs sum to 100
 def C(k,v):return f'const {k}='+json.dumps(v,ensure_ascii=False,separators=(',',':'))+';\n'
 out=(f'const G={DONE};\n// [w,l,top5W,pf,pfRk,pfAvg,pa,paRk,paAvg,oppRk,apW,apL,luck]\n'+C('T',D['T'])+C('H',D['H'])+C('M',D['M'])+
  '// per team: [week, opp, score, oppScore, scoreWeekRank, oppScoreWeekRank]\n'+C('WK',D['WK'])+
- f'// remaining schedule: [week, opp, projScore, oppProj, winPct] (week {NOW}: Sleeper projections for set lineups; later weeks: app projections as of Oct 15)\n'+C('FUT',NF)+
+ f'// remaining schedule: [week, opp, projScore, oppProj, winPct] (week {NOW}: Sleeper projections for set lineups; later weeks: only week and opponent are used)\n'+C('FUT',NF)+
  '// standings order after the previous week, for movement arrows\n'+C('PH',D['PH'])+C('PM',D['PM'])+
  '// could have [won, lost] from weekly Max PF\n'+C('CH',D['CH'])+'// standings position after each week (from Week 1), per view\n'+C('POS',D['POS']))
 open(P+'data_block.js','w',encoding='utf-8').write(out)

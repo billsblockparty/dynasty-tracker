@@ -1,0 +1,81 @@
+name: Build and publish site
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: weekly (pull completed week + rebuild), live (scores now), build (no network)
+        default: weekly
+        type: choice
+        options: [weekly, live, build]
+  push:
+    branches: [main]
+    paths: ['pipeline/**', '.github/workflows/**']
+  schedule:
+    # weekly refresh, Tuesday morning after Monday night (06:17 / 11:17 ET), second run as a backstop
+    - cron: '17 10 * * 2'
+    - cron: '17 15 * * 2'
+    # live scores every 10 minutes during game windows (UTC; covers both EDT and EST)
+    - cron: '*/10 0-5 * * 5'      # Thursday night
+    - cron: '*/10 13-23 * * 0'    # Sunday
+    - cron: '*/10 0-5 * * 1'      # Sunday night
+    - cron: '*/10 0-5 * * 2'      # Monday night
+    - cron: '*/10 17-23 * 12 6'   # December Saturdays
+    - cron: '*/10 0-5 * 12 0'     # December Saturday nights
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install
+        working-directory: pipeline
+        run: |
+          pip install numpy
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Pick mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then m="${{ inputs.mode }}";
+          elif [ "${{ github.event_name }}" = "push" ]; then m=weekly; [ -f .github/selftest ] && m=selftest;
+          elif [ "${{ github.event.schedule }}" = "17 10 * * 2" ] || [ "${{ github.event.schedule }}" = "17 15 * * 2" ]; then m=weekly;
+          else m=live; fi
+          echo "mode=$m" >> "$GITHUB_OUTPUT"; echo "Mode: $m"
+      - name: Build
+        run: |
+          if [ "${{ steps.mode.outputs.mode }}" = "selftest" ]; then
+            python3 pipeline/run.py live && python3 pipeline/run.py weekly --force
+          else
+            python3 pipeline/run.py ${{ steps.mode.outputs.mode }}
+          fi
+      - name: Save season data
+        if: steps.mode.outputs.mode == 'weekly' || steps.mode.outputs.mode == 'selftest'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/selftest
+          git add -A pipeline .github
+          if ! git diff --cached --quiet; then git commit -m "Weekly data refresh"; git pull --rebase origin main; git push; fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: site }
+      - id: deploy
+        uses: actions/deploy-pages@v4
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}

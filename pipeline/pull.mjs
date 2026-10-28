@@ -1,0 +1,38 @@
+// CLI for the Sleeper pulls. Usage:
+//   node pull.mjs state            -> prints {"done":D,"now":N} (last completed week)
+//   node pull.mjs weekly D         -> pull_m7.json pull_pts.json pull8.json pull8a.json
+//   node pull.mjs playoffs         -> pull_po.json
+//   node pull.mjs live W           -> live.json (in-week scores for week W)
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { lastCompleteWeek, pullWeekly, pullPlayoffs, pullLive } from './sleeper.mjs';
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const out = (f, o) => fs.writeFileSync(path.join(DIR, f), JSON.stringify(o));
+async function get(u, tries = 4) {
+  for (let i = 1; ; i++) {
+    try {
+      const r = await fetch(u, { headers: { 'user-agent': 'dynasty-tracker (github.com/billsblockparty/dynasty-tracker)' } });
+      if (!r.ok) throw new Error(`${r.status} ${u}`);
+      return await r.json();
+    } catch (e) { if (i >= tries) throw e; await new Promise(s => setTimeout(s, 1500 * i)); }
+  }
+}
+const [cmd, arg] = process.argv.slice(2);
+if (cmd === 'state') {
+  const { done } = await lastCompleteWeek(get);
+  console.log(JSON.stringify({ done, now: done + 1 }));
+} else if (cmd === 'weekly') {
+  const x = await pullWeekly(get, +arg);
+  for (const k of ['pull_m7', 'pull_pts', 'pull8', 'pull8a']) out(k + '.json', x[k]);
+  console.log('weekly pull ok for week', arg);
+} else if (cmd === 'playoffs') {
+  out('pull_po.json', await pullPlayoffs(get));
+  console.log('playoff pull ok');
+} else if (cmd === 'live') {
+  const wk = JSON.parse(fs.readFileSync(path.join(DIR, `wk${arg}.json`), 'utf8'));
+  const known = new Set(Object.values(wk.out).flatMap(X => [...X.st, ...X.bn].map(p => p[0])));
+  const x = await pullLive(get, +arg, known);
+  out('live.json', x);
+  console.log('live pull ok: final', x.done.length / 2, 'games, live', x.live.length / 2, ', new starters', Object.keys(x.extra).length);
+} else { console.error('usage: node pull.mjs state|weekly D|playoffs|live W'); process.exit(2); }
