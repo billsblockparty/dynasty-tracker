@@ -119,3 +119,4 @@
 .cr .cn{gap:0!important}
 /* matchup rows keep their slightly wider frame */
 .cr.lu{margin-inline:-10.5px}
+.cr.lu .cnm b .inj{position:relative;top:-1.6px}
