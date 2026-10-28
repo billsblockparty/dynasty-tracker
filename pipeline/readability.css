@@ -58,3 +58,36 @@
 @media (max-width:419px){.cn,.cn .pq{--sq:31.8px!important}.cn .pq{transform:translateY(-1.05px)}}
 @media (max-width:370px){.cn,.cn .pq{--sq:32px!important}.cn .pq{transform:translateY(-1.45px)}}
 @media (max-width:370px){.cnm small{font-size:11.5px!important}.cnm .gp .gsep{margin:0 2px}}
+/* opponent logo in the game line ("@ [logo] · Mon 8:15 PM ET"): same 22x20 mark as the badge by the name (set per team in rebuild.py); negative margins keep the line height unchanged */
+.cnm .gp .gha{margin-right:4px}
+.cnm small .nfl.opp{display:inline-flex;vertical-align:middle;margin-top:-8px;margin-bottom:-8px;transform:none!important}
+.cnm small .gp{padding:4px 0;margin:-4px 0}
+/* name badge logo: centered on the name's text line (equal overshoot above and below); injury tag centered too; 3px between name and logo. Row heights unchanged (logo margin box stays 16px). */
+.cnm b{align-items:center!important;position:relative;top:.75px}
+.cnm b .nfl.tm{align-self:center;margin:-2px 0!important;transform:none!important}
+.cn.b .cnm b .nfl.tm{margin:-2px 0!important}
+.cnm b .inj{align-self:center;transform:none!important}
+/* opponent logo in the game line: centered on the kickoff text */
+.cnm small .nfl.opp{position:relative;top:-1.4px}
+/* ===== Matchup row scale: ONE knob. Change --rs on the next line (1 = original sizes, 1.15 = preview default, 1.2 = largest tested). ===== */
+.cr.lu{--rs:1.15}
+/* base sizes at rs=1 (per breakpoint, same as the original rules); everything below derives from --rs */
+.cr.lu{--rh:calc(1 + (var(--rs) - 1)*.5);--rc:calc(1 + (var(--rs) - 1)*.3);--nfs:14.5px;--gfs:12.5px;--sq0:33.6px;--cvf:16px;
+ margin-inline:calc((var(--rs) - 1)*-70px)}
+@media (max-width:419px){.cr.lu{--nfs:14px;--gfs:12px;--sq0:31.8px}}
+@media (max-width:370px){.cr.lu{--nfs:13.5px;--gfs:11.5px;--sq0:32px}}
+.cr.lu .cnm b{font-size:calc(var(--nfs)*var(--rs))!important}
+.cr.lu .cnm b .nfl.tm{width:calc(22px*var(--rh))!important;height:calc(20px*var(--rh))!important;margin-top:calc(-2px*var(--rh))!important;margin-bottom:calc(-2px*var(--rh))!important}
+.cr.lu .cnm small{font-size:calc(var(--gfs)*var(--rh))!important}
+.cr.lu .cnm small .nfl.opp{width:calc(22px*var(--rh))!important;height:calc(20px*var(--rh))!important;margin-top:calc(-8px*var(--rh));margin-bottom:calc(-8px*var(--rh));top:calc(-1.4px*var(--rh))}
+.cr.lu .cnm small .gp{padding-block:calc(4px*var(--rh));margin-block:calc(-4px*var(--rh))}
+.cr.lu .cnm b .inj{font-size:calc(12px*var(--rh))!important;padding:calc(1.5px*var(--rs)) calc(3.5px*var(--rs)) calc(3.5px*var(--rs))!important;min-width:calc(19px*var(--rs))}
+.cr.lu .cn,.cr.lu .cn .pq{--sq:calc(var(--sq0)*var(--rs))!important}
+.cr.lu .cn{gap:calc(4px - (var(--rs) - 1)*6px)!important}
+.cr.lu .pqi>span{font-size:calc(12.5px*var(--rc))!important}.cr.lu .pqi>b{font-size:calc(16.5px*var(--rc))!important}
+.cr.lu .pq.l3 .pqi>span{font-size:calc(11px*var(--rc))!important}.cr.lu .pq.l3 .pqi>b{font-size:calc(14.5px*var(--rc))!important}
+.cr.lu .cv{font-size:calc(var(--cvf)*var(--rh))!important}
+.cr.lu .cv.a{padding-right:calc(5px - (var(--rs) - 1)*10px)}.cr.lu .cv.b{padding-left:calc(5px - (var(--rs) - 1)*10px)}
+/* projected (grey) numbers: more contrast (was #6b7385, ~4:1 on the dark tile; now ~6.5:1) */
+.cr.lu .cv:not(.act){color:#8f98ab}
+.cr.lu.wa .cv.a:not(.act),.cr.lu.wb .cv.b:not(.act){color:var(--label)}

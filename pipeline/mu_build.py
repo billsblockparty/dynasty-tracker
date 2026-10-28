@@ -65,6 +65,20 @@ from datetime import date as _d
 LW=json.load(open(P+f'wk{W}.json'));DONEG=set(LW['done']);LIVEG=set(LW.get('live',[]));HOME=set(LW['home'])
 _X=json.load(open(P+'cmp_extra.json',encoding='utf-8'));RID={v:int(k) for k,v in _X['rn'].items()};RN2={int(k):v for k,v in _X['rn'].items()}
 _K=json.load(open(P+'ro_ranks.json'));_K.pop('_bye',None)
+# Opponent in the game line ("@ NYJ", "vs CLE"): show the team logo when pipeline/logos/{CODE}.png|svg|webp exists
+# (same files rebuild.py embeds as CSS for the .nfl.tm badges); otherwise keep the plain text code.
+_NICK={'ARI':'Cardinals','ATL':'Falcons','BAL':'Ravens','BUF':'Bills','CAR':'Panthers','CHI':'Bears','CIN':'Bengals','CLE':'Browns',
+'DAL':'Cowboys','DEN':'Broncos','DET':'Lions','GB':'Packers','HOU':'Texans','IND':'Colts','JAX':'Jaguars','KC':'Chiefs',
+'LV':'Raiders','LAC':'Chargers','LAR':'Rams','MIA':'Dolphins','MIN':'Vikings','NE':'Patriots','NO':'Saints','NYG':'Giants',
+'NYJ':'Jets','PHI':'Eagles','PIT':'Steelers','SF':'49ers','SEA':'Seahawks','TB':'Buccaneers','TEN':'Titans','WAS':'Commanders'}
+_LOGOS={f.rpartition('.')[0] for f in (_dt_os.listdir(P+'logos') if _dt_os.path.isdir(P+'logos') else []) if f.rpartition('.')[2].lower() in('svg','png','webp')}
+def _gline(ha,opp):
+    ha=(ha or '').strip()
+    if not opp:return ha
+    if opp not in _LOGOS or opp not in _NICK:return (ha+' ' if ha else '')+opp
+    lab=('at ' if ha=='@' else 'vs ' if ha else '')+_NICK[opp]
+    pre=f'<span class="gha" aria-hidden="true">{ha}</span>' if ha else ''
+    return f'{pre}<em class="nfl opp n-{opp}" role="img" aria-label="{lab}" title="{lab}"><span class="ct">{opp}</span></em>'
 _TAG={p[0]:p[7] for t in R for p in R[t]}
 def _age(pid):
     b=_X['age'].get(pid)
@@ -102,7 +116,7 @@ def lcell(p,side):
     if pos!='DEF' and len(name.split(' '))>2 and name.split(' ')[-2]=='St.':nm='St. '+nm
     ij=f'<i class="inj i-{INJ[inj]}">{INJ[inj]}</i>' if inj in INJ else ''
     v,done=lval(p)
-    ha=((p[9]+' ') if len(p)>9 else ('vs ' if tm in HOME else '@ '))+(opp or '')
+    ha=_gline((p[9] if len(p)>9 else ('vs' if tm in HOME else '@')),opp)
     st='BYE' if not opp else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
     mk=_badge(tm).replace('<em class="nfl','<em class="nfl tm',1) if tm else ''
     return (f'<span class="cn {side}">{sq}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
