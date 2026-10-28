@@ -120,3 +120,19 @@
 /* matchup rows keep their slightly wider frame */
 .cr.lu{margin-inline:-10.5px}
 .cr.lu .cnm b .inj{position:relative;top:-1.6px}
+/* ---- Matchups / Playoffs readability (Oct 28 pm) ---- */
+.muc label span{font-size:14px!important}
+.pane-mu details summary{font-size:15.5px!important}
+.mcmp .mcr>span{font-size:16px!important}
+.mcmp .mcr>em{font-size:13.5px!important}
+.mbr{font-size:14px!important}
+.mch span{font-size:13px!important}
+.lsh{font-size:16px!important}
+.lctl label{font-size:14px!important}
+.lnote{font-size:12.5px!important}
+.ltot small{font-size:14px!important}
+.ltot em,.ltot2 em{font-size:13.5px!important}
+.ltot2>span{font-size:14.5px!important}
+/* band position label bigger */
+.cr .pq .pqi>span,.rr2 .pq .pqi>span{font-size:14px!important;opacity:.9}
+@media (max-width:419px){.muc label span{font-size:12.5px!important}}@media (max-width:370px){.muc label span{font-size:11.5px!important}}
