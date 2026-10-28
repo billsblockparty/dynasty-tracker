@@ -1032,7 +1032,7 @@ RO_CSS
     </div>
   </header>
 
-<input type="radio" name="tab" id="tab-st" class="lr tabr" checked><input type="radio" name="tab" id="tab-lb" class="lr tabr"><input type="radio" name="tab" id="tab-ro" class="lr tabr"><input type="radio" name="tab" id="tab-mu" class="lr tabr"><input type="radio" name="tab" id="tab-cm" class="lr tabr"><input type="radio" name="tab" id="tab-sx" class="lr tabr"><input type="radio" name="tab" id="tab-po" class="lr tabr">
+<input type="radio" name="gloss" id="gl-h" class="lr" checked><input type="radio" name="gloss" id="gl-s" class="lr"><input type="radio" name="tab" id="tab-st" class="lr tabr" checked><input type="radio" name="tab" id="tab-lb" class="lr tabr"><input type="radio" name="tab" id="tab-ro" class="lr tabr"><input type="radio" name="tab" id="tab-mu" class="lr tabr"><input type="radio" name="tab" id="tab-cm" class="lr tabr"><input type="radio" name="tab" id="tab-sx" class="lr tabr"><input type="radio" name="tab" id="tab-po" class="lr tabr">
   <nav class="tabs" aria-label="Sections"><label for="tab-st">Standings</label><label for="tab-lb">Leaderboards</label><label for="tab-sx">Stats</label><label for="tab-ro">Rosters</label><label for="tab-mu">Matchups</label><label for="tab-cm">Compare</label><label for="tab-po" class="tpo">Playoffs</label></nav>
   <div class="pane pane-st">
   <input type="radio" name="dens" id="dn-full" class="lr" checked><input type="radio" name="dens" id="dn-lean" class="lr">
@@ -1045,6 +1045,7 @@ RO_CSS
   <div class="dens"><span>Detail</span><div class="pseg" role="group" aria-label="Detail level"><label for="dn-lean">Lean</label><label for="dn-full">Full</label></div></div>
   <div class="hint"></div>
   <div class="board" id="list"></div>
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Tap a team</b> for weekly results and the remaining schedule.</div>
     <div><b>Lean / Full</b> Lean keeps each team to its seed, record, streak, standings range, games back and the PF and PA lines; Full adds the rest of the stat lines and the season chart.</div>
@@ -1064,6 +1065,7 @@ RO_CSS
   </div>
   <div class="pane pane-lb">
   LB_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Leaderboard</b> pick a stat to rank all 10 teams by it. Same rank colours as elsewhere.</div>
     <div><b>Rank chips</b> league rank for each stat. Ranks 1–3 green, 8–10 red, T = tied. PF and PA #1 = most points. Opp rk #1 = hardest schedule. All-play #1 = most all-play wins. Luck #1 = luckiest.</div>
@@ -1076,12 +1078,14 @@ RO_CSS
   </div>
   <div class="pane pane-ro">
   RO_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Rosters</b> current Sleeper rosters. <b>By position</b> groups them, with injured reserve and taxi squad listed separately; <b>By points</b> lists every player from most to fewest points so you can see where a team's strength sits. <b>No QBs</b> drops quarterbacks; <b>Pts/g</b> sorts by points per game played instead of season total, so a player who missed games isn't buried, and the tile switches to his rank by points per game (ranked against every NFL player at the position with 3+ games; players with fewer games are slotted into that list). The coloured tile is the player's rank among every NFL player at that position by season points in this league's scoring (RB5 = fifth-most RB points); tied players share a rank. <b>Pts</b> season total, <b>/g</b> per game played. Bye week in blue if it is this week, dimmed once it has passed. The small badge is the player's NFL team in its colours; a red cross marks a player in an IR slot. The number after the name is age in years (from date of birth), coloured green for under 27, amber for 27–30 and red for 31 and over; each position heading shows the group's average age in the same colours.</div>
   </div>
   </div>
   <div class="pane pane-mu">
   MU_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Matchups</b> one option per game this week. <b>Lineups</b> shows each team's Sleeper starters slot by slot (QB, RB, RB, WR, WR, TE, flex, K, DEF), then active bench players: a shaded box marks a final score (green = beat the projection, red = fell short), grey = Sleeper's projection in this league's scoring; vs = home game, @ = away. <b>Projected</b> = points scored plus projections for players still to play. Q / D / O = questionable, doubtful, out. The tile is the player's season position rank. The card puts both teams side by side: seed tile, record, last five results (green win, red loss), points per week, PF rank, all-play and luck (the better value in white), any earlier meeting, and each team's active players on an NFL bye this week. Below it, switch between the two teams' results so far (running record on the right; <b>HI</b> / <b>LO</b> = that team had the week's top or bottom score) and remaining schedule (opponent's seed tile, record and points per week, plus how many of that team's active players are on a bye that week). Bye counts leave out IR and taxi players.</div>
     <div><b>All-play</b> record if you played all 9 teams every week. It measures how well you scored, with your schedule taken out.</div>
@@ -1090,6 +1094,7 @@ RO_CSS
   </div>
   <div class="pane pane-po">
   PO_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Playoffs</b> the top 6 by record (then points for) make it; seeds 1 and 2 get byes. Week 15: 3 v 6 and 4 v 5. Week 16: 1 plays the 4/5 winner, 2 plays the 3/6 winner (a fixed bracket, Sleeper's default). Week 17 is the final. Later rounds use the projected winner of each game, marked <b>proj.</b>; tap any game to open it.</div>
     <div><b>Projections</b> each team's best legal lineup (QB, 2 RB, 2 WR, TE, flex, K, DEF) from its current roster, leaving out IR and taxi. Player projections are Sleeper's for that week, scored with league settings. <b>Win chance</b> compares the two projected totals with a spread scaled to their size, the same way as the in-season odds.</div>
@@ -1098,12 +1103,14 @@ RO_CSS
   </div>
   <div class="pane pane-cm">
   CMP_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Compare</b> pick team <b>A</b> and team <b>B</b> from the two menus, then a topic. Throughout, the better value is in white and team A is on the left. <b>Overview</b>: season stats and any meeting this season. <b>Scoring</b>: both teams' weekly scores on one chart, consistency (Swing = standard deviation of weekly scores; lower is steadier), and <b>Schedule swap</b>: each team's record if its weekly scores had faced the other team's opponents. <b>Positions</b>: points per start, each team's best-ranked player, and how many startable players (top 12 QB, TE, K, DEF; top 24 RB, WR). <b>Players</b>: players paired off from best to worst at each position, points down the middle; <b>Pts / Pts/g</b> switches season total and points per game; with Pts/g the rank tiles show points-per-game ranks (against NFL players at the position with 3+ games). Taxi squad is left out; a red cross marks IR; the number after each name is the player's age (shaded by band: under 27, 27–30, 31+). <b>Depth</b>: bench points per week (rostered players not started), roster totals and how many players average 10+ per game. <b>Schedule</b>: remaining opponents' average seed and PF, games against the top 3, and players lost to NFL byes, then week by week. <b>Dynasty</b>: average age of QB, RB, WR and TE (plain and weighted by points) and rookie picks owned for 2027–2029 (number = round; blue outline = acquired from another team). <b>Trades</b>: trades each team has made and any trades between the two, with points the players have scored since.</div>
   </div>
   </div>
   <div class="pane pane-sx">
   SX_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
   <div class="key">
     <div><b>Points by position</b> average points per player started at each position (season total ÷ number of starts), so using the flex on an RB or WR doesn't inflate that position. <b>Per week</b> is the season total ÷ games played and <b>Total</b> is the season total; both include flex starts. League rank underneath: #1 gold, 2–3 green, 8–9 red, #10 red with an outline, T = tied.
     <div><b>Odds</b> each remaining game (Weeks 7–14) is simulated 20,000 times. A team's weekly score is drawn from its season average blended 65/35 with the league average, with a spread from its own and the league's week-to-week swing. Seeds go by wins, then points for. The 10 small bars under each name are its chance of finishing in seeds 1 to 10 (brighter = more likely; blue = playoff seeds). <b>Proj W</b> is average final wins.</div>

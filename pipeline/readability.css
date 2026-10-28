@@ -140,3 +140,25 @@
 .rn>b .nfl.tm{flex:none;align-self:center;margin:-2px 0;transform:translateY(-1.1px)}
 .rn>b{align-items:center!important}
 .rn small .gp{margin-left:0!important}
+/* ---- Oct 28 pm: glossary behind a Hide / Show switch (hidden by default); explainer notes removed ---- */
+.key{display:none!important}
+#gl-s:checked~.pane .key{display:grid!important}
+.glw{flex-basis:100%;display:flex;align-items:center;gap:12px;margin-top:24px}
+.glw>span{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--label)}
+.glc label{font-size:14px}
+#gl-h:checked~.pane .glc label[for="gl-h"],#gl-s:checked~.pane .glc label[for="gl-s"]{background:var(--chalk);color:var(--ink)}
+.lnote{display:none!important}
+.lctl{margin-bottom:14px}
+/* points row: bigger totals and label */
+.ltot small{font-size:16px!important;color:var(--label)!important}
+.ltot em,.ltot2 em{font-size:15px!important;color:var(--label)}
+.ltot em .pj,.ltot2 em .pj{font-size:13.5px!important;color:var(--steel)!important}
+.ltot2>span{font-size:16px!important}
+/* Rosters: header line and column heads larger, brighter; column heads aligned to the framed rows */
+.rtop>span{font-size:15px!important;color:var(--label)!important}
+.rtop>span b{font-size:18.5px!important}
+.rcol{grid-template-columns:minmax(0,1fr) 46px 36px!important;column-gap:8px!important;padding:10px 11px 4px calc(var(--bw,34px) + 7px + 3px)!important;--bw:34px}
+.rcol span{font-size:14px!important;color:var(--label)!important}
+.rcol span:first-child{grid-column:1!important}
+#rs-g:checked~.rop .rcol span:nth-child(2){color:var(--dim)!important}
+#rs-g:checked~.rop .rcol span:nth-child(3){color:var(--chalk)!important}
