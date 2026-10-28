@@ -102,3 +102,20 @@
 .cnm .gp .gha{margin-right:4px}
 .cr.lu{margin-inline:-10.5px}
 @media (max-width:419px){.cr.lu .cnm small{font-size:calc(11.4px*var(--rh))!important}.cnm .gp .gsep{margin:0 2.5px!important}.cnm .gp .gha{margin-right:2.5px}}
+/* ===== position bands (Oct 28): full-height position strip on each player row + subtle row frame =====
+   Applies to Matchups / Playoffs / Custom (.cr.lu), Compare (.cr) and Rosters (.rr2). The band replaces the square tile,
+   so there is no tile-to-text alignment to maintain. */
+.cr,.rr2{--bw:34px;--bg2:7px;position:relative;background:var(--deck-2);border:1px solid var(--hair)!important;border-radius:9px;margin-block:0 5px!important;min-height:54px;box-sizing:border-box;overflow:hidden}
+.cr{padding:8px calc(var(--bw) + var(--bg2)) 8px calc(var(--bw) + var(--bg2))!important}
+.rr2{padding:8px 10px 8px calc(var(--bw) + var(--bg2) + 2px)!important;grid-template-columns:minmax(0,1fr) 46px 36px!important;column-gap:8px!important}
+.cr .cn>.pq,.rr2>.pq{position:absolute!important;top:0;bottom:0;width:var(--bw)!important;height:auto!important;margin:0!important;transform:none!important;align-self:auto!important;
+  border-radius:0;background:color-mix(in srgb,var(--pc) 82%,#0b0e14);display:flex;align-items:center;justify-content:center}
+.cr .cn.a>.pq,.rr2>.pq{left:0;box-shadow:inset -1px 0 0 rgba(0,0,0,.25)}
+.cr .cn.b>.pq{right:0;box-shadow:inset 1px 0 0 rgba(0,0,0,.25)}
+.cr .pq .pqi,.rr2 .pq .pqi{flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.cr .pq .pqi>span,.rr2 .pq .pqi>span{font-size:12px!important;letter-spacing:.04em!important;opacity:.85}
+.cr .pq .pqi>b,.rr2 .pq .pqi>b{font-size:19px!important;margin-left:0!important}
+.cr .pq.l3 .pqi>b,.rr2 .pq.l3 .pqi>b{font-size:16px!important}
+.cr .cn{gap:0!important}
+/* matchup rows keep their slightly wider frame */
+.cr.lu{margin-inline:-10.5px}
