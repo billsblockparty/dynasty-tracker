@@ -53,4 +53,5 @@ for _t in _D.TEAMS:
             _o=_c[0];_outs.remove(_o);_a[_i['pos']]+=_i['pts']-_o['pts']
     _DP[_t]=[round(_a[k]/_D.G,2) for k in ['QB','RB','WR','TE','K','DEF']]
 d+='// dropped points per week by position [QB,RB,WR,TE,K,DEF]: bench player who should have started minus the starter he replaces, credited to the bench player\'s position\nconst DP='+json.dumps(_DP)+';\n'
+_i=h.rindex('</style>');h=h[:_i]+open(P+'readability.css',encoding='utf-8').read()+h[_i:]
 open(P+'standings.html','w',encoding='utf-8').write(h+d+t)

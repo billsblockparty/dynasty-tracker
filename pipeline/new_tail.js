@@ -21,7 +21,7 @@ const pct=x=>(Math.max(0,Math.min(1,x))*100).toFixed(1)+'%';
 const star=(cx,cy,R,r)=>Array.from({length:10},(_,k)=>{const a=-Math.PI/2+k*Math.PI/5,q=k%2?r:R;return (cx+q*Math.cos(a)).toFixed(2)+","+(cy+q*Math.sin(a)).toFixed(2)}).join(" ");
 function season(t){
   // Columns: bar (team score, green win / red loss) + opponent tick, week number, team score rank tile, opponent score rank tile.
-  const N=14,S=25,L=32,bw=13,top=4,base=36,y=v=>base-(base-top)*Math.max(0,Math.min(1,(v-SCLO)/(SCHI-SCLO)));
+  const N=14,S=25,L=44,bw=13,top=4,base=36,y=v=>base-(base-top)*Math.max(0,Math.min(1,(v-SCLO)/(SCHI-SCLO)));
   const WY=47,R1=61,R2=76,TW=19,TH=13,H=84;
   const bl=(cy,fs)=>(cy+0.349*fs).toFixed(2); // alphabetic baseline that centres cap-height glyphs on cy
   // Opponent tick: thin white line; week high = darker gold, week low = burgundy, both with a white frame.
@@ -34,20 +34,20 @@ function season(t){
   const tile=(cx,cy,r,mode)=>{const k=r===1?'gold':r<=3?'g':r===10?'last':r>=8?'b':'n';
     const st={gold:['rgba(244,196,81,.16)','#f4c451','rgba(244,196,81,.5)'],g:['var(--win-bg)','var(--win)',''],b:['var(--loss-bg)','var(--loss)',''],last:['var(--loss-bg)','var(--loss)','rgba(255,93,115,.6)'],n:['var(--hair)','var(--steel)','']}[k];
     return `<rect${mode==='opp'?' opacity=".55"':''} x="${cx-TW/2}" y="${cy-TH/2}" width="${TW}" height="${TH}" rx="3" fill="${st[0]}"${st[2]?` stroke="${st[2]}" stroke-width="1"`:''}/>`+
-           `<text x="${cx}" y="${bl(cy,8.5)}" text-anchor="middle" font-size="8.5" font-weight="500" fill="${st[1]}"${mode==='opp'?' opacity=".9"':''}>${r}</text>`};
+           `<text x="${cx}" y="${bl(cy,9.5)}" text-anchor="middle" font-size="9.5" font-weight="500" fill="${st[1]}"${mode==='opp'?' opacity=".9"':''}>${r}</text>`};
   const played=Object.fromEntries(WK[t].map(g=>[g[0],g]));
-  const lab=(cy,txt)=>`<text x="0" y="${bl(cy,8.5)}" font-family="var(--display)" font-size="8.5" font-weight="600" letter-spacing=".6" fill="var(--dim)">${txt}</text>`;
+  const lab=(cy,txt)=>`<text x="0" y="${bl(cy,12.5)}" font-family="var(--display)" font-size="12.5" font-weight="600" letter-spacing=".6" fill="var(--steel)">${txt}</text>`;
   let s=`<svg class="szn" viewBox="0 0 ${L+N*S} ${H}" role="img" aria-label="Season: ${WK[t].map(g=>`Wk ${g[0]} ${g[2]>g[3]?'W':'L'} ${g[2].toFixed(1)}-${g[3].toFixed(1)}, score rank ${g[4]}, opponent rank ${g[5]}`).join('; ')}">`+
     lab(WY,'WK')+lab(R1,'RANK')+lab(R2,'OPP');
   for(let wk=1;wk<=N;wk++){const cx=L+(wk-.5)*S,x=cx-bw/2,g=played[wk];
     if(g){const won=g[2]>g[3],c=won?'var(--win)':'var(--loss)',ohi=g[5]===1,olo=g[5]===10;
       s+=`<rect x="${x}" y="${y(g[2]).toFixed(1)}" width="${bw}" height="${(base-y(g[2])).toFixed(1)}" rx="1.5" fill="${c}" opacity=".9"/>`+
          tick(x,y(g[3]),ohi?'hi':olo?'lo':'n')+
-         `<text x="${cx}" y="${bl(WY,9.5)}" text-anchor="middle" font-size="9.5" fill="var(--steel)">${wk}</text>`+
+         `<text x="${cx}" y="${bl(WY,12)}" text-anchor="middle" font-size="12" fill="var(--steel)">${wk}</text>`+
          tile(cx,R1,g[4],'me')+tile(cx,R2,g[5],'opp');
     }else{
       s+=`<rect x="${x+.5}" y="${top+.5}" width="${bw-1}" height="${base-top-1}" rx="1.5" fill="none" stroke="var(--hair)" stroke-dasharray="2 2"/>`+
-         `<text x="${cx}" y="${bl(WY,9.5)}" text-anchor="middle" font-size="9.5" fill="var(--dim)">${wk}</text>`;}
+         `<text x="${cx}" y="${bl(WY,12)}" text-anchor="middle" font-size="12" fill="var(--dim)">${wk}</text>`;}
   }
   return s+`</svg>`;
 }

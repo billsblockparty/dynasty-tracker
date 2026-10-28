@@ -1,0 +1,45 @@
+/* ---- readability pass (Oct 28): supporting text up ~1-2px; headline sizes unchanged ---- */
+/* 1. weekly points strip: bigger totals and week numbers; unit lives in the legend */
+.wkc .wv small{display:none}
+.wkc .wv{font-size:11px!important;height:13px;margin-bottom:1px}
+.wkc>span:last-child{font-size:11px}
+@media (min-width:500px){.wkc .wv{font-size:12px!important;height:14px}.wkc>span:last-child{font-size:12px}}
+@media (max-width:419px){.wkc .wv{font-size:10px!important}}
+@media (max-width:374px){.wkc .wv{font-size:9.5px!important}.wkc>span:last-child{font-size:10.5px}}
+/* 2. team card stat lines */
+.sb .stx:not(.spl){height:18px!important}
+.sb .stx .lb,.st .lb{font-size:13.5px!important}
+.sb .stx .v,.sb .stx .pf,.st .v{font-size:13px!important}
+.sb .stx .pw{font-size:12.5px!important}
+.sb .ch,.st .ch,.hl .ch{font-size:11.5px!important}
+/* 3. dropped points: larger, grouped columns */
+.stx.spl .dpl{font-size:13.5px!important}
+.stx.spl .pu{font-size:12.5px!important}
+.dpg{grid-template-columns:repeat(6,minmax(0,46px))!important;column-gap:6px!important;justify-content:start}
+.dpc b{font-size:12px!important}
+.dpc span{font-size:15.5px!important}
+/* 5. small extras in the card */
+.hl{font-size:12px!important}.hl .lb{font-size:12px!important}
+.side .chl{font-size:12px!important}.side .cw{font-size:12.5px!important}
+/* 6. player rows (Rosters, Matchups, Compare, Playoffs) */
+.pq,.cn,.rr2>.pq{--sq:33.3px!important}.cn{--sqt:3.2px!important}@media (max-width:370px){.cn,.cn .pq{--sq:32.5px!important}.cn{--sqt:3px!important}}
+.pqi>span{font-size:12.5px!important}.pqi>b{font-size:16.5px!important}
+.pq.l3 .pqi>span{font-size:11px!important}.pq.l3 .pqi>b{font-size:14.5px!important}
+.nfl{width:33px!important;height:17px!important;font-size:12px!important}
+.rn>b{font-size:15px!important}
+.rn small{font-size:13px!important}
+.cnm b{font-size:14.5px!important}
+.cnm b .pag{font-size:12.5px!important}
+.cnm small{font-size:12.5px!important}
+/* injury and bench tags: larger, higher contrast */
+.inj{font-size:12px!important;padding:3px 5px 2px!important;min-width:19px;box-sizing:border-box;text-align:center;border-radius:4px!important;letter-spacing:.03em}
+.inj.i-Q{background:rgba(244,196,81,.24)!important;color:#f4c451!important;box-shadow:inset 0 0 0 1px rgba(244,196,81,.55)}
+.inj.i-D,.inj.i-O,.inj.i-IR{background:rgba(255,93,115,.22)!important;color:#ff8a98!important;box-shadow:inset 0 0 0 1px rgba(255,93,115,.55)}
+.cn.swp .cnm b::after{font-size:11.5px!important;padding:1px 4px!important;border-radius:4px!important}
+.cnm b .inj,.rn>b .inj{margin-top:-2px;margin-bottom:-2px;transform:translateY(-1.5px)}
+@media (max-width:419px){.cnm b{font-size:14px!important}.cnm b .inj{transform:translateY(-.7px)}}
+@media (max-width:370px){.cnm b{font-size:13.5px!important}.cnm small{font-size:12px!important}.cnm b .inj{transform:translateY(-1.4px)}}
+@media (max-width:380px){.r{--stw:162px!important}}
+/* Compare pickers: full team name where it fits, short name on phones */
+.sv .svs{display:none}
+@media (max-width:440px){.sv .svf{display:none}.sv .svs{display:inline}}

@@ -224,8 +224,9 @@ radios=(''.join(f'<input type="radio" name="ca" id="ca-{i}" class="lr"{" checked
         ''.join(f'<input type="radio" name="cb" id="cb-{i}" class="lr"{" checked" if i==1 else ""}>' for i in range(10))+
         ''.join(f'<input type="radio" name="csub" id="ct-{k}" class="lr"{" checked" if k=="ov" else ""}>' for k,_ in SUBS)+
         '<input type="radio" name="cs" id="cs-p" class="lr" checked><input type="radio" name="cs" id="cs-g" class="lr">')
+_SVS={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
 def dd(k,lab):
-    return (f'<details class="dd dd-{k}"><summary><span class="ddk">{lab}</span>'+''.join(f'<span class="sv sv-{i}">{e(t)}</span>' for i,t in enumerate(H))+
+    return (f'<details class="dd dd-{k}"><summary><span class="ddk">{lab}</span>'+''.join(f'<span class="sv sv-{i}"><span class="svf">{e(t)}</span><span class="svs">{e(_SVS.get(t,t))}</span></span>' for i,t in enumerate(H))+
             '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
             f'<div class="ddm">'+''.join(f'<label for="c{k}-{i}"><i>{i+1}</i>{e(t)}</label>' for i,t in enumerate(H))+'</div></details>')
 nav='<div class="lbc csub">'+''.join(f'<label for="ct-{k}">{n}</label>' for k,n in SUBS)+'</div>'
