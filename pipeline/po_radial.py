@@ -25,12 +25,12 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
     def team(t,a,r,w,winner,bye=False,above=False):
         x,y=pol(a,r,CY);sd=seed(t)
         sc='Bye' if bye else f'{PT[(t,w)]:.1f}'
-        nodes.append(f'<span class="rn s-{(tone(sd).split() or ["n"])[0]}{" rw" if winner else ""}{" rby" if bye else ""}" style="{pos(x,y)}"><i>{sd}</i>'
-                     f'<span class="rl{" up" if above else ""}"><b>{e(SHORT[t])}</b><em>{sc}</em></span></span>')
+        nodes.append(f'<span class="prn s-{(tone(sd).split() or ["n"])[0]}{" prw" if winner else ""}{" prby" if bye else ""}" style="{pos(x,y)}"><i>{sd}</i>'
+                     f'<span class="prl{" up" if above else ""}"><b>{e(SHORT[t])}</b><em>{sc}</em></span></span>')
     def btn(k,a,r,cls=''):
         x,y=pol(a,r,CY) if r else (CX,CY);a_,b_=dict((g[0],g[2]) for g in GAMES)[k];w=wk[k];wn=win(a_,b_,w);p=winp(wn,b_ if wn==a_ else a_,w)
         lab={'qf1':'QF','qf2':'QF','sf1':'SF','sf2':'SF','fin':'Final'}[k]
-        btns.append(f'<label for="bk-{k}" class="rg{cls}" style="{pos(x,y)}"><small>{lab}</small><b>{p}%</b></label>')
+        btns.append(f'<label for="bk-{k}" class="prg{cls}" style="{pos(x,y)}"><small>{lab}</small><b>{p}%</b></label>')
     for side in (L,R):
         a,b=side['pair'];wn=win(a,b,15)
         for t,ang in zip(side['pair'],side['angs']):
@@ -52,20 +52,20 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
          '.prd svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}'
          '.prd path{fill:none;stroke:var(--line-strong);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round}'
          '.prd path.on{stroke:var(--steel)}'
-         '.rn,.rg{position:absolute;transform:translate(-50%,-50%)}'
-         '.rn>i{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;box-sizing:border-box;font-style:normal;'
+         '.prd .prn,.prd .prg{position:absolute;transform:translate(-50%,-50%)}'
+         '.prd .prn>i{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;box-sizing:border-box;font-style:normal;'
          'font-family:var(--display);font-weight:700;font-size:19px;line-height:1;padding-top:1px;background:var(--deck-2);border:1.5px solid var(--line-strong);color:var(--steel)}'
-         '.rn.s-gold>i{color:#f4c451;border-color:rgba(244,196,81,.55);background:#221f19}.rn.s-g>i{color:var(--win);border-color:rgba(63,214,155,.45);background:#17241f}'
-         '.rn.rby>i{box-shadow:0 0 0 3px var(--deck),0 0 0 4.5px var(--line-strong)}'
-         '.rl{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;line-height:1.15}'
-         '.rl.up{top:auto;bottom:calc(100% + 4px)}.rby .rl{top:calc(100% + 7px)}'
-         '.rl b{font-size:12.5px;font-weight:500;color:var(--steel)}.rw .rl b{color:var(--chalk)}'
-         '.rl em{font-style:normal;font-family:var(--display);font-weight:600;font-size:13px;color:var(--steel);letter-spacing:.02em}.rby .rl em{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}'
-         '.rg{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;box-sizing:border-box;cursor:pointer;'
+         '.prd .prn.s-gold>i{color:#f4c451;border-color:rgba(244,196,81,.55);background:#221f19}.prd .prn.s-g>i{color:var(--win);border-color:rgba(63,214,155,.45);background:#17241f}'
+         '.prd .prn.prby>i{box-shadow:0 0 0 3px var(--deck),0 0 0 4.5px var(--line-strong)}'
+         '.prd .prl{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;line-height:1.15}'
+         '.prd .prl.up{top:auto;bottom:calc(100% + 4px)}.prd .prby .prl{top:calc(100% + 7px)}'
+         '.prd .prl b{font-size:12.5px;font-weight:500;color:var(--steel)}.prd .prw .prl b{color:var(--chalk)}'
+         '.prd .prl em{font-style:normal;font-family:var(--display);font-weight:600;font-size:13px;color:var(--steel);letter-spacing:.02em}.prd .prby .prl em{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}'
+         '.prd .prg{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;box-sizing:border-box;cursor:pointer;'
          'background:var(--deck);border:1.5px solid var(--line-strong);line-height:1}'
-         '.rg small{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}'
-         '.rg b{font-family:var(--display);font-weight:700;font-size:13px;color:var(--label);font-variant-numeric:tabular-nums}'
+         '.prd .prg small{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}'
+         '.prd .prg b{font-family:var(--display);font-weight:700;font-size:13px;color:var(--label);font-variant-numeric:tabular-nums}'
          '.rkey{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:11.5px;color:var(--steel)}.rkey b{font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin-right:3px}'
          '.rkey span{display:inline-flex;align-items:center;white-space:nowrap}.rk-l{display:inline-block;width:16px;height:1.5px;background:var(--steel);margin-right:6px}'
-         '.rg.rf{width:58px;height:58px}.rg.rf small{font-size:10px}.rg.rf b{font-size:17px}')
+         '.prd .prg.rf{width:58px;height:58px}.prd .prg.rf small{font-size:10px}.prd .prg.rf b{font-size:17px}')
     return html,css,H
