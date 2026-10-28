@@ -22,7 +22,7 @@
 .hl{font-size:12px!important}.hl .lb{font-size:12px!important}
 .side .chl{font-size:12px!important}.side .cw{font-size:12.5px!important}
 /* 6. player rows (Rosters, Matchups, Compare, Playoffs) */
-.pq,.cn,.rr2>.pq{--sq:33.3px!important}.cn{--sqt:3.2px!important}@media (max-width:370px){.cn,.cn .pq{--sq:32.5px!important}.cn{--sqt:3px!important}}
+.pq,.cn,.rr2>.pq{--sq:33.3px!important}.cn{--sqt:3.2px!important}
 .pqi>span{font-size:12.5px!important}.pqi>b{font-size:16.5px!important}
 .pq.l3 .pqi>span{font-size:11px!important}.pq.l3 .pqi>b{font-size:14.5px!important}
 .nfl{width:33px!important;height:17px!important;font-size:12px!important}
@@ -43,3 +43,18 @@
 /* Compare pickers: full team name where it fits, short name on phones */
 .sv .svs{display:none}
 @media (max-width:440px){.sv .svf{display:none}.sv .svs{display:inline}}
+/* matchup rows: team mark beside the name, "vs OPP · kickoff" underneath */
+.cnm b .nfl.tm{flex:none;align-self:center;margin-top:-2px;margin-bottom:-2px;transform:translateY(-1.5px)}
+.cnm .gp .gsep{font-style:normal;margin:0 4px;color:var(--dim)}
+.cnm .gp .gwhen{color:var(--steel)}
+@media (max-width:419px){.cnm b .nfl.tm{transform:translateY(-.7px)}}
+@media (max-width:370px){.cnm b .nfl.tm{transform:translateY(-1.4px)}}
+.cnm b .nfl.tm{width:27px!important;height:16px!important;font-size:10.5px!important;letter-spacing:.02em}
+.cnm small{min-width:0;max-width:100%}
+.cnm small .gp{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:419px){.cnm small{font-size:12px!important}.cnm .gp .gsep{margin:0 3px}}
+.lu .cnm small{margin-top:6px}
+.cn,.cn .pq{--sq:33.6px!important}.cn .pq{align-self:center!important;margin-top:0!important;transform:translateY(-1.35px)}
+@media (max-width:419px){.cn,.cn .pq{--sq:31.8px!important}.cn .pq{transform:translateY(-1.05px)}}
+@media (max-width:370px){.cn,.cn .pq{--sq:32px!important}.cn .pq{transform:translateY(-1.45px)}}
+@media (max-width:370px){.cnm small{font-size:11.5px!important}.cnm .gp .gsep{margin:0 2px}}

@@ -76,6 +76,19 @@ from statline import statline as _sl
 def lval(p):
     done=p[8] if len(p)>8 else p[3] in DONEG
     return (p[5],True) if done else (p[4],False)
+def _when(p,done):
+    """second-line game status: Final, Live, or kickoff day and time (ET)"""
+    if done:return 'Final'
+    w=p[10] if len(p)>10 else W
+    if w==W and p[3] in LIVEG:return 'Live'
+    k=json.load(open(P+'kick.json')).get(str(w),{}).get(p[3]) if '_KJ' not in globals() else _KJ.get(str(w),{}).get(p[3])
+    if not k:return 'TBD'
+    from zoneinfo import ZoneInfo;from datetime import datetime
+    d=datetime.fromisoformat(k[0]).astimezone(ZoneInfo('America/New_York'))
+    t=f'{d.hour%12 or 12}:{d.minute:02d}'
+    if d.hour>=19 and d.weekday() in (0,3,6):return {0:'MNF',3:'TNF',6:'SNF'}[d.weekday()]
+    return t if d.weekday()==6 else f'{d:%a} {t}'
+_KJ=json.load(open(P+'kick.json'))
 def lcell(p,side):
     if p is None:return f'<span class="cn {side}"></span><span class="cv {side}"></span>'
     pid,pos,name,tm,proj,act,opp,inj=p[:8]
@@ -90,9 +103,10 @@ def lcell(p,side):
     ij=f'<i class="inj i-{INJ[inj]}">{INJ[inj]}</i>' if inj in INJ else ''
     v,done=lval(p)
     ha=((p[9]+' ') if len(p)>9 else ('vs ' if tm in HOME else '@ '))+(opp or '')
-    st='BYE' if not opp else ha
-    return (f'<span class="cn {side}">{sq}<span class="cnm"><b><span>{e(nm)}</span>{ij}</b>'
-            f'<small>{_badge(tm)}<span class="gp{" fin" if done else ""}">{st}</span></small></span></span>'+
+    st='BYE' if not opp else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
+    mk=_badge(tm).replace('<em class="nfl','<em class="nfl tm',1) if tm else ''
+    return (f'<span class="cn {side}">{sq}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
+            f'<small><span class="gp{" fin" if done else ""}">{st}</span></small></span></span>'+
             (f'<span class="cv {side} act"><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side}">{v:.1f}</span>'))
 def lrow(pa,pb,slot):
     w=''
