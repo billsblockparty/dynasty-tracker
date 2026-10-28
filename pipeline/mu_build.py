@@ -99,7 +99,7 @@ def _when(p,done):
     if not k:return 'TBD'
     from zoneinfo import ZoneInfo;from datetime import datetime
     d=datetime.fromisoformat(k[0]).astimezone(ZoneInfo('America/New_York'))
-    t=f'{d.hour%12 or 12}:{d.minute:02d}'
+    t=f'{d.hour%12 or 12}'+(f':{d.minute:02d}' if d.minute else '')+(' PM' if d.hour>=12 else ' AM')
     if d.hour>=19 and d.weekday() in (0,3,6):return {0:'MNF',3:'TNF',6:'SNF'}[d.weekday()]
     return t if d.weekday()==6 else f'{d:%a} {t}'
 _KJ=json.load(open(P+'kick.json'))
