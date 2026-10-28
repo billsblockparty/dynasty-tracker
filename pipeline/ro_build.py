@@ -49,7 +49,7 @@ def prow(pid,name,pos,nfl,pts,gp,tag='',flat=False,pgm=False):
     sq=f'<i class="pq p-{pos.lower()}{" l3" if big and pts>0 else ""}"><span class="pqi"><span>{pos}</span>{f"<b>{rk}</b>" if pts>0 and rk else ""}</span></i>'
     a=age(pid);ag=f'<em class="pag {acl(a)}">{a:.1f}</em>' if a else ''
     return (f'<div class="rr2">{sq}'
-            f'<span class="rn"><b>{nmh(name,pos)}{ag}{IRX if tag=="IR" else ""}{TXC if (tag=="TX" and flat) else ""}</b><small>{badge(nfl)}<span class="gp">{gp} GP</span>{byh}</small></span>'
+            f'<span class="rn"><b>{nmh(name,pos)}{badge(nfl).replace('<em class="nfl','<em class="nfl tm',1) if nfl else ""}{ag}{IRX if tag=="IR" else ""}{TXC if (tag=="TX" and flat) else ""}</b><small><span class="gp">{gp} GP</span>{byh}</small></span>'
             f'<span class="rv">{pts:.1f}</span><span class="rg2">{pg}</span></div>')
 def panel(i,t):
     pl=sorted(R[t],key=lambda p:(ORD.index(p[2]),-p[4],p[1]))
