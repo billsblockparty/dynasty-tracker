@@ -72,10 +72,16 @@ async function sleeper2025() {
   return out;
 }
 fs.mkdirSync(DIR, { recursive: true });
+const log = { ran: new Date().toISOString(), ok: [], err: {} };
+const seasons = [];
 for (const y of [2021, 2022, 2023, 2024]) {
-  const d = await mfl(y); fs.writeFileSync(path.join(DIR, `mfl_${y}.json`), JSON.stringify(d));
-  console.log('MFL', y, 'weeks', Object.keys(d.weeks).length, 'players', Object.keys(d.players).length);
+  try { const d = await mfl(y); fs.writeFileSync(path.join(DIR, `mfl_${y}.json`), JSON.stringify(d)); seasons.push(y); log.ok.push(`mfl ${y}`);
+    console.log('MFL', y, 'weeks', Object.keys(d.weeks).length, 'players', Object.keys(d.players).length); }
+  catch (e) { log.err[`mfl ${y}`] = String(e && e.stack || e); console.log('MFL', y, 'FAILED', e); }
 }
-const s = await sleeper2025(); fs.writeFileSync(path.join(DIR, `sleeper_${s.year}.json`), JSON.stringify(s));
-console.log('Sleeper', s.year, 'players', Object.keys(s.players).length);
-fs.writeFileSync(path.join(DIR, 'manifest.json'), JSON.stringify({ imported: new Date().toISOString(), seasons: [2021, 2022, 2023, 2024, s.year] }));
+try { const s = await sleeper2025(); fs.writeFileSync(path.join(DIR, `sleeper_${s.year}.json`), JSON.stringify(s)); seasons.push(s.year); log.ok.push(`sleeper ${s.year}`);
+  console.log('Sleeper', s.year, 'players', Object.keys(s.players).length); }
+catch (e) { log.err.sleeper = String(e && e.stack || e); console.log('Sleeper FAILED', e); }
+fs.writeFileSync(path.join(DIR, 'log.json'), JSON.stringify(log, null, 1));
+// manifest marks the import done; only written when every season came through, so a partial import retries next run
+if (!Object.keys(log.err).length) fs.writeFileSync(path.join(DIR, 'manifest.json'), JSON.stringify({ imported: log.ran, seasons }));

@@ -11,7 +11,7 @@ def build():
     sh('python3',P+'rebuild.py');sh('node',P+'gen.js');sh('python3',P+'build_static.py');sh('python3',P+'build_site.py')
 mode=sys.argv[1] if len(sys.argv)>1 else 'build';force='--force' in sys.argv
 if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'history/manifest.json')):
-    sh('node',P+'history.mjs')  # one-time import of past seasons (MFL 2021-24, Sleeper 2025)
+    subprocess.run(['node',P+'history.mjs'],cwd=P)  # never fatal; one-time import of past seasons (MFL 2021-24, Sleeper 2025)
     if mode=='history':mode='weekly'
 if mode=='weekly':
     st=json.loads(subprocess.run(['node',P+'pull.mjs','state'],check=True,cwd=P,capture_output=True,text=True).stdout)
@@ -34,3 +34,5 @@ elif mode=='live':
     sh('python3',P+'build_site.py')
 else:
     build()
+if os.path.exists(P+'history/log.json') and os.path.isdir(P+'../site'):
+    import shutil;shutil.copy(P+'history/log.json',P+'../site/history_log.json')
