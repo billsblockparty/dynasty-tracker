@@ -7,11 +7,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'history');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-async function get(u, tries = 4) {
+async function get(u, tries = 6) {
   for (let i = 1; ; i++) {
     try { const r = await fetch(u, { headers: { 'user-agent': 'dynasty-tracker (github.com/billsblockparty/dynasty-tracker)' } });
-      if (!r.ok) throw new Error(r.status + ' ' + u); const j = await r.json(); await sleep(250); return j; }
-    catch (e) { if (i >= tries) throw e; await sleep(1500 * i); }
+      if (!r.ok) throw new Error(r.status + ' ' + u); const j = await r.json(); await sleep(u.includes('myfantasyleague') ? 1500 : 250); return j; }
+    catch (e) { if (i >= tries) throw e; await sleep((String(e).startsWith('Error: 429') ? 30000 : 1500) * i); }
   }
 }
 const arr = x => x == null ? [] : [].concat(x);
@@ -75,11 +75,13 @@ fs.mkdirSync(DIR, { recursive: true });
 const log = { ran: new Date().toISOString(), ok: [], err: {} };
 const seasons = [];
 for (const y of [2021, 2022, 2023, 2024]) {
+  if (fs.existsSync(path.join(DIR, `mfl_${y}.json`))) { seasons.push(y); log.ok.push(`mfl ${y} (kept)`); continue; }
   try { const d = await mfl(y); fs.writeFileSync(path.join(DIR, `mfl_${y}.json`), JSON.stringify(d)); seasons.push(y); log.ok.push(`mfl ${y}`);
     console.log('MFL', y, 'weeks', Object.keys(d.weeks).length, 'players', Object.keys(d.players).length); }
   catch (e) { log.err[`mfl ${y}`] = String(e && e.stack || e); console.log('MFL', y, 'FAILED', e); }
 }
-try { const s = await sleeper2025(); fs.writeFileSync(path.join(DIR, `sleeper_${s.year}.json`), JSON.stringify(s)); seasons.push(s.year); log.ok.push(`sleeper ${s.year}`);
+if (fs.existsSync(path.join(DIR, 'sleeper_2025.json'))) { seasons.push(2025); log.ok.push('sleeper 2025 (kept)'); }
+else try { const s = await sleeper2025(); fs.writeFileSync(path.join(DIR, `sleeper_${s.year}.json`), JSON.stringify(s)); seasons.push(s.year); log.ok.push(`sleeper ${s.year}`);
   console.log('Sleeper', s.year, 'players', Object.keys(s.players).length); }
 catch (e) { log.err.sleeper = String(e && e.stack || e); console.log('Sleeper FAILED', e); }
 fs.writeFileSync(path.join(DIR, 'log.json'), JSON.stringify(log, null, 1));
