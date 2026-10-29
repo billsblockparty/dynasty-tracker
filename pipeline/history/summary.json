@@ -1,0 +1,2192 @@
+{
+"note": "2021-2024 MFL league 68106, 2025 Sleeper. Regular season + championship/3rd-place games in head-to-head.",
+"seasons": {
+"2021": {
+"Homer's Heroes": {
+"w": 10,
+"l": 4,
+"t": 0,
+"pf": 1548.0,
+"pa": 1445.0,
+"place": 1,
+"po": true,
+"seed": 1,
+"finish": "Champion"
+},
+"Team Ram Rod": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1565.0,
+"pa": 1626.0,
+"place": null,
+"po": true,
+"seed": 5,
+"finish": "Playoffs"
+},
+"Team RIPMFL": {
+"w": 8,
+"l": 6,
+"t": 0,
+"pf": 1534.0,
+"pa": 1569.0,
+"place": null,
+"po": true,
+"seed": 3,
+"finish": "Playoffs"
+},
+"Reverse Apache Master": {
+"w": 4,
+"l": 10,
+"t": 0,
+"pf": 1396.0,
+"pa": 1590.0,
+"place": null,
+"po": false,
+"seed": 10,
+"finish": "Missed"
+},
+"Convicts": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1686.0,
+"pa": 1620.0,
+"place": 4,
+"po": true,
+"seed": 4,
+"finish": "4th"
+},
+"Canton waitlist": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1482.0,
+"pa": 1489.0,
+"place": 2,
+"po": true,
+"seed": 6,
+"finish": "Runner-up"
+},
+"Nuts in the Face": {
+"w": 5,
+"l": 9,
+"t": 0,
+"pf": 1443.0,
+"pa": 1461.0,
+"place": null,
+"po": false,
+"seed": 9,
+"finish": "Missed"
+},
+"Bill's Block Party": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1837.0,
+"pa": 1678.0,
+"place": 3,
+"po": true,
+"seed": 2,
+"finish": "3rd"
+},
+"Mandingoes": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1465.0,
+"pa": 1531.0,
+"place": null,
+"po": false,
+"seed": 7,
+"finish": "Missed"
+},
+"Cheating is Trying": {
+"w": 6,
+"l": 8,
+"t": 0,
+"pf": 1527.0,
+"pa": 1474.0,
+"place": null,
+"po": false,
+"seed": 8,
+"finish": "Missed"
+}
+},
+"2022": {
+"Homer's Heroes": {
+"w": 13,
+"l": 1,
+"t": 0,
+"pf": 1643.68,
+"pa": 1262.6,
+"place": 4,
+"po": true,
+"seed": 1,
+"finish": "4th"
+},
+"Team Ram Rod": {
+"w": 5,
+"l": 9,
+"t": 0,
+"pf": 1557.9,
+"pa": 1592.08,
+"place": null,
+"po": false,
+"seed": 8,
+"finish": "Missed"
+},
+"Team RIPMFL": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1505.48,
+"pa": 1525.02,
+"place": 1,
+"po": true,
+"seed": 4,
+"finish": "Champion"
+},
+"Reverse Apache Master": {
+"w": 11,
+"l": 3,
+"t": 0,
+"pf": 1549.84,
+"pa": 1345.6,
+"place": 3,
+"po": true,
+"seed": 2,
+"finish": "3rd"
+},
+"Convicts": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1506.68,
+"pa": 1455.0,
+"place": null,
+"po": true,
+"seed": 3,
+"finish": "Playoffs"
+},
+"Canton waitlist": {
+"w": 6,
+"l": 8,
+"t": 0,
+"pf": 1508.92,
+"pa": 1539.8,
+"place": 2,
+"po": true,
+"seed": 6,
+"finish": "Runner-up"
+},
+"Nuts in the Face": {
+"w": 1,
+"l": 13,
+"t": 0,
+"pf": 1406.9,
+"pa": 1642.28,
+"place": null,
+"po": false,
+"seed": 10,
+"finish": "Missed"
+},
+"Bill's Block Party": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1486.9,
+"pa": 1511.18,
+"place": null,
+"po": true,
+"seed": 5,
+"finish": "Playoffs"
+},
+"Mandingoes": {
+"w": 5,
+"l": 9,
+"t": 0,
+"pf": 1262.54,
+"pa": 1545.96,
+"place": null,
+"po": false,
+"seed": 9,
+"finish": "Missed"
+},
+"Cheating is Trying": {
+"w": 6,
+"l": 8,
+"t": 0,
+"pf": 1458.62,
+"pa": 1467.94,
+"place": null,
+"po": false,
+"seed": 7,
+"finish": "Missed"
+}
+},
+"2023": {
+"Homer's Heroes": {
+"w": 10,
+"l": 4,
+"t": 0,
+"pf": 1637.82,
+"pa": 1481.0,
+"place": 1,
+"po": true,
+"seed": 1,
+"finish": "Champion"
+},
+"Team Ram Rod": {
+"w": 8,
+"l": 6,
+"t": 0,
+"pf": 1562.9,
+"pa": 1541.04,
+"place": 4,
+"po": true,
+"seed": 5,
+"finish": "4th"
+},
+"Team RIPMFL": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1620.32,
+"pa": 1527.56,
+"place": 2,
+"po": true,
+"seed": 6,
+"finish": "Runner-up"
+},
+"Reverse Apache Master": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1561.14,
+"pa": 1441.92,
+"place": null,
+"po": true,
+"seed": 3,
+"finish": "Playoffs"
+},
+"Convicts": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1587.14,
+"pa": 1365.7,
+"place": 3,
+"po": true,
+"seed": 2,
+"finish": "3rd"
+},
+"Canton waitlist": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1463.56,
+"pa": 1375.92,
+"place": null,
+"po": true,
+"seed": 4,
+"finish": "Playoffs"
+},
+"Nuts in the Face": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1419.38,
+"pa": 1537.54,
+"place": null,
+"po": false,
+"seed": 7,
+"finish": "Missed"
+},
+"Bill's Block Party": {
+"w": 2,
+"l": 12,
+"t": 0,
+"pf": 1194.44,
+"pa": 1505.36,
+"place": null,
+"po": false,
+"seed": 10,
+"finish": "Missed"
+},
+"Mandingoes": {
+"w": 5,
+"l": 9,
+"t": 0,
+"pf": 1290.68,
+"pa": 1469.98,
+"place": null,
+"po": false,
+"seed": 8,
+"finish": "Missed"
+},
+"Cheating is Trying": {
+"w": 4,
+"l": 10,
+"t": 0,
+"pf": 1365.48,
+"pa": 1456.84,
+"place": null,
+"po": false,
+"seed": 9,
+"finish": "Missed"
+}
+},
+"2024": {
+"Homer's Heroes": {
+"w": 5,
+"l": 9,
+"t": 0,
+"pf": 1282.04,
+"pa": 1370.42,
+"place": null,
+"po": false,
+"seed": 9,
+"finish": "Missed"
+},
+"Team Ram Rod": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1681.78,
+"pa": 1635.5,
+"place": 2,
+"po": true,
+"seed": 4,
+"finish": "Runner-up"
+},
+"Team RIPMFL": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1578.84,
+"pa": 1507.58,
+"place": 4,
+"po": true,
+"seed": 2,
+"finish": "4th"
+},
+"Reverse Apache Master": {
+"w": 10,
+"l": 4,
+"t": 0,
+"pf": 1674.82,
+"pa": 1447.72,
+"place": 3,
+"po": true,
+"seed": 1,
+"finish": "3rd"
+},
+"Convicts": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1532.66,
+"pa": 1611.14,
+"place": null,
+"po": true,
+"seed": 5,
+"finish": "Playoffs"
+},
+"Canton waitlist": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1463.22,
+"pa": 1443.98,
+"place": null,
+"po": false,
+"seed": 7,
+"finish": "Missed"
+},
+"Nuts in the Face": {
+"w": 4,
+"l": 10,
+"t": 0,
+"pf": 1315.04,
+"pa": 1527.52,
+"place": null,
+"po": false,
+"seed": 10,
+"finish": "Missed"
+},
+"Bill's Block Party": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1522.18,
+"pa": 1547.2,
+"place": 1,
+"po": true,
+"seed": 6,
+"finish": "Champion"
+},
+"Mandingoes": {
+"w": 6,
+"l": 8,
+"t": 0,
+"pf": 1399.3,
+"pa": 1421.56,
+"place": null,
+"po": false,
+"seed": 8,
+"finish": "Missed"
+},
+"Cheating is Trying": {
+"w": 8,
+"l": 6,
+"t": 0,
+"pf": 1564.56,
+"pa": 1501.82,
+"place": null,
+"po": true,
+"seed": 3,
+"finish": "Playoffs"
+}
+},
+"2025": {
+"Convicts": {
+"w": 6,
+"l": 8,
+"t": 0,
+"pf": 1646.34,
+"pa": 1569.28,
+"place": null,
+"po": false,
+"seed": 7,
+"finish": "Missed"
+},
+"Homer's Heroes": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1539.82,
+"pa": 1421.7,
+"place": null,
+"po": true,
+"seed": 5,
+"finish": "Playoffs"
+},
+"Team Ram Rod": {
+"w": 11,
+"l": 3,
+"t": 0,
+"pf": 1716.04,
+"pa": 1480.9,
+"place": 2,
+"po": true,
+"seed": 1,
+"finish": "Runner-up"
+},
+"Team RIPMFL": {
+"w": 6,
+"l": 8,
+"t": 0,
+"pf": 1603.54,
+"pa": 1640.74,
+"place": null,
+"po": false,
+"seed": 8,
+"finish": "Missed"
+},
+"Reverse Apache Master": {
+"w": 7,
+"l": 7,
+"t": 0,
+"pf": 1369.78,
+"pa": 1476.18,
+"place": null,
+"po": true,
+"seed": 6,
+"finish": "Playoffs"
+},
+"Canton waitlist": {
+"w": 4,
+"l": 10,
+"t": 0,
+"pf": 1338.06,
+"pa": 1562.18,
+"place": null,
+"po": false,
+"seed": 9,
+"finish": "Missed"
+},
+"Nuts in the Face": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1468.36,
+"pa": 1372,
+"place": 3,
+"po": true,
+"seed": 4,
+"finish": "3rd"
+},
+"Bill's Block Party": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1590.58,
+"pa": 1491.66,
+"place": 1,
+"po": true,
+"seed": 2,
+"finish": "Champion"
+},
+"Mandingoes": {
+"w": 9,
+"l": 5,
+"t": 0,
+"pf": 1482.5,
+"pa": 1352.12,
+"place": 4,
+"po": true,
+"seed": 3,
+"finish": "4th"
+},
+"Cheating is Trying": {
+"w": 2,
+"l": 12,
+"t": 0,
+"pf": 1238.14,
+"pa": 1626.4,
+"place": null,
+"po": false,
+"seed": 10,
+"finish": "Missed"
+}
+}
+},
+"all": {
+"Bill's Block Party": {
+"w": 34,
+"l": 36,
+"t": 0,
+"pf": 7631.1,
+"titles": [
+2024,
+2025
+],
+"finals": [
+2024,
+2025
+],
+"po": [
+2021,
+2022,
+2024,
+2025
+],
+"best_seed": 2
+},
+"Canton waitlist": {
+"w": 33,
+"l": 37,
+"t": 0,
+"pf": 7255.76,
+"titles": [],
+"finals": [
+2021,
+2022
+],
+"po": [
+2021,
+2022,
+2023
+],
+"best_seed": 4
+},
+"Cheating is Trying": {
+"w": 26,
+"l": 44,
+"t": 0,
+"pf": 7153.8,
+"titles": [],
+"finals": [],
+"po": [
+2024
+],
+"best_seed": 3
+},
+"Convicts": {
+"w": 38,
+"l": 32,
+"t": 0,
+"pf": 7958.82,
+"titles": [],
+"finals": [],
+"po": [
+2021,
+2022,
+2023,
+2024
+],
+"best_seed": 2
+},
+"Homer's Heroes": {
+"w": 45,
+"l": 25,
+"t": 0,
+"pf": 7651.36,
+"titles": [
+2021,
+2023
+],
+"finals": [
+2021,
+2023
+],
+"po": [
+2021,
+2022,
+2023,
+2025
+],
+"best_seed": 1
+},
+"Mandingoes": {
+"w": 32,
+"l": 38,
+"t": 0,
+"pf": 6900.02,
+"titles": [],
+"finals": [],
+"po": [
+2025
+],
+"best_seed": 3
+},
+"Nuts in the Face": {
+"w": 26,
+"l": 44,
+"t": 0,
+"pf": 7052.68,
+"titles": [],
+"finals": [],
+"po": [
+2025
+],
+"best_seed": 4
+},
+"Reverse Apache Master": {
+"w": 41,
+"l": 29,
+"t": 0,
+"pf": 7551.58,
+"titles": [],
+"finals": [],
+"po": [
+2022,
+2023,
+2024,
+2025
+],
+"best_seed": 1
+},
+"Team RIPMFL": {
+"w": 37,
+"l": 33,
+"t": 0,
+"pf": 7842.18,
+"titles": [
+2022
+],
+"finals": [
+2022,
+2023
+],
+"po": [
+2021,
+2022,
+2023,
+2024
+],
+"best_seed": 2
+},
+"Team Ram Rod": {
+"w": 38,
+"l": 32,
+"t": 0,
+"pf": 8083.62,
+"titles": [],
+"finals": [
+2024,
+2025
+],
+"po": [
+2021,
+2023,
+2024,
+2025
+],
+"best_seed": 1
+}
+},
+"h2h": {
+"Bill's Block Party": {
+"Cheating is Trying": {
+"w": 7,
+"l": 2,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 990.56,
+"pa": 827.76,
+"last": [
+2025,
+12,
+"W",
+101.92,
+64.44
+]
+},
+"Mandingoes": {
+"w": 6,
+"l": 4,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1127.3,
+"pa": 1115.88,
+"last": [
+2025,
+16,
+"W",
+155.9,
+113.98
+]
+},
+"Nuts in the Face": {
+"w": 5,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 846.6,
+"pa": 794.78,
+"last": [
+2025,
+8,
+"L",
+76.32,
+116.58
+]
+},
+"Canton waitlist": {
+"w": 5,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 1063.2,
+"pa": 1085.42,
+"last": [
+2025,
+11,
+"W",
+123.82,
+104
+]
+},
+"Convicts": {
+"w": 4,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1093.06,
+"pa": 1046.62,
+"last": [
+2025,
+13,
+"L",
+134.42,
+163.44
+]
+},
+"Reverse Apache Master": {
+"w": 3,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 810.68,
+"pa": 774.34,
+"last": [
+2025,
+6,
+"W",
+141.28,
+77.64
+]
+},
+"Team RIPMFL": {
+"w": 5,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 1191.8,
+"pa": 1177.84,
+"last": [
+2025,
+14,
+"W",
+118.24,
+63.1
+]
+},
+"Team Ram Rod": {
+"w": 3,
+"l": 6,
+"t": 0,
+"po_w": 2,
+"po_l": 0,
+"pf": 1002.7,
+"pa": 1114.98,
+"last": [
+2025,
+17,
+"W",
+157.96,
+90
+]
+},
+"Homer's Heroes": {
+"w": 2,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 561.54,
+"pa": 684.82,
+"last": [
+2025,
+9,
+"W",
+115.44,
+111.52
+]
+}
+},
+"Canton waitlist": {
+"Team Ram Rod": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 886.64,
+"pa": 954.84,
+"last": [
+2025,
+8,
+"L",
+106.32,
+135.4
+]
+},
+"Homer's Heroes": {
+"w": 4,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 879.06,
+"pa": 1062.16,
+"last": [
+2025,
+12,
+"L",
+69.86,
+120.12
+]
+},
+"Cheating is Trying": {
+"w": 7,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 1043.96,
+"pa": 889.08,
+"last": [
+2025,
+10,
+"W",
+138.58,
+84.22
+]
+},
+"Bill's Block Party": {
+"w": 5,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1085.42,
+"pa": 1063.2,
+"last": [
+2025,
+11,
+"L",
+104,
+123.82
+]
+},
+"Nuts in the Face": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 876.88,
+"pa": 856.8,
+"last": [
+2025,
+13,
+"L",
+79.36,
+89.14
+]
+},
+"Mandingoes": {
+"w": 3,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 705.3,
+"pa": 688.18,
+"last": [
+2025,
+7,
+"L",
+82.72,
+131.86
+]
+},
+"Convicts": {
+"w": 3,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 774.24,
+"pa": 895.8,
+"last": [
+2025,
+6,
+"L",
+57.2,
+126.68
+]
+},
+"Reverse Apache Master": {
+"w": 4,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 874.6,
+"pa": 900.14,
+"last": [
+2025,
+14,
+"L",
+98.46,
+103.86
+]
+},
+"Team RIPMFL": {
+"w": 3,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 821.64,
+"pa": 848.24,
+"last": [
+2025,
+9,
+"W",
+139.34,
+108.56
+]
+}
+},
+"Cheating is Trying": {
+"Bill's Block Party": {
+"w": 2,
+"l": 7,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 827.76,
+"pa": 990.56,
+"last": [
+2025,
+12,
+"L",
+64.44,
+101.92
+]
+},
+"Nuts in the Face": {
+"w": 3,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 847.44,
+"pa": 870.14,
+"last": [
+2025,
+14,
+"L",
+84.38,
+93.76
+]
+},
+"Canton waitlist": {
+"w": 2,
+"l": 7,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 889.08,
+"pa": 1043.96,
+"last": [
+2025,
+10,
+"L",
+84.22,
+138.58
+]
+},
+"Convicts": {
+"w": 2,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 892.92,
+"pa": 1055.16,
+"last": [
+2025,
+7,
+"L",
+68.02,
+161.14
+]
+},
+"Reverse Apache Master": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 781.4,
+"pa": 742.9,
+"last": [
+2025,
+11,
+"W",
+79.92,
+75.62
+]
+},
+"Team RIPMFL": {
+"w": 2,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 778.0,
+"pa": 820.0,
+"last": [
+2025,
+6,
+"L",
+107.94,
+141.94
+]
+},
+"Team Ram Rod": {
+"w": 5,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 829.6,
+"pa": 724.88,
+"last": [
+2025,
+9,
+"W",
+117.78,
+116.32
+]
+},
+"Homer's Heroes": {
+"w": 2,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 779.02,
+"pa": 829.34,
+"last": [
+2025,
+13,
+"L",
+80.46,
+94.92
+]
+},
+"Mandingoes": {
+"w": 4,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 606.02,
+"pa": 545.6,
+"last": [
+2025,
+8,
+"L",
+99.98,
+108.68
+]
+}
+},
+"Convicts": {
+"Team RIPMFL": {
+"w": 5,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 1066.46,
+"pa": 992.0,
+"last": [
+2025,
+10,
+"W",
+116.86,
+114.12
+]
+},
+"Team Ram Rod": {
+"w": 4,
+"l": 8,
+"t": 0,
+"po_w": 2,
+"po_l": 1,
+"pf": 1359.8,
+"pa": 1474.96,
+"last": [
+2025,
+12,
+"L",
+114.48,
+167.08
+]
+},
+"Homer's Heroes": {
+"w": 4,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 935.2,
+"pa": 1030.36,
+"last": [
+2025,
+8,
+"W",
+124.56,
+118.82
+]
+},
+"Cheating is Trying": {
+"w": 6,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 1055.16,
+"pa": 892.92,
+"last": [
+2025,
+7,
+"W",
+161.14,
+68.02
+]
+},
+"Bill's Block Party": {
+"w": 5,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 1046.62,
+"pa": 1093.06,
+"last": [
+2025,
+13,
+"W",
+163.44,
+134.42
+]
+},
+"Nuts in the Face": {
+"w": 5,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 888.0,
+"pa": 854.36,
+"last": [
+2025,
+11,
+"L",
+82.32,
+112
+]
+},
+"Canton waitlist": {
+"w": 5,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 895.8,
+"pa": 774.24,
+"last": [
+2025,
+6,
+"W",
+126.68,
+57.2
+]
+},
+"Mandingoes": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 874.06,
+"pa": 765.44,
+"last": [
+2025,
+14,
+"L",
+119.24,
+124.18
+]
+},
+"Reverse Apache Master": {
+"w": 2,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 647.26,
+"pa": 643.24,
+"last": [
+2025,
+9,
+"L",
+100.3,
+100.36
+]
+}
+},
+"Homer's Heroes": {
+"Nuts in the Face": {
+"w": 5,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 863.8,
+"pa": 820.92,
+"last": [
+2025,
+15,
+"L",
+91.12,
+153.9
+]
+},
+"Canton waitlist": {
+"w": 6,
+"l": 4,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1062.16,
+"pa": 879.06,
+"last": [
+2025,
+12,
+"W",
+120.12,
+69.86
+]
+},
+"Convicts": {
+"w": 5,
+"l": 4,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1030.36,
+"pa": 935.2,
+"last": [
+2025,
+8,
+"L",
+118.82,
+124.56
+]
+},
+"Reverse Apache Master": {
+"w": 6,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 1076.78,
+"pa": 1141.6,
+"last": [
+2025,
+10,
+"L",
+77.54,
+106.54
+]
+},
+"Team RIPMFL": {
+"w": 6,
+"l": 3,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 1016.98,
+"pa": 1002.62,
+"last": [
+2025,
+7,
+"L",
+126.6,
+152.64
+]
+},
+"Team Ram Rod": {
+"w": 6,
+"l": 3,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1063.34,
+"pa": 946.88,
+"last": [
+2025,
+14,
+"L",
+144.04,
+144.64
+]
+},
+"Mandingoes": {
+"w": 5,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 816.12,
+"pa": 730.1,
+"last": [
+2025,
+11,
+"W",
+101.58,
+78.46
+]
+},
+"Cheating is Trying": {
+"w": 6,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 829.34,
+"pa": 779.02,
+"last": [
+2025,
+13,
+"W",
+94.92,
+80.46
+]
+},
+"Bill's Block Party": {
+"w": 4,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 684.82,
+"pa": 561.54,
+"last": [
+2025,
+9,
+"L",
+111.52,
+115.44
+]
+}
+},
+"Mandingoes": {
+"Reverse Apache Master": {
+"w": 3,
+"l": 6,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 855.56,
+"pa": 945.8,
+"last": [
+2025,
+15,
+"W",
+115.08,
+105.4
+]
+},
+"Bill's Block Party": {
+"w": 4,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 1115.88,
+"pa": 1127.3,
+"last": [
+2025,
+16,
+"L",
+113.98,
+155.9
+]
+},
+"Team RIPMFL": {
+"w": 3,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 766.18,
+"pa": 897.34,
+"last": [
+2025,
+13,
+"L",
+55.04,
+106.3
+]
+},
+"Nuts in the Face": {
+"w": 5,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 960.52,
+"pa": 918.92,
+"last": [
+2025,
+17,
+"L",
+94.22,
+112.82
+]
+},
+"Team Ram Rod": {
+"w": 5,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 795.84,
+"pa": 802.88,
+"last": [
+2025,
+6,
+"W",
+104.96,
+69.84
+]
+},
+"Canton waitlist": {
+"w": 4,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 688.18,
+"pa": 705.3,
+"last": [
+2025,
+7,
+"W",
+131.86,
+82.72
+]
+},
+"Homer's Heroes": {
+"w": 3,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 730.1,
+"pa": 816.12,
+"last": [
+2025,
+11,
+"L",
+78.46,
+101.58
+]
+},
+"Convicts": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 765.44,
+"pa": 874.06,
+"last": [
+2025,
+14,
+"W",
+124.18,
+119.24
+]
+},
+"Cheating is Trying": {
+"w": 2,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 545.6,
+"pa": 606.02,
+"last": [
+2025,
+8,
+"W",
+108.68,
+99.98
+]
+}
+},
+"Nuts in the Face": {
+"Homer's Heroes": {
+"w": 3,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 820.92,
+"pa": 863.8,
+"last": [
+2025,
+15,
+"W",
+153.9,
+91.12
+]
+},
+"Cheating is Trying": {
+"w": 6,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 870.14,
+"pa": 847.44,
+"last": [
+2025,
+14,
+"W",
+93.76,
+84.38
+]
+},
+"Bill's Block Party": {
+"w": 3,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 794.78,
+"pa": 846.6,
+"last": [
+2025,
+8,
+"W",
+116.58,
+76.32
+]
+},
+"Mandingoes": {
+"w": 4,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 918.92,
+"pa": 960.52,
+"last": [
+2025,
+17,
+"W",
+112.82,
+94.22
+]
+},
+"Canton waitlist": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 856.8,
+"pa": 876.88,
+"last": [
+2025,
+13,
+"W",
+89.14,
+79.36
+]
+},
+"Convicts": {
+"w": 3,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 854.36,
+"pa": 888.0,
+"last": [
+2025,
+11,
+"W",
+112,
+82.32
+]
+},
+"Reverse Apache Master": {
+"w": 2,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 650.54,
+"pa": 753.28,
+"last": [
+2025,
+7,
+"L",
+87.34,
+108.08
+]
+},
+"Team RIPMFL": {
+"w": 1,
+"l": 7,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 826.0,
+"pa": 896.34,
+"last": [
+2025,
+12,
+"W",
+133.86,
+125.26
+]
+},
+"Team Ram Rod": {
+"w": 2,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 793.26,
+"pa": 929.74,
+"last": [
+2025,
+16,
+"L",
+66.32,
+136.92
+]
+}
+},
+"Reverse Apache Master": {
+"Mandingoes": {
+"w": 6,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 945.8,
+"pa": 855.56,
+"last": [
+2025,
+15,
+"L",
+105.4,
+115.08
+]
+},
+"Team RIPMFL": {
+"w": 7,
+"l": 3,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 1194.24,
+"pa": 1083.06,
+"last": [
+2025,
+8,
+"W",
+146.84,
+111.96
+]
+},
+"Team Ram Rod": {
+"w": 4,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 1138.34,
+"pa": 1225.66,
+"last": [
+2025,
+13,
+"L",
+96.94,
+111.44
+]
+},
+"Homer's Heroes": {
+"w": 4,
+"l": 6,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1141.6,
+"pa": 1076.78,
+"last": [
+2025,
+10,
+"W",
+106.54,
+77.54
+]
+},
+"Cheating is Trying": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 742.9,
+"pa": 781.4,
+"last": [
+2025,
+11,
+"L",
+75.62,
+79.92
+]
+},
+"Bill's Block Party": {
+"w": 4,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 774.34,
+"pa": 810.68,
+"last": [
+2025,
+6,
+"L",
+77.64,
+141.28
+]
+},
+"Nuts in the Face": {
+"w": 5,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 753.28,
+"pa": 650.54,
+"last": [
+2025,
+7,
+"W",
+108.08,
+87.34
+]
+},
+"Canton waitlist": {
+"w": 5,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 900.14,
+"pa": 874.6,
+"last": [
+2025,
+14,
+"W",
+103.86,
+98.46
+]
+},
+"Convicts": {
+"w": 4,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 643.24,
+"pa": 647.26,
+"last": [
+2025,
+9,
+"W",
+100.36,
+100.3
+]
+}
+},
+"Team RIPMFL": {
+"Convicts": {
+"w": 4,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 992.0,
+"pa": 1066.46,
+"last": [
+2025,
+10,
+"L",
+114.12,
+116.86
+]
+},
+"Reverse Apache Master": {
+"w": 3,
+"l": 7,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 1083.06,
+"pa": 1194.24,
+"last": [
+2025,
+8,
+"L",
+111.96,
+146.84
+]
+},
+"Mandingoes": {
+"w": 6,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 897.34,
+"pa": 766.18,
+"last": [
+2025,
+13,
+"W",
+106.3,
+55.04
+]
+},
+"Team Ram Rod": {
+"w": 4,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 1075.76,
+"pa": 1066.14,
+"last": [
+2025,
+11,
+"L",
+86.7,
+103.26
+]
+},
+"Homer's Heroes": {
+"w": 3,
+"l": 6,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 1002.62,
+"pa": 1016.98,
+"last": [
+2025,
+7,
+"W",
+152.64,
+126.6
+]
+},
+"Cheating is Trying": {
+"w": 5,
+"l": 2,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 820.0,
+"pa": 778.0,
+"last": [
+2025,
+6,
+"W",
+141.94,
+107.94
+]
+},
+"Bill's Block Party": {
+"w": 5,
+"l": 5,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 1177.84,
+"pa": 1191.8,
+"last": [
+2025,
+14,
+"L",
+63.1,
+118.24
+]
+},
+"Nuts in the Face": {
+"w": 7,
+"l": 1,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 896.34,
+"pa": 826.0,
+"last": [
+2025,
+12,
+"L",
+125.26,
+133.86
+]
+},
+"Canton waitlist": {
+"w": 5,
+"l": 3,
+"t": 0,
+"po_w": 1,
+"po_l": 1,
+"pf": 848.24,
+"pa": 821.64,
+"last": [
+2025,
+9,
+"L",
+108.56,
+139.34
+]
+}
+},
+"Team Ram Rod": {
+"Canton waitlist": {
+"w": 4,
+"l": 4,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 954.84,
+"pa": 886.64,
+"last": [
+2025,
+8,
+"W",
+135.4,
+106.32
+]
+},
+"Convicts": {
+"w": 8,
+"l": 4,
+"t": 0,
+"po_w": 1,
+"po_l": 2,
+"pf": 1474.96,
+"pa": 1359.8,
+"last": [
+2025,
+12,
+"W",
+167.08,
+114.48
+]
+},
+"Reverse Apache Master": {
+"w": 6,
+"l": 4,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 1225.66,
+"pa": 1138.34,
+"last": [
+2025,
+13,
+"W",
+111.44,
+96.94
+]
+},
+"Team RIPMFL": {
+"w": 5,
+"l": 4,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 1066.14,
+"pa": 1075.76,
+"last": [
+2025,
+11,
+"W",
+103.26,
+86.7
+]
+},
+"Mandingoes": {
+"w": 2,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 802.88,
+"pa": 795.84,
+"last": [
+2025,
+6,
+"L",
+69.84,
+104.96
+]
+},
+"Homer's Heroes": {
+"w": 3,
+"l": 6,
+"t": 0,
+"po_w": 0,
+"po_l": 1,
+"pf": 946.88,
+"pa": 1063.34,
+"last": [
+2025,
+14,
+"W",
+144.64,
+144.04
+]
+},
+"Cheating is Trying": {
+"w": 2,
+"l": 5,
+"t": 0,
+"po_w": 0,
+"po_l": 0,
+"pf": 724.88,
+"pa": 829.6,
+"last": [
+2025,
+9,
+"L",
+116.32,
+117.78
+]
+},
+"Bill's Block Party": {
+"w": 6,
+"l": 3,
+"t": 0,
+"po_w": 0,
+"po_l": 2,
+"pf": 1114.98,
+"pa": 1002.7,
+"last": [
+2025,
+17,
+"L",
+90,
+157.96
+]
+},
+"Nuts in the Face": {
+"w": 6,
+"l": 2,
+"t": 0,
+"po_w": 1,
+"po_l": 0,
+"pf": 929.74,
+"pa": 793.26,
+"last": [
+2025,
+16,
+"W",
+136.92,
+66.32
+]
+}
+}
+}
+}

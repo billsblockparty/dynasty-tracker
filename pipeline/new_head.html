@@ -443,9 +443,9 @@ LB_CSS
 /* Top tabs */
 .tabs{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px -16px 16px;padding:8px 16px;background:var(--ink);border-bottom:1px solid var(--hair)}
 .tabs label{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--label);padding:7px 4px 6px;border-radius:9px;border:1px solid var(--hair);background:var(--deck);cursor:pointer;text-align:center;white-space:nowrap}
-#tab-st:checked~.tabs label[for="tab-st"],#tab-lb:checked~.tabs label[for="tab-lb"],#tab-ro:checked~.tabs label[for="tab-ro"],#tab-mu:checked~.tabs label[for="tab-mu"],#tab-sx:checked~.tabs label[for="tab-sx"],#tab-cm:checked~.tabs label[for="tab-cm"],#tab-po:checked~.tabs label[for="tab-po"]{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}
+#tab-st:checked~.tabs label[for="tab-st"],#tab-lb:checked~.tabs label[for="tab-lb"],#tab-ro:checked~.tabs label[for="tab-ro"],#tab-mu:checked~.tabs label[for="tab-mu"],#tab-sx:checked~.tabs label[for="tab-sx"],#tab-cm:checked~.tabs label[for="tab-cm"],#tab-po:checked~.tabs label[for="tab-po"],#tab-th:checked~.tabs label[for="tab-th"]{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}
 .pane{display:none}
-#tab-st:checked~.pane-st,#tab-lb:checked~.pane-lb,#tab-ro:checked~.pane-ro,#tab-mu:checked~.pane-mu,#tab-sx:checked~.pane-sx,#tab-cm:checked~.pane-cm,#tab-po:checked~.pane-po{display:block}
+#tab-st:checked~.pane-st,#tab-lb:checked~.pane-lb,#tab-ro:checked~.pane-ro,#tab-mu:checked~.pane-mu,#tab-sx:checked~.pane-sx,#tab-cm:checked~.pane-cm,#tab-po:checked~.pane-po,#tab-th:checked~.pane-th{display:block}
 .pane>section:first-child{margin-top:0}
 @media (max-width:370px){ .tabs label{font-size:16px;letter-spacing:.04em} }
 
@@ -952,6 +952,7 @@ CMP_CSS
 .pwk{display:inline-flex;margin:0 0 12px}
 .psame{padding:24px 0;text-align:center;color:var(--steel);font-size:13px}
 
+TH_CSS
 PO_CSS
 SX_CSS
 /* lineup slate view */
@@ -1032,8 +1033,8 @@ RO_CSS
     </div>
   </header>
 
-<input type="radio" name="gloss" id="gl-h" class="lr" checked><input type="radio" name="gloss" id="gl-s" class="lr"><input type="radio" name="tab" id="tab-st" class="lr tabr" checked><input type="radio" name="tab" id="tab-lb" class="lr tabr"><input type="radio" name="tab" id="tab-ro" class="lr tabr"><input type="radio" name="tab" id="tab-mu" class="lr tabr"><input type="radio" name="tab" id="tab-cm" class="lr tabr"><input type="radio" name="tab" id="tab-sx" class="lr tabr"><input type="radio" name="tab" id="tab-po" class="lr tabr">
-  <nav class="tabs" aria-label="Sections"><label for="tab-st">Standings</label><label for="tab-lb">Leaderboards</label><label for="tab-sx">Stats</label><label for="tab-ro">Rosters</label><label for="tab-mu">Matchups</label><label for="tab-cm">Compare</label><label for="tab-po" class="tpo">Playoffs</label></nav>
+<input type="radio" name="gloss" id="gl-h" class="lr" checked><input type="radio" name="gloss" id="gl-s" class="lr"><input type="radio" name="tab" id="tab-st" class="lr tabr" checked><input type="radio" name="tab" id="tab-lb" class="lr tabr"><input type="radio" name="tab" id="tab-ro" class="lr tabr"><input type="radio" name="tab" id="tab-mu" class="lr tabr"><input type="radio" name="tab" id="tab-cm" class="lr tabr"><input type="radio" name="tab" id="tab-sx" class="lr tabr"><input type="radio" name="tab" id="tab-po" class="lr tabr"><input type="radio" name="tab" id="tab-th" class="lr tabr">
+  <nav class="tabs" aria-label="Sections"><label for="tab-st">Standings</label><label for="tab-lb">Leaderboards</label><label for="tab-sx">Stats</label><label for="tab-ro">Rosters</label><label for="tab-mu">Matchups</label><label for="tab-cm">Compare</label><label for="tab-po" class="tpo">Playoffs</label><label for="tab-th" class="tpo">Team Hub</label></nav>
   <div class="pane pane-st">
   <input type="radio" name="dens" id="dn-full" class="lr" checked><input type="radio" name="dens" id="dn-lean" class="lr">
     <div class="tg" role="group" aria-label="Scoring format">
@@ -1091,6 +1092,16 @@ RO_CSS
     <div><b>Slate</b> groups starters by kickoff window: slate points (projected) and the running total. <b>Needs over proj</b> = going into that slate, how many points the trailing team's starters from that slate on had to score above their projections to catch up, assuming the leader's hit theirs (earlier slates count actual scores; live players the higher of actual and projection). Filled in for finished slates and the next one to play; later slates stay blank until their turn.</div>
     <div><b>All-play</b> record if you played all 9 teams every week. It measures how well you scored, with your schedule taken out.</div>
     <div><b>Luck</b> actual wins minus expected wins (shown as <b>xW</b>). Expected wins = all-play win % × games played. Example: 44-10 all-play is 81.5%, × 6 games = 4.89 expected wins; with 6 actual wins, luck is +1.11.</div>
+  </div>
+  </div>
+  <div class="pane pane-th">
+  TH_SECTION
+  <div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>
+  <div class="key">
+    <div><b>Team Hub</b> one page per team. Key numbers: record and current seed, points per week and all-play (league rank underneath), luck (wins minus expected wins), playoff and bye chances and projected final wins from the same 20,000-season simulation as the Stats tab.</div>
+    <div><b>This season</b> each week's score, the opponent's, and where the score ranked that week. <b>Remaining schedule</b> win chance for each game left. <b>Position strength</b> points per start at each position and the league rank (no-game starts left out). <b>Roster core</b> the 8 highest scorers this season (taxi squad excluded), age today, points and points per game.</div>
+    <div><b>Lineup calls</b> efficiency = points scored as a share of the best possible lineup; left on bench per week; games lost to it = weeks the best lineup would have won. Costliest call = the biggest single start/sit swing. <b>Draft capital</b> 2027–29 picks held (acquired ones show the original team) and picks traded away.</div>
+    <div><b>League history</b> every season since 2021 (2021–24 on MyFantasyLeague, 2025 onward on Sleeper), regular-season record, points for and seed (wins, then points for), and the playoff finish. <b>Head-to-head</b> all-time record against each team, regular season plus championship-bracket and 3rd-place games, with the most recent meeting.</div>
   </div>
   </div>
   <div class="pane pane-po">
