@@ -23,7 +23,8 @@ if os.path.exists(P+'pull8.json'):
         if m and m[3]:INJM[pid]=m[3]
 PROJ=json.load(open(P+'po_proj.json')) if os.path.exists(P+'po_proj.json') else None
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
-FULL={v:k for k,v in SHORT.items()};FULL["Bill's"]="Bill's Block Party"
+SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
+FULL={**{v:k for k,v in SHORT0.items()},**{k:k for k in SHORT0}};FULL["Bill's"]="Bill's Block Party"
 WEEKS=[15,16,17];RND={15:'Quarterfinals',16:'Semifinals',17:'Championship'}
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
 chip=lambda r:f'<i class="ch {tone(r)}"><span class="ct">#{r}</span></i>'

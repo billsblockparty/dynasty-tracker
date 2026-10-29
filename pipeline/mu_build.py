@@ -11,7 +11,8 @@ def norm(n):
     n=n.replace('’',"'").replace(' 👑','').strip(); return {'RIPMFL':'Team RIPMFL'}.get(n,n)
 R={norm(k):v for k,v in R.items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
-FULL={v:k for k,v in SHORT.items()};FULL["Bill's"]="Bill's Block Party"
+SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
+FULL={**{v:k for k,v in SHORT0.items()},**{k:k for k in SHORT0}};FULL["Bill's"]="Bill's Block Party"
 e=html.escape;DONE=len(WK[H[0]]);W=DONE+1
 seed=lambda t:H.index(t)+1
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''

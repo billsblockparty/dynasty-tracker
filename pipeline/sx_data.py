@@ -11,8 +11,9 @@ TEAMS=list(T);G=len(WK[TEAMS[0]]);NOW=G+1
 X=json.load(open(P+'cmp_extra.json',encoding='utf-8'))
 RN={int(k):v for k,v in X['rn'].items()};RID={v:k for k,v in RN.items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
+SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
 CODE={"Team Ram Rod":"RR","Bill's Block Party":"BP","Homer's Heroes":"HH","Mandingoes":"MA","Team RIPMFL":"RI","Cheating is Trying":"CT","Convicts":"CV","Nuts in the Face":"NF","Reverse Apache Master":"AP","Canton waitlist":"CW"}
-FROM_SHORT={v:k for k,v in SHORT.items()};FROM_SHORT["Bill's"]="Bill's Block Party"
+FROM_SHORT={**{v:k for k,v in SHORT0.items()},**{k:k for k in SHORT0}};FROM_SHORT["Bill's"]="Bill's Block Party"
 HI=json.load(open(P+'hist.json'));HM=HI['m']
 AGE=dict(X['age']);AGE.update(json.load(open(P+'age_extra.json')))
 R0=json.load(open(P+'rosters.json',encoding='utf-8'))

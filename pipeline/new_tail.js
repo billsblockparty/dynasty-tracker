@@ -1,3 +1,4 @@
+const FN={"Ram Rod":"Team Ram Rod","Block Party":"Bill's Block Party","Bill's":"Bill's Block Party","Homer's":"Homer's Heroes","RIPMFL":"Team RIPMFL","Cheating":"Cheating is Trying","Nuts":"Nuts in the Face","Apache":"Reverse Apache Master","Canton":"Canton waitlist"},fn=n=>FN[n]||n;  // full team names everywhere
 const OPEN=new Set();
 const MAX=Math.max(...Object.values(T).map(d=>d[3]));
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
@@ -70,8 +71,8 @@ function draw(med){
     const th=i===0?['tier-bye','Bye','Seeds 1–2',1]:i===2?['tier-po','Playoffs','Seeds 3–6',5]:i===6?['tier-out','Chasing','Seeds 7–10',-1]:null;
     const tierHtml=th?`<div class="tier ${th[0]}"><b>${th[1]}</b><span>${th[2]}</span>${th[3]>=0?`<em>Line ${wl(o[th[3]]).join('-')}</em>`:''}</div>`:'';
     const op=OPEN.has(t);
-    const strip=WK[t].map(g=>{const won=g[2]>g[3];return `<div class="gm"><div class="h"><span>Wk ${g[0]}</span><span class="res ${won?'w':'l'}"><span class="ct">${won?'W':'L'}</span></span></div><div class="sc">${g[2].toFixed(2)}${chip(g[4])}</div><div class="vs">vs ${esc(g[1])}</div><div class="os">${g[3].toFixed(2)}${chip(g[5])}</div></div>`}).join('')
-      +FUT[t].map(g=>`<div class="gm fut"><div class="h"><span>Wk ${g[0]}</span></div><div class="up">Upcoming</div><div class="vs">vs ${esc(g[1])}</div></div>`).join('');
+    const strip=WK[t].map(g=>{const won=g[2]>g[3];return `<div class="gm"><div class="h"><span>Wk ${g[0]}</span><span class="res ${won?'w':'l'}"><span class="ct">${won?'W':'L'}</span></span></div><div class="sc">${g[2].toFixed(2)}${chip(g[4])}</div><div class="vs">vs ${esc(fn(g[1]))}</div><div class="os">${g[3].toFixed(2)}${chip(g[5])}</div></div>`}).join('')
+      +FUT[t].map(g=>`<div class="gm fut"><div class="h"><span>Wk ${g[0]}</span></div><div class="up">Upcoming</div><div class="vs">vs ${esc(fn(g[1]))}</div></div>`).join('');
     return tierHtml+`<div class="r ${tc}${i>=6?' out':''}${op?' open':''}" data-t="${esc(t)}" tabindex="0" role="button" aria-expanded="${op}">
       <div class="rk">${i+1}</div>
       <div class="nm"><span class="tn">${esc(t)}</span>${mv}</div>

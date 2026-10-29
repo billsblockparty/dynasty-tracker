@@ -184,3 +184,10 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .dln2 .dnm b{font-size:15px}
 .dln2 em{font-size:15px!important;font-weight:600!important;opacity:.9}
 .dft{margin-top:6px}
+/* full team names: game chips become a 2-column grid (odd last chip spans both), names wrap instead of truncating */
+.mug{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;margin:0 0 12px!important}
+.mug label:last-child:nth-child(odd){grid-column:1/-1}
+.mug label{padding:8px 6px!important}
+.mug label span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:center;line-height:1.1;font-size:14px!important}
+@media (max-width:370px){.mug label span{font-size:13px!important}}
+.prd .prl b{white-space:normal;text-align:center;max-width:8.5em;line-height:1.1}

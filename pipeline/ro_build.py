@@ -12,6 +12,7 @@ def norm(n):
 R={norm(k):v for k,v in R.items()}
 assert set(R)==set(H),set(R)^set(H)
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
+SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
 ORD=['QB','RB','WR','TE','K','DEF']
 e=html.escape
 import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge,NFL_CSS

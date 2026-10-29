@@ -14,6 +14,7 @@ PS={norm(r['team']):{p:float(r[p])/int(r['starts_'+p]) for p in POS} for r in ro
 G=int(re.search(r'const G=(\d+);',s).group(1))
 PW={t:{p:v/G for p,v in d.items()} for t,d in TOT.items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
+SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
 def rank(D,p,t):
     v=D[t][p];return 1+sum(D[x][p]>v+1e-9 for x in D),sum(abs(D[x][p]-v)<1e-9 for x in D)>1

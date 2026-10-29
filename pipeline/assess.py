@@ -20,6 +20,8 @@ TEAMS=list(T)
 G=len(WK[TEAMS[0]]);NOW=G+1
 RID={v:int(k) for k,v in X['rn'].items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
+SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
+FN=lambda n:{**{v:k for k,v in SHORT0.items()},"Bill's":"Bill's Block Party"}.get(n,n)
 # Owner's stated dynasty holds: never flagged as surplus or drop candidates.
 HOLDS={"Bill's Block Party":{'Cam Little','Seattle Seahawks'}}
 def age(pid):
@@ -144,7 +146,7 @@ def assess(t):
     # schedule
     hard=min(fut,key=lambda f:f[4]);easy=sum(1 for f in fut if f[4]>=70)
     if xw>=5:good.append((5,f'Soft run-in: ~{xw:.1f} projected wins left, {easy} of {len(fut)} games at 70%+.'))
-    if xw<=3:bad.append((5,f'Tough run-in: ~{xw:.1f} projected wins left; hardest is Wk {hard[0]} vs {e(hard[1])} ({hard[4]}%).'))
+    if xw<=3:bad.append((5,f'Tough run-in: ~{xw:.1f} projected wins left; hardest is Wk {hard[0]} vs {e(FN(hard[1]))} ({hard[4]}%).'))
     star=max(act(t),key=lambda p:(p[2] not in('K','DEF'),p[4]))
     good.append((1,f'Best player: {pl(star)}, {star[4]:.1f} pts.'))
     good.sort(key=lambda x:-x[0]);bad.sort(key=lambda x:-x[0])
@@ -162,12 +164,12 @@ def assess_html(t):
     st=''.join(f'<span><em>{k}</em><b>{v}</b><i>{s}</i></span>' for k,v,s in a['stats'])
     li=lambda xs:''.join(f'<li>{x}</li>' for x in xs) or '<li>Nothing stands out.</li>'
     L=lastweek(t);ln=lambda q:e(q['name'].split(' ',1)[-1] if q['pos']!='DEF' else q['name'])
-    lead=(f'<div class="ral"><div class="ralh"><b class="{"up" if L["res"]=="W" else "dn"}">{L["res"]}</b><span>Week {L["wk"]} · {L["sc"]:.1f}–{L["op"]:.1f} vs {e(L["opp"])}</span></div>'
+    lead=(f'<div class="ral"><div class="ralh"><b class="{"up" if L["res"]=="W" else "dn"}">{L["res"]}</b><span>Week {L["wk"]} · {L["sc"]:.1f}–{L["op"]:.1f} vs {e(FN(L["opp"]))}</span></div>'
           f'<p>{"Top score" if L["rk"]==1 else ordn(L["rk"])+"-highest score"} of the week, {("+" if L["sc"]>=L["pj"] else "−")+f"{abs(L['sc']-L['pj']):.1f}"} vs projection. '
           f'Top scorer {ln(L["top"])} ({L["top"]["pts"]:.1f}); biggest miss {ln(L["flop"])} ({L["flop"]["pts"]:.1f} vs {L["flop"]["proj"]:.1f} proj). '
           + (f'Optimal lineup would have scored {L["lost"]:.1f} more. ' if L['lost']>=0.05 else 'Started the optimal lineup. ')
           + f'{L["strk"]}&#8209;game {"winning" if L["res"]=="W" else "losing"} streak.</p></div>' if L['strk']>=2 else
-          f'<div class="ral"><div class="ralh"><b class="{"up" if L["res"]=="W" else "dn"}">{L["res"]}</b><span>Week {L["wk"]} · {L["sc"]:.1f}–{L["op"]:.1f} vs {e(L["opp"])}</span></div>'
+          f'<div class="ral"><div class="ralh"><b class="{"up" if L["res"]=="W" else "dn"}">{L["res"]}</b><span>Week {L["wk"]} · {L["sc"]:.1f}–{L["op"]:.1f} vs {e(FN(L["opp"]))}</span></div>'
           f'<p>{"Top score" if L["rk"]==1 else ordn(L["rk"])+"-highest score"} of the week, {("+" if L["sc"]>=L["pj"] else "−")+f"{abs(L['sc']-L['pj']):.1f}"} vs projection. '
           f'Top scorer {ln(L["top"])} ({L["top"]["pts"]:.1f}); biggest miss {ln(L["flop"])} ({L["flop"]["pts"]:.1f} vs {L["flop"]["proj"]:.1f} proj). '
           + (f'Optimal lineup would have scored {L["lost"]:.1f} more.' if L['lost']>=0.05 else 'Started the optimal lineup.')+'</p></div>')
