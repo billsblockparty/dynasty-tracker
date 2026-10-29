@@ -428,3 +428,29 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 @media (max-width:419px){.thw,.thy,.thx{font-size:13.5px}.thx:not(.thxh),.thx.thxh{grid-template-columns:minmax(0,1fr) 38px 26px 116px;gap:6px}.thw{gap:6px;padding-inline:8px}.thc0 label{font-size:13px}}
 .thx .xls small{font-size:12px;color:var(--dim);margin-right:2px}.thy .xfn{justify-self:center}
 @media (max-width:419px){.thx .xop{white-space:normal;line-height:1.15}}
+/* Team Hub v3 */
+.thx0>.posh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tdd{flex:0 1 auto;min-width:0}
+.tdd summary{padding:7px 11px;gap:8px;border-radius:9px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--chalk);max-width:240px}
+.tdd .ddm{left:auto;right:0;min-width:230px;z-index:30}
+.tdd .ddm label{font-family:var(--display);font-weight:700;font-size:14.5px;letter-spacing:.05em;text-transform:uppercase}
+.tdd .ddm label i{width:18px;text-align:right;margin-right:4px}
+.thnr{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+.thnr .rat{flex:none}
+.thw .xbar.xn i{background:var(--steel)}
+.thp>span{padding:0 0 9px!important;overflow:hidden}
+.thp>span>i{align-self:stretch;display:block;text-align:center;font-style:normal;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.06em;padding:4px 0 3px;
+  background:color-mix(in srgb,var(--pc) 82%,#0b0e14);color:#0f1218}
+.tha{display:flex;align-items:baseline;gap:10px;padding:9px 11px;margin-bottom:5px;background:var(--deck-2);border:1px solid var(--hair);border-radius:9px;font-size:14px;line-height:1.35;color:var(--label)}
+.tha>i{flex:none;width:7px;height:7px;border-radius:50%;transform:translateY(-1px)}
+.tha.up>i{background:var(--win)}.tha.dn>i{background:var(--loss)}
+.thx:not(.thxh),.thx.thxh{grid-template-columns:minmax(0,1fr) 46px 34px!important;row-gap:3px!important}
+.thx .xls{grid-column:1 / -1;text-align:left!important;font-family:var(--body)!important;font-weight:500!important;font-size:12.5px!important;color:var(--steel)!important;white-space:normal!important}
+.thx .xls .sep{font-style:normal;color:var(--dim);margin:0 6px}
+.thx .xls i.w,.thx .xls i.l{font-weight:700}
+.thx .xop{white-space:nowrap!important}
+.thp .ch{background:var(--hair)!important;color:var(--steel)!important;box-shadow:none!important}
+.thp .ch.g{background:var(--win-bg)!important;color:var(--win)!important}.thp .ch.b{background:var(--loss-bg)!important;color:var(--loss)!important}
+.thp .ch.gold{background:rgba(244,196,81,.16)!important;color:#f4c451!important;box-shadow:inset 0 0 0 1px rgba(244,196,81,.45)!important}
+.thp>span>.ch{align-self:center!important;width:auto!important;min-width:30px}
+.tdd summary .sv{color:var(--chalk)}
