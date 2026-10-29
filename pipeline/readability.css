@@ -345,11 +345,10 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .thc0 label{display:flex;align-items:center;justify-content:center;text-align:center;min-height:36px;padding:6px 6px;border-radius:7px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;
   font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--steel);line-height:1.1}
 .thctl{margin:0 0 4px!important}
-#thv-n:checked~.thctl label[for="thv-n"],#thv-r:checked~.thctl label[for="thv-r"],#thv-h:checked~.thctl label[for="thv-h"],
-#thk-t:checked~.thctl label[for="thk-t"],#thk-g:checked~.thctl label[for="thk-g"]{background:var(--chalk);color:var(--ink)}
-.thkr{visibility:hidden}#thv-r:checked~.thctl .thkr{visibility:visible}
+#thv-n:checked~.thctl label[for="thv-n"],#thv-s:checked~.thctl label[for="thv-s"],#thv-r:checked~.thctl label[for="thv-r"],#thv-h:checked~.thctl label[for="thv-h"],
+#thk-t:checked~.thpg label[for="thk-t"],#thk-g:checked~.thpg label[for="thk-g"]{background:var(--chalk);color:var(--ink)}
 .thpg{display:none}.thv{display:none}
-#thv-n:checked~.thpg .thv-n,#thv-r:checked~.thpg .thv-r,#thv-h:checked~.thpg .thv-h{display:block}
+#thv-n:checked~.thpg .thv-n,#thv-s:checked~.thpg .thv-s,#thv-r:checked~.thpg .thv-r,#thv-h:checked~.thpg .thv-h{display:block}
 #thk-g:checked~.thpg .pq .pqi>b.rkt{display:none}#thk-g:checked~.thpg .pq .pqi>b.rkg{display:block}
 .thh{display:flex;flex-direction:column;gap:3px;margin:14px 0 12px}
 .thn{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.05;letter-spacing:.02em;text-transform:uppercase;color:var(--chalk)}
@@ -454,3 +453,52 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .thp .ch.gold{background:rgba(244,196,81,.16)!important;color:#f4c451!important;box-shadow:inset 0 0 0 1px rgba(244,196,81,.45)!important}
 .thp>span>.ch{align-self:center!important;width:auto!important;min-width:30px}
 .tdd summary .sv{color:var(--chalk)}
+/* ===== Team Hub charts ===== */
+.thkg{display:grid;grid-template-columns:1fr;gap:10px}
+.thk{background:var(--deck);border:1px solid var(--hair);border-radius:12px;padding:12px 12px 10px;min-width:0}
+.thkh{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.thkh b{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--label)}
+.thkh small{font-size:11.5px;color:var(--steel)}
+.thsvg{display:block;width:100%;height:auto;overflow:visible;font-family:var(--body)}
+.thsvg .gl{stroke:#262c38;stroke-width:1}
+.thsvg .zl{stroke:#3a4254;stroke-width:1}
+.thsvg .avg{stroke:#626b7c;stroke-width:1}
+.thsvg .ax{fill:#9aa3b5;font-size:10.5px;font-variant-numeric:tabular-nums}
+.thsvg .axt{fill:#626b7c;font-size:10px;letter-spacing:.04em}
+.thsvg .qd{fill:#626b7c;font-size:9.5px}
+.thsvg .dl{fill:#eef0f4;font-size:11.5px;font-weight:600}
+.thsvg .dv{fill:#eef0f4;font-family:var(--display);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.thsvg .dvs{fill:#c9d2e3;font-family:var(--display);font-weight:600;font-size:11.5px;font-variant-numeric:tabular-nums}
+.thsvg .dl2{fill:#9aa3b5;font-family:var(--display);font-weight:700;font-size:13px}.thsvg .dl2.up{fill:#3fd69b}.thsvg .dl2.dn{fill:#ff5d73}
+.thsvg .yl{fill:#c9d2e3;font-family:var(--display);font-weight:700;font-size:12.5px;letter-spacing:.04em}
+.thsvg .yl.sel{fill:#eef0f4}
+.thsvg .hv{fill:#eef0f4;font-family:var(--display);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+.thsvg .dot{stroke:var(--deck);stroke-width:2}
+.thsvg .ln0{fill:none;stroke:#3a4254;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.thsvg .ln1{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.thsvg .rng{fill:#262c38}
+.thsvg .med{stroke:#9aa3b5;stroke-width:2;stroke-linecap:round}
+.thsvg .medt{stroke:#eef0f4;stroke-width:2;stroke-linecap:round}
+.thsvg .lgavg{stroke:#eef0f4;stroke-width:2;stroke-linecap:round}
+.thsvg rect,.thsvg path,.thsvg circle{transition:opacity .15s}
+.thsvg rect:hover,.thsvg path:hover,.thsvg circle:hover{opacity:.8}
+.thlg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11.5px;color:var(--steel)}
+.thlg span{display:inline-flex;align-items:center;gap:5px}
+.thlg i{display:inline-block;flex:none}
+.thlg i.sq{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.thlg i.dot{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.thlg i.tick{width:2px;height:12px;border-radius:1px;background:var(--c)}
+.thlg i.line{width:14px;height:2px;border-radius:1px;background:var(--c)}
+/* desktop: Team Hub opens up into a card grid */
+@media (min-width:960px){
+  .wrap:has(#tab-th:checked){max-width:1180px}
+  .thkg{grid-template-columns:1fr 1fr}
+  .thk.wide{grid-column:1 / -1}
+  .thk .thsvg{max-width:560px;margin:0 auto}
+  .thk.wide .thsvg{max-width:720px}
+}
+.thctl{margin:0 0 4px}.thctl .pseg{display:grid;grid-template-columns:repeat(4,1fr)}.thctl .pseg label{text-align:center}
+.thrk{display:inline-flex;align-items:center;gap:8px;margin-left:auto}.thrk .lt{font-style:normal;font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.1em;color:var(--dim)}
+.thrk .pseg label{font-size:12px!important;padding:4px 9px!important;letter-spacing:0;text-transform:none}
+.thsh:has(.thrk){align-items:center}
+.thsvg .yl.tn{font-family:var(--body);font-weight:500;font-size:11px;letter-spacing:0}

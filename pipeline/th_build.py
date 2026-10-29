@@ -8,6 +8,7 @@ subprocess.run(['python3',P+'history_summary.py'],check=True,stdout=subprocess.D
 import assess as A
 import sx_data as D
 import csv
+import th_charts as C
 e=html.escape
 T,WK,FUT,R,G,NOW=A.T,A.WK,A.FUT,A.R,A.G,A.NOW
 H=json.loads(re.search(r'const H=(\[.*?\]);',A._s).group(1))   # standings order
@@ -82,10 +83,10 @@ def page(i,t):
     lineup=sec('Lineup calls',f'<div class="tht tht3"><span><em>Efficiency</em><b>{ef[0]:.1f}%</b>{chip(*rk(efv,t))}</span><span><em>Left on bench</em><b>{lost/G:.1f}</b><small>pts / wk</small></span><span><em>Lineup losses</em><b>{flips}</b><small>games lost on the bench</small></span></div>'+call)
     li=lambda xs,c:''.join(f'<div class="tha {c}"><i></i><span>{x}</span></div>' for x in xs) or f'<div class="tha {c}"><i></i><span>Nothing stands out.</span></div>'
     asx=sec('Strengths',li(AS['good'],'up'))+sec('Concerns',li(AS['bad'],'dn'))
-    now=f'<div class="thv thv-n">{tiles}{season}{lineup}{asx}</div>'
+    now=f'<div class="thv thv-n">{tiles}<div class="ths">{C.overview(t)}</div>{season}{asx}</div>'+f'<div class="thv thv-s"><div class="ths">{C.scoring(t)}</div>{lineup}</div>'
     # ---- ROSTER: core players (bands), position strength, draft capital
     core=sorted([p for p in R[t] if p[7]!='TX'],key=lambda p:-p[4])[:8]
-    roster=sec('Roster core','<div class="rcol thrc"><span>Player</span><span>Pts</span><span>/g</span></div>'+''.join(prow(p) for p in core),'top 8 by points · tile = position rank')
+    roster=f'<div class="ths"><div class="msh thsh">Roster core<span class="thrk"><i class="lt">Rank</i>{RKW}</span></div><div class="rcol thrc"><span>Player</span><span>Pts</span><span>/g</span></div>'+''.join(prow(p) for p in core)+'</div>'
     pv={p:{k:ps(k,p) for k in T} for p in POS}
     pos=sec('Position strength','<div class="thp">'+''.join(f'<span class="p-{p.lower()}"><i>{p}</i><b>{ps(t,p):.1f}</b>{chip(*rk(pv[p],t))}</span>' for p in POS)+'</div>','points per start · league rank')
     rid=A.RID[t]
@@ -127,10 +128,10 @@ def page(i,t):
     return f'<div class="thpg thpg-{i}">{hdr}{now}{ro}{hi}</div>'
 
 radios=''.join(f'<input type="radio" name="thub" id="th-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(len(H)))+\
-  '<input type="radio" name="thv" id="thv-n" class="lr" checked><input type="radio" name="thv" id="thv-r" class="lr"><input type="radio" name="thv" id="thv-h" class="lr">'+\
+  '<input type="radio" name="thv" id="thv-n" class="lr" checked><input type="radio" name="thv" id="thv-s" class="lr"><input type="radio" name="thv" id="thv-r" class="lr"><input type="radio" name="thv" id="thv-h" class="lr">'+\
   '<input type="radio" name="thk" id="thk-t" class="lr" checked><input type="radio" name="thk" id="thk-g" class="lr">'
-VSW=('<div class="lctl lgrid thctl"><div class="thvw pseg" role="group" aria-label="Team Hub view"><label for="thv-n">Now</label><label for="thv-r">Roster</label><label for="thv-h">History</label></div>'
-     '<i class="lt">View</i><i class="lt ltr thkr">Rank</i><div class="thkw pseg thkr" role="group" aria-label="Position rank by"><label for="thk-t">Pts</label><label for="thk-g">/ Gm</label></div></div>')
+VSW='<div class="thctl"><div class="thvw pseg" role="group" aria-label="Team Hub view"><label for="thv-n">Overview</label><label for="thv-s">Scoring</label><label for="thv-r">Roster</label><label for="thv-h">History</label></div></div>'
+RKW='<div class="thkw pseg" role="group" aria-label="Position rank by"><label for="thk-t">Pts</label><label for="thk-g">/ Gm</label></div>'
 dd=('<details class="dd tdd"><summary>'+''.join(f'<span class="sv tsv-{i}">{e(t)}</span>' for i,t in enumerate(H))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
     '<div class="ddm">'+''.join(f'<label for="th-{i}"><i>{i+1}</i>{e(t)}</label>' for i,t in enumerate(H))+'</div></details>')
