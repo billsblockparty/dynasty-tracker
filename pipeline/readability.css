@@ -251,3 +251,5 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
  .cr.lu .sln.sla{margin-left:-11px;clip-path:inset(-4px -4px -4px 11px)}.cr.lu .sln.sla .sit{margin-left:11px}.cr.lu .sln.sla .sit::before{left:-8px}
  .cr.lu .sln.slb{margin-right:-11px;clip-path:inset(-4px 11px -4px -4px)}.cr.lu .sln.slb .sit{margin-right:11px}.cr.lu .sln.slb .sit::after{right:-8px}}
 @media (max-width:370px){.cr.lu .sln{font-size:10px!important}.cr.lu .sln u{font-size:8px!important}}
+/* position bands stop where the points tiles stop (stat line 16px + row gap 6px + padding 8px below), same rounded bottom */
+.cr.lu:has(.sln) .cn>.pq{bottom:30px!important;border-radius:0 0 4px 4px}
