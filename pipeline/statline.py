@@ -32,7 +32,7 @@ def statline(w,pid,pos):
     WR/TE 'REC' (rec-yds[-TD]) + 'RU'. K 'FG 3/4 • XP 1/1'. DEF 'SK 3 • TO 2 [• TD 1] • PA 24' (TO = INT + fumble recoveries)."""
     a=_arr(w,pid)
     if a is None:return ''
-    if isinstance(a,str):return 'Did not play'
+    if isinstance(a,str):return '<span class="sit">Did not play</span>'
     td=lambda c,y,t:[c,y]+([t] if t else [])
     if pos=='QB':
         o=[_grp('PA',[a[2]]+([a[3],a[4]] if a[4] else [a[3]] if a[3] else []))]+([_grp('RU',td(a[5],a[6],a[7]))] if a[5] else [])
