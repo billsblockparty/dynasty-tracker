@@ -219,3 +219,4 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .cr.lu .sln{display:flex!important;flex-wrap:wrap;column-gap:8px;align-content:flex-start}
 .cr.lu .sln.slb{justify-content:flex-end}
 .cr.lu .sln .sdt{display:none}
+.sltw>span .dlt{margin:0!important}

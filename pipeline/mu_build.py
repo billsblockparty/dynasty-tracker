@@ -166,21 +166,25 @@ def sview(sa,sb,sid_a=None,sid_b=None):
             s=_slate(_pw(p),p[3]);k=s[0] if s else ('9','~');lab=s[1] if s else 'No game'
             g=groups.setdefault(k,{'lab':lab,'a':[],'b':[]});g[side].append(p)
     o=[];ca=cb=pa=pb=0.0;strip=[];rda=[0.0,False];rdb=[0.0,False]
-    # Needs over projection: shown once, on the next slate still to finish. Current picture: final = actual, live =
-    # max(actual, projection), not started = projection. The trailing side needs the gap between the two expected totals.
+    # Needs over projection, on every slate: going into the slate, how far the trailing team's starters from this slate on
+    # must beat their projections to catch up, if the leader's do exactly theirs. Earlier slates count actual scores (live:
+    # max(actual, projection)). Filled for finished slates and the next one to finish; later slates keep an empty line.
     def _ev(p):
         if lval(p)[1]:return p[5]
         if p[3] in LIVEG and _pw(p)==W:return max(p[4],p[5])
         return p[4]
     KS=sorted(groups)
     nxt=next((k for k in KS if groups[k]['lab']!='No game' and not all(lval(p)[1] for p in groups[k]['a']+groups[k]['b'])),None)
-    EA=sum(_ev(p) for k in KS for p in groups[k]['a']);EB=sum(_ev(p) for k in KS for p in groups[k]['b'])
-    left=lambda sd:any(not lval(p)[1] for k in KS for p in groups[k][sd])
-    gap=abs(EA-EB);trail='a' if EA<EB else 'b' if EB<EA else None
-    need_row=''
-    if nxt is not None and trail and gap>=0.05 and left(trail):
-        v=f'<i class="dlt dn">+{gap:.1f}</i>'
-        need_row=f'<div class="mcr slc sltw"><span>{v if trail=="a" else ""}</span><em>Needs over proj</em><span>{v if trail=="b" else ""}</span></div>'
+    upto=KS.index(nxt) if nxt is not None else len(KS)-1
+    def need_row(ki):
+        cell=['','']
+        if ki<=upto:
+            ea=sum(_ev(p) for k2 in KS[:ki] for p in groups[k2]['a'])+sum(p[4] for k2 in KS[ki:] for p in groups[k2]['a'])
+            eb=sum(_ev(p) for k2 in KS[:ki] for p in groups[k2]['b'])+sum(p[4] for k2 in KS[ki:] for p in groups[k2]['b'])
+            tr=0 if ea<eb-0.05 else 1 if eb<ea-0.05 else None
+            if tr is not None:
+                cell[tr]=f'<i class="dlt dn">+{abs(ea-eb):.1f}</i>' if any(groups[k2]['ab'[tr]] for k2 in KS[ki:]) else '–'
+        return f'<div class="mcr slc sltw"><span>{cell[0]}</span><em>Needs over proj</em><span>{cell[1]}</span></div>'
     for ki,k in enumerate(KS):
         g=groups[k]
         for sd in 'ab':g[sd].sort(key=lambda p:(_PO.get(p[1],9),-p[4]))
@@ -201,7 +205,7 @@ def sview(sa,sb,sid_a=None,sid_b=None):
             return f'<i class="dlt {c}">{"+" if v>=0.05 else "−" if v<=-0.05 else "±"}{abs(v):.1f}</i>'
         fa=lambda x,j:(f'{x:.1f}' if started else '–')+f' <small>({j:.1f})</small>'
         o.append(f'<div class="slx sx-{st.lower()}"><div class="slg"><b>{g["lab"]}</b><em>{len(g["a"])}<u>·</u>{len(g["b"])} starters</em><i class="ss {st.lower()}">{st}</i></div><div class="mcr slh"><span class="{"up" if started and xa>xb else ""}">{fa(xa,ja)}{dl(sda)}</span><em>Slate</em><span class="{"up" if started and xb>xa else ""}">{dl(sdb)}{fa(xb,jb)}</span></div>'
-                 f'<div class="mcr slc"><span>{ca:.1f} <small>({pa:.1f})</small>{dl(rda[0] if rda[1] else None)}</span><em>Running total</em><span>{dl(rdb[0] if rdb[1] else None)}{cb:.1f} <small>({pb:.1f})</small></span></div>'+(need_row if k==nxt else ''))
+                 f'<div class="mcr slc"><span>{ca:.1f} <small>({pa:.1f})</small>{dl(rda[0] if rda[1] else None)}</span><em>Running total</em><span>{dl(rdb[0] if rdb[1] else None)}{cb:.1f} <small>({pb:.1f})</small></span></div>'+need_row(ki))
         for i in range(max(len(g['a']),len(g['b']))):
             x=g['a'][i] if i<len(g['a']) else None;y=g['b'][i] if i<len(g['b']) else None;r=lrow(x,y,'')
             if sid_a is not None and x and x[0] not in sid_a:r=r.replace('<span class="cn a">','<span class="cn a swp">',1)
