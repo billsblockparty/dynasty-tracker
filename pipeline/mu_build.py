@@ -122,7 +122,7 @@ def lcell(p,side):
     mk=_badge(tm).replace('<em class="nfl','<em class="nfl tm',1) if tm else ''
     return (f'<span class="cn {side}">{sq}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
             f'<small><span class="gp{" fin" if done else ""}">{st}</span></small></span></span>'+
-            (f'<span class="cv {side} act"><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side}">{v:.1f}</span>'))
+            (f'<span class="cv {side} act"><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
 def lrow(pa,pb,slot):
     w=''
     if pa and pb:
@@ -193,12 +193,13 @@ def sview(sa,sb,sid_a=None,sid_b=None):
         la,lb=later('a',ki),later('b',ki);na,nb=nla('a',ki),nla('b',ki)
         def nd(need,proj,n,right=False):
             if not n:return '–'
-            gp=max(need,0)-proj;c='dn' if gp>=0.05 else 'up' if gp<=-0.05 else 'ev'
+            if need<=0:return f'<i class="dlt up">Ahead by {-need:.1f}</i>'
+            gp=need-proj;c='dn' if gp>=0.05 else 'up' if gp<=-0.05 else 'ev'
             d=f'<i class="dlt {c}">{"+" if gp>=0.05 else "−" if gp<=-0.05 else "±"}{abs(gp):.1f}</i>'
             v=f'{max(need,0):.1f} <small>({proj:.1f})</small>'
             return d+v if right else v+d
-        need_row=('' if not(na or nb) else
-            f'<div class="mcr slc sln"><span>{nd(tb_+lb-ta_,la,na)}</span><em>To win</em><span>{nd(ta_+la-tb_,lb,nb,True)}</span></div>')
+        need_row=('' if not(na or nb) or not started else
+            f'<div class="mcr slc sltw"><span>{nd(tb_+lb-ta_,la,na)}</span><em>To win</em><span>{nd(ta_+la-tb_,lb,nb,True)}</span></div>')
         def dl(v):
             if v is None:return ''
             c='up' if v>=0.05 else 'dn' if v<=-0.05 else 'ev'

@@ -192,6 +192,17 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 @media (max-width:370px){.mug label span{font-size:13px!important}}
 .prd .prl b{white-space:normal;text-align:center;max-width:8.5em;line-height:1.1}
 /* Slate: To win row sits directly under Running total */
-.slc:has(+.sln){padding-bottom:0!important}
-.sln{padding:3px 0 8px!important}
-.sln em{color:var(--steel)!important}
+.slc:has(+.sltw){padding-bottom:0!important}
+.sltw{padding:3px 0 8px!important}
+.sltw em{color:var(--steel)!important}
+/* Points columns run the full height of the row, like the position band: final = green/red, projected = neutral */
+.cr.lu .cv.act,.cr.lu .cv.pjc{align-self:stretch;margin-block:-8px;display:flex;align-items:stretch;justify-content:center!important;padding:0!important}
+.cr.lu .cv .fs{width:100%!important;height:auto!important;min-height:0!important;border-radius:0!important;gap:4px!important}
+.cr.lu .cv .fs.up{box-shadow:inset 1px 0 0 rgba(63,214,155,.38),inset -1px 0 0 rgba(63,214,155,.38)!important}
+.cr.lu .cv .fs.dn{box-shadow:inset 1px 0 0 rgba(255,93,115,.38),inset -1px 0 0 rgba(255,93,115,.38)!important}
+.cr.lu .cv .fs.pj{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;background:rgba(255,255,255,.035);box-shadow:inset 1px 0 0 var(--hair),inset -1px 0 0 var(--hair)}
+.cr.lu .cv .fs small{font-family:var(--display);font-weight:600;font-size:8.5px;letter-spacing:.1em;opacity:.75}
+.cr.lu .cv.pjc .fs small{color:var(--dim);opacity:1}
+.cr.lu{grid-template-areas:"na va vb nb" "sa va vb sb"!important}
+.cr.lu::after{top:0;bottom:0}
+.cr.lu .sln.sla{padding-right:5px!important}.cr.lu .sln.slb{padding-left:5px!important}
