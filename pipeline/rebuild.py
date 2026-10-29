@@ -60,6 +60,12 @@ if _os.path.isdir(P+'logos'):
         _t,_,_x=_f.rpartition('.');_x=_x.lower()
         if _x in _MIME and _t.isalpha() and _t.isupper() and 2<=len(_t)<=3:
             _u='data:'+_MIME[_x]+';base64,'+_b64.b64encode(open(P+'logos/'+_f,'rb').read()).decode()
+            try:  # shown at about 23x21 CSS px: embed a 72x64 WebP (sharp on 3x screens) instead of the full upload
+                from PIL import Image as _Im;import io as _io
+                _im=_Im.open(P+'logos/'+_f).convert('RGBA');_im.thumbnail((72,64),_Im.LANCZOS)
+                _bb=_io.BytesIO();_im.save(_bb,format='WEBP',quality=90,method=6)
+                _u='data:image/webp;base64,'+_b64.b64encode(_bb.getvalue()).decode()
+            except Exception:pass
             _LG+=f'.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct{{visibility:hidden}}'
 _i=h.rindex('</style>');h=h[:_i]+open(P+'readability.css',encoding='utf-8').read()+_LG+h[_i:]
 open(P+'standings.html','w',encoding='utf-8').write(h+d+t)

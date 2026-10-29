@@ -45,7 +45,7 @@ jobs:
       - name: Install
         working-directory: pipeline
         run: |
-          pip install numpy
+          pip install numpy pillow
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
       - name: Pick mode
