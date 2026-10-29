@@ -143,7 +143,7 @@ export async function pullLive(get, W, known) {
 
 // Full stat lines for the Detailed lineup view. Keeps every stat the league scores (so a points breakdown can be
 // computed) plus volume stats that score nothing (attempts, targets, longs, yards allowed). Lineup players only.
-const DX = ['pass_att', 'pass_cmp', 'pass_lng', 'pass_sack', 'rush_att', 'rush_lng', 'rec_tgt', 'rec_lng', 'fga', 'fgm', 'fgm_lng', 'xpa', 'yds_allow', 'gp'];
+const DX = ['pass_att', 'pass_cmp', 'pass_lng', 'pass_sack', 'rush_att', 'rush_lng', 'rec_tgt', 'rec_lng', 'fga', 'fgm', 'fgm_lng', 'xpa', 'yds_allow', 'pts_allow', 'gp', 'fgmiss_0_19', 'fgmiss_20_29', 'fgmiss_30_39', 'fgmiss_40_49', 'fgmiss_50_59', 'fgmiss_60p', 'fgm_0_19'];
 export async function pullDetail(get, weeks) {
   const L = `${A}/league/${LEAGUE}`, lg = await get(L), keep = new Set([...Object.keys(lg.scoring_settings), ...DX]);
   const out = {};
