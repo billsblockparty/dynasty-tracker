@@ -35,15 +35,16 @@ h=h.replace('PO_SECTION',open(P+'po_section.html',encoding='utf-8').read()).repl
 h=h.replace('SX_SECTION',open(P+'sx_section.html',encoding='utf-8').read()).replace('SX_CSS',open(P+'sx_css.css',encoding='utf-8').read())
 # Team Hub is switched by pipeline/features.json ("teamhub": true/false). Off = not built and not on the page
 # (tab, pane and glossary removed); the code stays in th_build.py / th_charts.py, ready to switch back on.
+_TH_OFF=False
 _FT=json.load(open(P+'features.json')) if _dt_os.path.exists(P+'features.json') else {}
 if _FT.get('teamhub',True):
     sp0.run(['python3',P+'th_build.py'],check=True,stdout=sp0.DEVNULL)
     h=h.replace('TH_SECTION',open(P+'th_section.html',encoding='utf-8').read()).replace('TH_CSS',open(P+'th_css.css',encoding='utf-8').read())
 else:
+    _TH_OFF=True
     import re as _re_th
     h=_re_th.sub(r'  <div class="pane pane-th">.*?\n  </div>\n(?=  <div class="pane pane-po">)','',h,flags=_re_th.S)
     h=h.replace('<label for="tab-th" class="tpo">Team Hub</label>','').replace('<input type="radio" name="tab" id="tab-th" class="lr tabr">','').replace('TH_CSS','')
-    h=h.replace('</style>','.tabs label.tpo{grid-column:1 / -1!important}</style>',1)
 h=h.replace('__LEFT__',str(14-DONE)).replace('__G__',str(DONE))
 h=h.replace('SEGMENTS',segs).replace('POS_SECTION',open(P+'pos/pos_section.html',encoding='utf-8').read())
 import json,subprocess as sp
@@ -78,5 +79,5 @@ if _os.path.isdir(P+'logos'):
                 _u='data:image/webp;base64,'+_b64.b64encode(_bb.getvalue()).decode()
             except Exception:pass
             _LG+=f'.thr .nfl.tm.n-{_t},.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct{{visibility:hidden}}'
-_i=h.rindex('</style>');h=h[:_i]+open(P+'readability.css',encoding='utf-8').read()+_LG+h[_i:]
+_i=h.rindex('</style>');h=h[:_i]+open(P+'readability.css',encoding='utf-8').read()+_LG+('.tabs label.tpo{grid-column:1 / -1!important}' if _TH_OFF else '')+h[_i:]
 open(P+'standings.html','w',encoding='utf-8').write(h+d+t)
