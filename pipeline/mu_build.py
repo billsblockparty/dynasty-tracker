@@ -117,12 +117,12 @@ def lcell(p,side):
     if pos!='DEF' and len(name.split(' '))>2 and name.split(' ')[-2]=='St.':nm='St. '+nm
     ij=f'<i class="inj i-{INJ[inj]}">{INJ[inj]}</i>' if inj in INJ else ''
     _f=_fl(p[10] if len(p)>10 else W,pid,pos) if lval(p)[1] else 0
-    if _f:ij+=f'<i class="inj i-FL">{_f if _f>1 else ""}FL</i>'
+    flg=f'<i class="flg">{_f if _f>1 else ""}FL</i>' if _f else ''  # lost fumble: small flag under the position band
     v,done=lval(p)
     ha=_gline((p[9] if len(p)>9 else ('vs' if tm in HOME else '@')),opp)
     st='BYE' if not opp else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
     mk=_badge(tm).replace('<em class="nfl','<em class="nfl tm',1) if tm else ''
-    return (f'<span class="cn {side}">{sq}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
+    return (f'<span class="cn {side}">{sq}{flg}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
             f'<small><span class="gp{" fin" if done else ""}">{st}</span></small></span></span>'+
             (f'<span class="cv {side} act"><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
 def lrow(pa,pb,slot):

@@ -264,3 +264,8 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 /* centre the stat line in the space under the tiles (row height and band edge unchanged) */
 .cr.lu:has(.sln){padding-bottom:5px!important}
 .cr.lu .sln{margin-top:3px}
+/* lost-fumble flag: sits in the corner under the position band, level with the stat line */
+.cr.lu .flg{position:absolute;bottom:calc(5px + 8px);transform:translateY(50%);font-style:normal;font-family:var(--display);font-weight:700;font-size:10.5px;line-height:1;letter-spacing:.04em;
+  padding:2px 4px 2.5px;border-radius:3px;background:rgba(255,93,115,.22);color:#ff8a98;box-shadow:inset 0 0 0 1px rgba(255,93,115,.55)}
+.cr.lu .cn.a .flg{left:calc(var(--bw)/2);translate:-50% 0}
+.cr.lu .cn.b .flg{right:calc(var(--bw)/2);translate:50% 0}
