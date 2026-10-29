@@ -120,7 +120,8 @@ def lcell(p,side):
     flg=f'<i class="flg">{_f if _f>1 else ""}FL</i>' if _f else ''  # lost fumble: small flag under the position band
     v,done=lval(p)
     ha=_gline((p[9] if len(p)>9 else ('vs' if tm in HOME else '@')),opp)
-    st='BYE' if not opp else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
+    # finished games: the points tile already says FINAL, so the game line is just home/away + opponent
+    st='BYE' if not opp else ha if done else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
     mk=_badge(tm).replace('<em class="nfl','<em class="nfl tm',1) if tm else ''
     return (f'<span class="cn {side}">{sq}{flg}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
             f'<small><span class="gp{" fin" if done else ""}">{st}</span></small></span></span>'+
