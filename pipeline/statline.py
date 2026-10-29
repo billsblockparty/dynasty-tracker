@@ -53,3 +53,56 @@ def tight(h):
     n=len(re.sub(r'<[^>]+>','',h))+h.count('class="sit"')
     return '' if n<=T1 else ' stg1' if n<=T2 else ' stg2' if n<=T3 else ' stg3'
 T1,T2,T3=19,23,26
+
+# ---------- Detailed view: fuller stat lines + where the points came from (from stats_detail.json)
+import os as _os
+DET=json.load(open(__DTP__+'stats_detail.json')) if _os.path.exists(__DTP__+'stats_detail.json') else {}
+def _n(v):return f'{v:g}' if isinstance(v,float) else str(v)
+def _it(v,u=''):return f'<b>{_n(v)}{f"<i>{u}</i>" if u else ""}</b>'
+def _line(lab,items):
+    items=[x for x in items if x]
+    return f'<span class="dxl"><u>{lab}</u><span>{"".join(items)}</span></span>' if items else ''
+def _cat(k):
+    if k.startswith('pass_'):return 'Pass'
+    if k.startswith('rush_'):return 'Rush'
+    if k.startswith('rec'):return 'Rec'
+    if k.startswith('fum') and k!='fum_rec':return 'Fum'
+    if k.startswith(('fg','xp')):return 'Kick'
+    return 'Def'
+def breakdown(d):
+    """points by category in this league's scoring, e.g. {'Pass': 15.68, 'Rush': 1.2}"""
+    o={}
+    for k,v in d.items():
+        if k in SS and SS[k]:o[_cat(k)]=o.get(_cat(k),0)+v*SS[k]
+    return {k:round(v,2) for k,v in o.items() if abs(v)>=0.005}
+def detail(w,pid,pos):
+    d=DET.get(str(w),{}).get(pid)
+    if not d:return ''
+    g=lambda k:d.get(k,0);gi=lambda k:int(round(g(k)))
+    L=[]
+    def opt(v,u):return _it(v,u) if v else ''
+    pas=lambda:_line('PASS',[_it(f"{gi('pass_cmp')}/{gi('pass_att')}"),_it(gi('pass_yd'),'yd'),opt(gi('pass_td'),'td'),opt(gi('pass_int'),'int'),opt(gi('pass_sack'),'sk'),(_it(gi('pass_lng'),'lng') if gi('pass_lng')>0 else '')]) if g('pass_att') else ''
+    rus=lambda:_line('RUSH',[_it(gi('rush_att'),'car'),_it(gi('rush_yd'),'yd'),_it(f"{g('rush_yd')/g('rush_att'):.1f}",'avg') if pos=='RB' else '',opt(gi('rush_td'),'td'),(_it(gi('rush_lng'),'lng') if gi('rush_lng')>0 else '')]) if g('rush_att') else ''
+    rec=lambda:_line('REC',[_it(f"{gi('rec')}/{gi('rec_tgt')}",'tgt'),_it(gi('rec_yd'),'yd'),opt(gi('rec_td'),'td'),(_it(gi('rec_lng'),'lng') if gi('rec_lng')>0 else '')]) if g('rec_tgt') or g('rec') else ''
+    if pos=='QB':L+=[pas(),rus()]
+    elif pos=='RB':L+=[rus(),rec()]
+    elif pos in('WR','TE'):L+=[rec(),rus()]
+    elif pos=='K':
+        ma=lambda m,x:(sum(gi(k) for k in m),sum(gi(k) for k in m)+sum(gi(k) for k in x))
+        L.append(_line('XP',[_it(f"{gi('xpm')}/{gi('xpa') or gi('xpm')+gi('xpmiss')}")]))
+        b=[('20s',['fgm_0_19','fgm_20_29'],['fgmiss_0_19','fgmiss_20_29']),('30s',['fgm_30_39'],['fgmiss_30_39']),('40s',['fgm_40_49'],['fgmiss_40_49']),('50+',['fgm_50_59','fgm_60p'],['fgmiss_50_59','fgmiss_60p'])]
+        fg=[]
+        for lab,m,x in b:
+            mm,aa=ma(m,x)
+            if lab=='20s' and not aa:continue
+            fg.append(f'<b><em>{lab}</em>{mm}/{aa}</b>')
+        L.append(_line('FG',fg+[opt(gi('fgm_lng'),'lng')]))
+    elif pos=='DEF':
+        L.append(_line('DEF',[opt(gi('sack'),'sk'),opt(gi('int'),'int'),opt(gi('fum_rec'),'fr'),opt(gi('ff'),'ff'),opt(gi('def_td')+gi('def_st_td'),'td'),opt(gi('safe'),'saf'),opt(gi('blk_kick'),'blk')]) or _line('DEF',[_it(0,'sk')]))
+        L.append(_line('ALLOW',[_it(gi('pts_allow'),'pts'),opt(gi('yds_allow'),'yds')]))
+    if g('fum'):L.append(_line('FUM',[opt(gi('fum_lost'),'lost'),opt(gi('fum')-gi('fum_lost'),'kept')]))
+    tp=sum(gi(k) for k in('pass_2pt','rush_2pt','rec_2pt'))
+    if tp:L.append(_line('2PT',[_it(tp)]))
+    bd=breakdown(d);bd={k:bd[k] for k in ('Pass','Rush','Rec','Kick','Def','Fum') if k in bd}
+    if bd:L.append(_line('PTS',[f'<b><em>{k}</em>{v:.1f}</b>' if v>=0 else f'<b><em>{k}</em>−{-v:.1f}</b>' for k,v in bd.items()]))
+    return ''.join(L)

@@ -269,3 +269,36 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
   padding:2px 4px 2.5px;border-radius:3px;background:rgba(255,93,115,.22);color:#ff8a98;box-shadow:inset 0 0 0 1px rgba(255,93,115,.55)}
 .cr.lu .cn.a .flg{left:calc(var(--bw)/2);translate:-50% 0}
 .cr.lu .cn.b .flg{right:calc(var(--bw)/2);translate:50% 0}
+/* position bands anchor to the player cell (grid row 1), not the whole row, so extra rows below (stat line,
+   Detailed panel) never move them: top/bottom bleed through the row padding, left/right out over the band column */
+.cr.lu .cn{position:relative;align-self:stretch}
+.cr.lu .cn>.pq{top:-8px!important;bottom:-8px!important}
+.cr.lu:has(.sln) .cn>.pq{bottom:-4px!important}
+.cr.lu .cn.a>.pq{left:calc(-1*(var(--bw) + var(--bg2)))!important}
+.cr.lu .cn.b>.pq{right:calc(-1*(var(--bw) + var(--bg2)))!important;left:auto!important}
+.cr.lu .flg{bottom:-17px!important}
+.cr.lu .cn.a .flg{left:calc(var(--bw)/2 - var(--bw) - var(--bg2))!important}
+.cr.lu .cn.b .flg{right:calc(var(--bw)/2 - var(--bw) - var(--bg2))!important;left:auto!important}
+
+/* Lean / Detailed stats switch (Matchups) */
+.lctl2{justify-content:flex-start!important;margin-top:-4px!important}
+#ld-l:checked~.mwx .ldw label[for="ld-l"],#ld-d:checked~.mwx .ldw label[for="ld-d"]{background:var(--chalk);color:var(--ink)}
+.sdx{display:none}
+#ld-d:checked~.mwx .cr.lu:has(.sdx){grid-template-areas:"na va vb nb" "sa sa sb sb" "xa xa xb xb"!important}
+#ld-d:checked~.mwx .sdx{display:flex;flex-direction:column;gap:4px;min-width:0;margin-top:4px;padding-top:7px;border-top:1px solid var(--hair);font-size:11.5px;line-height:1.25;color:var(--label);font-variant-numeric:tabular-nums}
+.sdxa{grid-area:xa;margin-right:4px}.sdxb{grid-area:xb;margin-left:4px;align-items:flex-end;text-align:right}
+.dxl{display:flex;align-items:baseline;gap:7px;max-width:100%}
+.sdxb .dxl{flex-direction:row-reverse}
+.dxl>u{flex:none;text-decoration:none;font-family:var(--display);font-weight:600;font-size:9.5px;letter-spacing:.08em;color:var(--dim)}
+.dxl>span{display:flex;flex-wrap:wrap;gap:1px 8px;min-width:0}
+.sdxb .dxl>span{justify-content:flex-end}
+.dxl b{font-weight:500;white-space:nowrap}
+.dxl b i{font-style:normal;font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.04em;color:var(--steel);margin-left:1.5px;text-transform:uppercase}
+.dxl b em{font-style:normal;font-family:var(--display);font-weight:600;font-size:9.5px;letter-spacing:.03em;color:var(--steel);margin-right:3px}
+/* Detailed panel: label column + values, both halves start on the same line */
+#ld-d:checked~.mwx .sdx{align-self:start}
+.dxl{display:grid!important;grid-template-columns:34px minmax(0,1fr);column-gap:6px}
+.sdxb .dxl{grid-template-columns:minmax(0,1fr) 34px;direction:ltr}
+.sdxb .dxl>u{order:2;text-align:right}.sdxb .dxl>span{order:1}
+.sdxb{align-items:stretch!important}
+.dxl>span{gap:1px 7px!important}

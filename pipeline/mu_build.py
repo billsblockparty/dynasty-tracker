@@ -87,7 +87,7 @@ def _age(pid):
     y,m,dd=map(int,b.split('-'));return (_d.today()-_d(y,m,dd)).days/365.25
 SLOTS=['QB','RB','RB','WR','WR','TE','FLEX','K','DEF']
 INJ={'Questionable':'Q','Doubtful':'D','Out':'O','IR':'IR'}
-from statline import statline as _sl, fumbles as _fl
+from statline import statline as _sl, fumbles as _fl, detail as _dx
 def lval(p):
     done=p[8] if len(p)>8 else p[3] in DONEG
     return (p[5],True) if done else (p[4],False)
@@ -134,7 +134,11 @@ def lrow(pa,pb,slot):
         if not p or not lval(p)[1]:return ''
         t=_sl(p[10] if len(p)>10 else W,p[0],p[1])
         return f'<span class="sln sl{side}">{t}</span>' if t else ''
-    return f'<div class="cr lu{w}">{lcell(pa,"a")}{lcell(pb,"b")}{sl(pa,"a")}{sl(pb,"b")}</div>'
+    def dx(p,side):
+        if not p or not lval(p)[1]:return ''
+        t=_dx(p[10] if len(p)>10 else W,p[0],p[1])
+        return f'<span class="sdx sdx{side}">{t}</span>' if t else ''
+    return f'<div class="cr lu{w}">{lcell(pa,"a")}{lcell(pb,"b")}{sl(pa,"a")}{sl(pb,"b")}{dx(pa,"a")}{dx(pb,"b")}</div>'
 
 def optimal(pool):
     v=lambda p:lval(p)[0]
@@ -219,6 +223,7 @@ def sview(sa,sb,sid_a=None,sid_b=None):
     return '<div class="lsv"><div class="stl">'+''.join(strip)+'</div>'+''.join(o)+'</div>'
 VSW='<div class="lvw pseg" role="group" aria-label="Lineup order"><label for="lv-p">Position</label><label for="lv-s">Slate</label></div>'
 LSW='<div class="lsw pseg" role="group" aria-label="Lineup"><label for="lo-a">Actual</label><label for="lo-o">Optimal</label></div>'
+DSW='<div class="lctl lctl2"><div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div></div>'
 def ptsrow(sa,sb,big=True):
     """Points (projected): tally of players whose game has started, '–' if none; original projection in brackets."""
     sa=[p for p in sa if p];sb=[p for p in sb if p]
@@ -262,7 +267,7 @@ def lineups(a,b):
     sc=lambda X:sum(p[5] for p in X['st'])
     ta,tb=tot(A),tot(B)
     oa_,ob_=sum(p[4] for p in A['st']),sum(p[4] for p in B['st'])
-    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{VSW}{LSW}</div><div class="lnote">boxed = final · grey = projected</div>'
+    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{VSW}{LSW}</div>{DSW}<div class="lnote">boxed = final · grey = projected</div>'
     o=[ptsrow(A['st'],B['st'])]
     o+=['<div class="lpv">']+[lrow(pa,pb,sl if sl!='FLEX' else 'FLX') for pa,pb,sl in zip(A['st'],B['st'],SLOTS)]+['</div>',sview(A['st'],B['st'])]
     keep=lambda p:_TAG.get(p[0],'')=='' and p[4]>0 or (p[3] in DONEG and p[5]>0)
@@ -292,7 +297,7 @@ def hp(sp,inj=None):
 def hlineups(A,B):
     sa=[hp(x) for x in A[2].split(',')];sb=[hp(x) for x in B[2].split(',')]
     ta,tb=A[1],B[1];pa,pb=sum(x[4] for x in sa),sum(x[4] for x in sb)
-    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{VSW}{LSW}</div><div class="lnote">green = beat projection · red = fell short</div>'
+    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{VSW}{LSW}</div>{DSW}<div class="lnote">green = beat projection · red = fell short</div>'
     o=[ptsrow(sa,sb)]
     o+=['<div class="lpv">']+[lrow(x,y,'') for x,y in zip(sa,sb)]+['</div>',sview(sa,sb)]
     ba=sorted([hp(x) for x in A[3].split(',') if x],key=lambda q:-q[5]);bb=sorted([hp(x) for x in B[3].split(',') if x],key=lambda q:-q[5])
@@ -329,7 +334,7 @@ wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if
 dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
     '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
-sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b>{dd}</div>'+cur+hist+'</section>')
+sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b>{dd}</div>'+cur+hist+'</section>')
 css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
 open(P+'mu_section.html','w',encoding='utf-8').write(sec);open(P+'mu_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
