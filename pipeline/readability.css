@@ -302,3 +302,14 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .sdxb .dxl>u{order:2;text-align:right}.sdxb .dxl>span{order:1}
 .sdxb{align-items:stretch!important}
 .dxl>span{gap:1px 7px!important}
+/* lineup controls: a 2x2 grid of equal switches (Position/Slate, Actual/Optimal, Lean/Detailed, Pts / Gm) */
+.lctl{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}
+.lctl2{margin-top:-6px!important}
+.lctl .pseg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
+.lctl .pseg label{text-align:center;padding-inline:4px!important}
+#rk-t:checked~.mwx .lrw label[for="rk-t"],#rk-g:checked~.mwx .lrw label[for="rk-g"]{background:var(--chalk);color:var(--ink)}
+/* position band rank: season points rank by default, points-per-game rank when / Gm is on */
+.pq .pqi>b.rkg{display:none}
+#rk-g:checked~.mwx .pq .pqi>b.rkt{display:none}
+#rk-g:checked~.mwx .pq .pqi>b.rkg{display:block}
+.cr .pq .pqi>b.b3,.rr2 .pq .pqi>b.b3{font-size:16px!important}

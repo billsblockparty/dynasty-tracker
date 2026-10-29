@@ -65,7 +65,7 @@ from nfl_colors import badge_c as _badge
 from datetime import date as _d
 LW=json.load(open(P+f'wk{W}.json'));DONEG=set(LW['done']);LIVEG=set(LW.get('live',[]));HOME=set(LW['home'])
 _X=json.load(open(P+'cmp_extra.json',encoding='utf-8'));RID={v:int(k) for k,v in _X['rn'].items()};RN2={int(k):v for k,v in _X['rn'].items()}
-_K=json.load(open(P+'ro_ranks.json'));_K.pop('_bye',None)
+_K=json.load(open(P+'ro_ranks.json'));_K.pop('_bye',None);_PG=json.load(open(P+'ro_pg.json'))
 # Opponent in the game line ("@ NYJ", "vs CLE"): show the team logo when pipeline/logos/{CODE}.png|svg|webp exists
 # (same files rebuild.py embeds as CSS for the .nfl.tm badges); otherwise keep the plain text code.
 _NICK={'ARI':'Cardinals','ATL':'Falcons','BAL':'Ravens','BUF':'Bills','CAR':'Panthers','CHI':'Bears','CIN':'Bengals','CLE':'Browns',
@@ -109,7 +109,10 @@ def lcell(p,side):
     pid,pos,name,tm,proj,act,opp,inj=p[:8]
     r=_K[pid][0] if _K.get(pid) and _K[pid][2]>0 else None
     big=r and (r>=100 or (pos=='DEF' and r>=10))
-    sq=f'<i class="pq p-{pos.lower()}{" l3" if big else ""}"><span class="pqi"><span>{pos}</span>{f"<b>{r}</b>" if r else ""}</span></i>'
+    g=(_PG.get(pid) or [None])[0]  # points-per-game rank (players with 3+ games)
+    big3=lambda x:x and (x>=100 or (pos=='DEF' and x>=10))
+    rk=(f'<b class="rkt{" b3" if big3(r) else ""}">{r}</b>' if r else '<b class="rkt"></b>')+(f'<b class="rkg{" b3" if big3(g) else ""}">{g}</b>' if g else '<b class="rkg"></b>')
+    sq=f'<i class="pq p-{pos.lower()}"><span class="pqi"><span>{pos}</span>{rk}</span></i>'
     a=_age(pid);acl='ay' if a and a<27 else 'ap' if a and a<31 else 'ao'
     ag=f'<em class="pag {acl}">{a:.1f}</em>' if a else ''
     nm=name.split(' ')[-1] if pos!='DEF' else name.split(' ')[-1]
@@ -223,7 +226,7 @@ def sview(sa,sb,sid_a=None,sid_b=None):
     return '<div class="lsv"><div class="stl">'+''.join(strip)+'</div>'+''.join(o)+'</div>'
 VSW='<div class="lvw pseg" role="group" aria-label="Lineup order"><label for="lv-p">Position</label><label for="lv-s">Slate</label></div>'
 LSW='<div class="lsw pseg" role="group" aria-label="Lineup"><label for="lo-a">Actual</label><label for="lo-o">Optimal</label></div>'
-DSW='<div class="lctl lctl2"><div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div></div>'
+DSW='<div class="lctl lctl2"><div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div><div class="lrw pseg" role="group" aria-label="Position rank by"><label for="rk-t">Pts</label><label for="rk-g">/ Gm</label></div></div>'
 def ptsrow(sa,sb,big=True):
     """Points (projected): tally of players whose game has started, '–' if none; original projection in brackets."""
     sa=[p for p in sa if p];sb=[p for p in sb if p]
@@ -334,7 +337,7 @@ wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if
 dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
     '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
-sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b>{dd}</div>'+cur+hist+'</section>')
+sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b>{dd}</div>'+cur+hist+'</section>')
 css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
 open(P+'mu_section.html','w',encoding='utf-8').write(sec);open(P+'mu_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
