@@ -226,7 +226,11 @@ def sview(sa,sb,sid_a=None,sid_b=None):
     return '<div class="lsv"><div class="stl">'+''.join(strip)+'</div>'+''.join(o)+'</div>'
 VSW='<div class="lvw pseg" role="group" aria-label="Lineup order"><label for="lv-p">Position</label><label for="lv-s">Slate</label></div>'
 LSW='<div class="lsw pseg" role="group" aria-label="Lineup"><label for="lo-a">Actual</label><label for="lo-o">Optimal</label></div>'
-DSW='<div class="lctl lctl2"><div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div><div class="lrw pseg" role="group" aria-label="Position rank by"><label for="rk-t">Pts</label><label for="rk-g">/ Gm</label></div></div>'
+LDW='<div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div>'
+RKW='<div class="lrw pseg" role="group" aria-label="Position rank by"><label for="rk-t">Pts</label><label for="rk-g">/ Gm</label></div>'
+def CTL(rows):
+    """lineup switches in one grid: switch | its title | title | switch per row, titles meeting in the middle"""
+    return '<div class="lctl lgrid">'+''.join(f'{a}<i class="lt">{ta}</i><i class="lt ltr">{tb}</i>{b}' for a,ta,tb,b in rows)+'</div>'
 def ptsrow(sa,sb,big=True):
     """Points (projected): tally of players whose game has started, '–' if none; original projection in brackets."""
     sa=[p for p in sa if p];sb=[p for p in sb if p]
@@ -270,7 +274,7 @@ def lineups(a,b):
     sc=lambda X:sum(p[5] for p in X['st'])
     ta,tb=tot(A),tot(B)
     oa_,ob_=sum(p[4] for p in A['st']),sum(p[4] for p in B['st'])
-    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{VSW}{LSW}</div>{DSW}<div class="lnote">boxed = final · grey = projected</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW)])}<div class="lnote">boxed = final · grey = projected</div>'
     o=[ptsrow(A['st'],B['st'])]
     o+=['<div class="lpv">']+[lrow(pa,pb,sl if sl!='FLEX' else 'FLX') for pa,pb,sl in zip(A['st'],B['st'],SLOTS)]+['</div>',sview(A['st'],B['st'])]
     keep=lambda p:_TAG.get(p[0],'')=='' and p[4]>0 or (p[3] in DONEG and p[5]>0)
@@ -300,7 +304,7 @@ def hp(sp,inj=None):
 def hlineups(A,B):
     sa=[hp(x) for x in A[2].split(',')];sb=[hp(x) for x in B[2].split(',')]
     ta,tb=A[1],B[1];pa,pb=sum(x[4] for x in sa),sum(x[4] for x in sb)
-    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{VSW}{LSW}</div>{DSW}<div class="lnote">green = beat projection · red = fell short</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW)])}<div class="lnote">green = beat projection · red = fell short</div>'
     o=[ptsrow(sa,sb)]
     o+=['<div class="lpv">']+[lrow(x,y,'') for x,y in zip(sa,sb)]+['</div>',sview(sa,sb)]
     ba=sorted([hp(x) for x in A[3].split(',') if x],key=lambda q:-q[5]);bb=sorted([hp(x) for x in B[3].split(',') if x],key=lambda q:-q[5])

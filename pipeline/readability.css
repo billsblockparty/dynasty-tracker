@@ -281,7 +281,6 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .cr.lu .cn.b .flg{right:calc(var(--bw)/2 - var(--bw) - var(--bg2))!important;left:auto!important}
 
 /* Lean / Detailed stats switch (Matchups) */
-.lctl2{justify-content:flex-start!important;margin-top:-4px!important}
 #ld-l:checked~.mwx .ldw label[for="ld-l"],#ld-d:checked~.mwx .ldw label[for="ld-d"]{background:var(--chalk);color:var(--ink)}
 .sdx{display:none}
 #ld-d:checked~.mwx .cr.lu:has(.sdx){grid-template-areas:"na va vb nb" "sa sa sb sb" "xa xa xb xb"!important}
@@ -303,13 +302,17 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .sdxb{align-items:stretch!important}
 .dxl>span{gap:1px 7px!important}
 /* lineup controls: a 2x2 grid of equal switches (Position/Slate, Actual/Optimal, Lean/Detailed, Pts / Gm) */
-.lctl{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}
-.lctl2{margin-top:-6px!important}
-.lctl .pseg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
-.lctl .pseg label{text-align:center;padding-inline:4px!important}
 #rk-t:checked~.mwx .lrw label[for="rk-t"],#rk-g:checked~.mwx .lrw label[for="rk-g"]{background:var(--chalk);color:var(--ink)}
 /* position band rank: season points rank by default, points-per-game rank when / Gm is on */
 .pq .pqi>b.rkg{display:none}
 #rk-g:checked~.mwx .pq .pqi>b.rkt{display:none}
 #rk-g:checked~.mwx .pq .pqi>b.rkg{display:block}
 .cr .pq .pqi>b.b3,.rr2 .pq .pqi>b.b3{font-size:16px!important}
+/* lineup switches: compact, titled from the middle (ORDER | LINEUP / STATS | RANK); columns line up across rows */
+.lgrid{display:grid!important;grid-template-columns:max-content minmax(max-content,1fr) minmax(max-content,1fr) max-content;align-items:center;gap:8px 7px!important}
+.lgrid .pseg{display:grid;grid-auto-flow:column;grid-auto-columns:auto;justify-self:stretch}
+.lgrid .pseg label{text-align:center;padding-inline:8px!important;font-size:12.5px!important}
+.lgrid .lt{font-style:normal;font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.lgrid .lt.ltr{text-align:right}
+@media (max-width:419px){.lgrid{column-gap:5px!important}.lgrid .pseg label{padding-inline:6.5px!important;font-size:12px!important}.lgrid .lt{font-size:9.5px;letter-spacing:.08em}}
+@media (max-width:370px){.lgrid .pseg label{padding-inline:4.5px!important;font-size:11px!important}.lgrid .lt{font-size:8.5px;letter-spacing:.04em}}

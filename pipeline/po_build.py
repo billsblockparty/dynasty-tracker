@@ -100,7 +100,7 @@ def lineup(a,b,w,k='p'):
     pa=[mp(q,w) for q in pool(a,w)];pb=[mp(q,w) for q in pool(b,w)]
     ta=sum(p[4] for p in sa if p);tb=sum(p[4] for p in sb if p)
     src='Sleeper projections' if PROJ else f'projection = points per game, Weeks 1–{G} until Sleeper projections are pulled'
-    hdr=f'<div class="msh lsh">Lineups</div><div class="lctl">{MB.VSW}{MB.LSW}</div><div class="lnote">set lineup = starters as set in Sleeper now · {src}</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{MB.CTL([(MB.VSW,'Order','Lineup',MB.LSW)])}<div class="lnote">set lineup = starters as set in Sleeper now · {src}</div>'
     o=[MB.ptsrow(sa,sb)]
     o+=['<div class="lpv">']+[MB.lrow(x,y,'') for x,y in zip(sa,sb)]+['</div>',MB.sview([x for x in sa if x],[y for y in sb if y])]
     sida={p[0] for p in sa if p};sidb={p[0] for p in sb if p}
