@@ -10,6 +10,9 @@ def G():return int(re.search(r'const G=(\d+);',open(P+'data_block.js',encoding='
 def build():
     sh('python3',P+'rebuild.py');sh('node',P+'gen.js');sh('python3',P+'build_static.py');sh('python3',P+'build_site.py')
 mode=sys.argv[1] if len(sys.argv)>1 else 'build';force='--force' in sys.argv
+if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'history/manifest.json')):
+    sh('node',P+'history.mjs')  # one-time import of past seasons (MFL 2021-24, Sleeper 2025)
+    if mode=='history':mode='weekly'
 if mode=='weekly':
     st=json.loads(subprocess.run(['node',P+'pull.mjs','state'],check=True,cwd=P,capture_output=True,text=True).stdout)
     D=st['done'];have=G()

@@ -1,0 +1,8 @@
+{
+  "_note": "Who is who across platforms. MFL franchise ids (league 68106, 2021-2024) and Sleeper roster ids (2025 onward) mapped to the current Sleeper team names.",
+  "mfl": {"0001": "Homer's Heroes", "0002": "Team Ram Rod", "0003": "Team RIPMFL", "0004": "Reverse Apache Master",
+          "0005": "Convicts", "0006": "Canton waitlist", "0007": "Nuts in the Face", "0008": "Bill's Block Party",
+          "0009": "Mandingoes", "0010": "Cheating is Trying"},
+  "sleeper_roster": {"1": "Convicts", "2": "Homer's Heroes", "3": "Team Ram Rod", "4": "Team RIPMFL", "5": "Reverse Apache Master",
+                     "6": "Canton waitlist", "7": "Nuts in the Face", "8": "Bill's Block Party", "9": "Mandingoes", "10": "Cheating is Trying"}
+}

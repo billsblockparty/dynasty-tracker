@@ -7,7 +7,7 @@ on:
         description: weekly (pull completed week + rebuild), live (scores now), build (no network)
         default: weekly
         type: choice
-        options: [weekly, live, build]
+        options: [weekly, live, build, history]
   push:
     branches: [main]
     paths: ['pipeline/**', '.github/workflows/**']
@@ -64,7 +64,7 @@ jobs:
             python3 pipeline/run.py ${{ steps.mode.outputs.mode }}
           fi
       - name: Save season data
-        if: steps.mode.outputs.mode == 'weekly' || steps.mode.outputs.mode == 'selftest'
+        if: steps.mode.outputs.mode == 'weekly' || steps.mode.outputs.mode == 'selftest' || steps.mode.outputs.mode == 'history'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
