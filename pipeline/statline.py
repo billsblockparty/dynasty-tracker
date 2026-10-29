@@ -17,17 +17,27 @@ def items(pos,a):
     it=[x for x in it if abs(x[2])>=0.5] or it[:1]  # drop trivia like -1 rushing yard
     top=sorted(range(len(it)),key=lambda i:(-abs(it[i][2]),i))[:3]
     return [it[i] for i in sorted(top)]
+def _grp(lab,nums):return f'<span class="sit"><u>{lab}</u> {"-".join(f"({n})".replace("(-","(−") if isinstance(n,int) and n<0 else str(n) for n in nums)}</span>'
 def statline(w,pid,pos):
+    """Compact category lines: QB 'PA 292-4' (yds-TD[-INT]), 'RU 14-67-1' (car-yds[-TD]),
+    'REC 7-24-1' (rec-yds[-TD]), 'FL 1'. Categories split by a dot; only categories with something in them."""
     s=S.get(str(w),{}).get(pid)
     if s is None:return ''
     if s.endswith('x'):return 'Did not play'
     a=[int(x) for x in s.split('.')]+[0]*10
-    if pos in KEYS:
-        o=[_u(n,LAB[k]) for k,n,_ in items(pos,a)] or [_u(0,'RE YD' if pos in('WR','TE') else 'PA YD' if pos=='QB' else 'RU YD')]
+    td=lambda c,y,t:[c,y]+([t] if t else [])
+    if pos=='QB':
+        pa=[a[2]]+([a[3],a[4]] if a[4] else [a[3]] if a[3] else [])
+        o=[_grp('PA',pa)]+([_grp('RU',td(a[5],a[6],a[7]))] if a[5] else [])+([_grp('FL',[a[8]])] if a[8] else [])
+    elif pos=='RB':
+        o=([_grp('RU',td(a[0],a[1],a[2]))] if a[0] else [])+([_grp('REC',td(a[3],a[5],a[6]))] if a[3] else [])+([_grp('FL',[a[7]])] if a[7] else [])
+    elif pos in('WR','TE'):
+        o=([_grp('REC',td(a[0],a[2],a[3]))] if a[0] or a[1] else [])+([_grp('RU',td(a[4],a[5],a[6]))] if a[4] else [])+([_grp('FL',[a[7]])] if a[7] else [])
+        if not o:o=[_grp('REC',[0,0])]
     elif pos=='K':
-        o=[f'{a[0]}/{a[1]}<u>FG</u>',f'{a[2]}/{a[3]}<u>XP</u>']
+        o=[_grp('FG',[f'{a[0]}/{a[1]}']),_grp('XP',[f'{a[2]}/{a[3]}'])]
     elif pos=='DEF':
-        pl=[(a[3],'TD',6),(a[1],'INT',2),(a[2],'FR',2),(a[0],'SACK',1)]
-        o=[_u(n,l) for n,l,_ in sorted([x for x in pl if x[0]],key=lambda x:-x[0]*x[2])[:2]]+[_u(a[4],'PA')]
+        o=[_grp(l,[n]) for n,l in ((a[0],'SACK'),(a[1],'INT'),(a[2],'FR'),(a[3],'TD')) if n]+[_grp('PA',[a[4]])]
     else:o=[]
-    return '<i class="sdt"> · </i>'.join(f'<span class="sit">{x}</span>' for x in o)
+    if pos in('RB',) and not o:o=[_grp('RU',[0,0])]
+    return '<i class="sdt">•</i>'.join(o)
