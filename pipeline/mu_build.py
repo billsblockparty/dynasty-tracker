@@ -87,7 +87,7 @@ def _age(pid):
     y,m,dd=map(int,b.split('-'));return (_d.today()-_d(y,m,dd)).days/365.25
 SLOTS=['QB','RB','RB','WR','WR','TE','FLEX','K','DEF']
 INJ={'Questionable':'Q','Doubtful':'D','Out':'O','IR':'IR'}
-from statline import statline as _sl
+from statline import statline as _sl, tight as _tight
 def lval(p):
     done=p[8] if len(p)>8 else p[3] in DONEG
     return (p[5],True) if done else (p[4],False)
@@ -130,7 +130,7 @@ def lrow(pa,pb,slot):
     def sl(p,side):
         if not p or not lval(p)[1]:return ''
         t=_sl(p[10] if len(p)>10 else W,p[0],p[1])
-        return f'<span class="sln sl{side}">{t}</span>' if t else ''
+        return f'<span class="sln sl{side}{_tight(t)}">{t}</span>' if t else ''
     return f'<div class="cr lu{w}">{lcell(pa,"a")}{lcell(pb,"b")}{sl(pa,"a")}{sl(pb,"b")}</div>'
 
 def optimal(pool):

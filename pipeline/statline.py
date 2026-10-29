@@ -1,6 +1,6 @@
 import os as _dt_os;__DTP__=_dt_os.path.dirname(_dt_os.path.abspath(__file__)).removesuffix('/pos')+'/'
 
-import json
+import json,re
 S=json.load(open(__DTP__+'stats.json'))
 def _u(n,l):return f'{n}<u>{l}</u>'
 # Top three scoring stats (by fantasy points, either sign), shown in natural order. Attempts, carries and targets are left
@@ -37,7 +37,13 @@ def statline(w,pid,pos):
     elif pos=='K':
         o=[_grp('FG',[f'{a[0]}/{a[1]}']),_grp('XP',[f'{a[2]}/{a[3]}'])]
     elif pos=='DEF':
-        o=[_grp(l,[n]) for n,l in ((a[0],'SACK'),(a[1],'INT'),(a[2],'FR'),(a[3],'TD')) if n]+[_grp('PA',[a[4]])]
+        o=[_grp(l,[n]) for n,l in ((a[0],'SK'),(a[1],'INT'),(a[2],'FR'),(a[3],'TD')) if n]+[_grp('PA',[a[4]])]
     else:o=[]
     if pos in('RB',) and not o:o=[_grp('RU',[0,0])]
-    return '<i class="sdt">•</i>'.join(o)
+    h='<i class="sdt">•</i>'.join(o)
+    return h
+def tight(h):
+    """'' / ' stg1' / ' stg2': smaller type for long lines so every stat line stays on one line"""
+    n=len(re.sub(r'<[^>]+>','',h))+h.count('class="sit"')
+    return '' if n<=T1 else ' stg1' if n<=T2 else ' stg2' if n<=T3 else ' stg3'
+T1,T2,T3=19,23,26
