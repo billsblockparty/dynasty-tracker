@@ -1,12 +1,12 @@
 {
- "ran": "2026-10-29T01:13:15.701Z",
+ "ran": "2026-10-29T01:16:50.478Z",
  "ok": [
-  "mfl 2021",
-  "mfl 2022",
-  "sleeper 2025"
+  "mfl 2021 (kept)",
+  "mfl 2022 (kept)",
+  "mfl 2023",
+  "sleeper 2025 (kept)"
  ],
  "err": {
-  "mfl 2023": "Error: 429 https://api.myfantasyleague.com/2023/export?L=68106&JSON=1&TYPE=playoffBracket&BRACKET_ID=2\n    at get (file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:13:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async mfl (file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:38:16)\n    at async file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:78:19",
-  "mfl 2024": "Error: 429 https://api.myfantasyleague.com/2024/export?L=68106&JSON=1&TYPE=weeklyResults&W=3\n    at get (file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:13:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async mfl (file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:28:16)\n    at async file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:78:19"
+  "mfl 2024": "Error: 429 https://api.myfantasyleague.com/2024/export?L=68106&JSON=1&TYPE=playoffBracket&BRACKET_ID=1\n    at get (file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:13:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async mfl (file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:38:16)\n    at async file:///home/runner/work/dynasty-tracker/dynasty-tracker/pipeline/history.mjs:79:19"
  }
 }
