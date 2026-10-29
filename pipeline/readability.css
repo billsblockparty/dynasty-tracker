@@ -502,3 +502,4 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .thrk .pseg label{font-size:12px!important;padding:4px 9px!important;letter-spacing:0;text-transform:none}
 .thsh:has(.thrk){align-items:center}
 .thsvg .yl.tn{font-family:var(--body);font-weight:500;font-size:11px;letter-spacing:0}
+.thx:not(.thxh),.thx.thxh{grid-template-columns:minmax(0,1fr) 46px 64px!important}

@@ -112,7 +112,7 @@ def page(i,t):
           f'<span><em>Playoffs</em><b>{len(al.get("po",[]))}</b><small>of 5 seasons</small></span>'
           f'<span><em>Finals</em><b>{len(finals)}</b><small>{len(titles)} won</small></span></div>')
     hist=sec('League history',tots+'<div class="thy thyh"><span class="xyr">Season</span><b>W-L</b><span class="xpf">PF/wk</span><span class="xsd">Seed</span><span class="xfn">Finish</span></div>'+hr,'regular season · 2021–24 on MFL')
-    hh='<div class="thx thxh"><span class="xop">Opponent</span><b>W-L</b><span class="xpo">PO</span></div>'
+    hh='<div class="thx thxh"><span class="xop">Opponent</span><b>W-L</b><span class="xpo">Playoffs</span></div>'
     for o in [x for x in H if x!=t]:
         h=dict(HS['h2h'].get(t,{}).get(o,{'w':0,'l':0,'t':0,'po_w':0,'po_l':0,'pf':0.0,'pa':0.0,'last':None}))
         last=h['last']
