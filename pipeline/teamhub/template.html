@@ -7,146 +7,229 @@
 <title>TeamHub · Official Dynasty League</title>
 <style>
 /*__FONTS__*/
-:root{--ink:#0f1218;--deck:#161a22;--deck-2:#1c212b;--hair:#262c38;--line-strong:#353c4b;--chalk:#eef0f4;--label:#c9d2e3;--steel:#9aa3b5;--dim:#626b7c;--pylon:#ff7a1a;--sky:#7fa6ff;--win:#3fd69b;--loss:#ff5d73;--neutral-bar:#596278;
---display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;--body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;--acc:#ff7a1a;--acc-a:rgba(255,122,26,.16);--gap:12px;--pad:16px}
+:root{--ink:#0f1218;--deck:#161a22;--deck-2:#1c212b;--hair:#262c38;--line-strong:#353c4b;--chalk:#eef0f4;--label:#c9d2e3;--steel:#9aa3b5;--dim:#626b7c;--win:#3fd69b;--loss:#ff5d73;--neutral-bar:#596278;
+--display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;--body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;--acc:#ff7a1a;--acc-a:rgba(255,122,26,.16);--riv:#7fa6ff;--pad:16px}
 *{box-sizing:border-box}
 html{background:var(--ink);-webkit-text-size-adjust:100%}
-body{margin:0;background:radial-gradient(1200px 500px at 15% -120px,var(--acc-a),transparent 70%),var(--ink);color:var(--chalk);font:400 14px/1.4 var(--body);overflow-x:hidden;min-height:100vh;transition:background .5s}
-.tn{font-variant-numeric:tabular-nums lining-nums}
-a{color:inherit}
+body{margin:0;background:radial-gradient(900px 420px at 18% -60px,var(--acc-a),transparent 70%),var(--ink);background-repeat:no-repeat;color:var(--chalk);font:400 14px/1.4 var(--body);font-variant-numeric:tabular-nums lining-nums;overflow-x:hidden;min-height:100vh}
+button{font:inherit;color:inherit}
+.u{font-variant-caps:all-small-caps;letter-spacing:.04em;font-family:var(--body);font-weight:600;color:var(--steel)}
+.up{color:var(--win)}.dn{color:var(--loss)}.mut{color:var(--steel)}
 /* ---------- top bar ---------- */
-.top{position:sticky;top:0;z-index:20;background:rgba(15,18,24,.82);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--hair)}
-.bar{display:flex;align-items:center;gap:10px;padding:8px var(--pad) 0;max-width:1680px;margin:0 auto}
-.brand{font:700 19px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.brand i{font-style:normal;color:var(--acc);transition:color .4s}
-a.brand{text-decoration:none;display:flex;align-items:center;gap:6px;min-height:44px;margin:-8px 0}.brand .bk{font:600 22px/1 var(--body);color:var(--steel);margin-top:-2px}a.brand:hover .bk{color:var(--chalk)}
+.top{position:sticky;top:0;z-index:20;background:rgba(15,18,24,.86);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--hair)}
+.bar{display:flex;align-items:center;gap:10px;padding:6px var(--pad) 0;max-width:1680px;margin:0 auto;min-height:30px}
+.brand{font:700 17px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.brand i{font-style:normal;color:var(--acc)}
+a.brand{text-decoration:none;display:flex;align-items:center;gap:6px;min-height:44px;margin:-8px 0;color:inherit}.brand .bk{font:600 22px/1 var(--body);color:var(--steel);margin-top:-2px}a.brand:hover .bk{color:var(--chalk)}
+.brand sup{font:600 11px/1 var(--body);letter-spacing:.06em;color:var(--steel);margin-left:4px;vertical-align:top}
 .lg{font:500 12px/1.2 var(--body);color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.stamp{margin-left:auto;flex:none;font:600 12px/1 var(--body);color:var(--chalk);background:var(--deck-2);border:1px solid var(--line-strong);border-radius:999px;padding:6px 10px;white-space:nowrap}
+.stamp{margin-left:auto;flex:none;font:600 12px/1 var(--body);color:var(--label);white-space:nowrap}
 .stamp b{color:var(--acc);font-weight:600}
-.sw{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px var(--pad) 9px;max-width:1680px;margin:0 auto;scroll-padding:0 var(--pad);-webkit-mask:linear-gradient(90deg,transparent 0,#000 var(--pad),#000 calc(100% - 24px),transparent)}
+.sw{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px var(--pad) 7px;max-width:1680px;margin:0 auto;-webkit-mask:linear-gradient(90deg,transparent 0,#000 var(--pad),#000 calc(100% - 24px),transparent)}
 .sw::-webkit-scrollbar{display:none}
-.chip{flex:none;display:flex;align-items:center;gap:7px;min-height:44px;min-width:44px;padding:0 12px 0 6px;border-radius:12px;border:1px solid var(--hair);background:var(--deck);color:var(--label);font:600 13px/1.1 var(--body);cursor:pointer;transition:border-color .25s,background .25s,color .25s;max-width:170px}
-.chip img,.chip .ini{width:30px;height:30px;border-radius:50%;flex:none;background:var(--deck-2);object-fit:cover;filter:grayscale(1) brightness(.85);transition:filter .3s}
+.chip{flex:none;display:flex;align-items:center;gap:7px;min-height:44px;min-width:44px;padding:0 12px 0 6px;border-radius:10px;border:1px solid var(--hair);background:transparent;color:var(--label);font:600 13px/1.1 var(--body);cursor:pointer;transition:border-color .2s,background .2s,color .2s;max-width:170px}
+.chip img,.chip .ini{width:28px;height:28px;border-radius:50%;flex:none;background:var(--deck-2);object-fit:cover;filter:grayscale(1) brightness(.85);display:grid;place-items:center;font:700 11px var(--display);color:var(--steel)}
 .chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip:hover{border-color:var(--line-strong);color:var(--chalk)}
-.chip[aria-pressed=true]{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--deck));color:var(--chalk)}
+.chip[aria-pressed=true]{border-color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--chalk)}
 .chip[aria-pressed=true] img{filter:none}
-.chip:focus-visible{outline:2px solid var(--c);outline-offset:2px}
-@media(min-width:1024px){.sw{display:grid;grid-template-columns:repeat(5,minmax(max-content,1fr));overflow:visible;-webkit-mask:none;mask:none}.chip{max-width:none}.chip span{overflow:visible;text-overflow:clip}}
+.chip:focus-visible,button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+@media(min-width:1024px){.sw{display:grid;grid-template-columns:repeat(5,minmax(max-content,1fr));overflow:visible;-webkit-mask:none;mask:none}.chip{max-width:none}}
 @media(min-width:1600px){.sw{grid-template-columns:repeat(10,minmax(max-content,1fr))}}
-/* ---------- layout ---------- */
-main{max-width:1680px;margin:0 auto;padding:var(--gap) var(--pad) 40px}
-.grid{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr)}
-@media(min-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.s2,.hero{grid-column:span 2}}
-@media(min-width:1280px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-column:1/-1}.s2{grid-column:span 2}}
-.pnl{background:linear-gradient(180deg,var(--deck-2),var(--deck) 140px);border:1px solid var(--hair);border-radius:18px;padding:16px;min-width:0;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.pnl::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,var(--acc),transparent 60%);opacity:.75}
-.ph{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
-.ph h2{margin:0;font:700 15px/1 var(--display);letter-spacing:.09em;text-transform:uppercase;color:var(--label)}
+/* ---------- hairline grid ---------- */
+main{max-width:1680px;margin:0 auto;padding:0 0 28px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr)}
+.pnl{padding:18px var(--pad) 18px;min-width:0;display:flex;flex-direction:column;border-bottom:1px solid var(--hair);position:relative}
+.pair{display:grid;grid-auto-flow:column;grid-auto-columns:calc(100% - 30px);overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;border-bottom:1px solid var(--hair)}
+.pair::-webkit-scrollbar{display:none}
+.pair>.pnl{scroll-snap-align:start;border-bottom:0;border-right:1px solid var(--hair)}
+.pair>.pnl:last-child{scroll-snap-align:end}
+.dots{display:flex;justify-content:center;gap:6px;padding:8px 0 0;position:absolute;left:0;right:0;bottom:6px;pointer-events:none}
+.pairw{position:relative}
+.pairw .pair{padding-bottom:16px}
+.dots i{width:6px;height:6px;border-radius:3px;background:var(--line-strong);transition:width .2s,background .2s}.dots i.on{width:16px;background:var(--acc)}
+@media(min-width:900px){
+ main{padding:0 var(--pad) 32px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));border-left:1px solid var(--hair);grid-template-areas:"hero hero" "pulse pulse" "luck bench" "pos log" "heat heat" "sos cons" "contrib contrib"}
+ .pairw,.pair{display:contents}.dots{display:none}
+ .pnl,.pair>.pnl{border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:20px 22px}
+ #p-hero{grid-area:hero}#p-pulse{grid-area:pulse}#p-luck{grid-area:luck}#p-bench{grid-area:bench}#p-pos{grid-area:pos}#p-log{grid-area:log}#p-heat{grid-area:heat}#p-sos{grid-area:sos}#p-cons{grid-area:cons}#p-contrib{grid-area:contrib}
+}
+@media(min-width:1280px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"hero hero hero" "pulse pulse luck" "bench pos log" "heat heat sos" "contrib contrib cons"}}
+.ph{display:flex;align-items:center;gap:8px;margin-bottom:8px;min-height:24px}
+.ph h2{margin:0;font:600 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--label)}
 .ph .q{margin-left:auto;font:500 12px/1.2 var(--body);color:var(--steel);text-align:right}
-.big{display:flex;align-items:flex-end;gap:12px;margin:2px 0 8px}
-.big .n{font:700 56px/.9 var(--display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-.big .u{min-width:0;font:600 13px/1.25 var(--body);color:var(--label);padding-bottom:4px}
-.big .u small{display:block;font-weight:500;color:var(--steel);font-size:12px}
-.rk{display:inline-flex;align-items:center;gap:4px;font:700 13px/1 var(--display);letter-spacing:.04em;padding:4px 7px 3px;border-radius:6px;background:var(--deck-2);border:1px solid var(--line-strong);color:var(--chalk);white-space:nowrap;font-variant-numeric:tabular-nums}
-.rk.top{background:color-mix(in srgb,var(--acc) 20%,transparent);border-color:color-mix(in srgb,var(--acc) 55%,transparent)}
-.up{color:var(--win)}.dn{color:var(--loss)}
-.chart{position:relative;flex:1 1 auto;min-height:0}
+.big{display:flex;align-items:flex-end;gap:12px;margin:0 0 10px}
+.big .n{font:700 44px/.9 var(--display);letter-spacing:-.01em}
+.big .t{min-width:0;font:500 13px/1.3 var(--body);color:var(--label);padding-bottom:3px}
+.big .t small{display:block;font-weight:500;color:var(--steel);font-size:12px}
+.rk{display:inline-flex;align-items:center;gap:4px;font:700 13px/1 var(--display);letter-spacing:.04em;padding:4px 7px 3px;border-radius:4px;border:1px solid var(--line-strong);color:var(--chalk);white-space:nowrap}
+.rk.top{background:color-mix(in srgb,var(--acc) 18%,transparent);border-color:color-mix(in srgb,var(--acc) 55%,transparent)}
+.chart{position:relative}
 .chart svg{display:block;width:100%;overflow:visible}
 .leg{display:flex;flex-wrap:wrap;gap:4px 14px;font:500 12px/1.2 var(--body);color:var(--steel);margin-top:8px}
 .leg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px;background:var(--steel)}
-/* svg text: fixed px, never viewBox-scaled (viewBox == rendered px) */
 .ax{font:500 11px var(--body);fill:var(--steel)}
-.axb{font:700 12px var(--display);letter-spacing:.03em}
+.axb{font:700 12px var(--display);letter-spacing:.03em;fill:var(--steel)}
 .vl{font:700 13px var(--display);fill:var(--chalk)}
 @media(min-width:768px){.ax{font-size:12px}.axb{font-size:13px}.vl{font-size:14px}}
 .gl{stroke:var(--hair);stroke-width:1}
-.hit{fill:transparent;cursor:crosshair}
-.hit:hover+.hl,.hl.on{opacity:1}
+.hit{fill:transparent}
+.tog{margin-left:auto;min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--line-strong);border-radius:999px;background:transparent;font:600 12px/1 var(--body);color:var(--label);cursor:pointer;white-space:nowrap}
+.tog i{width:10px;height:10px;border-radius:50%;border:2px solid var(--riv);display:inline-block}
+.tog[aria-pressed=true]{border-color:var(--riv);color:var(--chalk);background:color-mix(in srgb,var(--riv) 14%,transparent)}
+.tog[aria-pressed=true] i{background:var(--riv)}
 /* ---------- hero ---------- */
-.hero{padding:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-@media(min-width:1280px){.hero{grid-template-columns:330px minmax(0,1fr);align-items:center}}
-.id{display:flex;align-items:center;gap:14px;min-width:0}
-.av{width:68px;height:68px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--ink),0 0 0 4px var(--acc),0 8px 30px -6px var(--acc);background:var(--deck-2) center/cover;transition:box-shadow .4s}
-.id h1{margin:0;font:700 31px/.95 var(--display);letter-spacing:.005em;overflow-wrap:anywhere}
-.id p{margin:5px 0 0;font:500 13px/1.3 var(--body);color:var(--steel)}
-.id p b{color:var(--label);font-weight:600}
-.tk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
-@media(min-width:640px){.tk{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(min-width:1100px){.tk{grid-template-columns:repeat(6,minmax(0,1fr))}}
-.cell{background:var(--deck);padding:11px 12px 10px;min-width:0;display:flex;flex-direction:column;gap:3px}
-.cell .l{font:600 11.5px/1 var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--steel)}
-.cell .v{font:700 36px/.95 var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
-.cell .v small{font-size:18px;color:var(--steel);font-weight:600;margin-left:2px}
-.cell .s{display:flex;align-items:center;gap:6px;font:500 12px/1.2 var(--body);color:var(--label);min-height:22px;flex-wrap:wrap}
-.spk{display:block;width:100%;height:26px;margin-top:2px}
-.wl{display:flex;gap:3px;margin-top:4px}
-.wl i{flex:1;height:18px;border-radius:4px;display:grid;place-items:center;font:700 11.5px/1 var(--display);font-style:normal;color:var(--ink)}
-.wl .W{background:var(--win)}.wl .L{background:var(--loss)}.wl .T{background:var(--steel)}
-/* ---------- position rows ---------- */
-.pos{display:flex;flex-direction:column;gap:2px;flex:1;justify-content:space-between}
-.pr{display:grid;grid-template-columns:38px 48px minmax(0,1fr) 62px;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--hair)}
-.pr:first-child{border-top:0}
-.pl{font:700 15px/1 var(--display);letter-spacing:.05em;color:var(--pc)}
-.pv{font:700 21px/1 var(--display);font-variant-numeric:tabular-nums;text-align:right}
-.trk{position:relative;height:22px}
-.trk::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;border-radius:2px;background:var(--hair)}
-.trk .f{position:absolute;left:0;top:7px;height:8px;border-radius:4px;background:var(--acc);transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
-.trk .o{position:absolute;top:3px;width:2px;height:16px;margin-left:-1px;background:#8c95a8;border-radius:1px;box-shadow:0 0 0 1px var(--deck);z-index:1}
-.trk .f{z-index:0}.trk .avg{position:absolute;top:0;width:2px;height:22px;margin-left:-1px;background:var(--chalk);border-radius:1px;box-shadow:0 0 0 1.5px var(--ink);z-index:2}
-.pk{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.pips{display:flex;gap:2px}.pips i{width:4px;height:4px;border-radius:50%;background:var(--line-strong)}.pips i.on{background:var(--acc);box-shadow:0 0 0 2px color-mix(in srgb,var(--acc) 30%,transparent)}
-.p-QB{--pc:#f7739c}.p-RB{--pc:#3ddcc1}.p-WR{--pc:#5ec6f4}.p-TE{--pc:#fca95c}.p-K{--pc:#c491ff}.p-DEF{--pc:#c98a72}
-/* ---------- game log ---------- */
-.log{display:flex;flex-direction:column;flex:1;justify-content:space-between}
-.gr{display:grid;grid-template-columns:30px 26px minmax(0,1fr) auto 76px;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--hair);cursor:default}
+#p-hero{padding-top:14px;padding-bottom:0;display:grid;grid-template-columns:minmax(0,1fr);column-gap:28px}
+.id{display:flex;align-items:center;gap:10px;min-width:0}
+.av{width:36px;height:36px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--ink),0 0 0 3.5px var(--acc),0 6px 24px -4px var(--acc);background:var(--deck-2) center/cover}
+.id h1{margin:0;font:700 21px/1 var(--display);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.id p{margin:3px 0 0;font:500 12px/1.2 var(--body);color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.star{display:flex;align-items:baseline;gap:8px;margin-top:12px;flex-wrap:wrap}
+.star .n{font:700 64px/.86 var(--display);letter-spacing:-.015em;text-shadow:0 0 40px color-mix(in srgb,var(--acc) 35%,transparent)}
+.star .u{font-size:17px}
+.star .rk{align-self:center;font-size:14px;margin-left:2px}
+.sline{font:500 12px/1.3 var(--body);color:var(--steel);margin-top:6px}
+.story{margin:10px 0 12px;font:500 21px/1.28 var(--body);letter-spacing:-.01em;color:var(--chalk);text-wrap:balance}
+.story em{font-style:normal;color:var(--acc)}
+.dcap{font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--steel);text-align:right;padding:0 0 6px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.kp{padding:8px 0 8px 8px;border-left:1px solid var(--hair);min-width:0}
+.kp:first-child{border-left:0;padding-left:0}
+.kp .l{display:block;font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kp .v{display:block;font:700 30px/1 var(--display);margin-top:4px;white-space:nowrap}
+.kp .v small{font-size:15px;color:var(--steel);font-weight:600}
+.dl{display:block;font:600 11px/1.1 var(--body);margin-top:3px;white-space:nowrap;color:var(--steel)}
+.odds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:10px 0 10px}
+.od .l{display:flex;justify-content:space-between;align-items:baseline;font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--steel)}
+.od .l b{font:700 20px/1 var(--display);letter-spacing:0;color:var(--chalk)}
+.od .l b small{font-size:12px;color:var(--steel)}
+.od .bar2{height:4px;border-radius:2px;background:var(--hair);margin-top:6px;overflow:hidden}
+.od .bar2 i{display:block;height:100%;background:var(--acc);border-radius:2px;transform-origin:left}
+.od .dl{margin-top:4px}
+.live{display:flex;flex-direction:column;border-top:1px solid var(--hair);padding:8px 0 9px;gap:5px}
+.lv1{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-width:0;font:600 12px/1.2 var(--body);color:var(--label)}
+.lv1 .tag{font:700 12px/1 var(--display);letter-spacing:.08em;color:var(--steel);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.pd{width:8px;height:8px;border-radius:50%;background:var(--loss);box-shadow:0 0 0 0 var(--loss);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,93,115,.6)}70%{box-shadow:0 0 0 8px rgba(255,93,115,0)}100%{box-shadow:0 0 0 0 rgba(255,93,115,0)}}
+.lv1 .scr{font:700 17px/1 var(--display);white-space:nowrap;color:var(--chalk)}
+.lv1 .scr span{color:var(--steel);font-weight:600}
+.lv1 .wp{margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.lv1 .wp b{font:700 17px/1 var(--display);color:var(--acc)}
+.wpb{width:46px;height:4px;border-radius:2px;background:var(--hair);overflow:hidden}.wpb i{display:block;height:100%;background:var(--acc)}
+.lv1 .vs{white-space:nowrap}
+.movw{display:flex;align-items:center;gap:8px;min-width:0}
+.mvl{flex:none;font:600 11px/1 var(--body);letter-spacing:.06em;color:var(--steel)}
+.mov{flex:1;min-width:0;display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;font:500 12px/1.2 var(--body);color:var(--steel);white-space:nowrap;padding-right:44px;-webkit-mask:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+.mv{flex:none;display:inline-flex;align-items:center;gap:5px}
+.mv b{font:700 13px/1 var(--display);color:var(--chalk)}
+.mv .v{color:var(--steel)}
+.mn{display:inline-flex;align-items:center;gap:4px;color:var(--label);font-weight:600}
+.mn img{width:16px;height:16px;border-radius:50%;object-fit:cover;filter:grayscale(.3)}
+.mov::-webkit-scrollbar{display:none}
+@media(min-width:1280px){#p-hero{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)!important;column-gap:36px}.kp .v{font-size:41px!important}.kp .l,.od .l,.dcap{font-size:13px}.dl{font-size:13px}.od .l b{font-size:25px}.od .bar2{height:6px}.kp{padding:11px 0 11px 12px}.lv1 .scr,.lv1 .wp b{font-size:20px}.lv1{font-size:14px}.mov{font-size:13px}}
+@media(min-width:900px){#p-hero{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);padding-bottom:16px;align-items:end}.hl{grid-column:1}.hr{grid-column:2}.story{font-size:26px;margin-bottom:4px}.star .n{font-size:76px}.kpis{border-top:0}.kp .v{font-size:34px}.live{border-bottom:1px solid var(--hair)}}
+/* ---------- pulse / scrub ---------- */
+.scrub{touch-action:pan-y;cursor:ew-resize;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.ro{display:flex;gap:8px;align-items:baseline;font:500 12px/1.3 var(--body);color:var(--label);min-height:18px;margin-bottom:4px;flex-wrap:wrap}
+.ro b{font:700 14px/1 var(--display);letter-spacing:.04em;color:var(--acc)}
+.hint{margin-left:auto;color:var(--steel);font-size:11px}
+.wk.off{opacity:.28}
+.back{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translate(-50%,24px);opacity:0;pointer-events:none;z-index:30;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--acc);background:rgba(22,26,34,.94);backdrop-filter:blur(12px);color:var(--chalk);font:600 13px/1 var(--body);display:flex;align-items:center;gap:8px;white-space:nowrap;transition:opacity .2s,transform .2s;cursor:pointer;box-shadow:0 10px 30px -8px #000}
+.back.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.back b{color:var(--acc)}
+/* ---------- luck dial ---------- */
+.dial{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
+.dial svg{width:150px;height:100px;display:block;overflow:visible}
+.dial .n{font:700 40px/.9 var(--display)}
+.dial .w{font:700 15px/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
+.dial .s{font:500 12px/1.3 var(--body);color:var(--steel);margin-top:3px}
+.strip{margin-top:12px}
+.strip .tt{font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--steel);margin-bottom:2px}
+/* ---------- position tracks ---------- */
+.pr{display:grid;grid-template-columns:34px minmax(0,1fr) 46px 34px;align-items:center;gap:10px;min-height:44px;border-top:1px solid var(--hair)}
+.pr:first-of-type{border-top:0}
+.pl{font:700 14px/1 var(--display);letter-spacing:.06em;color:var(--pc)}
+.trk{position:relative;height:30px}
+.trk::before{content:"";position:absolute;left:0;right:0;top:14px;height:1px;background:var(--line-strong)}
+.trk .o{position:absolute;top:11px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--neutral-bar)}
+.trk .o.rv{width:12px;height:12px;margin-left:-6px;top:8.5px;background:transparent;border:2px solid var(--riv)}
+.trk .avg{position:absolute;top:5px;width:2px;height:20px;margin-left:-1px;background:var(--chalk);opacity:.8}
+.trk .me{position:absolute;top:6px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 2px var(--ink),0 0 14px color-mix(in srgb,var(--acc) 60%,transparent);transition:left .26s cubic-bezier(.2,.8,.2,1)}
+.pv{font:700 19px/1 var(--display);text-align:right}
+.prk{font:700 13px/1 var(--display);color:var(--steel);text-align:right}
+.prk.top{color:var(--acc)}
+.p-QB{--pc:#f7739c}.p-RB{--pc:#3ddcc1}.p-WR{--pc:#5ec6f4}.p-TE{--pc:#fca95c}.p-K{--pc:#c491ff}.p-DEF{--pc:#c98a72}.p-FLEX{--pc:#9aa3b5}
+.scale{display:grid;grid-template-columns:34px minmax(0,1fr) 46px 34px;gap:10px;font:500 11px/1 var(--body);color:var(--steel);margin-top:4px}
+.scale span:nth-child(2){display:flex;justify-content:space-between}
+/* ---------- rows (log, sos, contrib) ---------- */
+.gr{display:grid;grid-template-columns:28px 22px minmax(0,1fr) auto 54px;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--hair)}
 .gr:first-child{border-top:0}
-.gr .wk{font:700 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
-.gr img,.gr .ini{width:26px;height:26px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2)}
+.gr .wk2{font:700 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
+.gr img,.gr .ini{width:22px;height:22px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2);display:grid;place-items:center;font:700 10px var(--display);color:var(--steel)}
 .gr .on{font:500 13px/1.2 var(--body);color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gr .sc{font:700 16px/1 var(--display);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.gr .sc span{color:var(--steel);font-weight:600}.gr .sc .res{color:var(--ink);font-weight:700}
-.mg{position:relative;height:26px}.mg b{position:absolute;inset:0 0 auto 0;text-align:center;font:700 13px/1 var(--display);font-variant-numeric:tabular-nums}
-.mg::before{content:"";position:absolute;left:50%;top:15px;bottom:0;width:1px;background:var(--line-strong)}
-.mg i{position:absolute;top:17px;height:7px;border-radius:2px}
-.mg .W{background:var(--win)}.mg .L{background:var(--loss)}
-.res{font:700 12px/1 var(--display);padding:3px 5px 2px;border-radius:4px;color:var(--ink);margin-right:5px}
-.res.W{background:var(--win)}.res.L{background:var(--loss)}
-.note{margin-top:10px;padding-top:10px;border-top:1px solid var(--hair);font:500 12.5px/1.4 var(--body);color:var(--label)}
-.note b{color:var(--chalk);font-weight:600}
-.note .tn{color:var(--chalk)}
-.strip{margin-top:10px}
-.strip .t{font:600 11.5px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--steel);margin-bottom:2px}
-footer{max-width:1680px;margin:0 auto;padding:0 var(--pad) 40px;font:500 12px/1.5 var(--body);color:var(--steel)}
+.gr .on small{font-size:11px;color:var(--steel);margin-left:4px}
+.gr .sc{font:700 16px/1 var(--display);text-align:right;white-space:nowrap}
+.gr .sc span{color:var(--steel);font-weight:600}
+.res{font:700 12px/1 var(--display);padding:3px 5px 2px;border-radius:3px;color:var(--ink);margin-right:5px}
+.res.W{background:var(--win)}.res.L{background:var(--loss)}.res.T{background:var(--steel)}
+.mg{position:relative;height:24px}.mg b{position:absolute;inset:0 0 auto 0;text-align:center;font:700 12px/1 var(--display)}
+.mg::before{content:"";position:absolute;left:50%;top:14px;bottom:0;width:1px;background:var(--line-strong)}
+.mg i{position:absolute;top:16px;height:6px;border-radius:1px}.mg .W{background:var(--win)}.mg .L{background:var(--loss)}
+.sr{display:grid;grid-template-columns:30px 22px minmax(0,1fr) 72px 44px;gap:8px;align-items:center;min-height:36px;border-top:1px solid var(--hair)}
+.sr:first-child{border-top:0}
+.sr .on{font:500 13px/1.2 var(--body);color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr .bb{height:6px;background:var(--hair);border-radius:1px;position:relative}.sr .bb i{position:absolute;left:0;top:0;bottom:0;border-radius:1px}
+.sr .vv{font:700 15px/1 var(--display);text-align:right}
+.sr img,.sr .ini{width:22px;height:22px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2);display:grid;place-items:center;font:700 10px var(--display);color:var(--steel)}
+.wk2{font:700 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
+.cr{display:grid;grid-template-columns:minmax(0,1fr) 52px 40px;gap:4px 10px;align-items:center;padding:6px 0;border-top:1px solid var(--hair)}
+.cr:first-child{border-top:0}
+.cr .nm{font:500 13px/1.2 var(--body);color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cr .nm .pt{font:700 11px/1 var(--display);letter-spacing:.05em;color:var(--pc);margin-right:6px}
+.cr .nm .inj{font:700 11px/1 var(--display);letter-spacing:.04em;color:var(--loss);margin-left:5px;vertical-align:1px}
+.cr .vv{font:700 15px/1 var(--display);text-align:right}
+.cr .sh{font:600 12px/1 var(--body);color:var(--steel);text-align:right}
+.cr .cb{grid-column:1/-1;height:5px;background:var(--hair);border-radius:1px;overflow:hidden}.cr .cb i{display:block;height:100%;background:var(--pc);opacity:.9}
+@media(min-width:900px){.cgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}.cgrid .cr:nth-child(2){border-top:0}}
+/* ---------- footer ---------- */
+footer{max-width:1680px;margin:0 auto;padding:6px var(--pad) 70px;font:500 12px/1.55 var(--body);color:var(--steel)}
+details summary{list-style:none;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:6px;font:600 13px/1 var(--body);color:var(--label)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{color:var(--chalk)}
+.meth{columns:1;column-gap:32px}.meth p{margin:0 0 10px;break-inside:avoid}.meth b{color:var(--label)}
+@media(min-width:900px){.meth{columns:2}}
 /* tooltip */
-#tip{position:fixed;z-index:50;pointer-events:none;background:rgba(28,33,43,.97);border:1px solid var(--line-strong);border-radius:10px;padding:8px 10px;font:500 12.5px/1.35 var(--body);color:var(--label);box-shadow:0 12px 30px -8px rgba(0,0,0,.7);max-width:240px;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+#tip{position:fixed;z-index:50;pointer-events:none;background:rgba(28,33,43,.97);border:1px solid var(--line-strong);border-radius:8px;padding:8px 10px;font:500 12.5px/1.35 var(--body);color:var(--label);box-shadow:0 12px 30px -8px rgba(0,0,0,.7);max-width:240px;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
 #tip.on{opacity:1;transform:none}
 #tip b{display:block;font:700 15px/1.1 var(--display);color:var(--chalk);letter-spacing:.02em;margin-bottom:2px}
-/* reveal + motion */
-.js .pnl.pre{opacity:0;transform:translateY(14px)}
-.pnl{transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1)}
-.fade{transition:opacity .5s .6s}
-.pre .fade{opacity:0}
-.pre .trk .f{transform:scaleX(0)}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}.js .pnl.pre{opacity:1;transform:none}.pre .fade{opacity:1}.pre .trk .f{transform:none}}
-@media(max-width:420px){:root{--pad:12px;--gap:10px}.big .n{font-size:50px}.cell .v{font-size:32px}.pnl{padding:14px;border-radius:16px}.hero{padding:14px}.id h1{font-size:28px}.gr{grid-template-columns:26px 24px minmax(0,1fr) auto 60px;gap:6px}.lg{display:none}}
-@media(max-width:340px){.cell .v{font-size:28px}.gr{grid-template-columns:24px minmax(0,1fr) auto 52px}.gr img,.gr .ini{display:none}.pr{grid-template-columns:34px 44px minmax(0,1fr) 54px;gap:8px}}
+/* entrance */
+.js .grid>*,.js .pairw{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.js .grid>:nth-child(2){animation-delay:.06s}.js .grid>:nth-child(3){animation-delay:.12s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media(max-width:360px){:root{--pad:12px}.kp .v{font-size:25px}.kp{padding-left:6px}.star .n{font-size:58px}.story{font-size:19px}.lg{display:none}.gr{grid-template-columns:26px minmax(0,1fr) auto 46px}.gr img,.gr .ini{display:none}.sr{grid-template-columns:28px minmax(0,1fr) 54px 40px}.sr img,.sr .ini{display:none}}
+@media(max-width:899px){.lg{display:none}}
+@media(max-width:419px){.wpb{display:none}.lv1{gap:4px 7px}.lv1 .tag{letter-spacing:.05em}}
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="bar"><a class="brand" href="../" title="Back to the league tracker"><span class="bk">‹</span>Team<i>Hub</i></a><div class="lg" id="lg"></div><div class="stamp" id="stamp"></div></div>
+  <div class="bar"><a class="brand" href="../" title="Back to the league tracker"><span class="bk">‹</span>Team<i>Hub</i><sup>1.5</sup></a><div class="lg" id="lg"></div><div class="stamp" id="stamp"></div></div>
   <nav class="sw" id="sw" aria-label="Team switcher"></nav>
 </header>
 <main><div class="grid">
-  <section class="pnl hero" id="p-hero"></section>
-  <section class="pnl s2" id="p-pulse"></section>
-  <section class="pnl" id="p-luck"></section>
-  <section class="pnl" id="p-bench"></section>
-  <section class="pnl" id="p-pos"></section>
-  <section class="pnl" id="p-log"></section>
+  <section class="pnl" id="p-hero" aria-live="polite"></section>
+  <section class="pnl" id="p-pulse"></section>
+  <div class="pairw"><div class="pair" data-pair="1"><section class="pnl" id="p-luck"></section><section class="pnl" id="p-bench"></section></div><div class="dots"><i class="on"></i><i></i></div></div>
+  <div class="pairw"><div class="pair" data-pair="2"><section class="pnl" id="p-pos"></section><section class="pnl" id="p-log"></section></div><div class="dots"><i class="on"></i><i></i></div></div>
+  <section class="pnl" id="p-heat"></section>
+  <section class="pnl" id="p-sos"></section>
+  <section class="pnl" id="p-contrib"></section>
+  <section class="pnl" id="p-cons"></section>
 </div></main>
 <footer id="ft"></footer>
+<button class="back" id="back" type="button"></button>
 <div id="tip" role="status"></div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -154,177 +237,324 @@ footer{max-width:1680px;margin:0 auto;padding:0 var(--pad) 40px;font:500 12px/1.
 const D=JSON.parse(document.getElementById('data').textContent);
 document.documentElement.className='js';
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const T=D.teams, RIDS=Object.keys(T).map(Number).sort((a,b)=>a-b), N=RIDS.length, WK=D.weeks;
+const T=D.teams,RIDS=Object.keys(T).map(Number).sort((a,b)=>a-b),N=RIDS.length,WK=D.weeks,TH=D.through,LIVE=D.live,PO=D.playoff;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const f1=v=>(Math.round(v*10)/10).toFixed(1), sg=(v,d=1)=>(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(d);
-const ord=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
-const ini=t=>esc((t.name.replace(/[^\p{L}\p{N} ]/gu,'').trim().split(/\s+/).map(w=>w[0]).join('')||'?').slice(0,2).toUpperCase());
-const avImg=(t,cls='')=>t.avatar?`<img src="${esc(t.avatar)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ini',textContent:'${ini(t)}'}))">`:`<span class="ini">${ini(t)}</span>`;
-const rkPill=(r,lbl='')=>`<span class="rk ${r<=3?'top':''}">#${r}${lbl?` <span style="font-weight:600;color:var(--steel)">${lbl}</span>`:''}</span>`;
-const luckPill=r=>`<span class="rk ${r<=3?'top':''}">${r<=N/2?ord(r)+' luckiest':ord(N+1-r)+' unluckiest'}</span>`;
+const f1=v=>(Math.round(v*10)/10).toFixed(1),sg=(v,d=1)=>(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(d);
+const ord=n=>{const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
+const short=t=>t.name.replace(/^Team\s+/i,'').replace(/[^\p{L}\p{N}’' ]/gu,'').trim();
+const abbr0=t=>{const w=short(t).replace(/[’']s\b/g,'').split(/\s+/).filter(Boolean);let a=(w.length>1?w.map(x=>x[0]).join(''):w[0].slice(0,3)).slice(0,3);
+ if(Object.values(D.teams).some(o=>o!==t&&short(o).toLowerCase().startsWith(a.toLowerCase())))a=w[0].slice(0,3);return a.toUpperCase()};
+const ABBR=new Map();const abbr=t=>{if(!ABBR.has(t))ABBR.set(t,abbr0(t));return ABBR.get(t)};
+const ini=t=>esc(abbr(t).slice(0,2));
+const nick=t=>{const s=short(t);if(s.length<=11)return s;const w=s.split(/\s+/);return w[0].length>=4?w[0]:w.slice(0,2).join(' ')};
+const mini=t=>`<span class="mn">${t.avatar?`<img src="${esc(t.avatar)}" alt="" loading="lazy">`:''}${esc(nick(t))}</span>`;
+const avImg=t=>t.avatar?`<img src="${esc(t.avatar)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ini',textContent:'${ini(t)}'}))">`:`<span class="ini">${ini(t)}</span>`;
+const pct=v=>v>=100?'100':v>=99.95?'>99.9':v<=0?'0':v<0.05?'<0.1':v>=10?Math.round(v)+'':v.toFixed(1);
+const dl=(v,{d=1,inv=false,fmt=null}={})=>{if(v==null)return '';const good=inv?v<0:v>0;if(Math.abs(v)<Math.pow(10,-d)/2)return '';return `<span class="dl ${good?'up':'dn'}">${v>0?'▲':'▼'} ${fmt?fmt(Math.abs(v)):Math.abs(v).toFixed(d)}</span>`};
 const isPhone=()=>innerWidth<768;
-let cur=+(new URLSearchParams(location.hash.slice(1)).get('team'))||D.default; if(!T[cur])cur=D.default;
-const revealed=new Set();
+const tipA=(t,b)=>`data-tt="${esc(t)}" data-tb="${esc(b)}"`;
+const hp=new URLSearchParams(location.hash.slice(1));
+let cur=+hp.get('team')||D.default;if(!T[cur])cur=D.default;
+let K=+hp.get('wk')||TH;if(!WK.includes(K))K=TH;
+let rivalOn=hp.get('rival')==='1';
+const S=(r,k=K)=>D.snaps[k][r],SP=(r,k=K)=>k>1?D.snaps[k-1][r]:null;
+const rivalOf=r=>{if(+r===8&&T[3])return 3;return RIDS.filter(x=>x!==+r).sort((a,b)=>T[b].pf-T[a].pf)[0]};
+const recS=o=>`${o.w}-${o.l}${o.t?'-'+o.t:''}`;
+const wks=r=>T[r].weeks.filter(x=>x.w<=K);
+const mean=a=>a.reduce((x,y)=>x+y,0)/(a.length||1);
+const sdev=a=>{if(a.length<2)return null;const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1))};
 
 /* ---------- header ---------- */
 $('#lg').textContent=`${D.league.name} · ${D.league.season} · ${N} teams · 1QB · ${D.league.ppr===0.5?'Half-PPR':D.league.ppr+' PPR'}`;
-$('#stamp').innerHTML=`Stats through <b>Week ${D.through}</b>`;
 $('#sw').innerHTML=RIDS.map(r=>{const t=T[r];return `<button class="chip" style="--c:${t.accent}" data-r="${r}" aria-pressed="false" title="${esc(t.name)}">${avImg(t)}<span>${esc(t.name)}</span></button>`}).join('');
 $('#sw').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b)select(+b.dataset.r,true)});
-$('#ft').innerHTML=`All figures computed from the Sleeper API (league ${esc(D.league.id)}), final weeks ${WK[0]}–${WK[WK.length-1]} only. Week ${D.nfl_week} is in progress and excluded. All-play = record if a team played all ${N-1} others every week. Expected wins = sum of weekly all-play win rate. Optimal lineup uses the league's slots (${D.league.slots.join(', ')}) and every rostered player except taxi-squad players. Built ${new Date(D.built).toLocaleString('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})} ET. Preview build, not published.`;
 
 /* ---------- svg helpers ---------- */
 const sc=(d0,d1,r0,r1)=>v=>r0+(v-d0)/(d1-d0||1)*(r1-r0);
 const P=pts=>pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join('');
 function ticks(lo,hi,n){const raw=(hi-lo)/n,m=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].map(x=>x*m).find(x=>x>=raw);const a=[];for(let v=Math.ceil(lo/st)*st;v<=hi+1e-9;v+=st)a.push(+v.toFixed(6));return a}
-const tipA=(t,b)=>`data-tt="${esc(t)}" data-tb="${esc(b)}"`;
-function spark(vals,{inv=false,ref=null,lo=null,hi=null}={}){if(inv){lo=Math.max(1,Math.min(...vals)-.5);hi=Math.max(...vals)+.5}const w=120,h=26,mn=lo??Math.min(...vals,ref??Infinity),mx=hi??Math.max(...vals,ref??-Infinity);const x=sc(0,vals.length-1,3,w-3),y=inv?sc(mn,mx,3,h-3):sc(mn,mx,h-3,3);
- const pts=vals.map((v,i)=>[x(i),y(v)]);const last=pts[pts.length-1];
- return `<svg class="spk" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">${ref!=null?`<line x1="0" x2="${w}" y1="${y(ref)}" y2="${y(ref)}" stroke="var(--steel)" stroke-width="1" stroke-dasharray="2 3" vector-effect="non-scaling-stroke" opacity=".7"/>`:''}<path class="draw" d="${P(pts)}" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`}
-function dotStrip(W,key,{lowGood=false,fmt=f1,label}){ // league distribution: team accent, others grey
- const h=46,pl=10,pr=10,vals=RIDS.map(r=>({r,v:key(T[r])}));const mn=Math.min(...vals.map(o=>o.v)),mx=Math.max(...vals.map(o=>o.v));
- const x=lowGood?sc(mx,mn,pl,W-pr):sc(mn,mx,pl,W-pr);const me=vals.find(o=>o.r===cur);
- let s=`<line x1="${pl}" x2="${W-pr}" y1="20" y2="20" class="gl" stroke-width="2"/>`;
- vals.filter(o=>o.r!==cur).forEach(o=>{s+=`<circle cx="${x(o.v)}" cy="20" r="5" fill="var(--neutral-bar)" stroke="var(--deck)" stroke-width="1.5"/><circle class="hit" cx="${x(o.v)}" cy="20" r="11" ${tipA(T[o.r].name,label+': '+fmt(o.v))}/>`});
- const mx_=x(me.v);s+=`<circle cx="${mx_}" cy="20" r="7.5" fill="var(--acc)" stroke="var(--ink)" stroke-width="2"/><circle class="hit" cx="${mx_}" cy="20" r="12" ${tipA(T[cur].name,label+': '+fmt(me.v))}/>`;
- const anc=mx_<50?'start':mx_>W-50?'end':'middle';
- s+=`<text class="ax" x="${pl}" y="${h-2}">${lowGood?'worse':'low'}</text><text class="ax" x="${W-pr}" y="${h-2}" text-anchor="end">${lowGood?'better':'high'}</text><text class="vl" x="${mx_}" y="7" text-anchor="${anc}" style="fill:var(--acc)">${fmt(me.v)}</text>`;
- return `<svg viewBox="0 0 ${W} ${h}" height="${h}">${s}</svg>`}
+const pw=el=>{const cs=getComputedStyle(el);return Math.max(250,el.getBoundingClientRect().width-['paddingLeft','paddingRight','borderLeftWidth','borderRightWidth'].reduce((a,k)=>a+parseFloat(cs[k]||0),0))};
+function dotStrip(W,vals,{lowGood=false,fmt=f1,label,key}){ // vals: [{r,v}]
+ const h=44,pl=10,pr=10;const mn=Math.min(...vals.map(o=>o.v)),mx=Math.max(...vals.map(o=>o.v));
+ const x=lowGood?sc(mx,mn,pl,W-pr):sc(mn,mx,pl,W-pr);const me=vals.find(o=>o.r===cur),rv=rivalOn?vals.find(o=>o.r===rivalOf(cur)):null;
+ let s=`<line x1="${pl}" x2="${W-pr}" y1="22" y2="22" stroke="var(--line-strong)" stroke-width="1"/>`;
+ vals.filter(o=>o.r!==cur).forEach(o=>{s+=`<circle cx="${x(o.v)}" cy="22" r="4.5" fill="var(--neutral-bar)"/><circle class="hit" cx="${x(o.v)}" cy="22" r="11" ${tipA(T[o.r].name,label+': '+fmt(o.v))}/>`});
+ if(rv)s+=`<circle cx="${x(rv.v)}" cy="22" r="7" fill="none" stroke="var(--riv)" stroke-width="2"/>`;
+ const mx_=x(me.v);s+=`<circle data-m="${key}-me" cx="${mx_}" cy="22" r="8" fill="var(--acc)" stroke="var(--ink)" stroke-width="2"/><circle class="hit" cx="${mx_}" cy="22" r="12" ${tipA(T[cur].name,label+': '+fmt(me.v))}/>`;
+ const anc=mx_<40?'start':mx_>W-40?'end':'middle';
+ s+=`<text class="ax" x="${pl}" y="${h}">${lowGood?'worse':'low'}</text><text class="ax" x="${W-pr}" y="${h}" text-anchor="end">${lowGood?'better':'high'}</text><text class="vl" x="${mx_}" y="8" text-anchor="${anc}" style="fill:var(--acc)">${fmt(me.v)}</text>`;
+ return `<svg viewBox="0 0 ${W} ${h+2}" height="${h+2}" role="img" aria-label="${esc(label)} across the league">${s}</svg>`}
+const N_=(key,v,fmt,txt)=>`<span data-n="${key}" data-v="${v}" data-f="${fmt}">${txt??FMT[fmt](v)}</span>`;
+const FMT={f1:v=>f1(v),f0:v=>Math.round(v)+'',s2:v=>sg(v,2),s1:v=>sg(v),pct:v=>pct(v),i:v=>Math.round(v)+''};
+
+/* ---------- story line (rule-based) ---------- */
+function amt(x){const h=Math.round(Math.abs(x)*2)/2,ex=Math.abs(Math.abs(x)-h)<0.1,q=Math.abs(x)<h?'nearly ':'just over ';
+ const w={0.5:'a half-win',1:'a full win',1.5:'a win and a half',2:'two wins',2.5:'two and a half wins',3:'three wins'}[h]||h+' wins';return (ex?'':q)+w}
+function story(r){const o=S(r),pr=o.pf_rank,L=o.luck,g=wks(r),n=g.length;
+ const offN=['','best','second-best','third-best'];
+ const off=pr<=3?`the league's ${offN[pr]} offense`:pr>=N-2?(pr===N?`the league's lowest-scoring offense`:`a bottom-three offense`):`the No. ${pr} offense`;
+ const luck=Math.abs(L)<0.5?'winning right about where its scoring says':`${amt(L)} ${L<0?'short of':'ahead of'} what its scoring has earned`;
+ const strk=+o.streak.slice(1),sw=o.streak[0];
+ let s;
+ if(o.l===0&&o.t===0&&n>=2)s=`Unbeaten through Week ${K} with <em>${off}</em>, ${luck}.`;
+ else if(o.w===0&&n>=2)s=`Still winless with <em>${off}</em>, ${luck}.`;
+ else if(o.rank===1&&pr>1)s=`First in the standings on <em>${off}</em>, ${luck}.`;
+ else if(strk>=3)s=`<em>${off[0].toUpperCase()+off.slice(1)}</em> on a ${strk}-game ${sw==='W'?'winning':'losing'} run, ${luck}.`;
+ else s=`<em>${off[0].toUpperCase()+off.slice(1)}</em>, ${luck}.`;
+ return s}
 
 /* ---------- panels ---------- */
-function hero(el){const t=T[cur],g=t.weeks;const pct=(t.apw+.5*t.apt)/(t.apw+t.apl+t.apt);
- let best=0,run=0;g.forEach(x=>{run=x.res==='W'?run+1:0;best=Math.max(best,run)});
- const med=D.league_wk.map(x=>x.med);
- el.innerHTML=`<div class="id"><div class="av" style="background-image:url('${esc(t.avatar||'')}')"></div><div style="min-width:0"><h1>${esc(t.name)}</h1><p><b>@${esc(t.owner)}</b> · ${ord(t.rank)} of ${N} · ${esc(D.league.name)}</p></div></div>
- <div class="tk">
-  <div class="cell"><span class="l">Record</span><span class="v tn" data-rec="${t.w}-${t.l}${t.t?'-'+t.t:''}">${t.w}-${t.l}${t.t?'-'+t.t:''}</span><div class="wl">${g.map(x=>`<i class="${x.res}" ${tipA('Week '+x.w+' · '+x.res,f1(x.pts)+' – '+f1(x.opp_pts)+' vs '+T[x.opp].name)}>${x.res}</i>`).join('')}</div></div>
-  <div class="cell"><span class="l">Standing</span><span class="v tn"><span data-c="${t.rank}" data-d="0">${t.rank}</span><small>/${N}</small></span><div class="s">${t.rank_hist.map(r=>r).join(' › ')}</div>${spark(t.rank_hist,{inv:true,lo:1,hi:N})}</div>
-  <div class="cell"><span class="l">Points for</span><span class="v tn" data-c="${t.pf}" data-d="1">${f1(t.pf)}</span><div class="s">${rkPill(t.pf_rank,'PF')} <span>${f1(t.pf/g.length)}/wk</span></div>${spark(g.map(x=>x.pts),{ref:med.reduce((a,b)=>a+b,0)/med.length})}</div>
-  <div class="cell"><span class="l">All-play</span><span class="v tn">${t.apw}-${t.apl}${t.apt?'-'+t.apt:''}</span><div class="s">${rkPill(t.ap_rank)} <span>.${Math.round(pct*1000).toString().padStart(3,'0')} win rate</span></div>${spark(g.map(x=>x.apw),{lo:0,hi:N-1})}</div>
-  <div class="cell"><span class="l">Luck</span><span class="v tn ${t.luck>0.05?'up':t.luck<-0.05?'dn':''}" data-c="${t.luck}" data-d="2" data-s="1">${sg(t.luck,2)}</span><div class="s">${t.w+t.t*.5} W vs ${t.xw.toFixed(2)} expected</div>${spark(g.reduce((a,x)=>(a.push((a.at(-1)||0)+(x.res==='W'?1:x.res==='T'?.5:0)-x.xw),a),[]),{ref:0})}</div>
-  <div class="cell"><span class="l">Streak</span><span class="v tn ${t.streak[0]==='W'?'up':'dn'}">${t.streak}</span><div class="s">Longest W${best} · last ${sg(g.at(-1).pts-g.at(-1).opp_pts)}</div>${spark(g.map(x=>x.pts-(x.opp_pts||0)),{ref:0})}</div>
- </div>`}
+function liveHTML(){if(!LIVE)return '';const g=LIVE.games.find(x=>x.a===cur||x.b===cur);if(!g)return '';
+ const me=g.a===cur,op=me?g.b:g.a,mp=me?g.pa:g.pb,opp=me?g.pb:g.pa,mj=me?g.ja:g.jb,oj=me?g.jb:g.ja,wp=me?g.wa:100-g.wa;
+ const first=LIVE.dates[0]?new Date(LIVE.dates[0]+'T12:00:00'):null;
+ const tag=LIVE.in_progress?`<span class="pd" aria-hidden="true"></span>LIVE · WK ${LIVE.week}`:`WK ${LIVE.week}${first?' · KICKS '+first.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase():''}`;
+ const myR=S(cur,TH).rank;
+ const mov=LIVE.games.filter(x=>x!==g).map(x=>({x,d:Math.min(Math.abs(S(x.a,TH).rank-myR),Math.abs(S(x.b,TH).rank-myR))})).sort((a,b)=>a.d-b.d).map(({x})=>{const fav=x.wa>=50?x.a:x.b,und=fav===x.a?x.b:x.a,p=Math.max(x.wa,100-x.wa);
+  return `<span class="mv" ${tipA(`Week ${LIVE.week} · ${T[x.a].name} vs ${T[x.b].name}`,`Score ${f1(x.pa)}–${f1(x.pb)} · projected ${f1(x.ja)}–${f1(x.jb)}`)}>${mini(T[fav])}<b>${Math.round(p)}%</b><span class="v">v</span>${mini(T[und])}${LIVE.in_progress?`<span class="v">${f1(fav===x.a?x.pa:x.pb)}–${f1(fav===x.a?x.pb:x.pa)}</span>`:''}</span>`}).join('');
+ return `<div class="live" ${tipA(`Week ${LIVE.week} · vs ${T[op].name}`,`Score ${f1(mp)}–${f1(opp)}\nSleeper projection ${f1(mj)}–${f1(oj)}\nWin prob ${Math.round(wp)}% (normal model, sd from Wk 1–${TH})`)}>
+ <div class="lv1"><span class="tag">${tag}</span><span class="scr">${f1(mp)}<span>–${f1(opp)}</span></span><span class="vs">vs ${esc(nick(T[op]))} <span class="mut">· proj ${Math.round(mj)}–${Math.round(oj)}</span></span>
+ <span class="wp"><span class="wpb"><i style="width:${wp}%"></i></span><b>${Math.round(wp)}%</b></span></div>
+ <div class="movw"><span class="mvl">MOVERS</span><div class="mov">${mov}</div></div></div>`}
 
-function pulse(el){const t=T[cur],g=t.weeks,L=D.league_wk;const W=Math.max(260,el.getBoundingClientRect().width-34),H=isPhone()?220:260;
- const pl=36,pr=46,pt=16,pb=40;const all=[...g.map(x=>x.pts),...g.map(x=>x.opp_pts||0),...L.map(x=>x.p25),...L.map(x=>x.p75)];
+function hero(el){const t=T[cur],o=S(cur),p=SP(cur),g=wks(cur),last=g.at(-1),od=o.odds,po=p?p.odds:null;
+ const apP=x=>(x.apw+.5*x.apt)/(x.apw+x.apl+x.apt);
+ const kp=(l,v,d,tt)=>`<div class="kp" ${tt||''}><span class="l">${l}</span><span class="v">${v}</span>${d||'<span class="dl">&nbsp;</span>'}</div>`;
+ const odd=(l,key,v,pv,tt)=>`<div class="od" ${tt}><div class="l"><span>${l}</span><b>${N_('od-'+key,v,'pct')}<small>%</small></b></div><div class="bar2"><i data-m="odb-${key}" style="width:${Math.max(.5,v)}%"></i></div>${po?dl(v-pv,{fmt:x=>x.toFixed(1)}):'<span class="dl">&nbsp;</span>'}</div>`;
+ el.innerHTML=`<div class="hl">
+ <div class="id"><div class="av" style="background-image:url('${esc(t.avatar||'')}')"></div><div style="min-width:0"><h1>${esc(t.name)}</h1><p>@${esc(t.owner)} · ${ord(o.rank)} of ${N} · through Week ${K}</p></div></div>
+ <div class="star"><span class="n">${N_('pf',o.pf,'f1')}</span><span class="u">pts</span><span class="rk ${o.pf_rank===1?'top':''}">#${o.pf_rank} in league</span></div>
+ <div class="sline">Points for${p&&o.pf_rank!==p.pf_rank?` · <span class="${o.pf_rank<p.pf_rank?'up':'dn'}">${o.pf_rank<p.pf_rank?'▲':'▼'} ${Math.abs(o.pf_rank-p.pf_rank)} rank</span>`:''} · <span class="up">+${f1(last.pts)}</span> in Wk ${K} · ${f1(o.pf/g.length)} <span class="u">ppg</span></div>
+ <p class="story">${story(cur)}</p></div>
+ <div class="hr">
+ <div class="dcap">${p?`▲▼ vs last week (Wk ${K-1} → ${K})`:'Week 1 · no prior week'}</div>
+ <div class="kpis">
+  ${kp('Record',recS(o),p?`<span class="dl ${last.res==='W'?'up':last.res==='L'?'dn':''}">${last.res==='W'?'▲':last.res==='L'?'▼':''} ${last.res}</span>`:'',tipA('Record',`${recS(o)} · last: ${last.res} ${f1(last.pts)}–${f1(last.opp_pts)}`))}
+  ${kp('Standing',`${N_('rank',o.rank,'i')}<small>/${N}</small>`,p?dl(p.rank-o.rank,{d:0}):'',tipA('Standing',`${ord(o.rank)} of ${N} (wins, then points for)`))}
+  ${kp('All-play',`${o.apw}-${o.apl}${o.apt?'-'+o.apt:''}`,p?dl(apP(o)-apP(p),{d:3,fmt:x=>'.'+Math.round(x*1000).toString().padStart(3,'0')}):'',tipA('All-play',`Record if you played all ${N-1} teams every week · ${ord(o.ap_rank)} of ${N}`))}
+  ${kp('Luck',`<span class="${o.luck>=0.5?'up':o.luck<=-0.5?'dn':''}">${N_('luck',o.luck,'s2')}</span>`,p?dl(o.luck-p.luck,{d:2}):'',tipA('Luck',`${o.w+o.t*.5} wins vs ${o.xw.toFixed(2)} expected (all-play)`))}
+  ${kp('Streak',`<span class="${o.streak[0]==='W'?'up':'dn'}">${o.streak}</span>`,'',tipA('Streak','Last margin '+sg(last.pts-last.opp_pts)))}
+ </div>
+ <div class="odds" ${tipA('Playoff odds · Monte Carlo',`${D.sims.toLocaleString()} sims of Wk ${K+1}–${PO.reg_end}, normal scores per team (mean/sd through Wk ${K}). Top ${PO.teams} make it, top ${PO.byes} get byes.`)}>
+  ${odd('Playoffs','po',od.playoff,po&&po.playoff,'')}${odd('Bye','bye',od.bye,po&&po.bye,'')}${odd('Title','title',od.title,po&&po.title,'')}
+ </div>
+ ${liveHTML()}</div>`}
+
+/* --- pulse with scrub --- */
+let PZ=null; // pulse geometry
+function pulse(el){const t=T[cur],g=t.weeks,L=D.league_wk,rv=rivalOf(cur),R=T[rv];const W=pw(el),H=isPhone()?196:250;
+ const pl=34,pr=40,pt=24,pb=38;const all=[...g.map(x=>x.pts),...g.map(x=>x.opp_pts||0),...L.map(x=>x.p25),...L.map(x=>x.p75),...R.weeks.map(x=>x.pts)];
  const lo=Math.floor((Math.min(...all)-6)/10)*10,hi=Math.ceil((Math.max(...all)+6)/10)*10;
- const x=sc(0,g.length-1,pl+8,W-pr),y=sc(lo,hi,H-pb,pt);
- let s='';ticks(lo,hi,4).forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr+30}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
+ const x=sc(0,g.length-1,pl+10,W-pr),y=sc(lo,hi,H-pb,pt);PZ={x,inv:px=>Math.round((px-pl-10)/((W-pr-pl-10)/(g.length-1))),W,H,pt,pb,n:g.length};
+ let s='';ticks(lo,hi,4).forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr+24}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
  const band=[...L.map((d,i)=>[x(i),y(d.p75)]),...L.map((d,i)=>[x(i),y(d.p25)]).reverse()];
- s+=`<path d="${P(band)}Z" fill="var(--steel)" opacity=".13"/>`;
- s+=`<path d="${P(L.map((d,i)=>[x(i),y(d.med)]))}" fill="none" stroke="var(--steel)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".9"/>`;
- s+=`<path class="draw" d="${P(g.map((d,i)=>[x(i),y(d.opp_pts)]))}" fill="none" stroke="var(--label)" stroke-width="1" opacity=".2"/>`;
+ s+=`<path data-m="pband" d="${P(band)}Z" fill="var(--steel)" opacity=".1"/>`;
+ s+=`<path d="${P(L.map((d,i)=>[x(i),y(d.med)]))}" fill="none" stroke="var(--steel)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".8"/>`;
  const tp=g.map((d,i)=>[x(i),y(d.pts)]);
- s+=`<path class="draw fade0" d="${P(tp)}L${tp.at(-1)[0]} ${H-pb}L${tp[0][0]} ${H-pb}Z" fill="url(#pg)" opacity=".9"/>`;
- s+=`<path class="draw" d="${P(tp)}" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
- g.forEach((d,i)=>{const cx=x(i),cy=y(d.pts);const op=T[d.opp];
-  s+=`<g class="fade"><circle cx="${cx}" cy="${cy}" r="5.5" fill="${d.res==='W'?'var(--acc)':'var(--deck)'}" stroke="var(--acc)" stroke-width="2.5"/>
-  <text class="axb" x="${cx}" y="${H-pb+19}" text-anchor="middle" style="fill:var(--steel)">W${d.w}</text>
-  <text class="axb" x="${cx}" y="${H-pb+34}" text-anchor="middle" style="fill:${d.res==='W'?'var(--win)':'var(--loss)'}">${d.res}</text></g>`;
-  const bw=(W-pl-pr)/g.length;
-  s+=`<rect class="hit" x="${cx-bw/2}" y="${pt-10}" width="${bw}" height="${H-pt}" ${tipA(`Week ${d.w} · ${d.res} · ${ord(d.wk_rank)} of ${N}`,`${f1(d.pts)} vs ${f1(d.opp_pts)} ${op.name}\nLeague median ${f1(L[i].med)} · middle half ${f1(L[i].p25)}–${f1(L[i].p75)}`)}/>`});
- const last=tp.at(-1),my=y(L.at(-1).med),above=last[1]<=my;s+=`<text class="vl fade" x="${last[0]+10}" y="${above?Math.min(last[1]+5,my-10):Math.max(last[1]+5,my+18)}" style="fill:var(--acc)">${f1(g.at(-1).pts)}</text><text class="ax fade" x="${last[0]+10}" y="${above?Math.max(my+4,last[1]+20):Math.min(my+4,last[1]-10)}">med ${Math.round(L.at(-1).med)}</text>`;
- const avg=t.pf/g.length,lm=L.reduce((a,d)=>a+d.med,0)/L.length,ab=g.filter(d=>d.pts>L[d.w-1].med).length;
- el.innerHTML=`<div class="ph"><h2>Season pulse</h2><span class="q">${ab} of ${g.length} weeks above league median</span></div>
- <div class="big"><span class="n tn" data-c="${avg}" data-d="1">${f1(avg)}</span><span class="u">points per week<small class="${avg>=lm?'up':'dn'}">${sg(avg-lm)} vs league median week (${f1(lm)})</small></span></div>
- <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".22"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient></defs>${s}</svg></div>
- <div class="leg"><span><i style="background:var(--acc);height:3px"></i>${esc(t.name)}</span><span><i style="background:var(--label);opacity:.3;height:1px"></i>Opponent</span><span><i style="background:repeating-linear-gradient(90deg,var(--steel) 0 4px,transparent 4px 7px)"></i>League median</span><span><i style="background:var(--steel);opacity:.3;height:9px"></i>Middle half (25–75th pct)</span><span>● win ○ loss</span></div>`}
+ let inner=`<path data-m="popp" d="${P(g.map((d,i)=>[x(i),y(d.opp_pts)]))}" fill="none" stroke="var(--label)" stroke-width="1" opacity=".22"/>`;
+ inner+=`<path data-m="parea" d="${P(tp)}L${tp.at(-1)[0]} ${H-pb}L${tp[0][0]} ${H-pb}Z" fill="url(#pg)"/>`;
+ if(rivalOn)inner+=`<path data-m="priv" d="${P(R.weeks.map((d,i)=>[x(i),y(d.pts)]))}" fill="none" stroke="var(--riv)" stroke-width="2" stroke-dasharray="6 4" stroke-linejoin="round"/>`+R.weeks.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.pts)}" r="3" fill="var(--riv)"/>`).join('');
+ inner+=`<path data-m="pline" d="${P(tp)}" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+ s+=`<g opacity=".25">${inner}</g><g clip-path="url(#pclip)">${inner.replace(/data-m="[^"]+"/g,m=>m.replace('"p','"c'))}</g>`;
+ g.forEach((d,i)=>{const cx=x(i),cy=y(d.pts);
+  s+=`<g class="wk" data-w="${d.w}"><circle data-m="pdot${i}" cx="${cx}" cy="${cy}" r="5" fill="${d.res==='W'?'var(--acc)':'var(--ink)'}" stroke="var(--acc)" stroke-width="2.5"/>
+  <text class="axb" x="${cx}" y="${H-pb+18}" text-anchor="middle">W${d.w}</text>
+  <text class="axb" x="${cx}" y="${H-pb+33}" text-anchor="middle" style="fill:${d.res==='W'?'var(--win)':'var(--loss)'}">${d.res}</text></g>`});
+ s+=`<g id="cur" style="pointer-events:none"><line x1="0" x2="0" y1="${pt-8}" y2="${H-pb+4}" stroke="var(--chalk)" stroke-width="1" opacity=".55"/><rect x="-20" y="${pt-24}" width="40" height="17" rx="3" fill="var(--acc)"/><text class="axb" x="0" y="${pt-11}" text-anchor="middle" style="fill:var(--ink)">WK ?</text></g>`;
+ s+=`<rect class="hit" x="0" y="0" width="${W}" height="${H}"/>`;
+ const avg=t.pf/g.length;
+ el.innerHTML=`<div class="ph"><h2>Season pulse</h2><button class="tog" id="rtog" type="button" aria-pressed="${rivalOn}"><i></i>Against ${esc(short(R))}</button></div>
+ <div class="big"><span class="n" id="pp-n"></span><span class="t" id="pp-t"></span></div>
+ <div class="ro" id="ro"></div>
+ <div class="chart"><svg class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Scrub to week" aria-valuemin="1" aria-valuemax="${TH}" viewBox="0 0 ${W} ${H}" height="${H}"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".25"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient><clipPath id="pclip"><rect id="pclipr" x="0" y="0" width="${W}" height="${H}"/></clipPath></defs>${s}</svg></div>
+ <div class="leg"><span><i style="background:var(--acc)"></i>${esc(short(t))}</span>${rivalOn?`<span><i style="background:repeating-linear-gradient(90deg,var(--riv) 0 6px,transparent 6px 9px)"></i>${esc(short(R))}</span>`:''}<span><i style="background:var(--label);opacity:.35;height:1px"></i>Opponent</span><span><i style="background:repeating-linear-gradient(90deg,var(--steel) 0 4px,transparent 4px 7px)"></i>League median</span><span><i style="background:var(--steel);opacity:.3;height:9px"></i>Middle half</span></div>`;
+ pulseK();
+ $('#rtog').onclick=()=>{rivalOn=!rivalOn;renderAll(true)};
+ bindScrub($('#scrub'))}
+function pulseK(){const t=T[cur],g=wks(cur),L=D.league_wk,i=K-1,d=t.weeks[i];if(!PZ)return;
+ const cx=PZ.x(i);const c=$('#cur');if(c)c.setAttribute('transform',`translate(${cx},0)`);if(c)c.querySelector('text').textContent='WK '+K;
+ const cr=$('#pclipr');if(cr)cr.setAttribute('width',cx+(K===TH?PZ.W:6));
+ document.querySelectorAll('#p-pulse .wk').forEach(n=>n.classList.toggle('off',+n.dataset.w>K));
+ const avg=mean(g.map(x=>x.pts)),lm=mean(L.slice(0,K).map(x=>x.med)),ab=g.filter(x=>x.pts>L[x.w-1].med).length;
+ $('#pp-n').innerHTML=N_('ppg',avg,'f1');
+ $('#pp-t').innerHTML=`<span class="u">ppg</span> through Week ${K}<small class="${avg>=lm?'up':'dn'}">${sg(avg-lm)} vs league median week · ${ab} of ${g.length} weeks above</small>`;
+ const op=T[d.opp];$('#ro').innerHTML=`<b>WEEK ${d.w}</b><span><span class="res ${d.res}">${d.res}</span>${f1(d.pts)}–${f1(d.opp_pts)} vs ${esc(short(op))} · ${ord(d.wk_rank)} of ${N}</span><span class="hint">${isPhone()?'Press & drag to scrub':'Click or drag to scrub · ← →'}</span>`;
+ const sv=$('#scrub');if(sv){sv.setAttribute('aria-valuenow',K);sv.setAttribute('aria-valuetext','Through week '+K)}}
+function bindScrub(sv){let drag=false;
+ const at=e=>{const r=sv.getBoundingClientRect();const k=Math.max(1,Math.min(TH,PZ.inv((e.clientX-r.left)*(PZ.W/r.width))+1));if(k!==K)setK(k)};
+ sv.addEventListener('pointerdown',e=>{drag=true;try{sv.setPointerCapture(e.pointerId)}catch(_){}at(e)});
+ sv.addEventListener('pointermove',e=>{if(drag)at(e)});
+ const end=e=>{drag=false;try{sv.releasePointerCapture(e.pointerId)}catch(_){}};
+ sv.addEventListener('pointerup',end);sv.addEventListener('pointercancel',end);
+ sv.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'&&K>1){setK(K-1);e.preventDefault()}if(e.key==='ArrowRight'&&K<TH){setK(K+1);e.preventDefault()}if(e.key==='End'){setK(TH)}})}
+function setK(k){K=k;pulseK();for(const id in PANELS)if(id!=='p-pulse')PANELS[id](document.getElementById(id));
+ const b=$('#back');b.classList.toggle('on',K!==TH);b.innerHTML=`Viewing through <b>Week ${K}</b> · Back to Week ${TH}`;
+ $('#stamp').innerHTML=`Through <b>Week ${K}</b>${K!==TH?' (scrubbed)':''}`;hashSync()}
+$('#back').onclick=()=>setK(TH);
 
-function luck(el){const t=T[cur],g=t.weeks;const W=Math.max(240,el.getBoundingClientRect().width-34),H=isPhone()?190:200,pl=26,pr=40,pt=14,pb=26;
- const act=[0],exp=[0];g.forEach(d=>{act.push(act.at(-1)+(d.res==='W'?1:d.res==='T'?.5:0));exp.push(exp.at(-1)+d.xw)});
- const hi=Math.max(1,Math.ceil(Math.max(...act,...exp)));const x=sc(0,g.length,pl,W-pr),y=sc(0,hi,H-pb,pt);
- let s='';ticks(0,hi,4).forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr+8}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
- for(let i=0;i<g.length;i++){let a0=act[i]-exp[i],a1=act[i+1]-exp[i+1];const seg=(xa,xb,ya0,ya1,ea0,ea1,pos)=>`<path class="fade" d="M${x(xa)} ${y(ya0)}L${x(xb)} ${y(ya1)}L${x(xb)} ${y(ea1)}L${x(xa)} ${y(ea0)}Z" fill="${pos?'var(--win)':'var(--loss)'}" opacity=".22"/>`;
-  if(a0*a1<0){const f=a0/(a0-a1),xm=i+f,ym=act[i]+(act[i+1]-act[i])*f;s+=seg(i,xm,act[i],ym,exp[i],ym,a0>0)+seg(xm,i+1,ym,act[i+1],ym,exp[i+1],a1>0)}
-  else s+=seg(i,i+1,act[i],act[i+1],exp[i],exp[i+1],(a0+a1)>=0)}
- s+=`<path class="draw" d="${P(exp.map((v,i)=>[x(i),y(v)]))}" fill="none" stroke="var(--steel)" stroke-width="2" stroke-dasharray="5 4"/>`;
- s+=`<path class="draw" d="${P(act.map((v,i)=>[x(i),y(v)]))}" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round"/>`;
- g.forEach((d,i)=>{const cx=x(i+1);s+=`<circle class="fade" cx="${cx}" cy="${y(act[i+1])}" r="3.5" fill="var(--acc)"/><text class="ax" x="${cx}" y="${H-pb+17}" text-anchor="middle">${d.w}</text>`;
-  const bw=(W-pl-pr)/g.length;s+=`<rect class="hit" x="${cx-bw/2}" y="0" width="${bw}" height="${H}" ${tipA(`Through week ${d.w}`,`Actual ${act[i+1]} W · expected ${exp[i+1].toFixed(2)}\nWeek ${d.w}: beat ${d.apw} of ${N-1} (${(d.xw).toFixed(2)} exp W), ${d.res}`)}/>`});
- s+=`<text class="vl fade" x="${x(g.length)+8}" y="${y(act.at(-1))+(act.at(-1)>=exp.at(-1)?-2:12)}" style="fill:var(--acc)">${act.at(-1)}</text><text class="vl fade" x="${x(g.length)+8}" y="${y(exp.at(-1))+(act.at(-1)>=exp.at(-1)?12:-2)}" style="fill:var(--steel)">${exp.at(-1).toFixed(1)}</text>`;
- el.innerHTML=`<div class="ph"><h2>Luck</h2><span class="q">${luckPill(t.luck_rank)}</span></div>
- <div class="big"><span class="n tn ${t.luck>0.05?'up':t.luck<-0.05?'dn':''}" data-c="${t.luck}" data-d="2" data-s="1">${sg(t.luck,2)}</span><span class="u">wins vs schedule-neutral<small>${t.w+t.t*.5} actual · ${t.xw.toFixed(2)} expected (all-play)</small></span></div>
- <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}">${s}</svg></div>
- <div class="leg"><span><i style="background:var(--acc)"></i>Actual wins</span><span><i style="background:repeating-linear-gradient(90deg,var(--steel) 0 5px,transparent 5px 9px)"></i>Expected</span><span><i style="background:var(--win);opacity:.5;height:9px"></i>Lucky</span><span><i style="background:var(--loss);opacity:.5;height:9px"></i>Unlucky</span></div>
- <div class="strip"><div class="t">League luck</div>${dotStrip(W,o=>o.luck,{fmt:v=>sg(v,2),label:'Luck'})}</div>`}
+/* --- luck dial --- */
+function luck(el){const o=S(cur),vals=RIDS.map(r=>({r,v:S(r).luck}));const W=pw(el);
+ const R=Math.max(1.5,Math.ceil(Math.max(...vals.map(x=>Math.abs(x.v)))*2)/2);
+ const cx=75,cy=84,rad=64,ang=v=>Math.PI*(1-(Math.max(-R,Math.min(R,v))+R)/(2*R));
+ const pt=(v,rr)=>[cx+rr*Math.cos(ang(v)),cy-rr*Math.sin(ang(v))];
+ const arc=(a,b,col,w=8)=>{const[p0,p1]=[pt(a,rad),pt(b,rad)];return `<path d="M${p0[0].toFixed(1)} ${p0[1].toFixed(1)}A${rad} ${rad} 0 0 1 ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}" fill="none" stroke="${col}" stroke-width="${w}"/>`};
+ let s=arc(-R,-0.5,'color-mix(in srgb,var(--loss) 45%,transparent)')+arc(-0.5,0.5,'var(--line-strong)')+arc(0.5,R,'color-mix(in srgb,var(--win) 45%,transparent)');
+ vals.filter(x=>x.r!==cur).forEach(x=>{const[a,b]=[pt(x.v,rad-9),pt(x.v,rad+9)];s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="var(--steel)" stroke-width="1.5" opacity=".7"/>`});
+ const nd=pt(o.luck,rad-4);s+=`<line data-m="lneedle" x1="${cx}" y1="${cy}" x2="${nd[0].toFixed(1)}" y2="${nd[1].toFixed(1)}" stroke="var(--acc)" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--acc)"/>`;
+ s+=`<text class="ax" x="${cx-rad}" y="${cy+14}" text-anchor="middle">−${R}</text><text class="ax" x="${cx+rad}" y="${cy+14}" text-anchor="middle">+${R}</text><text class="ax" x="${cx}" y="${cy-rad-13}" text-anchor="middle">0</text>`;
+ const even=Math.abs(o.luck)<0.5,rk=o.luck_rank,word=even?'About even':rk<=N/2?`${ord(rk)} luckiest`:`${ord(N+1-rk)} unluckiest`;
+ el.innerHTML=`<div class="ph"><h2>Luck</h2><span class="q">wins vs schedule-neutral</span></div>
+ <div class="dial"><svg viewBox="0 0 150 ${cy+16}" role="img" aria-label="Luck dial">${s}</svg>
+ <div><div class="n ${o.luck>=0.5?'up':o.luck<=-0.5?'dn':''}">${N_('luck2',o.luck,'s2')}</div><div class="w" style="color:${even?'var(--label)':o.luck>0?'var(--win)':'var(--loss)'}">${word}</div><div class="s">${o.w+o.t*.5} actual · ${o.xw.toFixed(2)} expected wins</div></div></div>
+ <div class="strip"><div class="tt">League luck strip</div>${dotStrip(W,vals,{fmt:v=>sg(v,2),label:'Luck',key:'luck'})}</div>
+ <div class="strip"><div class="tt">Luck by week · result − all-play expectation</div>${luckWeeks(W)}</div>`}
+function luckWeeks(W){const g=T[cur].weeks,h=78,mid=34,amp=26,n=g.length,bw=W/n,cw=Math.min(26,bw*.5);let s=`<line x1="0" x2="${W}" y1="${mid}" y2="${mid}" stroke="var(--line-strong)"/>`;
+ g.forEach((d,i)=>{const v=(d.res==='W'?1:d.res==='T'?.5:0)-d.xw,cx=bw*(i+.5),hh=Math.abs(v)*amp,off=d.w>K;
+  s+=`<g class="wk ${off?'off':''}" ${tipA(`Week ${d.w} · ${d.res}`,`Beat ${d.apw} of ${N-1} teams (${d.xw.toFixed(2)} expected W)\nLuck ${sg(v,2)}`)}><rect class="hit" x="${cx-bw/2}" y="0" width="${bw}" height="${h}"/><rect data-m="lw${i}" x="${cx-cw/2}" y="${v>=0?mid-hh:mid}" width="${cw}" height="${Math.max(1,hh)}" rx="1.5" fill="${v>=0?'var(--win)':'var(--loss)'}" opacity=".8"/><text class="ax" x="${cx}" y="${h-2}" text-anchor="middle">${d.w}</text></g>`});
+ return `<svg viewBox="0 0 ${W} ${h}" height="${h}" role="img" aria-label="Luck by week">${s}</svg>`}
 
-function bench(el){const t=T[cur],g=t.weeks;const W=Math.max(240,el.getBoundingClientRect().width-34),H=isPhone()?170:180,pl=30,pr=6,pt=20,pb=24;
- const hi=Math.ceil(Math.max(...g.map(d=>d.opt))/25)*25;const y=sc(0,hi,H-pb,pt),bw=(W-pl-pr)/g.length,cw=Math.min(34,bw*.62);
+function bench(el){const o=S(cur),g=wks(cur);const W=pw(el),H=isPhone()?150:170,pl=30,pr=6,pt=20,pb=22;
+ const hi=Math.ceil(Math.max(...T[cur].weeks.map(d=>d.opt))/25)*25;const y=sc(0,hi,H-pb,pt),n=T[cur].weeks.length,bw=(W-pl-pr)/n,cw=Math.min(30,bw*.56);
  let s='';ticks(0,hi,3).forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
- s+=`<defs><pattern id="hz" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--deck-2)"/><line x1="0" y1="0" x2="0" y2="5" stroke="var(--steel)" stroke-width="1.6" opacity=".55"/></pattern></defs>`;
- g.forEach((d,i)=>{const cx=pl+bw*(i+.5),x0=cx-cw/2;
-  s+=`<rect x="${x0}" y="${y(d.opt)}" width="${cw}" height="${y(0)-y(d.opt)}" rx="3" fill="url(#hz)" stroke="var(--line-strong)"/>`;
-  s+=`<rect class="bar" x="${x0}" y="${y(d.pts)}" width="${cw}" height="${y(0)-y(d.pts)}" rx="3" fill="var(--acc)" style="transform-origin:${cx}px ${y(0)}px"/>`;
-  s+=`<text class="axb fade" x="${cx}" y="${y(d.opt)-5}" text-anchor="middle" style="fill:${d.left>0.05?'var(--label)':'var(--win)'}">${d.left>0.05?'−'+Math.round(d.left):'✓'}</text><text class="ax" x="${cx}" y="${H-pb+17}" text-anchor="middle">${d.w}</text>`;
-  s+=`<rect class="hit" x="${cx-bw/2}" y="0" width="${bw}" height="${H}" ${tipA(`Week ${d.w} · ${(d.eff*100).toFixed(1)}% efficient`,`Started ${f1(d.pts)} · optimal ${f1(d.opt)}\nLeft on bench ${f1(d.left)}${d.missed.length?'\nShould have started: '+d.missed.map(m=>m.n+' ('+m.pos+') '+f1(m.pts)).join(', '):''}`)}/>`});
- const worst=g.reduce((a,d)=>d.left>a.left?d:a,g[0]);
- el.innerHTML=`<div class="ph"><h2>Bench points</h2><span class="q">${rkPill(t.left_rank,'fewest left')}</span></div>
- <div class="big"><span class="n tn" data-c="${t.left}" data-d="1">${f1(t.left)}</span><span class="u">points left on bench<small>${(t.eff*100).toFixed(1)}% lineup efficiency · ${f1(t.left/g.length)}/wk</small></span></div>
+ T[cur].weeks.forEach((d,i)=>{const cx=pl+bw*(i+.5),x0=cx-cw/2,off=d.w>K;
+  s+=`<g class="wk ${off?'off':''}"><rect data-m="bo${i}" x="${x0}" y="${y(d.opt)}" width="${cw}" height="${y(0)-y(d.opt)}" fill="none" stroke="var(--line-strong)" stroke-dasharray="2 2"/>`;
+  s+=`<rect data-m="bp${i}" x="${x0}" y="${y(d.pts)}" width="${cw}" height="${y(0)-y(d.pts)}" fill="var(--acc)" opacity=".9"/>`;
+  s+=`<text class="axb" x="${cx}" y="${y(d.opt)-5}" text-anchor="middle" style="fill:${d.left>0.05?'var(--label)':'var(--win)'}">${d.left>0.05?'−'+Math.round(d.left):'✓'}</text><text class="ax" x="${cx}" y="${H-pb+16}" text-anchor="middle">${d.w}</text>`;
+  s+=`<rect class="hit" x="${cx-bw/2}" y="0" width="${bw}" height="${H}" ${tipA(`Week ${d.w} · ${(d.eff*100).toFixed(1)}% efficient`,`Started ${f1(d.pts)} · optimal ${f1(d.opt)}\nLeft on bench ${f1(d.left)}${d.missed.length?'\nShould have started: '+d.missed.map(m=>m.n+' ('+m.pos+') '+f1(m.pts)).join(', '):''}`)}/></g>`});
+ const eff=o.pf/(o.pf+o.left);const worst=g.reduce((a,d)=>d.left>a.left?d:a,g[0]);
+ el.innerHTML=`<div class="ph"><h2>Bench points</h2><span class="q"><span class="rk ${o.left_rank<=3?'top':''}">#${o.left_rank} fewest left</span></span></div>
+ <div class="big"><span class="n">${N_('left',o.left,'f1')}</span><span class="t"><span class="u">pts</span> left on bench<small>${(eff*100).toFixed(1)}% lineup efficiency · ${f1(o.left/g.length)}/wk</small></span></div>
  <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}">${s}</svg></div>
- <div class="leg"><span><i style="background:var(--acc);height:9px"></i>Started</span><span><i style="background:repeating-linear-gradient(45deg,var(--steel) 0 2px,var(--deck-2) 2px 4px);height:9px"></i>Optimal lineup gap</span></div>
- ${worst&&worst.left>0?`<div class="note">Costliest week: <b>Week ${worst.w}</b>, <span class="tn">${f1(worst.left)}</span> pts left${worst.missed.length?' · sat '+worst.missed.map(m=>`<b>${esc(m.n)}</b> <span class="tn">${f1(m.pts)}</span>`).join(', '):''}${worst.res==='L'&&worst.pts+worst.left>worst.opp_pts?' · <span class="dn">would have flipped the loss</span>':''}</div>`:''}
- <div class="strip"><div class="t">League: points left on bench</div>${dotStrip(W,o=>o.left,{lowGood:true,label:'Left on bench'})}</div>`}
+ ${worst&&worst.left>0?`<div class="leg" style="color:var(--label)">Costliest: Wk ${worst.w}, ${f1(worst.left)} left${worst.missed.length?' · sat '+esc(worst.missed[0].n)+' '+f1(worst.missed[0].pts):''}${worst.res==='L'&&worst.pts+worst.left>worst.opp_pts?' · <span class="dn">would have flipped the loss</span>':''}</div>`:''}
+ <div class="strip"><div class="tt">League: points left on bench</div>${dotStrip(W,RIDS.map(r=>({r,v:S(r).left})),{lowGood:true,label:'Left on bench',key:'bench'})}</div>`}
 
-function pos(el){const t=T[cur],PO=D.pos_order;
- const bestP=PO.reduce((a,p)=>t.pos[p].rank<t.pos[a].rank||(t.pos[p].rank===t.pos[a].rank&&t.pos[p].pps>t.pos[a].pps)?p:a,PO[0]);
- const top3=PO.filter(p=>t.pos[p].rank<=3).length;
- const rows=PO.map(p=>{const o=t.pos[p],vs=RIDS.map(r=>T[r].pos[p].pps),lo=Math.min(...vs),hi=Math.max(...vs),avg=D.pos_league[p].avg;
-  const X=v=>(6+(hi>lo?(v-lo)/(hi-lo):1)*94); // worst = 6% stub, best = 100%
-  const others=RIDS.filter(r=>r!==cur).map(r=>`<i class="o" style="left:${X(T[r].pos[p].pps)}%"></i>`).join('');
-  return `<div class="pr p-${p}" ${tipA(`${p} · ${ord(o.rank)} of ${N}`,`${f1(o.pps)} pts per start (${o.starts} starts, ${f1(o.pts)} total)\nLeague avg ${f1(avg)} · best ${f1(D.pos_league[p].max)}`)}>
-  <span class="pl">${p}</span><span class="pv">${f1(o.pps)}</span>
-  <div class="trk">${others}<i class="f" style="width:${X(o.pps)}%"></i><i class="avg" style="left:${X(avg)}%"></i></div>
-  <div class="pk">${rkPill(o.rank)}<div class="pips">${Array.from({length:N},(_,i)=>`<i class="${i+1===o.rank?'on':''}"></i>`).join('')}</div></div></div>`}).join('');
- el.innerHTML=`<div class="ph"><h2>Position strength</h2><span class="q">pts per start · rank of 10</span></div>
- <div class="big"><span class="n tn">${top3}<span style="color:var(--steel);font-size:.55em">/6</span></span><span class="u">units in the league top 3<small>Best: ${bestP} ${ord(t.pos[bestP].rank)} · flex starts count at real position</small></span></div>
- <div class="pos">${rows}</div>
- <div class="leg"><span><i style="background:var(--acc);height:8px"></i>${esc(t.name)}</span><span><i style="background:#8c95a8;width:2px;height:12px"></i>Other teams</span><span><i style="background:var(--chalk);width:2px;height:12px"></i>League avg</span><span>bar runs league worst → best</span></div>`}
+function pos(el){const o=S(cur),PO_=D.pos_order,rv=rivalOf(cur);
+ const top3=PO_.filter(p=>o.pos[p].rank<=3).length;
+ const rows=PO_.map(p=>{const v=o.pos[p],vs=RIDS.map(r=>S(r).pos[p].pps),lo=Math.min(...vs),hi=Math.max(...vs),avg=mean(vs);
+  const X=val=>(hi>lo?(val-lo)/(hi-lo):.5)*100;
+  const others=RIDS.filter(r=>r!==cur).map(r=>`<i class="o ${rivalOn&&r===rv?'rv':''}" style="left:${X(S(r).pos[p].pps)}%" ${tipA(T[r].name+' · '+p,f1(S(r).pos[p].pps)+' pts/start')}></i>`).join('');
+  return `<div class="pr p-${p}" ${tipA(`${p} · ${ord(v.rank)} of ${N}`,`${f1(v.pps)} pts per start (${v.starts} starts)\nLeague avg ${f1(avg)} · worst ${f1(lo)} · best ${f1(hi)}`)}>
+  <span class="pl">${p}</span><div class="trk">${others}<i class="avg" style="left:${X(avg)}%"></i><i class="me" style="left:${X(v.pps)}%"></i></div>
+  <span class="pv">${N_('pos'+p,v.pps,'f1')}</span><span class="prk ${v.rank<=3?'top':''}">#${v.rank}</span></div>`}).join('');
+ el.innerHTML=`<div class="ph"><h2>Position strength</h2><span class="q">pts per start</span></div>
+ <div class="big"><span class="n">${top3}<span class="u" style="font-size:20px">/6</span></span><span class="t">units in the league top 3<small>flex starts count at real position</small></span></div>
+ <div>${rows}</div>
+ <div class="scale"><span></span><span><span>◂ league worst</span><span>best ▸</span></span><span></span><span></span></div>
+ <div class="leg"><span><i style="background:var(--acc);height:9px;width:9px;border-radius:50%"></i>${esc(short(T[cur]))}</span><span><i style="background:var(--neutral-bar);width:7px;height:7px;border-radius:50%"></i>Other teams</span><span><i style="background:var(--chalk);width:2px;height:12px"></i>League avg</span>${rivalOn?`<span><i style="border:2px solid var(--riv);background:none;width:10px;height:10px;border-radius:50%"></i>${esc(short(T[rv]))}</span>`:''}</div>`}
 
-function log(el){const t=T[cur],g=t.weeks;const mm=Math.max(...RIDS.flatMap(r=>T[r].weeks.map(d=>Math.abs(d.pts-d.opp_pts))));
- const avgM=g.reduce((a,d)=>a+d.pts-d.opp_pts,0)/g.length;
- const rows=g.slice().reverse().map(d=>{const o=T[d.opp],m=d.pts-d.opp_pts,w=Math.abs(m)/mm*50;
-  return `<div class="gr" ${tipA(`Week ${d.w} · ${d.res} by ${f1(Math.abs(m))}`,`${f1(d.pts)} – ${f1(d.opp_pts)} vs ${o.name}\nWeekly score rank ${ord(d.wk_rank)} of ${N} · all-play ${d.apw}-${d.apl}`)}>
-  <span class="wk">W${d.w}</span>${avImg(o)}<span class="on">${esc(o.name)}</span>
+function log(el){const g=wks(cur),o=S(cur);const mm=Math.max(...RIDS.flatMap(r=>T[r].weeks.map(d=>Math.abs(d.pts-d.opp_pts))));
+ const top=r=>S(r).rank<=N/2;let tw=0,tl=0,bw=0,bl=0;g.forEach(d=>{const w=d.res==='W';if(top(d.opp)){w?tw++:tl++}else{w?bw++:bl++}});
+ const rows=g.slice().reverse().map(d=>{const op=T[d.opp],m=d.pts-d.opp_pts,w=Math.abs(m)/mm*50;
+  return `<div class="gr" ${tipA(`Week ${d.w} · ${d.res} by ${f1(Math.abs(m))}`,`${f1(d.pts)} – ${f1(d.opp_pts)} vs ${op.name}\nWeekly score rank ${ord(d.wk_rank)} of ${N} · all-play ${d.apw}-${d.apl}`)}>
+  <span class="wk2">W${d.w}</span>${avImg(op)}<span class="on">${esc(short(op))}${top(d.opp)?'<small>top ½</small>':''}</span>
   <span class="sc"><span class="res ${d.res}">${d.res}</span>${f1(d.pts)}<span>–${f1(d.opp_pts)}</span></span>
-  <div class="mg"><b class="${m>=0?'up':'dn'}">${sg(m)}</b><i class="${m>=0?'W':'L'}" style="${m>=0?`left:50%`:`right:50%`};width:${w}%"></i></div></div>`}).join('');
- el.innerHTML=`<div class="ph"><h2>Game log</h2><span class="q">PA ${f1(t.pa)} · ${ord(t.pa_rank)} most faced</span></div>
- <div class="big"><span class="n tn ${avgM>=0?'up':'dn'}" data-c="${avgM}" data-d="1" data-s="1">${sg(avgM)}</span><span class="u">average margin<small>${t.w}-${t.l}${t.t?'-'+t.t:''} · bars scaled to league's widest (${f1(mm)})</small></span></div>
- <div class="log">${rows}</div>`}
+  <div class="mg"><b class="${m>=0?'up':'dn'}">${sg(m)}</b><i class="${m>=0?'W':'L'}" style="${m>=0?'left:50%':'right:50%'};width:${w}%"></i></div></div>`}).join('');
+ el.innerHTML=`<div class="ph"><h2>Game log</h2><span class="q">PA ${f1(o.pa)}</span></div>
+ <div class="big"><span class="n">${tw}-${tl}</span><span class="t">record vs top-half teams<small>${bw}-${bl} vs bottom half · halves = standings through Wk ${K}</small></span></div>
+ <div>${rows}</div>`}
 
-const PANELS={'p-hero':hero,'p-pulse':pulse,'p-luck':luck,'p-bench':bench,'p-pos':pos,'p-log':log};
+/* --- remaining strength of schedule --- */
+function remWeeks(){const out=[];for(let w=K+1;w<=PO.reg_end;w++){if(K===TH&&LIVE&&w===LIVE.week)continue;out.push(w)}return out}
+function ppgAt(r){return mean(T[r].weeks.filter(x=>x.w<=K).map(x=>x.pts))}
+function sosOf(r){const ws=remWeeks();const opps=ws.map(w=>{const m=(D.sched[w]||[]).find(p=>p.includes(r));return m?{w,o:m[0]===r?m[1]:m[0]}:null}).filter(Boolean);return {opps,avg:mean(opps.map(x=>ppgAt(x.o)))}}
+function sos(el){const me=sosOf(cur),all=RIDS.map(r=>({r,v:sosOf(r).avg})),W=pw(el);
+ const rk=all.slice().sort((a,b)=>b.v-a.v).findIndex(x=>x.r===cur)+1,lg=mean(RIDS.map(ppgAt));
+ const ppgs=RIDS.map(ppgAt),mx=Math.max(...ppgs),mn=Math.min(...ppgs);
+ const rows=me.opps.map(({w,o})=>{const v=ppgAt(o),orank=RIDS.slice().sort((a,b)=>ppgAt(b)-ppgAt(a)).indexOf(o)+1;
+  return `<div class="sr" ${tipA(`Week ${w} · ${T[o].name}`,`${f1(v)} ppg through Wk ${K} (${ord(orank)} of ${N})\n${recS(S(o))} · ${ord(S(o).rank)} in standings`)}><span class="wk2">W${w}</span>${avImg(T[o])}<span class="on">${esc(short(T[o]))}</span><div class="bb"><i style="width:${(v-mn+4)/(mx-mn+4)*100}%;background:${v>=lg?'var(--loss)':'var(--win)'};opacity:.75"></i></div><span class="vv">${f1(v)}</span></div>`}).join('');
+ const ws=me.opps.map(x=>x.w);
+ el.innerHTML=`<div class="ph"><h2>Remaining schedule</h2><span class="q">Wk ${ws[0]}–${ws.at(-1)} · opp ppg</span></div>
+ <div class="big"><span class="n">${N_('sos',me.avg,'f1')}</span><span class="t">avg opponent <span class="u">ppg</span> <span class="rk ${rk<=3?'top':''}">#${rk} hardest</span><small>league avg ${f1(lg)} · ${sg(me.avg-lg)} per game</small></span></div>
+ <div>${rows||'<div class="mut">No regular-season games left.</div>'}</div>
+ <div class="strip"><div class="tt">League: remaining opponent ppg</div>${dotStrip(W,all,{lowGood:true,label:'Remaining opp ppg',key:'sos'})}</div>`}
 
-/* ---------- motion ---------- */
-const fmtC=(el,v)=>{const d=+el.dataset.d||0;el.textContent=el.dataset.s?sg(v,d):v.toFixed(d)};
-function prep(el){if(RM)return;el.classList.add('pre');
- el.querySelectorAll('[data-c]').forEach(n=>fmtC(n,0));
- el.querySelectorAll('path.draw').forEach(p=>{if(p.getAttribute('fill')!=='none'){p.style.opacity=0;return}const L=p.getTotalLength?p.getTotalLength():0;p.style.strokeDasharray=L+' '+L;p.style.strokeDashoffset=L});
- el.querySelectorAll('rect.bar').forEach(b=>b.style.transform='scaleY(0)')}
-function play(el){if(RM){el.classList.remove('pre');return}
- requestAnimationFrame(()=>{el.classList.remove('pre');
-  el.querySelectorAll('path.draw').forEach((p,i)=>{p.style.transition='stroke-dashoffset 1.2s cubic-bezier(.4,.1,.2,1) .15s,opacity .8s .6s';p.style.strokeDashoffset=0;p.style.opacity=''});
-  el.querySelectorAll('rect.bar').forEach((b,i)=>{b.style.transition=`transform .7s cubic-bezier(.2,.8,.2,1) ${.1+i*.06}s`;b.style.transform='scaleY(1)'});
-  const ns=[...el.querySelectorAll('[data-c]')],t0=performance.now(),dur=1100;
-  const step=now=>{const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);ns.forEach(n=>fmtC(n,+n.dataset.c*e));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)})}
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!revealed.has(e.target.id)){revealed.add(e.target.id);io.unobserve(e.target);play(e.target)}}),{threshold:.18});
+/* --- weekly rank heatmap --- */
+function heat(el){const W=pw(el),wide=W>560,rv=rivalOf(cur);const lab=wide?Math.min(170,W*.24):46,top=20,rh=wide?26:24,n=WK.length;
+ const cw=Math.min(78,(W-lab-6)/n),rows=RIDS.slice().sort((a,b)=>S(a).rank-S(b).rank),H=top+rh*N+4;
+ const HA=[158,240,226],HB=[24,38,46];const col=r=>{const t=(r-1)/(N-1);return 'rgb('+HA.map((a,i)=>Math.round(a+(HB[i]-a)*Math.pow(t,.8))).join(',')+')'};
+ const txt=r=>(r-1)/(N-1)<.45?'var(--ink)':'var(--chalk)';
+ let s=WK.map((w,j)=>`<text class="axb" x="${lab+cw*(j+.5)}" y="13" text-anchor="middle" style="${w>K?'opacity:.35':''}">W${w}</text>`).join('');
+ rows.forEach((r,i)=>{const y0=top+i*rh,me=r===cur,isR=rivalOn&&r===rv;
+  s+=`<text class="${me?'axb':'ax'}" x="${lab-8}" y="${y0+rh/2+4}" text-anchor="end" style="${me?'fill:var(--acc)':isR?'fill:var(--riv)':''}">${esc(wide?short(T[r]):abbr(T[r]))}</text>`;
+  T[r].weeks.forEach((d,j)=>{const off=d.w>K;s+=`<g ${tipA(`${T[r].name} · Week ${d.w}`,`${ord(d.wk_rank)} of ${N} in points · ${f1(d.pts)} · ${d.res}`)} style="${off?'opacity:.2':''}"><rect x="${lab+cw*j+1}" y="${y0+1}" width="${cw-2}" height="${rh-2}" rx="2" fill="${col(d.wk_rank)}"/><text class="ax" x="${lab+cw*(j+.5)}" y="${y0+rh/2+4}" text-anchor="middle" style="fill:${txt(d.wk_rank)};font-weight:${me?700:500}">${d.wk_rank}</text></g>`});
+  if(me||isR)s+=`<rect x="${lab-1}" y="${y0}" width="${cw*n+2}" height="${rh}" rx="3" fill="none" stroke="${me?'var(--acc)':'var(--riv)'}" stroke-width="2" ${isR?'stroke-dasharray="4 3"':''} style="pointer-events:none"/>`});
+ const g=wks(cur),top3=g.filter(d=>d.wk_rank<=3).length,avgR=mean(g.map(d=>d.wk_rank));
+ el.innerHTML=`<div class="ph"><h2>Weekly rank heatmap</h2><span class="q">points rank each week · sorted by standings</span></div>
+ <div class="big"><span class="n">${N_('avgr',avgR,'f1')}</span><span class="t">average weekly rank<small>${top3} top-3 weeks of ${g.length}</small></span></div>
+ <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Weekly points rank heatmap">${s}</svg></div>
+ <div class="leg"><span><i style="background:linear-gradient(90deg,rgb(158,240,226),rgb(24,38,46));height:9px;width:64px;border:1px solid var(--line-strong)"></i>1st → ${ord(N)} in points</span><span><i style="border:2px solid var(--acc);background:none;height:10px"></i>${esc(short(T[cur]))}</span></div>`}
 
-function renderAll(first){for(const id in PANELS){const el=document.getElementById(id);PANELS[id](el);if(!revealed.has(id))prep(el)}
- if(first)for(const id in PANELS)io.observe(document.getElementById(id))}
-function select(r,user){cur=r;const t=T[r];const ro=document.documentElement.style;ro.setProperty('--acc',t.accent);ro.setProperty('--acc-a',t.accent+'29');
+/* --- player contribution --- */
+function contrib(el){const g=wks(cur),agg={};let tot=0;
+ g.forEach(d=>d.st.forEach(([pid,pts,ps])=>{agg[pid]=agg[pid]||{pid,pts:0,n:0,ps};agg[pid].pts+=pts;agg[pid].n++;tot+=pts}));
+ const arr=Object.values(agg).sort((a,b)=>b.pts-a.pts),top=arr.slice(0,isPhone()?6:8),rest=arr.slice(top.length).reduce((s,x)=>s+x.pts,0),mx=top[0]?top[0].pts:1;
+ const nm=pid=>D.names[pid]||{n:pid,pos:'?'};
+ const rows=top.map(x=>{const m=nm(x.pid),sh=x.pts/tot*100;return `<div class="cr p-${esc(m.pos)}" ${tipA(m.n,`${f1(x.pts)} pts in ${x.n} start${x.n>1?'s':''} · ${sh.toFixed(1)}% of starter points${m.inj?'\nInjury status: '+m.inj:''}`)}><span class="nm"><span class="pt">${esc(m.pos)}</span>${esc(m.n)}${m.inj?`<span class="inj">${esc(m.inj==='Questionable'?'Q':m.inj==='Doubtful'?'D':m.inj==='Out'?'OUT':m.inj)}</span>`:''}</span><span class="vv">${f1(x.pts)}</span><span class="sh">${sh.toFixed(0)}%</span><div class="cb"><i style="width:${x.pts/mx*100}%"></i></div></div>`}).join('');
+ const t1=top[0]?nm(top[0].pid):null,t3=top.slice(0,3).reduce((s,x)=>s+x.pts,0)/tot*100;
+ el.innerHTML=`<div class="ph"><h2>Player contribution</h2><span class="q">share of starter points · Wk 1–${K}</span></div>
+ <div class="big"><span class="n">${N_('t3',t3,'f0')}<span class="u" style="font-size:20px">%</span></span><span class="t">from the top three starters<small>${t1?esc(t1.n)+' leads with '+(top[0].pts/tot*100).toFixed(1)+'%':''} · rest of lineup ${f1(rest)} pts</small></span></div>
+ <div class="cgrid">${rows}</div>`}
+
+/* --- consistency --- */
+function cons(el){const W=pw(el),rv=rivalOf(cur);const st=RIDS.map(r=>{const p=wks(r).map(x=>x.pts);return {r,m:mean(p),sd:sdev(p),lo:Math.min(...p),hi:Math.max(...p)}});
+ const me=st.find(x=>x.r===cur);const rk=st.filter(x=>x.sd!=null).sort((a,b)=>a.sd-b.sd).findIndex(x=>x.r===cur)+1;
+ const rows=st.slice().sort((a,b)=>b.m-a.m),lab=W>560?150:46,rh=20,top=6,H=top+rh*N+22;
+ const lo=Math.floor(Math.min(...st.map(x=>x.lo))/10)*10,hi=Math.ceil(Math.max(...st.map(x=>x.hi))/10)*10,x=sc(lo,hi,lab,W-8);
+ let s='';ticks(lo,hi,isPhone()?4:6).forEach(v=>{s+=`<line class="gl" x1="${x(v)}" x2="${x(v)}" y1="${top}" y2="${top+rh*N}"/><text class="ax" x="${x(v)}" y="${H-4}" text-anchor="middle">${v}</text>`});
+ rows.forEach((o,i)=>{const y=top+i*rh+rh/2,isMe=o.r===cur,isR=rivalOn&&o.r===rv,c=isMe?'var(--acc)':isR?'var(--riv)':'var(--neutral-bar)';
+  s+=`<g ${tipA(T[o.r].name,`Mean ${f1(o.m)} · sd ${o.sd==null?'—':f1(o.sd)}\nFloor ${f1(o.lo)} · ceiling ${f1(o.hi)}`)}><rect class="hit" x="0" y="${y-rh/2}" width="${W}" height="${rh}"/><text class="${isMe?'axb':'ax'}" x="${lab-8}" y="${y+4}" text-anchor="end" style="${isMe?'fill:var(--acc)':isR?'fill:var(--riv)':''}">${esc(W>560?short(T[o.r]):abbr(T[o.r]))}</text>
+  <line x1="${x(o.lo)}" x2="${x(o.hi)}" y1="${y}" y2="${y}" stroke="${c}" stroke-width="1.5" opacity="${isMe||isR?1:.7}"/>
+  ${o.sd!=null?`<rect x="${x(o.m-o.sd)}" y="${y-(isMe?5:4)}" width="${Math.max(1,x(o.m+o.sd)-x(o.m-o.sd))}" height="${isMe?10:8}" rx="2" fill="${c}" opacity="${isMe?.45:isR?.35:.3}"/>`:''}
+  <line x1="${x(o.m)}" x2="${x(o.m)}" y1="${y-6}" y2="${y+6}" stroke="${isMe?'var(--chalk)':c}" stroke-width="2"/></g>`});
+ el.innerHTML=`<div class="ph"><h2>Consistency</h2><span class="q">${me.sd==null?'needs 2+ weeks':`<span class="rk ${rk<=3?'top':''}">${ord(rk)} steadiest</span>`}</span></div>
+ <div class="big"><span class="n">${me.sd==null?'—':N_('sd',me.sd,'f1')}</span><span class="t"><span class="u">pts</span> weekly std dev<small>floor ${f1(me.lo)} · ceiling ${f1(me.hi)} · mean ${f1(me.m)}</small></span></div>
+ <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Weekly score range by team">${s}</svg></div>
+ <div class="leg"><span><i style="height:1.5px"></i>floor → ceiling</span><span><i style="height:9px;opacity:.4"></i>±1 std dev</span><span><i style="width:2px;height:12px;background:var(--chalk)"></i>mean</span></div>`}
+
+const PANELS={'p-hero':hero,'p-pulse':pulse,'p-luck':luck,'p-bench':bench,'p-pos':pos,'p-log':log,'p-heat':heat,'p-sos':sos,'p-contrib':contrib,'p-cons':cons};
+
+/* ---------- footer: methods behind a toggle ---------- */
+const built=new Date(D.built).toLocaleString('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+$('#ft').innerHTML=`<details><summary>ⓘ How this is calculated</summary><div class="meth">
+<p><b>Source.</b> Sleeper API, league ${esc(D.league.id)}. Final weeks ${WK[0]}–${TH}; Week ${LIVE?LIVE.week:TH+1} is in progress and only appears in the live strip. Built ${built} ET.</p>
+<p><b>Playoff odds (Monte Carlo).</b> ${D.sims.toLocaleString()} simulated seasons. Each team's weekly score is drawn from a normal distribution with its own mean and sample standard deviation over Weeks 1–${K}; before Week 3 a league-pooled sd is used. Remaining regular-season games (Weeks ${K+1}–${PO.reg_end}) come from the Sleeper matchups schedule. Seeding: wins, then points for. Format from league settings: ${PO.teams} playoff teams starting Week ${PO.week_start}, top ${PO.byes} seeds get byes, 1 v 4/5 winner and 2 v 3/6 winner, one-week rounds. Scrubbing shows the odds re-run as of that week.</p>
+<p><b>Live strip.</b> Week ${LIVE?LIVE.week:''} scores from Sleeper matchups, baked in at build time. Projection = sum of Sleeper ${LIVE?LIVE.key:''} projections for each starter (a starter who has already scored uses actual points). Win probability = Φ(projected margin / √(sd₁² + sd₂²)) using Weeks 1–${TH} sds. Pulsing dot only when Week ${LIVE?LIVE.week:''} games have scores. Movers = the other matchups, ordered by how close those teams sit to the selected team in the standings.</p>
+<p><b>Story line.</b> Rule-based template: offense rank by points for, luck within ±0.5 reads "right about where its scoring says" (same threshold as the dial), otherwise phrased to the nearest half-win, plus unbeaten / winless / first-place / 3+ game streak variants.</p>
+<p><b>All-play and luck.</b> All-play = record if a team played all ${N-1} others every week. Expected wins = sum of weekly all-play win rate. Luck = actual wins − expected; "about even" when |luck| &lt; 0.5.</p>
+<p><b>Bench.</b> Optimal lineup uses the league slots (${D.league.slots.join(', ')}) and every rostered non-taxi player.</p>
+<p><b>Remaining schedule.</b> Average points per game (through the selected week) of each remaining opponent; rank 1 = hardest. <b>Heatmap</b> = each week's points rank (1 = top score). <b>Contribution</b> = starter points from Sleeper matchups starters / starters_points. <b>Consistency</b> = sample std dev of weekly scores, floor = lowest week, ceiling = highest. <b>Record vs top half</b> uses standings through the selected week.</p>
+<p><b>Accent colours.</b> Hand-picked per team: Bill's Block Party keeps the live-site orange, Team Ram Rod stays blue, and the other eight sit on clearly different hues. Every colour has at least 6.6:1 contrast on the navy background.</p>
+<p><b>Rival overlay.</b> Bill's Block Party's rival is Team Ram Rod; every other team's rival is the highest-scoring other team.</p></div></details>`;
+
+/* ---------- motion: number roll + path morph (<300ms) ---------- */
+const MORPH=['d','cx','cy','x','y','width','height','x1','x2','y1','y2'];
+function grab(){const n=new Map(),m=new Map();document.querySelectorAll('[data-n]').forEach(e=>n.set(e.dataset.n,+e.dataset.v));
+ document.querySelectorAll('[data-m]').forEach(e=>{const o={};MORPH.forEach(a=>{const v=e.getAttribute(a);if(v!=null)o[a]=v});if(e.style.width)o.sw=e.style.width;m.set(e.dataset.m,o)});return {n,m}}
+const NUM=/-?\d*\.?\d+(?:e-?\d+)?/g;
+function animate(old){if(RM||!old)return;const dur=260,t0=performance.now(),jobs=[];
+ document.querySelectorAll('[data-n]').forEach(e=>{const a=old.n.get(e.dataset.n),b=+e.dataset.v;if(a==null||isNaN(a)||a===b)return;const f=FMT[e.dataset.f];jobs.push(k=>{e.textContent=f(a+(b-a)*k)})});
+ document.querySelectorAll('[data-m]').forEach(e=>{const o=old.m.get(e.dataset.m);if(!o)return;MORPH.forEach(at=>{const nv=e.getAttribute(at);if(nv==null||o[at]==null||o[at]===nv)return;const A=o[at].match(NUM)||[],B=nv.match(NUM)||[];if(A.length!==B.length)return;const parts=nv.split(NUM);
+   jobs.push(k=>{let s=parts[0];for(let i=0;i<B.length;i++)s+=(+A[i]+(+B[i]-+A[i])*k).toFixed(2)+parts[i+1];e.setAttribute(at,s)})});
+  if(o.sw&&e.style.width&&o.sw!==e.style.width){const a=parseFloat(o.sw),b=parseFloat(e.style.width);jobs.push(k=>{e.style.width=(a+(b-a)*k)+'%'})}});
+ if(!jobs.length)return;const step=now=>{const k=Math.max(0,Math.min(1,(now-t0)/dur)),q=1-Math.pow(1-k,3);jobs.forEach(j=>j(q));if(k<1)requestAnimationFrame(step)};jobs.forEach(j=>j(0));requestAnimationFrame(step)}
+
+function renderAll(anim){const old=anim?grab():null;for(const id in PANELS)PANELS[id](document.getElementById(id));animate(old)}
+function hashSync(){history.replaceState(null,'','#team='+cur+(K!==TH?'&wk='+K:'')+(rivalOn?'&rival=1':''))}
+function select(r,user){cur=r;const t=T[r];const ro=document.documentElement.style;ro.setProperty('--acc',t.accent);ro.setProperty('--acc-a',t.accent+'2e');ro.setProperty('--riv',T[rivalOf(r)].accent);
  document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',+c.dataset.r===r));
- if(user){history.replaceState(null,'','#team='+r)}
  const c=document.querySelector(`.chip[data-r="${r}"]`),sw=$('#sw');if(c&&sw.scrollWidth>sw.clientWidth)sw.scrollTo({left:c.offsetLeft-sw.clientWidth/2+c.offsetWidth/2,behavior:user&&!RM?'smooth':'auto'});
- document.title=`${t.name} · TeamHub`;renderAll(!user&&!select.done);select.done=true}
-select(cur,false);
-let rw=innerWidth;addEventListener('resize',()=>{clearTimeout(select.rt);select.rt=setTimeout(()=>{if(innerWidth!==rw){rw=innerWidth;for(const id of ['p-pulse','p-luck','p-bench']){const el=document.getElementById(id);PANELS[id](el);if(!revealed.has(id))prep(el)}}},120)});
+ document.title=`${t.name} · TeamHub 1.5`;renderAll(user);if(user)hashSync()}
+select(cur,false);setK(K);
+document.querySelectorAll('.pair').forEach(p=>{const d=p.parentElement.querySelectorAll('.dots i');p.addEventListener('scroll',()=>{const i=Math.round(p.scrollLeft/(p.scrollWidth-p.clientWidth||1));d.forEach((x,j)=>x.classList.toggle('on',j===i))},{passive:true})});
+let rw=innerWidth;addEventListener('resize',()=>{clearTimeout(select.rt);select.rt=setTimeout(()=>{if(innerWidth!==rw){rw=innerWidth;renderAll(false)}},120)});
 
 /* ---------- tooltip (hover + tap) ---------- */
 const tip=$('#tip');let pinned=null;
 function show(n,ev){tip.innerHTML=`<b>${esc(n.dataset.tt)}</b>${esc(n.dataset.tb).replace(/\n/g,'<br>')}`;tip.classList.add('on');
- const r=tip.getBoundingClientRect(),px=ev.clientX,py=ev.clientY;let l=px+14,tp=py-r.height-14;if(l+r.width>innerWidth-8)l=Math.max(8,px-r.width-14);if(tp<70)tp=py+18;tip.style.left=l+'px';tip.style.top=tp+'px'}
+ const r=tip.getBoundingClientRect(),px=ev.clientX,py=ev.clientY;let l=px+14,tp=py-r.height-14;if(l+r.width>innerWidth-8)l=Math.max(8,px-r.width-14);if(tp<110)tp=py+18;tip.style.left=l+'px';tip.style.top=tp+'px'}
 const hide=()=>{tip.classList.remove('on');pinned=null};
 document.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const n=e.target.closest('[data-tt]');n?show(n,e):hide()});
-document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;const n=e.target.closest('[data-tt]');if(n&&n!==pinned){show(n,e);pinned=n}else hide()});
+document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||e.target.closest('#scrub'))return;const n=e.target.closest('[data-tt]');if(n&&n!==pinned){show(n,e);pinned=n}else hide()});
 addEventListener('scroll',()=>{if(pinned)hide()},{passive:true});
 })();
 </script>
