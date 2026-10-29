@@ -3,10 +3,11 @@
 //   node pull.mjs weekly D         -> pull_m7.json pull_pts.json pull8.json pull8a.json
 //   node pull.mjs playoffs         -> pull_po.json
 //   node pull.mjs live W           -> live.json (in-week scores for week W)
+//   node pull.mjs detail a-b       -> stats_detail.json (full stat lines for lineup players, weeks a..b)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { lastCompleteWeek, pullWeekly, pullPlayoffs, pullLive } from './sleeper.mjs';
+import { lastCompleteWeek, pullWeekly, pullPlayoffs, pullLive, pullDetail } from './sleeper.mjs';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const out = (f, o) => fs.writeFileSync(path.join(DIR, f), JSON.stringify(o));
 async function get(u, tries = 4) {
@@ -35,4 +36,11 @@ if (cmd === 'state') {
   const x = await pullLive(get, +arg, known);
   out('live.json', x);
   console.log('live pull ok: final', x.done.length / 2, 'games, live', x.live.length / 2, ', new starters', Object.keys(x.extra).length);
-} else { console.error('usage: node pull.mjs state|weekly D|playoffs|live W'); process.exit(2); }
+} else if (cmd === 'detail') {
+  // fuller per-player stat lines for the Detailed lineup view: weeks "a-b" (or one week), lineup players only
+  const [a, b] = arg.split('-').map(Number), f = path.join(DIR, 'stats_detail.json');
+  const D = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : {};
+  const x = await pullDetail(get, Array.from({ length: (b || a) - a + 1 }, (_, i) => a + i));
+  Object.assign(D, x); out('stats_detail.json', D);
+  console.log('detail pull ok:', Object.entries(x).map(([w, v]) => `wk${w} ${Object.keys(v).length}`).join(', '));
+} else { console.error('usage: node pull.mjs state|weekly D|playoffs|live W|detail a-b'); process.exit(2); }

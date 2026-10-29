@@ -140,3 +140,24 @@ export async function pullLive(get, W, known) {
   }
   return { w: W, done, live, tp, pp: pz, S: S_, starters: sts, extra };
 }
+
+// Full stat lines for the Detailed lineup view. Keeps every stat the league scores (so a points breakdown can be
+// computed) plus volume stats that score nothing (attempts, targets, longs, yards allowed). Lineup players only.
+const DX = ['pass_att', 'pass_cmp', 'pass_lng', 'pass_sack', 'rush_att', 'rush_lng', 'rec_tgt', 'rec_lng', 'fga', 'fgm', 'fgm_lng', 'xpa', 'yds_allow', 'gp'];
+export async function pullDetail(get, weeks) {
+  const L = `${A}/league/${LEAGUE}`, lg = await get(L), keep = new Set([...Object.keys(lg.scoring_settings), ...DX]);
+  const out = {};
+  for (const w of weeks) {
+    const [m, st] = await Promise.all([get(`${L}/matchups/${w}`), get(`${S}/stats/nfl/${SEASON}/${w}?season_type=regular`)]);
+    const ids = new Set(m.flatMap(x => [...(x.players || []), ...(x.starters || [])]));
+    const W = {};
+    for (const r of st) {
+      if (!ids.has(r.player_id)) continue;
+      const s = r.stats || {}, o = {};
+      for (const [k, v] of Object.entries(s)) if (keep.has(k) && typeof v === 'number' && v !== 0) o[k] = Math.round(v * 100) / 100;
+      if (Object.keys(o).length) W[r.player_id] = o;
+    }
+    out[w] = W;
+  }
+  return out;
+}

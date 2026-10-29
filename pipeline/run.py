@@ -26,10 +26,12 @@ if mode=='weekly':
             sh('node',P+'pull.mjs','live',str(w));sh('python3',P+'score.py',P+'live.json','--no-build')
             sh('node',P+'pull.mjs','weekly',str(w));sh('python3',P+'full_update.py',str(w))
     sh('node',P+'pull.mjs','playoffs');sh('python3',P+'po_write.py')
+    sh('node',P+'pull.mjs','detail',f'1-{G()+1}')  # full stat lines for the Detailed view (all played weeks + current)
     build()
 elif mode=='live':
     W=G()+1
     sh('node',P+'pull.mjs','live',str(W))
+    subprocess.run(['node',P+'pull.mjs','detail',str(W)],cwd=P)  # Detailed view; never fatal
     sh('python3',P+'score.py',P+'live.json')  # applies scores and runs rebuild/gen/build_static
     sh('python3',P+'build_site.py')
 else:
