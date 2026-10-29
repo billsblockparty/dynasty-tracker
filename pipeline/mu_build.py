@@ -166,15 +166,21 @@ def sview(sa,sb,sid_a=None,sid_b=None):
             s=_slate(_pw(p),p[3]);k=s[0] if s else ('9','~');lab=s[1] if s else 'No game'
             g=groups.setdefault(k,{'lab':lab,'a':[],'b':[]});g[side].append(p)
     o=[];ca=cb=pa=pb=0.0;strip=[];rda=[0.0,False];rdb=[0.0,False]
-    # To win: after each slate, points a side's later starters must score to finish level, assuming the opponent's later
-    # starters hit their projections. Through the slate: final = actual, live = max(actual, projection), upcoming = projection.
+    # Needs over projection: shown once, on the next slate still to finish. Current picture: final = actual, live =
+    # max(actual, projection), not started = projection. The trailing side needs the gap between the two expected totals.
     def _ev(p):
         if lval(p)[1]:return p[5]
         if p[3] in LIVEG and _pw(p)==W:return max(p[4],p[5])
         return p[4]
-    KS=sorted(groups);ta_=tb_=0.0
-    later=lambda sd,i:sum(p[4] for k2 in KS[i+1:] for p in groups[k2][sd])
-    nla=lambda sd,i:sum(1 for k2 in KS[i+1:] for p in groups[k2][sd])
+    KS=sorted(groups)
+    nxt=next((k for k in KS if groups[k]['lab']!='No game' and not all(lval(p)[1] for p in groups[k]['a']+groups[k]['b'])),None)
+    EA=sum(_ev(p) for k in KS for p in groups[k]['a']);EB=sum(_ev(p) for k in KS for p in groups[k]['b'])
+    left=lambda sd:any(not lval(p)[1] for k in KS for p in groups[k][sd])
+    gap=abs(EA-EB);trail='a' if EA<EB else 'b' if EB<EA else None
+    need_row=''
+    if nxt is not None and trail and gap>=0.05 and left(trail):
+        v=f'<i class="dlt dn">+{gap:.1f}</i>'
+        need_row=f'<div class="mcr slc sltw"><span>{v if trail=="a" else ""}</span><em>Needs over proj</em><span>{v if trail=="b" else ""}</span></div>'
     for ki,k in enumerate(KS):
         g=groups[k]
         for sd in 'ab':g[sd].sort(key=lambda p:(_PO.get(p[1],9),-p[4]))
@@ -189,24 +195,13 @@ def sview(sa,sb,sid_a=None,sid_b=None):
         if sda is not None:rda[0]+=sda;rda[1]=True
         if sdb is not None:rdb[0]+=sdb;rdb[1]=True
         started=st in('Final','Live')
-        ta_+=sum(_ev(p) for p in g['a']);tb_+=sum(_ev(p) for p in g['b'])
-        la,lb=later('a',ki),later('b',ki);na,nb=nla('a',ki),nla('b',ki)
-        def nd(need,proj,n,right=False):
-            if not n:return '–'
-            if need<=0:return f'<i class="dlt up">Ahead by {-need:.1f}</i>'
-            gp=need-proj;c='dn' if gp>=0.05 else 'up' if gp<=-0.05 else 'ev'
-            d=f'<i class="dlt {c}">{"+" if gp>=0.05 else "−" if gp<=-0.05 else "±"}{abs(gp):.1f}</i>'
-            v=f'{max(need,0):.1f} <small>({proj:.1f})</small>'
-            return d+v if right else v+d
-        need_row=('' if not(na or nb) or not started else
-            f'<div class="mcr slc sltw"><span>{nd(tb_+lb-ta_,la,na)}</span><em>To win</em><span>{nd(ta_+la-tb_,lb,nb,True)}</span></div>')
         def dl(v):
             if v is None:return ''
             c='up' if v>=0.05 else 'dn' if v<=-0.05 else 'ev'
             return f'<i class="dlt {c}">{"+" if v>=0.05 else "−" if v<=-0.05 else "±"}{abs(v):.1f}</i>'
         fa=lambda x,j:(f'{x:.1f}' if started else '–')+f' <small>({j:.1f})</small>'
         o.append(f'<div class="slx sx-{st.lower()}"><div class="slg"><b>{g["lab"]}</b><em>{len(g["a"])}<u>·</u>{len(g["b"])} starters</em><i class="ss {st.lower()}">{st}</i></div><div class="mcr slh"><span class="{"up" if started and xa>xb else ""}">{fa(xa,ja)}{dl(sda)}</span><em>Slate</em><span class="{"up" if started and xb>xa else ""}">{dl(sdb)}{fa(xb,jb)}</span></div>'
-                 f'<div class="mcr slc"><span>{ca:.1f} <small>({pa:.1f})</small>{dl(rda[0] if rda[1] else None)}</span><em>Running total</em><span>{dl(rdb[0] if rdb[1] else None)}{cb:.1f} <small>({pb:.1f})</small></span></div>'+need_row)
+                 f'<div class="mcr slc"><span>{ca:.1f} <small>({pa:.1f})</small>{dl(rda[0] if rda[1] else None)}</span><em>Running total</em><span>{dl(rdb[0] if rdb[1] else None)}{cb:.1f} <small>({pb:.1f})</small></span></div>'+(need_row if k==nxt else ''))
         for i in range(max(len(g['a']),len(g['b']))):
             x=g['a'][i] if i<len(g['a']) else None;y=g['b'][i] if i<len(g['b']) else None;r=lrow(x,y,'')
             if sid_a is not None and x and x[0] not in sid_a:r=r.replace('<span class="cn a">','<span class="cn a swp">',1)
