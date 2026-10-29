@@ -191,3 +191,7 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .mug label span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:center;line-height:1.1;font-size:14px!important}
 @media (max-width:370px){.mug label span{font-size:13px!important}}
 .prd .prl b{white-space:normal;text-align:center;max-width:8.5em;line-height:1.1}
+/* Slate: To win row sits directly under Running total */
+.slc:has(+.sln){padding-bottom:0!important}
+.sln{padding:3px 0 8px!important}
+.sln em{color:var(--steel)!important}
