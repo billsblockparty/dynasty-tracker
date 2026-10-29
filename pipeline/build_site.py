@@ -16,6 +16,16 @@ head=('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta 
 s=head+s.replace('<meta charset="utf-8">\n','',1)
 j=s.index('</style>')+len('</style>');s=s[:j]+'\n</head>\n<body>'+s[j:]+UPD+f'\n<!-- built {stamp} -->\n</body>\n</html>\n'
 s=s.replace('</style>','body{margin:0}</style>',1)
+# small TeamHub link on the eyebrow line (live site only; the download file stays as is). Negative margins keep the
+# line box unchanged, so nothing else on the page moves; the ::after pad gives it a 44px tap target.
+_EB='<div class="eyebrow">Official</div>'
+if _EB in s:
+    s=s.replace(_EB,'<div class="eyebrow">Official<a class="thl" href="teamhub/">TeamHub<span aria-hidden="true">›</span></a></div>',1)
+    s=s.replace('</style>','.thl{position:relative;display:inline-block;vertical-align:top;margin:-2px 0 -2px 10px;padding:3px 8px 2px 9px;border-radius:999px;'
+      'border:1px solid rgba(255,122,26,.55);background:rgba(255,122,26,.12);color:#ff9a4d;font:700 12px/1 var(--display);letter-spacing:.1em;text-decoration:none}'
+      '.thl span{margin-left:4px;letter-spacing:0}.thl::after{content:"";position:absolute;inset:-13px -8px}.thl:hover{background:rgba(255,122,26,.22);color:#ffb27a}</style>',1)
+else:
+    print('build_site: eyebrow not found; TeamHub link skipped')
 open(os.path.join(OUT,'index.html'),'w',encoding='utf-8').write(s)
 shutil.copy(P+'DynastyStandings.html',os.path.join(OUT,'DynastyStandings.html'))
 open(os.path.join(OUT,'.nojekyll'),'w').close()
