@@ -206,3 +206,16 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .cr.lu{grid-template-areas:"na va vb nb" "sa va vb sb"!important}
 .cr.lu::after{top:0;bottom:0}
 .cr.lu .sln.sla{padding-right:5px!important}.cr.lu .sln.slb{padding-left:5px!important}
+/* stat lines: top-three scoring stats, brighter; each stat stays whole and wraps only at the separators */
+.cr.lu .sln{font-size:12px!important;color:var(--label)!important;line-height:1.3!important}
+.cr.lu .sln u{font-size:10px!important;color:var(--steel)!important;margin-left:2px}
+.cr.lu .sln .sit{white-space:nowrap}
+.cr.lu .sln .sdt{font-style:normal;color:var(--dim)}
+@media (max-width:419px){.cr.lu .sln{font-size:11.5px!important}.cr.lu .sln u{font-size:9.5px!important}}
+@media (max-width:370px){.cr.lu .sln{font-size:11px!important}.cr.lu .sln u{font-size:9px!important;margin-left:1px}}
+/* every finished player reserves two stat lines, so rows are one height */
+.cr.lu .sln{min-height:2.6em}
+/* stats sit apart by spacing, no separator dots (a dot left hanging at a line end looked broken) */
+.cr.lu .sln{display:flex!important;flex-wrap:wrap;column-gap:8px;align-content:flex-start}
+.cr.lu .sln.slb{justify-content:flex-end}
+.cr.lu .sln .sdt{display:none}

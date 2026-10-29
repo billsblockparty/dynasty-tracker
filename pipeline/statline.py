@@ -3,33 +3,31 @@ import os as _dt_os;__DTP__=_dt_os.path.dirname(_dt_os.path.abspath(__file__)).r
 import json
 S=json.load(open(__DTP__+'stats.json'))
 def _u(n,l):return f'{n}<u>{l}</u>'
+# Top three scoring stats (by fantasy points, either sign), shown in natural order. Attempts, carries and targets are left
+# out: they score nothing. Kickers keep FG/XP; defenses keep their top two plays plus points allowed.
+SS=json.load(open(__DTP__+'pull8a.json'))['ss']
+KEYS={'QB':['pass_cmp','pass_att','pass_yd','pass_td','pass_int','rush_att','rush_yd','rush_td','fum_lost'],
+      'RB':['rush_att','rush_yd','rush_td','rec','rec_tgt','rec_yd','rec_td','fum_lost'],
+      'WR':['rec','rec_tgt','rec_yd','rec_td','rush_att','rush_yd','rush_td','fum_lost']}
+KEYS['TE']=KEYS['WR']
+LAB={'pass_yd':'PA YD','pass_td':'PA TD','pass_int':'INT','rush_yd':'RU YD','rush_td':'RU TD','rec':'REC','rec_yd':'RE YD','rec_td':'RE TD','fum_lost':'FL'}
+def items(pos,a):
+    v=dict(zip(KEYS[pos],a))
+    it=[(k,v[k],v[k]*SS.get(k,0)) for k in KEYS[pos] if k in LAB and v.get(k)]
+    it=[x for x in it if abs(x[2])>=0.5] or it[:1]  # drop trivia like -1 rushing yard
+    top=sorted(range(len(it)),key=lambda i:(-abs(it[i][2]),i))[:3]
+    return [it[i] for i in sorted(top)]
 def statline(w,pid,pos):
     s=S.get(str(w),{}).get(pid)
     if s is None:return ''
     if s.endswith('x'):return 'Did not play'
     a=[int(x) for x in s.split('.')]+[0]*10
-    o=[]
-    def rush(c,y,t):
-        r=[]
-        if c:r+= [_u(c,'CAR'),_u(y,'YD')]
-        if t:r.append(_u(t,'TD'))
-        return r
-    if pos=='QB':
-        o=[f'{a[0]}/{a[1]}<u>CMP</u>',_u(a[2],'YD')]
-        if a[3]:o.append(_u(a[3],'TD'))
-        if a[4]:o.append(_u(a[4],'INT'))
-        o+=rush(a[5],a[6],a[7])
-        if a[8]:o.append(_u(a[8],'FL'))
-    elif pos=='RB':
-        o=[_u(a[0],'CAR'),_u(a[1],'YD')]+([_u(a[2],'TD')] if a[2] else [])
-        if a[3] or a[4]:o+=[_u(a[3],'REC'),_u(a[5],'YD')]+([_u(a[6],'TD')] if a[6] else [])
-        if a[7]:o.append(_u(a[7],'FL'))
-    elif pos in('WR','TE'):
-        o=[f'{a[0]}/{a[1]}<u>REC</u>',_u(a[2],'YD')]+([_u(a[3],'TD')] if a[3] else [])
-        o+=rush(a[4],a[5],a[6])
-        if a[7]:o.append(_u(a[7],'FL'))
+    if pos in KEYS:
+        o=[_u(n,LAB[k]) for k,n,_ in items(pos,a)] or [_u(0,'RE YD' if pos in('WR','TE') else 'PA YD' if pos=='QB' else 'RU YD')]
     elif pos=='K':
         o=[f'{a[0]}/{a[1]}<u>FG</u>',f'{a[2]}/{a[3]}<u>XP</u>']
     elif pos=='DEF':
-        o=[_u(a[0],'SACK')]+([_u(a[1],'INT')] if a[1] else [])+([_u(a[2],'FR')] if a[2] else [])+([_u(a[3],'TD')] if a[3] else [])+[_u(a[4],'PA')]
-    return ', '.join(o)
+        pl=[(a[3],'TD',6),(a[1],'INT',2),(a[2],'FR',2),(a[0],'SACK',1)]
+        o=[_u(n,l) for n,l,_ in sorted([x for x in pl if x[0]],key=lambda x:-x[0]*x[2])[:2]]+[_u(a[4],'PA')]
+    else:o=[]
+    return '<i class="sdt"> · </i>'.join(f'<span class="sit">{x}</span>' for x in o)
