@@ -21,7 +21,7 @@ def _seg(k):
     return f'<div class="wkc{" bye" if k in BYES else ""}">{lab}<span class="wb">{bar}</span><span>{k}</span></div>'
 segs=''.join(_seg(k) for k in range(1,18))
 d=open(P+'data_block.js',encoding='utf-8').read().replace('// remaining schedule: [week, opp, projScore, oppProj, winPct] (app projections as of Oct 15)','// remaining schedule: [week, opp, ...] (only week and opponent are shown)')
-sp0=__import__('subprocess');sp0.run(['python3',P+'lb_build.py'],check=True,stdout=sp0.DEVNULL)
+import json;sp0=__import__('subprocess');sp0.run(['python3',P+'lb_build.py'],check=True,stdout=sp0.DEVNULL)
 h=h.replace('LB_SECTION',open(P+'lb_section.html',encoding='utf-8').read()).replace('LB_CSS',open(P+'lb_css.css',encoding='utf-8').read())
 sp0.run(['python3',P+'cmp_build.py'],check=True,stdout=sp0.DEVNULL)
 h=h.replace('CMP_SECTION',open(P+'cmp_section.html',encoding='utf-8').read()).replace('CMP_CSS',open(P+'cmp_css.css',encoding='utf-8').read())
@@ -33,8 +33,17 @@ sp0.run(['python3',P+'sx_build.py'],check=True,stdout=sp0.DEVNULL)
 sp0.run(['python3',P+'po_build.py'],check=True,stdout=sp0.DEVNULL)
 h=h.replace('PO_SECTION',open(P+'po_section.html',encoding='utf-8').read()).replace('PO_CSS',open(P+'po_css.css',encoding='utf-8').read())
 h=h.replace('SX_SECTION',open(P+'sx_section.html',encoding='utf-8').read()).replace('SX_CSS',open(P+'sx_css.css',encoding='utf-8').read())
-sp0.run(['python3',P+'th_build.py'],check=True,stdout=sp0.DEVNULL)
-h=h.replace('TH_SECTION',open(P+'th_section.html',encoding='utf-8').read()).replace('TH_CSS',open(P+'th_css.css',encoding='utf-8').read())
+# Team Hub is switched by pipeline/features.json ("teamhub": true/false). Off = not built and not on the page
+# (tab, pane and glossary removed); the code stays in th_build.py / th_charts.py, ready to switch back on.
+_FT=json.load(open(P+'features.json')) if _dt_os.path.exists(P+'features.json') else {}
+if _FT.get('teamhub',True):
+    sp0.run(['python3',P+'th_build.py'],check=True,stdout=sp0.DEVNULL)
+    h=h.replace('TH_SECTION',open(P+'th_section.html',encoding='utf-8').read()).replace('TH_CSS',open(P+'th_css.css',encoding='utf-8').read())
+else:
+    import re as _re_th
+    h=_re_th.sub(r'  <div class="pane pane-th">.*?\n  </div>\n(?=  <div class="pane pane-po">)','',h,flags=_re_th.S)
+    h=h.replace('<label for="tab-th" class="tpo">Team Hub</label>','').replace('<input type="radio" name="tab" id="tab-th" class="lr tabr">','').replace('TH_CSS','')
+    h=h.replace('</style>','.tabs label.tpo{grid-column:1 / -1!important}</style>',1)
 h=h.replace('__LEFT__',str(14-DONE)).replace('__G__',str(DONE))
 h=h.replace('SEGMENTS',segs).replace('POS_SECTION',open(P+'pos/pos_section.html',encoding='utf-8').read())
 import json,subprocess as sp
