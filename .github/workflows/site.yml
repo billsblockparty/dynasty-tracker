@@ -63,6 +63,18 @@ jobs:
           else
             python3 pipeline/run.py ${{ steps.mode.outputs.mode }}
           fi
+      - name: Live-game probe (temporary)
+        if: steps.mode.outputs.mode == 'live'
+        continue-on-error: true
+        run: |
+          W=$(python3 -c "import re;print(int(re.search(r'const G=(\d+);',open('pipeline/data_block.js').read()).group(1))+1)")
+          node pipeline/probe.mjs $W
+          if [ -d debug ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add debug
+            if ! git diff --cached --quiet; then git commit -m "Live probe snapshot [skip ci]"; git pull --rebase origin main; git push; fi
+          fi
       - name: Save season data
         if: steps.mode.outputs.mode == 'weekly' || steps.mode.outputs.mode == 'selftest' || steps.mode.outputs.mode == 'history'
         run: |
