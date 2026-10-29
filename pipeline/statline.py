@@ -81,9 +81,14 @@ def detail(w,pid,pos):
     g=lambda k:d.get(k,0);gi=lambda k:int(round(g(k)))
     L=[]
     def opt(v,u):return _it(v,u) if v else ''
-    pas=lambda:_line('PASS',[_it(f"{gi('pass_cmp')}/{gi('pass_att')}"),_it(gi('pass_yd'),'yd'),opt(gi('pass_td'),'td'),opt(gi('pass_int'),'int'),opt(gi('pass_sack'),'sk'),(_it(gi('pass_lng'),'lng') if gi('pass_lng')>0 else '')]) if g('pass_att') else ''
-    rus=lambda:_line('RUSH',[_it(gi('rush_att'),'car'),_it(gi('rush_yd'),'yd'),_it(f"{g('rush_yd')/g('rush_att'):.1f}",'avg') if pos=='RB' else '',opt(gi('rush_td'),'td'),(_it(gi('rush_lng'),'lng') if gi('rush_lng')>0 else '')]) if g('rush_att') else ''
-    rec=lambda:_line('REC',[_it(f"{gi('rec')}/{gi('rec_tgt')}",'tgt'),_it(gi('rec_yd'),'yd'),opt(gi('rec_td'),'td'),(_it(gi('rec_lng'),'lng') if gi('rec_lng')>0 else '')]) if g('rec_tgt') or g('rec') else ''
+    def ch(*v):  # traditional line, dash-tied, each value keeps its unit: 7CAR-73YD-1TD (zero TD/INT left off)
+        v=[(n,u) for n,u in v if n or u in('yd','car')]
+        seg=[f'{_n(n).replace("-","−")}<i>{u}</i>' for n,u in v]  # a long line can wrap after a dash, like a hyphen
+        return '<b class="dch">'+'<wbr>'.join(f'<span>{x}{"<s>-</s>" if i<len(seg)-1 else ""}</span>' for i,x in enumerate(seg))+'</b>'
+    lng=lambda k:_it(gi(k),'lng') if gi(k)>0 else ''
+    pas=lambda:_line('PASS',[ch((f"{gi('pass_cmp')}/{gi('pass_att')}",'cmp'),(gi('pass_yd'),'yd'),(gi('pass_td'),'td'),(gi('pass_int'),'int')),opt(gi('pass_sack'),'sk'),lng('pass_lng')]) if g('pass_att') else ''
+    rus=lambda:_line('RUSH',[ch((gi('rush_att'),'car'),(gi('rush_yd'),'yd'),(gi('rush_td'),'td')),_it(f"{g('rush_yd')/g('rush_att'):.1f}",'avg') if pos=='RB' else '',lng('rush_lng')]) if g('rush_att') else ''
+    rec=lambda:_line('REC',[ch((f"{gi('rec')}/{gi('rec_tgt')}",'tgt'),(gi('rec_yd'),'yd'),(gi('rec_td'),'td')),lng('rec_lng')]) if g('rec_tgt') or g('rec') else ''
     if pos=='QB':L+=[pas(),rus()]
     elif pos=='RB':L+=[rus(),rec()]
     elif pos in('WR','TE'):L+=[rec(),rus()]

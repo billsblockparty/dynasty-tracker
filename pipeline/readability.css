@@ -326,3 +326,6 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .sdxb .dxl b{margin-right:11px}
 .sdxb .dxl b::after{content:"·";position:absolute;right:-8px;color:var(--dim);font-weight:700}
 .dxl b{color:var(--chalk)}
+.dxl b.dch s{text-decoration:none;color:var(--dim);margin:0 2px;font-weight:500}
+.dxl b.dch{white-space:normal}.dxl b.dch>span{white-space:nowrap}
+.dxl b.dch{display:block!important;min-width:0;white-space:normal!important}.sdxb .dxl b.dch{text-align:right}.dxl b.dch s{margin:0 1px!important}
