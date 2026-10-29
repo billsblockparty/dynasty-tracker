@@ -316,3 +316,13 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .lgrid .lt.ltr{text-align:right}
 @media (max-width:419px){.lgrid{column-gap:5px!important}.lgrid .pseg label{padding-inline:6.5px!important;font-size:12px!important}.lgrid .lt{font-size:9.5px;letter-spacing:.08em}}
 @media (max-width:370px){.lgrid .pseg label{padding-inline:4.5px!important;font-size:11px!important}.lgrid .lt{font-size:8.5px;letter-spacing:.04em}}
+/* Detailed values: a dot between items, clipped away at a line edge (same trick as the Lean stat line) */
+.dxl>span{column-gap:0!important}
+.dxl b{position:relative}
+.sdxa .dxl>span{margin-left:-11px;clip-path:inset(-4px -4px -4px 11px)}
+.sdxa .dxl b{margin-left:11px}
+.sdxa .dxl b::before{content:"·";position:absolute;left:-8px;color:var(--dim);font-weight:700}
+.sdxb .dxl>span{margin-right:-11px;clip-path:inset(-4px 11px -4px -4px)}
+.sdxb .dxl b{margin-right:11px}
+.sdxb .dxl b::after{content:"·";position:absolute;right:-8px;color:var(--dim);font-weight:700}
+.dxl b{color:var(--chalk)}
