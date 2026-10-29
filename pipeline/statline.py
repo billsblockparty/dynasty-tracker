@@ -18,30 +18,36 @@ def items(pos,a):
     top=sorted(range(len(it)),key=lambda i:(-abs(it[i][2]),i))[:3]
     return [it[i] for i in sorted(top)]
 def _grp(lab,nums):return f'<span class="sit"><u>{lab}</u> {"-".join(f"({n})".replace("(-","(−") if isinstance(n,int) and n<0 else str(n) for n in nums)}</span>'
-def statline(w,pid,pos):
-    """Compact category lines: QB 'PA 292-4' (yds-TD[-INT]), 'RU 14-67-1' (car-yds[-TD]),
-    'REC 7-24-1' (rec-yds[-TD]), 'FL 1'. Categories split by a dot; only categories with something in them."""
+def _arr(w,pid):
     s=S.get(str(w),{}).get(pid)
-    if s is None:return ''
-    if s.endswith('x'):return 'Did not play'
-    a=[int(x) for x in s.split('.')]+[0]*10
+    if s is None or s.endswith('x'):return s
+    return [int(x) for x in s.split('.')]+[0]*10
+def fumbles(w,pid,pos):
+    """fumbles lost (shown as a red FL tag beside the name, not in the stat line)"""
+    a=_arr(w,pid)
+    if not isinstance(a,list):return 0
+    return a[{'QB':8,'RB':7,'WR':7,'TE':7}.get(pos,99)] if pos in('QB','RB','WR','TE') else 0
+def statline(w,pid,pos):
+    """One line, at most two categories: QB 'PA 292-4' (yds-TD[-INT]) + 'RU 2-12' (car-yds[-TD]); RB 'RU' + 'REC';
+    WR/TE 'REC' (rec-yds[-TD]) + 'RU'. K 'FG 3/4 • XP 1/1'. DEF 'SK 3 • TO 2 [• TD 1] • PA 24' (TO = INT + fumble recoveries)."""
+    a=_arr(w,pid)
+    if a is None:return ''
+    if isinstance(a,str):return 'Did not play'
     td=lambda c,y,t:[c,y]+([t] if t else [])
     if pos=='QB':
-        pa=[a[2]]+([a[3],a[4]] if a[4] else [a[3]] if a[3] else [])
-        o=[_grp('PA',pa)]+([_grp('RU',td(a[5],a[6],a[7]))] if a[5] else [])+([_grp('FL',[a[8]])] if a[8] else [])
+        o=[_grp('PA',[a[2]]+([a[3],a[4]] if a[4] else [a[3]] if a[3] else []))]+([_grp('RU',td(a[5],a[6],a[7]))] if a[5] else [])
     elif pos=='RB':
-        o=([_grp('RU',td(a[0],a[1],a[2]))] if a[0] else [])+([_grp('REC',td(a[3],a[5],a[6]))] if a[3] else [])+([_grp('FL',[a[7]])] if a[7] else [])
+        o=([_grp('RU',td(a[0],a[1],a[2]))] if a[0] else [])+([_grp('REC',td(a[3],a[5],a[6]))] if a[3] else [])
+        if not o:o=[_grp('RU',[0,0])]
     elif pos in('WR','TE'):
-        o=([_grp('REC',td(a[0],a[2],a[3]))] if a[0] or a[1] else [])+([_grp('RU',td(a[4],a[5],a[6]))] if a[4] else [])+([_grp('FL',[a[7]])] if a[7] else [])
+        o=([_grp('REC',td(a[0],a[2],a[3]))] if a[0] or a[1] else [])+([_grp('RU',td(a[4],a[5],a[6]))] if a[4] else [])
         if not o:o=[_grp('REC',[0,0])]
     elif pos=='K':
         o=[_grp('FG',[f'{a[0]}/{a[1]}']),_grp('XP',[f'{a[2]}/{a[3]}'])]
     elif pos=='DEF':
-        o=[_grp(l,[n]) for n,l in ((a[0],'SK'),(a[1],'INT'),(a[2],'FR'),(a[3],'TD')) if n]+[_grp('PA',[a[4]])]
+        o=[_grp('SK',[a[0]]),_grp('TO',[a[1]+a[2]])]+([_grp('TD',[a[3]])] if a[3] else [])+[_grp('PA',[a[4]])]
     else:o=[]
-    if pos in('RB',) and not o:o=[_grp('RU',[0,0])]
-    h='<i class="sdt">•</i>'.join(o)
-    return h
+    return '<i class="sdt">•</i>'.join(o)
 def tight(h):
     """'' / ' stg1' / ' stg2': smaller type for long lines so every stat line stays on one line"""
     n=len(re.sub(r'<[^>]+>','',h))+h.count('class="sit"')

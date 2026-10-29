@@ -87,7 +87,7 @@ def _age(pid):
     y,m,dd=map(int,b.split('-'));return (_d.today()-_d(y,m,dd)).days/365.25
 SLOTS=['QB','RB','RB','WR','WR','TE','FLEX','K','DEF']
 INJ={'Questionable':'Q','Doubtful':'D','Out':'O','IR':'IR'}
-from statline import statline as _sl, tight as _tight
+from statline import statline as _sl, fumbles as _fl
 def lval(p):
     done=p[8] if len(p)>8 else p[3] in DONEG
     return (p[5],True) if done else (p[4],False)
@@ -116,6 +116,8 @@ def lcell(p,side):
     if nm in('Jr.','Sr.','II','III','IV'):nm=name.split(' ')[-2]
     if pos!='DEF' and len(name.split(' '))>2 and name.split(' ')[-2]=='St.':nm='St. '+nm
     ij=f'<i class="inj i-{INJ[inj]}">{INJ[inj]}</i>' if inj in INJ else ''
+    _f=_fl(p[10] if len(p)>10 else W,pid,pos) if lval(p)[1] else 0
+    if _f:ij+=f'<i class="inj i-FL">{_f if _f>1 else ""}FL</i>'
     v,done=lval(p)
     ha=_gline((p[9] if len(p)>9 else ('vs' if tm in HOME else '@')),opp)
     st='BYE' if not opp else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
@@ -130,7 +132,7 @@ def lrow(pa,pb,slot):
     def sl(p,side):
         if not p or not lval(p)[1]:return ''
         t=_sl(p[10] if len(p)>10 else W,p[0],p[1])
-        return f'<span class="sln sl{side}{_tight(t)}">{t}</span>' if t else ''
+        return f'<span class="sln sl{side}">{t}</span>' if t else ''
     return f'<div class="cr lu{w}">{lcell(pa,"a")}{lcell(pb,"b")}{sl(pa,"a")}{sl(pb,"b")}</div>'
 
 def optimal(pool):

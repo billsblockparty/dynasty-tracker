@@ -239,18 +239,15 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .cr.lu .sln.slb{margin-right:-12px;clip-path:inset(-4px 12px -4px -4px)}.cr.lu .sln.slb .sit{margin-right:12px}.cr.lu .sln.slb .sit::after{right:-8.5px}
 .cr.lu .sln u{margin-right:2.5px!important}
 /* long stat lines step down in size so they stay on one line */
-.cr.lu .sln.stg1{font-size:11px!important}.cr.lu .sln.stg1 u{font-size:9.5px!important}
-.cr.lu .sln.stg2{font-size:10px!important;letter-spacing:-.01em}.cr.lu .sln.stg2 u{font-size:8.5px!important}
-@media (max-width:419px){.cr.lu .sln.stg1{font-size:10.5px!important}.cr.lu .sln.stg1 u{font-size:9px!important}.cr.lu .sln.stg2{font-size:9.5px!important}.cr.lu .sln.stg2 u{font-size:8px!important}}
-.cr.lu .sln.stg3{font-size:9.5px!important;letter-spacing:-.02em}.cr.lu .sln.stg3 u{font-size:8px!important}
-@media (max-width:419px){.cr.lu .sln.stg3{font-size:9px!important}.cr.lu .sln.stg3 u{font-size:7.5px!important}}
 /* fixed stat-line box so smaller type never changes the row height */
 .cr.lu .sln{height:16px;line-height:16px!important;align-items:baseline}
-.cr.lu .sln.sla.stg3{margin-left:-9px;clip-path:inset(-4px -4px -4px 9px)}.cr.lu .sln.sla.stg3 .sit{margin-left:9px}.cr.lu .sln.sla.stg3 .sit::before{left:-6.5px}
-.cr.lu .sln.slb.stg3{margin-right:-9px;clip-path:inset(-4px 9px -4px -4px)}.cr.lu .sln.slb.stg3 .sit{margin-right:9px}.cr.lu .sln.slb.stg3 .sit::after{right:-6.5px}
-.cr.lu .sln.stg3 u{margin-right:2px!important}
-@media (max-width:370px){.cr.lu .sln{font-size:10.5px!important}.cr.lu .sln.stg1{font-size:10px!important}.cr.lu .sln.stg2,.cr.lu .sln.stg3{font-size:9px!important}.cr.lu .sln u{font-size:8px!important}}
 /* close the tile's bottom edge when the stat line sits beneath it */
 .cr.lu:has(.sln) .cv .fs.up{box-shadow:inset 1px 0 0 rgba(63,214,155,.38),inset -1px 0 0 rgba(63,214,155,.38),inset 0 -1px 0 rgba(63,214,155,.38)!important;border-radius:0 0 4px 4px!important}
 .cr.lu:has(.sln) .cv .fs.dn{box-shadow:inset 1px 0 0 rgba(255,93,115,.38),inset -1px 0 0 rgba(255,93,115,.38),inset 0 -1px 0 rgba(255,93,115,.38)!important;border-radius:0 0 4px 4px!important}
 .cr.lu:has(.sln) .cv .fs.pj{box-shadow:inset 1px 0 0 var(--hair),inset -1px 0 0 var(--hair),inset 0 -1px 0 var(--hair);border-radius:0 0 4px 4px!important}
+
+.inj.i-FL{background:rgba(255,93,115,.22)!important;color:#ff8a98!important;box-shadow:inset 0 0 0 1px rgba(255,93,115,.55)}
+@media (max-width:419px){.cr.lu .sln u{letter-spacing:.01em;margin-right:2px!important}
+ .cr.lu .sln.sla{margin-left:-11px;clip-path:inset(-4px -4px -4px 11px)}.cr.lu .sln.sla .sit{margin-left:11px}.cr.lu .sln.sla .sit::before{left:-8px}
+ .cr.lu .sln.slb{margin-right:-11px;clip-path:inset(-4px 11px -4px -4px)}.cr.lu .sln.slb .sit{margin-right:11px}.cr.lu .sln.slb .sit::after{right:-8px}}
+@media (max-width:370px){.cr.lu .sln{font-size:10px!important}.cr.lu .sln u{font-size:8px!important}}
