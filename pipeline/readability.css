@@ -329,3 +329,9 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .dxl b.dch s{text-decoration:none;color:var(--dim);margin:0 2px;font-weight:500}
 .dxl b.dch{white-space:normal}.dxl b.dch>span{white-space:nowrap}
 .dxl b.dch{display:block!important;min-width:0;white-space:normal!important}.sdxb .dxl b.dch{text-align:right}.dxl b.dch s{margin:0 1px!important}
+/* Detailed panel colours: every number white; line titles take the matching position-tile colour */
+.dxl b,.dxl b.dch,.dxl b.dch span{color:#fff!important}
+.dx-pass>u{color:#f7739c!important}.dx-rush>u{color:#3ddcc1!important}.dx-rec>u{color:#5ec6f4!important}
+.dx-xp>u,.dx-fg>u{color:#c491ff!important}.dx-def>u,.dx-allow>u{color:#c98a72!important}
+.dx-pts>u{color:var(--label)!important}
+.ptnote{display:none;margin:8px 2px 0;font-size:12px;color:var(--steel)}#pm-start:checked~.ptnote{display:block}

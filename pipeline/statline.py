@@ -61,7 +61,7 @@ def _n(v):return f'{v:g}' if isinstance(v,float) else str(v)
 def _it(v,u=''):return f'<b>{_n(v)}{f"<i>{u}</i>" if u else ""}</b>'
 def _line(lab,items):
     items=[x for x in items if x]
-    return f'<span class="dxl"><u>{lab}</u><span>{"".join(items)}</span></span>' if items else ''
+    return f'<span class="dxl dx-{lab.lower()}"><u>{lab}</u><span>{"".join(items)}</span></span>' if items else ''
 def _cat(k):
     if k.startswith('pass_'):return 'Pass'
     if k.startswith('rush_'):return 'Rush'
@@ -83,7 +83,7 @@ def detail(w,pid,pos):
     def opt(v,u):return _it(v,u) if v else ''
     def ch(*v):  # traditional line, dash-tied, each value keeps its unit: 7CAR-73YD-1TD (zero TD/INT left off)
         v=[(n,u) for n,u in v if n or u in('yd','car')]
-        seg=[f'{_n(n).replace("-","−")}<i>{u}</i>' for n,u in v]  # a long line can wrap after a dash, like a hyphen
+        seg=[f'{"(−"+_n(-n)+")" if isinstance(n,(int,float)) and n<0 else _n(n)}<i>{u}</i>' for n,u in v]  # a long line can wrap after a dash, like a hyphen
         return '<b class="dch">'+'<wbr>'.join(f'<span>{x}{"<s>-</s>" if i<len(seg)-1 else ""}</span>' for i,x in enumerate(seg))+'</b>'
     lng=lambda k:_it(gi(k),'lng') if gi(k)>0 else ''
     pas=lambda:_line('PASS',[ch((f"{gi('pass_cmp')}/{gi('pass_att')}",'cmp'),(gi('pass_yd'),'yd'),(gi('pass_td'),'td'),(gi('pass_int'),'int')),opt(gi('pass_sack'),'sk'),lng('pass_lng')]) if g('pass_att') else ''

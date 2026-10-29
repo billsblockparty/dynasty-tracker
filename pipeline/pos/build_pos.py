@@ -10,7 +10,7 @@ POS=['QB','RB','WR','TE','K','DEF']
 def norm(n):
     n=n.replace('’',"'").replace(' 👑','').strip(); return {'RIPMFL':'Team RIPMFL'}.get(n,n)
 TOT={norm(r['team']):{p:float(r[p]) for p in POS} for r in rows}
-PS={norm(r['team']):{p:float(r[p])/int(r['starts_'+p]) for p in POS} for r in rows}
+PS={norm(r['team']):{p:float(r[p])/max(1,int(r['starts_'+p])-int(r.get('nogame_'+p) or 0)) for p in POS} for r in rows}
 G=int(re.search(r'const G=(\d+);',s).group(1))
 PW={t:{p:v/G for p,v in d.items()} for t,d in TOT.items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
@@ -25,10 +25,12 @@ def table(D,cls):
         cells=''.join((lambda r,tie:f'<span role="cell"><b>{D[t][p]:.1f}</b><i class="ch {tone(r)}"><span class="ct">{"T" if tie else "#"}{r}</span></i></span>')(*rank(D,p,t)) for p in POS)
         o.append(f'<div class="pr {tc}" role="row"><span role="rowheader"><em>{i+1}</em>{SHORT[t]}</span>{cells}</div>')
     o.append('</div>');return '\n'.join(o)
+NG=[(norm(r['team']),p,int(r.get('nogame_'+p) or 0)) for r in rows for p in POS if int(r.get('nogame_'+p) or 0)]
+NOTE=('<p class="ptnote">Per start leaves out starts with no game: '+', '.join(f'{t} {p} ({n} bye start{"s" if n>1 else ""})' for t,p,n in NG)+'.</p>') if NG else ''
 html='\n'.join(['<section class="posx" aria-labelledby="posh">',
  '<input type="radio" name="posm" id="pm-start" class="lr" checked><input type="radio" name="posm" id="pm-wk" class="lr"><input type="radio" name="posm" id="pm-tot" class="lr">',
  '<div class="posh"><b id="posh">Points by position</b><div class="pseg" role="group" aria-label="Points by position view"><label for="pm-start">Per start</label><label for="pm-wk">Per week</label><label for="pm-tot">Total</label></div></div>',
- table(PS,'pt-start'),table(PW,'pt-wk'),table(TOT,'pt-tot'),'</section>'])
+ table(PS,'pt-start'),NOTE,table(PW,'pt-wk'),table(TOT,'pt-tot'),'</section>'])
 if __name__=='__main__':
     for t in H: print(t,[(p,round(TOT[t][p],1),rank(TOT,p,t)) for p in POS])
 open(P+'pos/pos_section.html','w',encoding='utf-8').write(html)

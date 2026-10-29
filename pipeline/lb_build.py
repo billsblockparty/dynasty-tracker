@@ -8,7 +8,7 @@ G=int(re.search(r'const G=(\d+);',s).group(1))
 EF=json.load(open(P+'eff.json'));SKr=json.load(open(P+'skill_opt.json'));SKr.pop('_note',None)
 rows=list(csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8')))
 nm=lambda n:{'RIPMFL':'Team RIPMFL'}.get(n.replace('’',"'").replace(' \U0001F451','').strip(),n.replace('’',"'").replace(' \U0001F451','').strip())
-PS={nm(r['team']):{p:float(r[p])/int(r['starts_'+p]) for p in ['QB','RB','WR','TE','K','DEF']} for r in rows}
+PS={nm(r['team']):{p:float(r[p])/max(1,int(r['starts_'+p])-int(r.get('nogame_'+p) or 0)) for p in ['QB','RB','WR','TE','K','DEF']} for r in rows}
 sg=lambda v:('+' if v>0 else '−' if v<0 else '')+f"{abs(v):.2f}"
 # key, label, value fn, display fn, low_is_rank1
 STATS=[

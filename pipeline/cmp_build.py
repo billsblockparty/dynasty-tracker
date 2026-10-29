@@ -17,7 +17,7 @@ EF=json.load(open(P+'eff.json'))
 SKo=json.load(open(P+'skill_opt.json'));SKo.pop('_note',None)
 SK={t:v['act']/v['opt']*100 for t,v in SKo.items()}
 POS=['QB','RB','WR','TE','K','DEF']
-PS={norm(r['team']):{p:float(r[p])/int(r['starts_'+p]) for p in POS} for r in csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8'))}
+PS={norm(r['team']):{p:float(r[p])/max(1,int(r['starts_'+p])-int(r.get('nogame_'+p) or 0)) for p in POS} for r in csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8'))}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
 SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
 FULL={**{v:k for k,v in SHORT0.items()},**{k:k for k in SHORT0}};FULL["Bill's"]="Bill's Block Party"

@@ -92,17 +92,20 @@ json.dump(D['EFF'],open(P+'eff.json','w'),indent=0)
 # ---------- 3. position totals (pos.csv) and skill efficiency from hist
 rows=list(csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8')));PO=['QB','RB','WR','TE','K','DEF']
 agg={};stc={};sk={}
+ngs={};_DET=json.load(open(P+'stats_detail.json')) if _dt_os.path.exists(P+'stats_detail.json') else {}  # per-start averages leave out starts with no game
 for w in range(1,DONE+1):
     for rid,v in HI['w'][str(w)].items():
         def par(sx):
             o=[]
             for x in sx.split(','):
                 if not x:continue
-                f=x.split('|');o.append({'pid':f[0],'pos':HI['m'][f[0]][0],'pts':float(f[3])})
+                f=x.split('|');o.append({'pid':f[0],'pos':HI['m'][f[0]][0],'pts':float(f[3]),'opp':f[4] if len(f)>4 else 'x'})
             return o
         st_,bn_=par(v[2]),par(v[3])
         for q in st_:
             a=agg.setdefault(rid,{});a[q['pos']]=a.get(q['pos'],0)+q['pts'];c=stc.setdefault(rid,{});c[q['pos']]=c.get(q['pos'],0)+1
+            if not q['opp'] or (q['pts']==0 and not _DET.get(str(w),{}).get(q['pid'],{}).get('gp',1)):  # no game: bye week (or inactive)
+                n_=ngs.setdefault(rid,{});n_[q['pos']]=n_.get(q['pos'],0)+1
         F={'RB','WR','TE'};pool=[q for q in st_+bn_ if q['pos'] in F]
         by={}
         for q in pool:by.setdefault(q['pos'],[]).append(q['pts'])
@@ -114,7 +117,7 @@ T=D['T']
 for r in rows:
     rid=r['roster_id'];t=season.RN[int(rid)]
     for p_ in PO:
-        r[p_]=round(agg[rid].get(p_,0),2);r['starts_'+p_]=stc[rid].get(p_,0);r['avg_'+p_]=round(r[p_]/max(1,r['starts_'+p_]),2)
+        r[p_]=round(agg[rid].get(p_,0),2);r['starts_'+p_]=stc[rid].get(p_,0);r['nogame_'+p_]=ngs.get(rid,{}).get(p_,0);r['avg_'+p_]=round(r[p_]/max(1,r['starts_'+p_]-r['nogame_'+p_]),2)
     r['wins']=T[t][0];r['total']=round(sum(agg[rid].values()),2)
     assert abs(r['total']-T[t][3])<0.05,(t,r['total'],T[t][3])
 for key in ['total']+PO+['avg_'+p for p in PO]:
