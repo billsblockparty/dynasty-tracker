@@ -253,3 +253,14 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 @media (max-width:370px){.cr.lu .sln{font-size:10px!important}.cr.lu .sln u{font-size:8px!important}}
 /* position bands stop where the points tiles stop (stat line 16px + row gap 6px + padding 8px below), same rounded bottom */
 .cr.lu:has(.sln) .cn>.pq{bottom:30px!important;border-radius:0 0 4px 4px}
+/* rows without a stat line: no empty second grid row, so tiles reach the row's bottom edge */
+.cr.lu:not(:has(.sln)){row-gap:0!important}
+/* rows with a stat line: tiles and bands end level with the bottom of the opponent logo (4px below the game line) */
+.cr.lu:has(.sln) .cv.act,.cr.lu:has(.sln) .cv.pjc{margin-bottom:-4px!important}
+.cr.lu:has(.sln) .cn>.pq{bottom:26px!important}
+/* band corners: outer bottom corner follows the row's own curve, inner bottom corner matches the points tiles */
+.cr.lu:has(.sln) .cn.a>.pq{border-radius:0 0 4px 8px!important}
+.cr.lu:has(.sln) .cn.b>.pq{border-radius:0 0 8px 4px!important}
+/* centre the stat line in the space under the tiles (row height and band edge unchanged) */
+.cr.lu:has(.sln){padding-bottom:5px!important}
+.cr.lu .sln{margin-top:3px}
