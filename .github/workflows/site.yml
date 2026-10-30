@@ -10,7 +10,7 @@ on:
         options: [weekly, live, build, history]
   push:
     branches: [main]
-    paths: ['pipeline/**', '.github/workflows/**']
+    paths: ['pipeline/**', '.github/workflows/**', '.github/live-trigger']
   schedule:
     # weekly refresh, Tuesday morning after Monday night (06:17 / 11:17 ET), second run as a backstop
     - cron: '17 10 * * 2'
@@ -52,7 +52,7 @@ jobs:
         id: mode
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then m="${{ inputs.mode }}";
-          elif [ "${{ github.event_name }}" = "push" ]; then m=weekly; [ -f .github/selftest ] && m=selftest;
+          elif [ "${{ github.event_name }}" = "push" ]; then m=weekly; [ -f .github/selftest ] && m=selftest; [ -f .github/live-trigger ] && m=live;
           elif [ "${{ github.event.schedule }}" = "17 10 * * 2" ] || [ "${{ github.event.schedule }}" = "17 15 * * 2" ]; then m=weekly;
           else m=live; fi
           echo "mode=$m" >> "$GITHUB_OUTPUT"; echo "Mode: $m"
