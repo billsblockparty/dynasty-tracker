@@ -126,14 +126,18 @@ def lcell(p,side):
     # finished games: the points tile already says FINAL, so the game line is just home/away + opponent
     st='BYE' if not opp else ha if done else f'{ha}<i class="gsep">·</i><span class="gwhen">{_when(p,done)}</span>'
     mk=_badge(tm).replace('<em class="nfl','<em class="nfl tm',1) if tm else ''
+    cur=(p[10] if len(p)>10 else W)==W and tm and opp  # current week, has a game: the page's live updater may patch it
+    dp=f' data-p="{pid}" data-j="{proj:.2f}"' if cur else ''
+    dt=f' data-t="{tm}"' if cur else ''
     return (f'<span class="cn {side}">{sq}{flg}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
-            f'<small><span class="gp{" fin" if done else ""}">{st}</span></small></span></span>'+
-            (f'<span class="cv {side} act"><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
+            f'<small><span class="gp{" fin" if done else ""}"{dt}>{st}</span></small></span></span>'+
+            (f'<span class="cv {side} act"{dp}><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"{dp}><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
 def lrow(pa,pb,slot):
     w=''
     if pa and pb:
         va,vb=lval(pa)[0],lval(pb)[0];w=' wa' if va>vb+1e-9 else ' wb' if vb>va+1e-9 else ''
     def sl(p,side):
+        if p and not lval(p)[1] and (p[10] if len(p)>10 else W)==W and p[6]:return f'<span class="slz sl{side}" data-sp="{p[0]}" data-pos="{p[1]}"></span>'
         if not p or not lval(p)[1]:return ''
         t=_sl(p[10] if len(p)>10 else W,p[0],p[1])
         return f'<span class="sln sl{side}">{t}</span>' if t else ''
@@ -231,7 +235,7 @@ RKW='<div class="lrw pseg" role="group" aria-label="Position rank by"><label for
 def CTL(rows):
     """lineup switches in one grid: switch | its title | title | switch per row, titles meeting in the middle"""
     return '<div class="lctl lgrid">'+''.join(f'{a}<i class="lt">{ta}</i><i class="lt ltr">{tb}</i>{b}' for a,ta,tb,b in rows)+'</div>'
-def ptsrow(sa,sb,big=True):
+def ptsrow(sa,sb,big=True,ra=None,rb=None):
     """Points (projected): tally of players whose game has started, '–' if none; original projection in brackets."""
     sa=[p for p in sa if p];sb=[p for p in sb if p]
     pl=lambda X:any(lval(p)[1] or (p[3] in LIVEG and (len(p)<11 or p[10]==W)) or p[5]!=0 for p in X)
@@ -239,8 +243,9 @@ def ptsrow(sa,sb,big=True):
     pa,pb=sum(p[4] for p in sa),sum(p[4] for p in sb)
     fa=f'{va:.1f}' if a_ else '–';fb=f'{vb:.1f}' if b_ else '–'
     ua=big and (a_ or b_) and va>vb;ub=big and (a_ or b_) and vb>va
-    return (f'<div class="mcr {"ltot" if big else "ltot2"}"><span class="{"up" if ua else ""}">{fa} <small>({pa:.1f})</small></span>'
-            f'<em>Points <i class=pj>(projected)</i></em><span class="{"up" if ub else ""}"><small>({pb:.1f})</small> {fb}</span></div>')
+    da=f' data-r="{ra}"' if ra else '';db=f' data-r="{rb}"' if rb else ''
+    return (f'<div class="mcr {"ltot" if big else "ltot2"}"><span class="{"up" if ua else ""}"{da}><b class="lt-v">{fa}</b> <small>({pa:.1f})</small></span>'
+            f'<em>Points <i class=pj>(projected)</i></em><span class="{"up" if ub else ""}"{db}><small>({pb:.1f})</small> <b class="lt-v">{fb}</b></span></div>')
 BH_CUR='<div class="msh lbh">Bench<small>active players with a game</small></div>'
 BH_HIST='<div class="msh lbh">Bench<small>points left on the bench</small></div>'
 def optblock(sa,sb,pool_a,pool_b,ta,tb,proj=False,bhead='',bkeep=lambda p:True,bsl=''):
@@ -275,7 +280,7 @@ def lineups(a,b):
     ta,tb=tot(A),tot(B)
     oa_,ob_=sum(p[4] for p in A['st']),sum(p[4] for p in B['st'])
     hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW)])}<div class="lnote">boxed = final · grey = projected</div>'
-    o=[ptsrow(A['st'],B['st'])]
+    o=[ptsrow(A['st'],B['st'],True,RID[a],RID[b])]
     o+=['<div class="lpv">']+[lrow(pa,pb,sl if sl!='FLEX' else 'FLX') for pa,pb,sl in zip(A['st'],B['st'],SLOTS)]+['</div>',sview(A['st'],B['st'])]
     keep=lambda p:_TAG.get(p[0],'')=='' and p[4]>0 or (p[3] in DONEG and p[5]>0)
     bn=lambda X:sorted([p for p in X['bn'] if keep(p)],key=lambda p:-lval(p)[0])
@@ -341,7 +346,7 @@ wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if
 dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
     '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
-sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b>{dd}</div>'+cur+hist+'</section>')
+sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b><span id="mlive" class="mlive" data-w="{W}" hidden></span>{dd}</div>'+cur+hist+'</section>')
 css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
 open(P+'mu_section.html','w',encoding='utf-8').write(sec);open(P+'mu_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':

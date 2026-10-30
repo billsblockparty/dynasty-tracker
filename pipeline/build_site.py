@@ -14,6 +14,7 @@ UPD=('<div id="upd" role="status" hidden><span>New scores</span><button type="bu
 head=('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
       '<meta name="robots" content="noindex">\n')
 s=head+s.replace('<meta charset="utf-8">\n','',1)
+UPD+='<script>'+open(P+'live.js',encoding='utf-8').read()+'</script>'  # in-page live scores (Matchups)
 j=s.index('</style>')+len('</style>');s=s[:j]+'\n</head>\n<body>'+s[j:]+UPD+f'\n<!-- built {stamp} -->\n</body>\n</html>\n'
 s=s.replace('</style>','body{margin:0}</style>',1)
 # small TeamHub link on the eyebrow line (live site only; the download file stays as is). Negative margins keep the
