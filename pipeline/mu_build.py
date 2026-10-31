@@ -145,7 +145,8 @@ def lcell(p,side):
     dt=f' data-t="{tm}"' if cur else ''
     hb=''
     if HATILE and opp and _hax(p) in('vs','@'):  # playoffs: vertical HOME / ROAD strip on the inner edge, next to the points
-        hb=f'<i class="hab {"h" if _hax(p)=="vs" else "r"}"><span>{"Home" if _hax(p)=="vs" else "Road"}</span></i>'
+        wd="HOME" if _hax(p)=="vs" else "ROAD"
+        hb=f'<i class="hab {"h" if _hax(p)=="vs" else "r"}" aria-label="{wd.title()}">'+''.join(f'<span>{c}</span>' for c in wd)+'</i>'
     return (f'<span class="cn {side}{" hbx" if hb else ""}">{sq}{flg}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
             f'<small><span class="gp{" fin" if done else ""}"{dt}>{st}</span></small></span>{hb}</span>'+
             (f'<span class="cv {side} act"{dp}><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"{dp}><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
@@ -400,11 +401,12 @@ css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;m
       '@media(max-width:449px){.mpk .pr2{grid-template-columns:1.2em minmax(0,1fr) auto 2.75em;gap:3px}.mpk .dv{margin-left:calc(1.2em + 3px)}.mpk .stk{padding:2px 3px 1px;font-size:10.5px}}'
       '@media(max-width:399px){.mpk label{padding:7px 6px;font-size:12.5px;letter-spacing:.01em}}@media(max-width:374px){.mpk label{font-size:11.5px;letter-spacing:0}.mpk .pr2{gap:4px}.mpk .stk{font-size:10px;padding:2px 3px 1px}}'
       +'')
-css+=('.cr.lu .cn .hab{position:absolute;top:0;bottom:0;width:12px;display:flex;align-items:center;justify-content:center;font-style:normal;pointer-events:none}'
-      '.cr.lu .cn.a .hab{right:0;border-left:1px solid var(--hair)}.cr.lu .cn.b .hab{left:0;border-right:1px solid var(--hair)}'
-      '.cr.lu .cn .hab span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--display);font-weight:700;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;line-height:1}'
-      '.cr.lu .cn .hab.h{background:rgba(63,214,155,.10);color:#7fdcb6}.cr.lu .cn .hab.r{background:rgba(150,160,255,.10);color:#b3bcff}'
-      '.cr.lu .cn.a.hbx .cnm{padding-right:13px}.cr.lu .cn.b.hbx .cnm{padding-left:13px}')
+css+=('.cr.lu .cn .hab{position:absolute;top:-8px;bottom:-8px;width:14px;box-sizing:border-box;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-style:normal;pointer-events:none}'
+      '.cr.lu .cn.a .hab{right:0}.cr.lu .cn.b .hab{left:0}'
+      '.cr.lu .cn .hab span{display:block;font-family:var(--display);font-weight:700;font-size:10.5px;line-height:10px;height:10px;text-align:center}'
+      '.cr.lu .cn .hab.h{background:rgba(63,214,155,.14);color:#7fdcb6;box-shadow:inset 0 0 0 1px rgba(63,214,155,.5)}'
+      '.cr.lu .cn .hab.r{background:rgba(150,160,255,.13);color:#b9c1ff;box-shadow:inset 0 0 0 1px rgba(150,160,255,.5)}'
+      '.cr.lu .cn.a.hbx .cnm{padding-right:15px}.cr.lu .cn.b.hbx .cnm{padding-left:15px}')
 css+=('.hat{display:inline-block;min-width:14px;box-sizing:border-box;text-align:center;font-style:normal;font-family:var(--display);font-weight:700;font-size:11px;line-height:1;padding:2px 2px 1.5px;border-radius:3px;margin-right:2px;vertical-align:1px}'
       '.hat.h{color:#7fdcb6;background:rgba(63,214,155,.13);box-shadow:inset 0 0 0 1px rgba(63,214,155,.4)}'
       '.hat.r{color:#b3bcff;background:rgba(150,160,255,.12);box-shadow:inset 0 0 0 1px rgba(150,160,255,.38)}')
