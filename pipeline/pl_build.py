@@ -92,7 +92,9 @@ sec=(f'<section class="plx" aria-labelledby="plh">{radios}<div class="posh"><b i
      f'{chips}{seg}{blocks}</section>')
 open(P+'pl_section.html','w',encoding='utf-8').write(sec)
 ids=[p.lower() for p in ORD]
-css=(''.join(f'#pl-{i}:checked~.plc label[for="pl-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#pl-{i}:checked~.plb-{i}{{display:block}}' for i in ids)
+PC={'qb':'#f7739c','rb':'#3ddcc1','wr':'#5ec6f4','te':'#fca95c','k':'#c491ff','def':'#c98a72'}
+css=(''.join(f'.plx .plc label[for="pl-{i}"]{{color:{PC[i]};border-color:color-mix(in srgb,{PC[i]} 45%,transparent)}}'
+             f'#pl-{i}:checked~.plc label[for="pl-{i}"]{{background:color-mix(in srgb,{PC[i]} 82%,#0b0e14);color:#0b0e14;border-color:transparent}}#pl-{i}:checked~.plb-{i}{{display:block}}' for i in ids)
  +'#pl-sp:checked~.plseg label[for="pl-sp"],#pl-sg:checked~.plseg label[for="pl-sg"]{background:var(--chalk);color:var(--ink)}'
  +'.plx .plb{display:none}.plx .pll{display:flex;flex-direction:column}.plx .plr{order:var(--a)}#pl-sg:checked~.plb .plr{order:var(--b)}'
  +'#pl-sp:checked~.plb .xa,#pl-sg:checked~.plb .xb{display:none}'
