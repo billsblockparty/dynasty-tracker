@@ -74,7 +74,7 @@ _NICK={'ARI':'Cardinals','ATL':'Falcons','BAL':'Ravens','BUF':'Bills','CAR':'Pan
 'LV':'Raiders','LAC':'Chargers','LAR':'Rams','MIA':'Dolphins','MIN':'Vikings','NE':'Patriots','NO':'Saints','NYG':'Giants',
 'NYJ':'Jets','PHI':'Eagles','PIT':'Steelers','SF':'49ers','SEA':'Seahawks','TB':'Buccaneers','TEN':'Titans','WAS':'Commanders'}
 _LOGOS={f.rpartition('.')[0] for f in (_dt_os.listdir(P+'logos') if _dt_os.path.isdir(P+'logos') else []) if f.rpartition('.')[2].lower() in('svg','png','webp')}
-HATILE=False  # playoffs set this: HOME / ROAD tile in place of the plain vs / @
+HATILE=True  # HOME / ROAD strip on the inner edge of every lineup cell (Matchups and Playoffs)
 def _hax(p):
     """'vs' (home) / '@' (road) for a lineup entry, '' when the player has no game"""
     if not p or not p[6]:return ''
@@ -406,6 +406,7 @@ css+=('.cr.lu .cn .hab{position:absolute;top:-8px;bottom:-8px;width:14px;box-siz
       '.cr.lu .cn .hab span{display:block;font-family:var(--display);font-weight:700;font-size:10.5px;line-height:10px;height:10px;text-align:center}'
       '.cr.lu .cn .hab.hab-h{background:rgba(63,214,155,.14);color:#7fdcb6;box-shadow:inset 0 0 0 1px rgba(63,214,155,.5)}'
       '.cr.lu .cn .hab.hab-r{background:rgba(150,160,255,.13);color:#b9c1ff;box-shadow:inset 0 0 0 1px rgba(150,160,255,.5)}'
+      '.cr.lu:has(.sln) .cn .hab{bottom:-4px}'
       '.cr.lu .cn.a.hbx .cnm{padding-right:15px}.cr.lu .cn.b.hbx .cnm{padding-left:15px}')
 css+=('.hat{display:inline-block;min-width:14px;box-sizing:border-box;text-align:center;font-style:normal;font-family:var(--display);font-weight:700;font-size:11px;line-height:1;padding:2px 2px 1.5px;border-radius:3px;margin-right:2px;vertical-align:1px}'
       '.hat.h{color:#7fdcb6;background:rgba(63,214,155,.13);box-shadow:inset 0 0 0 1px rgba(63,214,155,.4)}'
