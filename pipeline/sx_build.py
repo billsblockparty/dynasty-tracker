@@ -266,7 +266,8 @@ def build():
     css=''.join(f'#sx-{k}:checked~.sxnav label[for="sx-{k}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#sx-{k}:checked~.sxp-{k}{{display:block}}' for k,_,_ in MODS)
     css+=HXCSS+('.bnl .bnt{display:flex;flex-direction:column;gap:3px;white-space:nowrap;overflow:visible}'
       '.bnl .bop{font-size:11.5px;font-weight:500;color:var(--steel)}.bnl .bop em{font-style:normal;font-family:var(--display);font-weight:700;color:var(--label);margin:0 1px}'
-      '.bnl .bop em.gold{color:#e8c15a}.bnl .bop em.g{color:var(--win)}.bnl .bop em.b{color:#ff8a9a}'
+      '.bnl .bop em{display:inline-flex;align-items:center;justify-content:center;width:20px;height:16px;padding-bottom:1px;box-sizing:border-box;margin:0 4px 0 3px;border-radius:3px;background:rgba(238,240,244,.08);font-size:11px;vertical-align:1px}'
+      '.bnl .bop em.gold{color:#e8c15a;background:rgba(232,193,90,.14)}.bnl .bop em.g{color:var(--win);background:rgba(63,214,155,.12)}.bnl .bop em.b{color:#ff8a9a;background:rgba(255,93,115,.12)}'
       '.hm.r1{box-shadow:inset 0 0 0 1.5px #e8c15a}.hm.r10{box-shadow:inset 0 0 0 1.5px rgba(255,93,115,.85)}')
     return radios+nav+pans,css
 if __name__=='__main__':
