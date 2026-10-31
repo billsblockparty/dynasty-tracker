@@ -128,6 +128,8 @@ def _when(p,done):
     if d.hour>=19 and d.weekday() in (0,3,6):return {0:'MNF',3:'TNF',6:'SNF'}[d.weekday()]
     return t if d.weekday()==6 else f'{d:%a} {t}'
 _KJ=json.load(open(P+'kick.json'))
+def _dif(a,j):
+    d=round(a-j,1);return ('+' if d>=0 else '−')+f'{abs(d):.1f}'  # points vs projection, on the FINAL tile
 def lcell(p,side):
     if p is None:return f'<span class="cn {side}"></span><span class="cv {side}"></span>'
     pid,pos,name,tm,proj,act,opp,inj=p[:8]
@@ -162,7 +164,7 @@ def lcell(p,side):
         hb=f'<i class="hab {"hab-h" if _hax(p)=="vs" else "hab-r"}" aria-label="{wd.title()}">'+''.join(f'<span>{c}</span>' for c in wd)+'</i>'
     return (f'<span class="cn {side}{" hbx" if hb else ""}">{sq}{flg}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
             f'<small><span class="gp{" fin" if done else ""}"{dt}>{st}</span></small></span>{hb}</span>'+
-            (f'<span class="cv {side} act"{dp}><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}">{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"{dp}><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
+            (f'<span class="cv {side} act"{dp}><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}"><em class="fdf">{_dif(act,proj)}</em>{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"{dp}><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
 def lrow(pa,pb,slot):
     w=''
     if pa and pb:

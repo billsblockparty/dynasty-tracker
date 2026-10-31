@@ -29,7 +29,7 @@
       var t=cn&&cn.querySelector('.gp[data-t]');t=t?t.dataset.t:null;var s=t&&st[t];if(!s||s==='pre')return;
       var v=pp[pid]||0,j=+el.dataset.j,fin=s==='post';
       el.classList.remove('pjc');el.classList.add('act');
-      el.innerHTML='<span class="fs '+(fin?(v>=j?'up':'dn'):'lv')+'" title="Projected '+f1(j)+'">'+f1(v)+'<small>'+(fin?'FINAL':'LIVE')+'</small></span>';
+      var df=Math.round((v-j)*10)/10;el.innerHTML='<span class="fs '+(fin?(v>=j?'up':'dn'):'lv')+'" title="Projected '+f1(j)+'">'+(fin?'<em class="fdf">'+(df>=0?'+':'\u2212')+Math.abs(df).toFixed(1)+'</em>':'')+f1(v)+'<small>'+(fin?'FINAL':'LIVE')+'</small></span>';
       var gl=cn.querySelector('.gp[data-t]');
       if(gl){var w=gl.querySelector('.gwhen'),sp=gl.querySelector('.gsep');
         if(fin){if(w)w.remove();if(sp)sp.remove();gl.classList.add('fin')}else if(w)w.textContent='Live'}
