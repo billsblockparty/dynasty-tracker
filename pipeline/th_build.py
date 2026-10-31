@@ -184,7 +184,7 @@ def chart(key,title,vals,lo,hi,fmt,ticks,inv=False,ref=None,refl='',dots=None,ze
     for tv in ticks:
         g.append(f'<line class="tgl" x1="{PL}" x2="{VW-PR}" y1="{Y(tv):.1f}" y2="{Y(tv):.1f}"/><text class="tax" x="{PL-6}" y="{Y(tv)+3.5:.1f}" text-anchor="end">{(tickfmt or str)(tv)}</text>')
     if seeds:  # bye line (2nd) and playoff line (6th)
-        for v,c,lab in ((2,'tby','Bye'),(6,'tpo','Playoffs')):
+        for v,c,lab in ((2,'tqby','Bye'),(6,'tqpo','Playoffs')):
             g.append(f'<line class="{c}" x1="{PL}" x2="{VW-PR}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/><text class="{c}t" x="{PL+4}" y="{Y(v)-3:.1f}" text-anchor="start">{lab}</text>')
     if zero is not None:g.append(f'<line class="tzero" x1="{PL}" x2="{VW-PR}" y1="{Y(zero):.1f}" y2="{Y(zero):.1f}"/>')
     for k in range(1,G+1):g.append(f'<text class="tax" x="{xs(k):.1f}" y="{VH-4}" text-anchor="middle">{k}</text>')
@@ -283,7 +283,7 @@ css=PKCSS+(''.join(f'#thx-{i}:checked~.tqpk label[for="thx-{i}"]{{background:var
  +'.thx2 .tqh{margin-top:20px}'
  # positions
  +'.tqpos{display:flex;flex-direction:column}.tqpr{display:grid;grid-template-columns:34px minmax(0,1fr) 44px 34px;align-items:center;gap:10px;min-height:34px;border-bottom:1px solid var(--hair)}'
- +'.tqpr .pz{justify-self:start}.tqbar{height:8px;border-radius:4px;background:var(--hair);overflow:hidden}.tqbar i{display:block;height:100%;border-radius:4px;background:var(--pc);opacity:.55}'
+ +'.tqpr .pz{justify-self:start}.tqbar{height:8px;border-radius:4px;background:var(--hair);overflow:hidden}.tqbar i{display:block;height:100%;border-radius:4px;background:var(--pc);opacity:.78}'
  +'.tqv{font-family:var(--display);font-weight:700;font-size:16px;color:var(--chalk);text-align:right;font-variant-numeric:tabular-nums}.tqv.z{color:var(--dim)}.tqpr .tqr{text-align:right}'
  # grids
  +'.tqgrid.sxm .sxr{grid-template-columns:58px repeat(var(--n),minmax(0,1fr)) 38px}.tqgrid.bym .sxr{grid-template-columns:58px repeat(var(--n),minmax(0,1fr))}'
@@ -327,8 +327,8 @@ css=PKCSS+(''.join(f'#thx-{i}:checked~.tqpk label[for="thx-{i}"]{{background:var
  +'.tsel.c1{fill:var(--chalk)}.tsel.c2{fill:#6fc9a4}.tsel.c3{fill:#e8c15a}'
  +'.trm{display:none;gap:10px}.trm b{font-family:var(--display);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}.trm b+b{margin-left:10px}.trm b small{font-size:11px;color:var(--steel);margin-left:1px}.trm b.c1{color:var(--chalk)}.trm b.c2{color:#6fc9a4}.trm b.c3{color:#e8c15a}'
  +'.tlg3{display:flex;gap:12px;margin:0 0 4px;font-size:11px;color:var(--steel)}.tlg3 span{display:inline-flex;align-items:center;gap:5px}.tlg3 i{width:14px;height:2px;border-radius:1px;background:currentColor}.tlg3 .c1 i{background:var(--chalk)}.tlg3 .c2 i{background:#6fc9a4}.tlg3 .c3 i{background:#e8c15a}'
- +'.tby{stroke:#8ec5ff;stroke-width:1;opacity:.55;stroke-dasharray:4 3}.tpo{stroke:var(--chalk);stroke-width:1;opacity:.4;stroke-dasharray:4 3}'
- +'.tbyt{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.06em;text-transform:uppercase;fill:#8ec5ff;opacity:.8}.tpot{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.06em;text-transform:uppercase;fill:var(--chalk);opacity:.6}'
+ +'.tqby{stroke:#8ec5ff;stroke-width:1;opacity:.55;stroke-dasharray:4 3}.tqpo{stroke:var(--chalk);stroke-width:1;opacity:.4;stroke-dasharray:4 3}'
+ +'.tqbyt{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.06em;text-transform:uppercase;fill:#8ec5ff;opacity:.8}.tqpot{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.06em;text-transform:uppercase;fill:var(--chalk);opacity:.6}'
  +'.tsvg{cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}'
  +'.twm{display:none}.tcur{stroke:'+TL+';stroke-width:1;opacity:.55}.tsel{fill:'+TL+';stroke:var(--deck);stroke-width:2}.tsel.w{fill:var(--win)}.tsel.l{fill:var(--loss)}')
 open(P+'th_section.html','w',encoding='utf-8').write(sec_)
