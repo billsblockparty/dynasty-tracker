@@ -319,6 +319,8 @@ def panel(i,a,b):
             f'<div class="msw"><label for="mt{i}a">{e(a)}</label><label for="mt{i}b">{e(b)}</label></div>'
             f'<div class="msch msch-a">{sched(a)}</div><div class="msch msch-b">{sched(b)}</div></div>')
 radios=''.join(f'<input type="radio" name="mus" id="mu-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(5))
+def _rw(t,w):
+    g=WK[t][:w];return f'{sum(x[2]>x[3] for x in g)}-{sum(x[2]<x[3] for x in g)}'
 def streak(t,upto=None):
     g=WK[t][:upto] if upto else WK[t];res=['W' if x[2]>x[3] else 'L' for x in g]
     if not res:return ''
@@ -328,16 +330,16 @@ def streak(t,upto=None):
 def nmx(t):
     full=e(SHORT[t]);sh=e(SHORT0.get(t,t))
     return f'<span class="nf">{full}</span><span class="ns">{sh}</span>'
-def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False):
+def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False,ca='',cb=''):
     """one game in the picker, teams stacked: rank, name, streak (or result), score"""
     ua,ub=(va>vb,vb>va) if final else (False,False)
-    line=lambda t,r,tg,v,hi:(f'<span class="pr2"><em class="mrk {tone(r) if not final else ""}">{r}</em><b>{nmx(t)}</b>'
+    line=lambda t,r,tg,v,hi,rc:(f'<span class="pr2"><em class="mrk {tone(r) if not final else ""}">{r}</em><b>{nmx(t)}</b><span class="prc">{rc}</span>'
                              f'<i class="stk {tg[:1].lower()}">{tg}</i><span class="sc{" hi" if hi else ""}">{v:.1f}</span></span>')
-    return f'<label for="{fr}"{" class=fin" if final else ""}>{line(a,ra,ta,va,ua)}<i class="dv"></i>{line(b,rb,tb,vb,ub)}</label>'
+    return f'<label for="{fr}"{" class=fin" if final else ""}>{line(a,ra,ta,va,ua,ca)}<i class="dv"></i>{line(b,rb,tb,vb,ub,cb)}</label>'
 _cur=lambda t:sum(lval(p)[0] for p in LW['out'][str(RID[t])]['st'])
-chips='<div class="mpk muc2" role="tablist" aria-label="Game">'+''.join(prow_(f'mu-{i}',a,b,seed(a),seed(b),streak(a),streak(b),_cur(a),_cur(b)) for i,(a,b) in enumerate(games))+'</div>'
+chips='<div class="mpk muc2" role="tablist" aria-label="Game">'+''.join(prow_(f'mu-{i}',a,b,seed(a),seed(b),streak(a),streak(b),_cur(a),_cur(b),False,rec(a),rec(b)) for i,(a,b) in enumerate(games))+'</div>'
 cur=f'<div class="mwx mwx-{W}">'+radios+chips+''.join(panel(i,a,b) for i,(a,b) in enumerate(games))+'</div>'
-css=''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"]{{background:#232a36;border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
+css=''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"]{{border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
 # ---------- historical weeks
 HS=json.load(open(P+'hist.json'));META=HS['m']
 def hp(sp,inj=None):
@@ -377,10 +379,10 @@ for w in range(DONE,0,-1):
     gl.sort(key=lambda g:H.index(g[0]))
     hr=''.join(f'<input type="radio" name="hw{w}" id="hw{w}-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(5))
     _hx=lambda t:WK[t][w-1]
-    hc=f'<div class="mpk hwc{w}" role="tablist">'+''.join(prow_(f'hw{w}-{i}',a,b,_hx(a)[4],_hx(b)[4],'W' if R2[str(RID[a])][1]>R2[str(RID[b])][1] else 'L','W' if R2[str(RID[b])][1]>R2[str(RID[a])][1] else 'L',R2[str(RID[a])][1],R2[str(RID[b])][1],True) for i,(a,b) in enumerate(gl))+'</div>'
+    hc=f'<div class="mpk hwc{w}" role="tablist">'+''.join(prow_(f'hw{w}-{i}',a,b,_hx(a)[4],_hx(b)[4],'W' if R2[str(RID[a])][1]>R2[str(RID[b])][1] else 'L','W' if R2[str(RID[b])][1]>R2[str(RID[a])][1] else 'L',R2[str(RID[a])][1],R2[str(RID[b])][1],True,_rw(a,w),_rw(b,w)) for i,(a,b) in enumerate(gl))+'</div>'
     hpn=''.join(f'<div class="mup hwp{w}-{i}">{hcard(w,a,b,R2[str(RID[a])],R2[str(RID[b])])}{hlineups(R2[str(RID[a])],R2[str(RID[b])])}</div>' for i,(a,b) in enumerate(gl))
     hist+=f'<div class="mwx mwx-{w}">'+hr+hc+hpn+'</div>'
-    css+=''.join(f'#hw{w}-{i}:checked~.hwc{w} label[for="hw{w}-{i}"]{{background:#232a36;border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#hw{w}-{i}:checked~.hwp{w}-{i}{{display:block}}' for i in range(5))
+    css+=''.join(f'#hw{w}-{i}:checked~.hwc{w} label[for="hw{w}-{i}"]{{border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#hw{w}-{i}:checked~.hwp{w}-{i}{{display:block}}' for i in range(5))
 wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if w==W else ""}>' for w in range(1,W+1))
 dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
@@ -390,21 +392,22 @@ css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.
 css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0 0 12px}.mpk label:last-child:nth-child(odd){grid-column:1/-1}'
       '.mpk label{display:flex;flex-direction:column;gap:4px;padding:7px 9px;box-sizing:border-box;border-radius:6px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;'
       'font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--label);white-space:nowrap;min-width:0}'
-      '.mpk .pr2{display:grid;grid-template-columns:1.3em minmax(0,1fr) auto 3.1em;align-items:center;gap:5px;min-width:0;line-height:1.15}'
+      '.mpk .pr2{display:grid;grid-template-columns:1.3em minmax(0,1fr) auto auto 3.1em;align-items:center;gap:5px;min-width:0;line-height:1.15}'
+      '.mpk .prc{color:var(--steel);font-weight:600;font-size:.86em;font-variant-numeric:tabular-nums;letter-spacing:0}'
       '.mpk .pr2>b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:700}'
       '.mpk .dv{display:block;height:1px;background:currentColor;opacity:.15;margin:0 0 0 calc(1.3em + 5px)}'
       '.mpk .mrk{font-style:normal;text-align:right;color:var(--steel);font-variant-numeric:tabular-nums}'
       '.mpk .mrk.gold{color:#e8c15a}.mpk .mrk.g{color:var(--win)}.mpk .mrk.b{color:#ff8a9a}'
-      '.mpk .stk{font-style:normal;font-size:11px;letter-spacing:.04em;padding:2px 4px 1px;border-radius:3px;line-height:1}'
+      '.mpk .stk{font-style:normal;font-size:10.5px;letter-spacing:.02em;padding:2px 3px 1px;border-radius:3px;line-height:1}'
       '.mpk .stk.w{color:var(--win);background:rgba(63,214,155,.12)}.mpk .stk.l{color:var(--loss);background:rgba(255,93,115,.12)}'
       '.mpk .sc{text-align:right;font-variant-numeric:tabular-nums;color:var(--label)}.mpk .fin .sc{color:var(--steel)}.mpk .fin .sc.hi{color:var(--chalk)}'
       '.mpk .pr2>b{color:var(--chalk)}.mpk .sc{color:var(--chalk)}.mpk .fin .sc{color:var(--steel)}.mpk .fin .sc.hi{color:var(--chalk)}'
       '.mpk label{transition:background-color .15s,border-color .15s}'
-      '.mpk .ns{display:none}@media(max-width:599px){.mpk .nf{display:none}.mpk .ns{display:inline}}'
-      '@media(max-width:449px){.mpk .pr2{grid-template-columns:1.2em minmax(0,1fr) auto 2.75em;gap:3px}.mpk .dv{margin-left:calc(1.2em + 3px)}.mpk .stk{padding:2px 3px 1px;font-size:10.5px}}'
-      '@media(max-width:399px){.mpk label{padding:7px 6px;font-size:12.5px;letter-spacing:.01em}}@media(max-width:374px){.mpk label{font-size:11.5px;letter-spacing:0}.mpk .pr2{gap:4px}.mpk .stk{font-size:10px;padding:2px 3px 1px}}'
+      '.mpk .nf{display:none}'
+      '@media(max-width:449px){.mpk label{font-size:12.5px;letter-spacing:.01em}.mpk .pr2{grid-template-columns:1.1em minmax(0,1fr) auto auto 2.7em;gap:3px}.mpk .dv{margin-left:calc(1.2em + 3px)}.mpk .stk{padding:2px 3px 1px;font-size:10.5px}}'
+      '@media(max-width:399px){.mpk label{padding:7px 6px;font-size:12px;letter-spacing:0}}@media(max-width:389px){.mpk label{font-size:11.5px;letter-spacing:0}.mpk .pr2{gap:2px}}@media(max-width:374px){.mpk label{font-size:10.5px;letter-spacing:0;padding:7px 5px}.mpk .pr2{grid-template-columns:1em minmax(0,1fr) auto auto 2.55em}.mpk .stk{padding:2px 2px 1px}.mpk .pr2{gap:4px}.mpk .stk{font-size:10px;padding:2px 3px 1px}}'
       +'')
-css+=('.mcr em .hrt{display:inline-block;font-family:var(--display);font-weight:700;font-size:inherit;letter-spacing:inherit;line-height:1;padding:2px 5px 1px;border-radius:4px;font-style:normal}'
+css+=('.mcr em .hrt{display:inline-block;font-family:var(--display);font-weight:700;font-size:inherit;letter-spacing:.08em;line-height:1;padding:2px calc(5px - .08em) 1px 5px;border-radius:4px;font-style:normal}'
       '.mcr em .hrt-h{background:rgba(63,214,155,.14);color:#7fdcb6;box-shadow:inset 0 0 0 1px rgba(63,214,155,.5)}'
       '.mcr em .hrt-r{background:rgba(150,160,255,.13);color:#b9c1ff;box-shadow:inset 0 0 0 1px rgba(150,160,255,.5)}'
       '.mcr .hrd{font-style:normal;margin:0 6px;opacity:.6}'
