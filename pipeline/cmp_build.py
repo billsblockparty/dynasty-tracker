@@ -23,6 +23,9 @@ SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHO
 FULL={**{v:k for k,v in SHORT0.items()},**{k:k for k in SHORT0}};FULL["Bill's"]="Bill's Block Party"
 RN={int(k):v for k,v in X['rn'].items()};RID={v:k for k,v in RN.items()}
 e=html.escape;G=len(WK[H[0]]);W=G+1;TODAY=date.today()
+from datetime import datetime as _dtm
+_K=json.load(open(P+'kick.json')).get('1',{})
+OPEN=min((int(_dtm.fromisoformat(v[0]).timestamp()*1000) for v in _K.values() if v and v[0]),default=1788800000000)-86400000
 seed=lambda t:H.index(t)+1
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
 chip=lambda r:f'<i class="ch {tone(r)}"><span class="ct">#{r}</span></i>'
@@ -148,7 +151,7 @@ def depth(a,b):
     return f'<div class="cs cs-dp">{sec("Depth",body,f"bench = rostered players not started, Wk 1–{G}")}</div>'
 # ---------- Schedule
 def schedule(a,b):
-    fa,fb=FUT[a],FUT[b]
+    PAST=not FUT[a];fa,fb=(WK[a],WK[b]) if PAST else (FUT[a],FUT[b])
     av=lambda f,fn:stt.mean(fn(FULL[x[1]]) for x in f)
     t3=lambda f:sum(seed(FULL[x[1]])<=3 for x in f)
     by=lambda t,w:sum(1 for p in R[t] if not p[7] and BYE.get(p[3])==w)
@@ -163,9 +166,9 @@ def schedule(a,b):
         ia=f'<i class="mby">{na}</i>' if na else '';ib=f'<i class="mby">{nb}</i>' if nb else ''
         rows+=(f'<div class="mcr csr"><span>{chip(seed(oa))}<b>{e(oa)}</b>{ia}</span><em>Wk {xa[0]}</em>'
                f'<span>{chip(seed(ob))}<b>{e(ob)}</b>{ib}</span></div>')
-    return f'<div class="cs cs-sh">{sec("Rest of season",s1,"white = easier run")}{sec("Week by week",rows,"opponent seed · players on bye in blue")}</div>'
+    return f'<div class="cs cs-sh">{sec("Full season" if PAST else "Rest of season",s1,"final seeds · white = easier run" if PAST else "white = easier run")}{sec("Week by week",rows,"opponent seed · players on bye in blue")}</div>'
 # ---------- Dynasty
-SEAS=['2027','2028','2029']
+_Y=int(_dt_os.environ.get('DT_SEASON','2026'));SEAS=[str(_Y+1),str(_Y+2),str(_Y+3)]
 OWN={}
 for sn in SEAS:
     for rd in range(1,X['rounds']+1):
@@ -211,7 +214,7 @@ def trades(a,b):
             for f in t['faab']:
                 if f['receiver']==r:out.append(f'<div class="ti"><i class="pk faab"><span class="ct">$</span></i><span>${f["amount"]} FAAB</span></div>')
             return ''.join(out) or '<div class="ti none">–</div>'
-        when='Pre-season' if t['ts']<1788800000000 else f'Week {t["w"]}'
+        when='Pre-season' if t['ts']<OPEN else f'Week {t["w"]}'
         items+=f'<div class="ctr"><div class="ctw">{when}</div><div class="mcr ctg"><div>{got(ra)}</div><em>gets</em><div>{got(rb)}</div></div></div>'
     if not items:items='<div class="mprev">No trades between these two teams this season</div>'
     return f'<div class="cs cs-tr">{sec("Activity",body)}<div class="msh">Trades with each other<small>points scored since the trade</small></div>{items}</div>'

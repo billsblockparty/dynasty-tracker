@@ -77,6 +77,7 @@ for t,L_ in FUT.items():
         assert NF[t][0][1]==SH[opp],(t,NF[t][0],SH[opp])
         NF[t][0]=[NOW,SH[opp],a,b,pct]
 for t in NF:  # make win% pairs sum to 100
+    if not NF[t]:continue
     rid=season.RID[t];x=NF[t][0]
     if x[0]==NOW:
         opp=[r for r,(mid,_) in m8.items() if mid==m8[rid][0] and r!=rid][0]

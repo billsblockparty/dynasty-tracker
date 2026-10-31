@@ -11,7 +11,20 @@ import { fileURLToPath } from 'node:url';
 import { lastCompleteWeek, pullWeekly, pullPlayoffs, pullLive, pullDetail, pullTop } from './sleeper.mjs';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const out = (f, o) => fs.writeFileSync(path.join(DIR, f), JSON.stringify(o));
+// Offline replay of a captured season (pull_season.mjs): DT_CACHE=history/raw/2025 answers every request from the capture
+import zlib from 'node:zlib';
+let CACHE = null;
+if (process.env.DT_CACHE) {
+  CACHE = {};
+  for (const k of ['core', 'stats', 'proj', 'players']) Object.assign(CACHE, JSON.parse(zlib.gunzipSync(fs.readFileSync(path.resolve(DIR, process.env.DT_CACHE, k + '.json.gz')))));
+}
 async function get(u, tries = 4) {
+  if (CACHE) {
+    if (u in CACHE) return JSON.parse(JSON.stringify(CACHE[u]));
+    if (/\/state\/nfl$/.test(u)) return { season: process.env.DT_SEASON, season_type: 'regular', week: 18 };
+    if (/\/(matchups|transactions)\/\d+$/.test(u)) return [];  // weeks outside the season (e.g. week 0 before Week 1)
+    throw new Error('not in season capture: ' + u);
+  }
   for (let i = 1; ; i++) {
     try {
       const r = await fetch(u, { headers: { 'user-agent': 'dynasty-tracker (github.com/billsblockparty/dynasty-tracker)' } });

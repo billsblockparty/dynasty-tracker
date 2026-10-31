@@ -14,7 +14,11 @@ async function get(u, tries = 5) {
   }
 }
 const projURL = w => `${S}/projections/nfl/${Y}/${w}?season_type=regular` + ['QB', 'RB', 'WR', 'TE', 'K', 'DEF'].map(p => `&position[]=${p}`).join('');
-const slimRow = r => ({ player_id: r.player_id, team: r.team, opponent: r.opponent, player: r.player ? { position: r.player.position, first_name: r.player.first_name, last_name: r.player.last_name } : null, stats: r.stats });
+// two-way players (Sleeper lists Travis Hunter as DB) keep their fantasy position: the first of fantasy_positions the league scores
+const fpos = p => p && (FPOS.has(p.position) ? p.position : (p.fantasy_positions || []).find(x => FPOS.has(x))) || null;
+const pl = await get(`${A}/players/nfl`), POSOF = {};
+for (const [id, p] of Object.entries(pl)) { const f = fpos(p); if (f) POSOF[id] = f; }
+const slimRow = r => ({ player_id: r.player_id, team: r.team, opponent: r.opponent, player: r.player ? { position: POSOF[r.player_id] || r.player.position, first_name: r.player.first_name, last_name: r.player.last_name } : null, stats: r.stats });
 const out = { core: {}, stats: {}, proj: {}, players: {} };
 const L = `${A}/league/${LID}`;
 for (const u of [L, `${L}/users`, `${L}/rosters`, `${L}/traded_picks`, `${L}/winners_bracket`, `${L}/losers_bracket`, `${S}/schedule/nfl/regular/${Y}`]) out.core[u] = await get(u);
@@ -23,13 +27,13 @@ for (let w = 1; w <= 18; w++) {
   out.core[`${L}/transactions/${w}`] = await get(`${L}/transactions/${w}`);
   out.core[`${S}/scores/nfl/regular/${Y}/${w}`] = (await get(`${S}/scores/nfl/regular/${Y}/${w}`)).map(x => ({ status: x.status, metadata: x.metadata ? { home_team: x.metadata.home_team, away_team: x.metadata.away_team, date_time: x.metadata.date_time } : null }));
   const su = `${S}/stats/nfl/${Y}/${w}?season_type=regular`;
-  out.stats[su] = (await get(su)).filter(r => r.player && FPOS.has(r.player.position)).map(slimRow);
+  out.stats[su] = (await get(su)).filter(r => r.player && FPOS.has(POSOF[r.player_id] || r.player.position)).map(slimRow);
   out.proj[projURL(w)] = (await get(projURL(w))).map(slimRow);
   console.log('week', w, out.stats[su].length, 'stat rows');
 }
-const pl = await get(`${A}/players/nfl`), keep = {};
+const keep = {};
 const F = ['full_name', 'first_name', 'last_name', 'position', 'fantasy_positions', 'team', 'injury_status', 'birth_date', 'years_exp'];
-for (const [id, p] of Object.entries(pl)) if (p && (FPOS.has(p.position) || !/^\d+$/.test(id))) keep[id] = Object.fromEntries(F.map(k => [k, p[k] ?? null]));
+for (const [id, p] of Object.entries(pl)) if (p && (POSOF[id] || !/^\d+$/.test(id))) keep[id] = { ...Object.fromEntries(F.map(k => [k, p[k] ?? null])), position: POSOF[id] || p.position };
 out.players[`${A}/players/nfl`] = keep;
 const dst = path.join(DIR, 'history', 'raw', Y); fs.mkdirSync(dst, { recursive: true });
 for (const [k, v] of Object.entries(out)) fs.writeFileSync(path.join(dst, k + '.json.gz'), zlib.gzipSync(JSON.stringify(v), { level: 9 }));

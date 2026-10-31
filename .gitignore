@@ -10,3 +10,4 @@ pipeline/DynastyStandings.html
 pipeline/lists.json
 pipeline/live.json
 .cache/
+.season/

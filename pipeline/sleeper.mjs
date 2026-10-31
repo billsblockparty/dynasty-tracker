@@ -1,6 +1,7 @@
 // Sleeper data pulls for the tracker. Pure functions over `get(url) -> JSON`, so the same code runs in Node
 // (GitHub Actions) and in a browser for checking. Output shapes match the files the Python build reads.
-export const LEAGUE = '1335450123487961088', SEASON = '2026';
+const _ENV = (typeof process !== 'undefined' && process.env) || {};
+export const LEAGUE = _ENV.DT_LEAGUE || '1335450123487961088', SEASON = _ENV.DT_SEASON || '2026';
 const A = 'https://api.sleeper.app/v1', S = 'https://api.sleeper.com';
 const FPOS = new Set(['QB', 'RB', 'WR', 'TE', 'K', 'DEF']);
 const r2 = x => Math.round(x * 100) / 100;
