@@ -1,141 +1,300 @@
 import os as _dt_os;__DTP__=_dt_os.path.dirname(_dt_os.path.abspath(__file__)).removesuffix('/pos')+'/'
-# Team Hub: one page per team, switched by CSS-only radios (no script needed, works in the download file too).
-# Sections: header + key numbers, this season, remaining schedule, position strength, roster core, lineup calls,
-# draft capital, league history 2021-2026, head-to-head (all time), assessment. Writes th_section.html + th_css.css.
-import json,re,html,subprocess
-P=__DTP__
-subprocess.run(['python3',P+'history_summary.py'],check=True,stdout=subprocess.DEVNULL)
-import assess as A
+# Team Hub (v2): one team at a time, two views.
+#   Data   = that team's row from every league matrix (Positions, Ranks, Stars, Age, Lineups, Margins, Home / Road, Byes)
+#            built from the same data the Stats tab uses, so every number matches it.
+#   Trends = week-by-week line charts (points, standings, points rank, all-play %, luck, playoff odds) with a CSS-only
+#            week scrubber: tap a week and every chart's marker and readout moves to that week.
+# Output: th_section.html + th_css.css (inserted by rebuild.py when features.json has "teamhub": true).
+import json,re,html,sys,csv,math,random,statistics as st
+P=__DTP__;sys.path.insert(0,P)
 import sx_data as D
-import csv
-import th_charts as C
+import sx_build as SB
 e=html.escape
-T,WK,FUT,R,G,NOW=A.T,A.WK,A.FUT,A.R,A.G,A.NOW
-H=json.loads(re.search(r'const H=(\[.*?\]);',A._s).group(1))   # standings order
-HS=json.load(open(P+'history/summary.json'))
-P8=json.load(open(P+'pull8a.json'))
-OWN={r['rid']:r['own'] for r in P8['ro']};UN={u[0]:u[1] for u in P8['us']}
-owner=lambda t:UN.get(OWN.get(A.RID[t]),'')
-ODDS,_=D.odds()
-RW,PER=D.decisions()
-POSR={A._norm(r['team']):r for r in csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8'))}
-POS=['QB','RB','WR','TE','K','DEF']
-def ps(t,p):r=POSR[t];return float(r[p])/max(1,int(r['starts_'+p])-int(r.get('nogame_'+p) or 0))
-def rk(vals,t,desc=True):
-    v=vals[t];return 1+sum((x>v+1e-9) if desc else (x<v-1e-9) for x in vals.values()),sum(abs(x-v)<1e-9 for x in vals.values())>1
-tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
-def chip(r,tie=False):return f'<i class="ch {tone(r)}"><span class="ct">{"T" if tie else "#"}{r}</span></i>'
-ordn=A.ordn
-def badge(tm):return f'<em class="nfl tm n-{tm}"><span class="ct">{tm}</span></em>' if tm else ''
-def pz(pos):return f'<i class="pp p-{pos.lower()}"><span class="ct">{pos}</span></i>'
-def sec(title,body,sub=''):return f'<div class="ths"><div class="msh thsh">{title}{f"<small>{sub}</small>" if sub else ""}</div>{body}</div>'
-# current-season games into the all-time head-to-head
-CUR={t:[(w[0],A.FN(w[1]),w[2],w[3]) for w in WK[t]] for t in T}
-FIN={'Champion':'f1','Runner-up':'f2','3rd':'f3','4th':'f4','Playoffs':'f5','Missed':'f6'}
-
-def band(pid,pos,pts,gp):
-    """position band like every other player row: season points rank, or points-per-game rank under / Gm"""
-    rk=(A.K.get(pid) or [None])[0] if pts>0 else None;pr=(A.PG.get(pid) or [None])[0] if pts>0 else None
-    b3=lambda x:x and (x>=100 or (pos=='DEF' and x>=10))
-    return (f'<i class="pq p-{pos.lower()}"><span class="pqi"><span>{pos}</span>'
-            f'<b class="rkt{" b3" if b3(rk) else ""}">{rk or ""}</b><b class="rkg{" b3" if b3(pr) else ""}">{pr or ""}</b></span></i>')
-def acl(a):return 'ay' if a<27 else 'ap' if a<31 else 'ao'
-def prow(p):
-    pid,name,pos,nfl,pts,_,gp,tag=p[:8]
-    a=A.age(pid);ag=f'<em class="pag {acl(a)}">{a:.1f}</em>' if a else ''
-    by=A.BYE.get(nfl);byh=f' · bye {by}' if by and by>=NOW else ''
-    return (f'<div class="rr2">{band(pid,pos,pts,gp)}<span class="rn"><b><span class="nmx">{e(name)}</span>{badge(nfl)}{ag}</b>'
-            f'<small><span class="gp">{gp} GP{byh}</span></small></span><span class="rv">{pts:.1f}</span><span class="rg2">{(pts/gp if gp else 0):.1f}</span></div>')
-def page(i,t):
-    w,l=T[t][0],T[t][1];pf=T[t][3];apw,apl,luck=T[t][10],T[t][11],T[t][12]
-    pfv={k:T[k][5] for k in T};apv={k:T[k][10] for k in T}
-    al=HS['all'].get(t,{});titles=al.get('titles',[]);finals=al.get('finals',[])
-    od=ODDS[t]
-    tb=[]
-    if titles:tb.append(f'<span class="thb t1">{len(titles)}× Champion · {", ".join(map(str,titles))}</span>')
-    ru=[y for y in finals if y not in titles]
-    if ru:tb.append(f'<span class="thb t2">Runner-up · {", ".join(map(str,ru))}</span>')
-    AS=A.assess(t)
-    hdr=f'<div class="thh"><span class="thnr"><b class="thn">{e(t)}</b><i class="rat {AS["tc"]}">{AS["tier"]}</i></span><span class="tho">{e(owner(t))}</span>{"".join(tb) and f"<span class=thbs>{"".join(tb)}</span>"}</div>'
-    tiles=('<div class="tht">'+''.join(f'<span><em>{a}</em><b>{b}</b>{c}</span>' for a,b,c in (
-            ('Record',f'{w}-{l}',chip(i+1)),
-            ('PF / wk',f'{T[t][5]:.1f}',chip(*rk(pfv,t))),
-            ('All-play',f'{apw}-{apl}',chip(*rk(apv,t))),
-            ('Luck',f'{luck:+.2f}',f'<small>wins vs expected</small>'),
-            ('Playoffs',f'{od["po"]:.0f}%',f'<small>bye {od["bye"]:.0f}%</small>'),
-            ('Proj wins',f'{od["w"]:.1f}',f'<small>of {G+len(FUT[t])}</small>')))+'</div>')
-    # ---- NOW: key numbers, one 14-week timeline, lineup calls, assessment
-    tl=''.join(f'<div class="thw"><span class="xwk">{wk}</span><span class="xres {"w" if a>b else "l"}">{"W" if a>b else "L"}</span>'
-               f'<span class="xop">{e(o)}</span><span class="xsc"><b>{a:.1f}</b><i>–</i>{b:.1f}</span>{chip(r)}</div>'
-               for (wk,o,a,b),r in zip(CUR[t],[x[4] for x in WK[t]]))
-    tl+=''.join(f'<div class="thw thf{" nx" if x[0]==NOW else ""}"><span class="xwk">{x[0]}</span><span class="xres u">{"NEXT" if x[0]==NOW else ""}</span><span class="xop">{e(A.FN(x[1]))}</span>'
-                f'<span class="xbar {"xg" if x[4]>=60 else "xr" if x[4]<40 else "xn"}"><i style="width:{x[4]}%"></i></span><b class="xpct">{x[4]}%</b></div>' for x in FUT[t])
-    season=sec('Season',f'<div class="thl">{tl}</div>','played: score · week rank &nbsp;|&nbsp; ahead: win chance')
-    ef=A.EF[t];efv={k:A.EF[k][0] for k in T};lost=PER[t]['lost'];flips=PER[t]['flip']
-    top=[r for r in RW if r['team']==t][:1]
-    call=''
-    if top:
-        c=top[0]
-        call=(f'<div class="thc"><em>Costliest call · Wk {c["w"]}{" · cost the game" if c["flip"] else ""}</em>'
-              f'<span class="cc"><span>Started <b>{e(c["start"]["name"])}</b></span><b class="v dn">{c["start"]["pts"]:.1f}</b></span>'
-              f'<span class="cc"><span>Benched <b>{e(c["bench"]["name"])}</b></span><b class="v up">{c["bench"]["pts"]:.1f}</b></span>'
-              f'<span class="cc sw"><span>Points lost</span><b class="v">−{c["swing"]:.1f}</b></span></div>')
-    lineup=sec('Lineup calls',f'<div class="tht tht3"><span><em>Efficiency</em><b>{ef[0]:.1f}%</b>{chip(*rk(efv,t))}</span><span><em>Left on bench</em><b>{lost/G:.1f}</b><small>pts / wk</small></span><span><em>Lineup losses</em><b>{flips}</b><small>games lost on the bench</small></span></div>'+call)
-    li=lambda xs,c:''.join(f'<div class="tha {c}"><i></i><span>{x}</span></div>' for x in xs) or f'<div class="tha {c}"><i></i><span>Nothing stands out.</span></div>'
-    asx=sec('Strengths',li(AS['good'],'up'))+sec('Concerns',li(AS['bad'],'dn'))
-    now=f'<div class="thv thv-n">{tiles}<div class="ths">{C.overview(t)}</div>{season}{asx}</div>'+f'<div class="thv thv-s"><div class="ths">{C.scoring(t)}</div>{lineup}</div>'
-    # ---- ROSTER: core players (bands), position strength, draft capital
-    core=sorted([p for p in R[t] if p[7]!='TX'],key=lambda p:-p[4])[:8]
-    roster=f'<div class="ths"><div class="msh thsh">Roster core<span class="thrk"><i class="lt">Rank</i>{RKW}</span></div><div class="rcol thrc"><span>Player</span><span>Pts</span><span>/g</span></div>'+''.join(prow(p) for p in core)+'</div>'
-    pv={p:{k:ps(k,p) for k in T} for p in POS}
-    pos=sec('Position strength','<div class="thp">'+''.join(f'<span class="p-{p.lower()}"><i>{p}</i><b>{ps(t,p):.1f}</b>{chip(*rk(pv[p],t))}</span>' for p in POS)+'</div>','points per start · league rank')
-    rid=A.RID[t]
-    cells=''
-    for y in ('2027','2028','2029'):
-        cells+=f'<span class="dy">{y}</span>'
-        for r_ in (1,2,3,4):
-            mine=[k for k,v in A.own.items() if v==rid and k[0]==y and k[1]==r_]
-            out=[k for k,v in A.own.items() if k[2]==rid and v!=rid and k[0]==y and k[1]==r_]
-            it=''.join(f'<i class="in">+ {e(D.RN[k[2]])}</i>' for k in mine if k[2]!=rid)
-            it+=''.join(f'<i class="out">to {e(D.RN[A.own[k]])}</i>' for k in out)
-            n=len(mine)
-            cells+=f'<span class="dc{" r1" if r_==1 else ""}{" none" if not n else ""}"><b>{n}</b>{it}</span>'
-    draft=sec('Draft capital',f'<div class="thdg"><span></span>'+''.join(f'<span class="dh">R{r_}</span>' for r_ in (1,2,3,4))+cells+'</div>','picks held · + acquired from · traded away struck')
-    ro=f'<div class="thv thv-r">{roster}{pos}{draft}</div>'
-    # ---- HISTORY: seasons + head-to-head
-    hr=''
-    for y in sorted(HS['seasons']):
-        s_=HS['seasons'][y][t];hr+=f'<div class="thy"><span class="xyr">{y}</span><b>{s_["w"]}-{s_["l"]}{"-"+str(s_["t"]) if s_["t"] else ""}</b><span class="xpf">{s_["pf"]/max(1,s_["w"]+s_["l"]+s_["t"]):.1f}</span><span class="xsd">{s_["seed"]}</span><span class="xfn {FIN[s_["finish"]]}">{s_["finish"]}</span></div>'
-    hr+=f'<div class="thy now"><span class="xyr">2026</span><b>{w}-{l}</b><span class="xpf">{pf/G:.1f}</span><span class="xsd">{i+1}</span><span class="xfn f0">Wk {G} of 14</span></div>'
-    aw,alw=al.get('w',0)+w,al.get('l',0)+l
-    tots=(f'<div class="tht tht4"><span><em>All-time</em><b>{aw}-{alw}</b><small>{aw/(aw+alw)*100:.0f}% wins</small></span>'
-          f'<span><em>Playoffs</em><b>{len(al.get("po",[]))}</b><small>of 5 seasons</small></span>'
-          f'<span><em>Finals</em><b>{len(finals)}</b><small>{len(titles)} won</small></span></div>')
-    hist=sec('League history',tots+'<div class="thy thyh"><span class="xyr">Season</span><b>W-L</b><span class="xpf">PF/wk</span><span class="xsd">Seed</span><span class="xfn">Finish</span></div>'+hr,'regular season · 2021–24 on MFL')
-    hh='<div class="thx thxh"><span class="xop">Opponent</span><b>W-L</b><span class="xpo">Playoffs</span></div>'
-    for o in [x for x in H if x!=t]:
-        h=dict(HS['h2h'].get(t,{}).get(o,{'w':0,'l':0,'t':0,'po_w':0,'po_l':0,'pf':0.0,'pa':0.0,'last':None}))
-        last=h['last']
-        for wk,op,a,b in CUR[t]:
-            if op==o:h['w']+=a>b;h['l']+=a<b;h['pf']+=a;h['pa']+=b;last=[2026,wk,'W' if a>b else 'L',a,b]
-        n=h['w']+h['l']+h['t'];d=h['w']-h['l'];lead='up' if d>=3 else 'dn' if d<=-3 else ''
-        po=f'{h["po_w"]}-{h["po_l"]}' if h['po_w'] or h['po_l'] else '–'
-        ls=f'Last Wk {last[1]} ’{str(last[0])[2:]} <i class="{last[2].lower()}">{last[2]}</i> {last[3]:.1f}–{last[4]:.1f}' if last else ''
-        av=f'Avg {h["pf"]/n:.1f}–{h["pa"]/n:.1f}' if n else ''
-        hh+=f'<div class="thx"><span class="xop">{e(o)}</span><b class="{lead}">{h["w"]}-{h["l"]}{"-"+str(h["t"]) if h["t"] else ""}</b><span class="xpo">{po}</span><span class="xls">{av}<i class="sep">·</i>{ls}</span></div>'
-    h2h=sec('Head-to-head',hh,'all time · standings order · colour = lead of 3+')
-    hi=f'<div class="thv thv-h">{hist}{h2h}</div>'
-    return f'<div class="thpg thpg-{i}">{hdr}{now}{ro}{hi}</div>'
-
-radios=''.join(f'<input type="radio" name="thub" id="th-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(len(H)))+\
-  '<input type="radio" name="thv" id="thv-n" class="lr" checked><input type="radio" name="thv" id="thv-s" class="lr"><input type="radio" name="thv" id="thv-r" class="lr"><input type="radio" name="thv" id="thv-h" class="lr">'+\
-  '<input type="radio" name="thk" id="thk-t" class="lr" checked><input type="radio" name="thk" id="thk-g" class="lr">'
-VSW='<div class="thctl"><div class="thvw pseg" role="group" aria-label="Team Hub view"><label for="thv-n">Overview</label><label for="thv-s">Scoring</label><label for="thv-r">Roster</label><label for="thv-h">History</label></div></div>'
-RKW='<div class="thkw pseg" role="group" aria-label="Position rank by"><label for="thk-t">Pts</label><label for="thk-g">/ Gm</label></div>'
-dd=('<details class="dd tdd"><summary>'+''.join(f'<span class="sv tsv-{i}">{e(t)}</span>' for i,t in enumerate(H))+
-    '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
-    '<div class="ddm">'+''.join(f'<label for="th-{i}"><i>{i+1}</i>{e(t)}</label>' for i,t in enumerate(H))+'</div></details>')
-sec_=f'<section class="thx0" aria-labelledby="thh0">{radios}<div class="posh"><b id="thh0">Team Hub</b>{dd}</div>{VSW}'+''.join(page(i,t) for i,t in enumerate(H))+'</section>'
-css=''.join(f'#th-{i}:checked~.posh .tsv-{i}{{display:inline}}#th-{i}:checked~.posh label[for="th-{i}"]{{background:var(--chalk);color:var(--ink)}}#th-{i}:checked~.thpg-{i}{{display:block}}' for i in range(len(H)))
-open(P+'th_section.html','w',encoding='utf-8').write(sec_);open(P+'th_css.css','w',encoding='utf-8').write(css)
-if __name__=='__main__':print('team hub',len(sec_)//1000,'KB')
+T,WK,FUT,G,TEAMS=D.T,D.WK,D.FUT,D.G,D.TEAMS
+H=D._g('H');POSH=D._g('POS')['H']
+N=len(TEAMS);SHORT0=D.SHORT0;FS=D.FROM_SHORT
+ORD=['QB','RB','WR','TE','K','DEF']
+tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b' if r>=8 else ''
+def ordn(n):return f'{n}{"th" if 10<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10,"th")}'
+def crank(vals,t,low=False):
+    v=vals[t];return 1+sum(1 for x in vals.values() if (x<v-1e-9 if low else x>v+1e-9))
+def rk(r,low_good=False):return f'<em class="tqr {tone(r)}">{ordn(r)}</em>'
+def sg(x,d=1):return ('+' if x>=0.05 else '−' if x<=-0.05 else '')+f'{abs(x):.{d}f}' if abs(x)>=0.05 else f'{0:.{d}f}'
+# ---------------------------------------------------------------- week-by-week series (all teams)
+SC={t:{x[0]:x[2] for x in WK[t]} for t in TEAMS}
+OPP={t:{x[0]:FS.get(x[1],x[1]) for x in WK[t]} for t in TEAMS}
+for t in TEAMS:
+    for f in FUT[t]:OPP[t][f[0]]=FS.get(f[1],f[1])
+REG=14
+SER={t:dict(pts=[],res=[],stand=[],pfr=[],ap=[],luck=[],wins=[],xw=[]) for t in TEAMS}
+for t in TEAMS:
+    w_=xw=apw=apl=0
+    for k in range(1,G+1):
+        me=SC[t][k];op=SC[OPP[t][k]][k];won=me>op;w_+=won
+        beat=sum(1 for o in TEAMS if o!=t and SC[o][k]<me);lost=sum(1 for o in TEAMS if o!=t and SC[o][k]>me)
+        apw+=beat;apl+=lost;xw+=beat/(N-1)
+        s=SER[t];s['pts'].append(me);s['res'].append('W' if won else 'L');s['wins'].append(w_);s['xw'].append(xw)
+        s['ap'].append(100*apw/(apw+apl));s['luck'].append(w_-xw);s['stand'].append(POSH[t][k-1])
+for k in range(1,G+1):
+    cum={t:sum(SC[t][j] for j in range(1,k+1)) for t in TEAMS}
+    for t in TEAMS:SER[t]['pfr'].append(crank(cum,t))
+LGMED=[st.median(SC[t][k] for t in TEAMS) for k in range(1,G+1)]
+# checks against the season table: all-play, luck, standings through week G
+for t in TEAMS:
+    assert abs(SER[t]['luck'][-1]-T[t][12])<0.011,(t,SER[t]['luck'][-1],T[t][12])
+    assert SER[t]['wins'][-1]==T[t][0],t
+    assert SER[t]['pfr'][-1]==T[t][4],t
+# playoff odds as of each week (Monte Carlo: scores ~ normal(team mean, team sd through that week); seeding wins, then PF)
+def odds_asof(k,n=4000,seed=11):
+    rnd=random.Random(seed+k)
+    pts={t:[SC[t][j] for j in range(1,k+1)] for t in TEAMS}
+    allp=[v for t in TEAMS for v in pts[t]];psd=st.pstdev(allp) if len(allp)>1 else 20
+    lg=st.mean(allp);M0=3  # shrink each team's mean toward the league mean (worth 3 weeks) so one big week doesn't decide it
+    mu={t:(sum(pts[t])+M0*lg)/(k+M0) for t in TEAMS};sd={t:((st.stdev(pts[t])*(k-1)+psd*M0)/(k-1+M0) if k>=2 else psd) for t in TEAMS}
+    w0={t:SER[t]['wins'][k-1] for t in TEAMS};pf0={t:sum(pts[t]) for t in TEAMS}
+    games=[]
+    for w in range(k+1,REG+1):
+        seen=set()
+        for t in TEAMS:
+            if t in seen or w not in OPP[t]:continue
+            o=OPP[t][w];seen|={t,o};games.append((t,o))
+    cnt={t:[0,0,0] for t in TEAMS}
+    for _ in range(n):
+        W=dict(w0);PF=dict(pf0)
+        for a,b in games:
+            sa=rnd.gauss(mu[a],sd[a]);sb=rnd.gauss(mu[b],sd[b]);PF[a]+=sa;PF[b]+=sb
+            W[a if sa>sb else b]+=1
+        order=sorted(TEAMS,key=lambda t:(-W[t],-PF[t]))
+        for i,t in enumerate(order):
+            if i<6:cnt[t][0]+=1
+            if i<2:cnt[t][1]+=1
+            if i<1:cnt[t][2]+=1
+    return {t:[100*c/n for c in cnt[t]] for t in TEAMS}
+OD=SB.O
+ODW={k:odds_asof(k) for k in range(1,G)}
+ODW[G]={t:[OD[t]['po'],OD[t]['bye'],OD[t]['top']] for t in TEAMS}  # current week: the same figures as Stats > Odds
+for t in TEAMS:SER[t]['po']=[ODW[k][t][0] for k in range(1,G+1)]
+# ---------------------------------------------------------------- per-team matrices
+PROWS={}
+for r in csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8')):
+    PROWS[D.RN[int(r['roster_id'])]]=r
+EF={t:v for t,v in json.load(open(P+'eff.json')).items()}
+EFR={t:EF[t][0] for t in TEAMS}
+DP={}
+for t in TEAMS:
+    a={k:0.0 for k in ORD}
+    for w in range(1,G+1):
+        s_,b_=D.lineup(t,w);op=D.optimal(s_+b_);ids={q['pid'] for q in s_};oi={q['pid'] for q in op}
+        ins=sorted([q for q in op if q['pid'] not in ids],key=lambda q:-q['pts']);outs=sorted([q for q in s_ if q['pid'] not in oi],key=lambda q:q['pts'])
+        for i in ins:
+            c=[o for o in outs if o['pos']==i['pos']] or [o for o in outs if i['pos'] in('RB','WR','TE') and o['pos'] in('RB','WR','TE')]
+            o=c[0];outs.remove(o);a[i['pos']]+=i['pts']-o['pts']
+    DP[t]=[a[k]/G for k in ORD]
+CLS=SB.CL;STS=SB.ST;YOS=SB.YO;HES=SB.HE;BYS=SB.BY;HRT=SB.HRT
+def avg(v):return sum(v)/len(v) if v else 0
+# ---------------------------------------------------------------- Data view
+def sec(title,sub=''):return f'<div class="sxh tqh"><b>{title}</b><span>{sub}</span></div>'
+def kpi(lab,val,r=None,sub='',neutral=False):
+    rr=(f'<em class="tqr">{ordn(r)}</em>' if neutral else rk(r)) if r else ''
+    return f'<div class="tqk"><span class="tqkl">{lab}</span><b class="tqkv">{val}</b><span class="tqks">{rr}{sub}</span></div>'
+def data_view(t):
+    o=[]
+    x=T[t];sd=H.index(t)+1;O=OD[t]
+    strk=SER[t]['res'];k=1
+    while k<len(strk) and strk[-k-1]==strk[-1]:k+=1
+    o.append('<div class="tqhero">'
+             f'<div class="tqid"><span class="tqsd {tone(sd)}">{sd}</span><div><b>{e(t)}</b><span>{x[0]}-{x[1]} · <i class="stk {strk[-1].lower()}">{strk[-1]}{k}</i> · {x[5]:.1f} PF/wk</span></div></div>'
+             '<div class="tqod">'+''.join(f'<div><span>{lab}</span><b>{SB.pct(v)}</b></div>' for lab,v in (('Playoffs',O['po']),('Bye',O['bye']),('#1 seed',O['top'])))+'</div></div>')
+    apr={u:T[u][10]/(T[u][10]+T[u][11]) for u in TEAMS};lk={u:T[u][12] for u in TEAMS}
+    o.append('<div class="tqkg">'
+             +kpi('Points for',f'{x[3]:.1f}',x[4])+kpi('Points against',f'{x[6]:.1f}',x[7],' <span class="tqkn">most = 1st</span>',neutral=True)
+             +kpi('All-play',f'{x[10]}-{x[11]}',crank(apr,t))+kpi('Luck',sg(x[12],2),crank(lk,t))
+             +kpi('Lineup efficiency',f'{EF[t][0]:.0f}<small>%</small>',crank(EFR,t))+kpi('Left on bench',f'{EF[t][1]:.1f}<small>/wk</small>',crank({u:EF[u][1] for u in TEAMS},t,low=True))
+             +'</div>')
+    # positions
+    pr=PROWS[t];rows=''
+    best={p:max(float(PROWS[u][f'avg_{p}']) for u in TEAMS) for p in ORD}
+    for p in ORD:
+        v=float(pr[f'avg_{p}']);r=int(pr[f'avg_{p}_rank'])
+        rows+=(f'<div class="tqpr"><i class="pz p-{p.lower()}">{p}</i><span class="tqbar"><i class="p-{p.lower()}" style="width:{100*v/best[p]:.1f}%"></i></span>'
+               f'<b class="tqv">{v:.1f}</b>{rk(r)}</div>')
+    o.append(sec('Points per start','By position · bar = share of the league best'));o.append(f'<div class="tqpos">{rows}</div>')
+    # weekly score rank row + results
+    cells=''.join(f'<span class="hm r{r}">{r}</span>' for r in HES[t]);hd=''.join(f'<span>W{w}</span>' for w in range(1,G+1))
+    res=''.join(f'<span class="tqwl {r_.lower()}">{r_}</span>' for r_ in SER[t]['res'])
+    o.append(sec('Weekly score rank','1 = highest score that week'))
+    o.append(f'<div class="sxm hmx tqgrid" style="--n:{G}"><div class="sxr sxhd"><span></span>{hd}<span>Avg</span></div>'
+             f'<div class="sxr"><span class="mxn">Rank</span>{cells}<span class="hav">{avg(HES[t]):.1f}</span></div>'
+             f'<div class="sxr tqres"><span class="mxn">Result</span>{res}<span></span></div></div>')
+    # stars
+    s=STS[t]
+    segs=''.join(f'<i class="p-{v[1].lower()}{" s1" if i==0 else ""}" style="width:{v[2]/s["tot"]*100:.2f}%"></i>' for i,v in enumerate(s['top3']))
+    names=''.join(f'<span>{SB.pz(v[1])}{e(v[0])} <em>{v[2]/s["tot"]*100:.0f}%</em></span>' for v in s['top3'])
+    s1={u:STS[u]['s1'] for u in TEAMS};s3={u:STS[u]['s3'] for u in TEAMS}
+    o.append(sec('Star dependence','Share of season points from the top 1 and top 3 scorers'))
+    o.append(f'<div class="stb tqstb"><div class="stt"><span><b>{s["s1"]:.0f}%</b> top 1 <em class="tqr">{ordn(crank(s1,t))}</em></span><span><b>{s["s3"]:.0f}%</b> top 3 <em class="tqr">{ordn(crank(s3,t))}</em></span></div>'
+             f'<div class="bar sbar">{segs}</div><div class="stn">{names}</div></div>')
+    # age
+    p_=YOS[t]['pct'];yr={u:YOS[u]['pct'][0] for u in TEAMS}
+    o.append(sec('Production by age','Share of starters\' points by player age today'))
+    o.append('<div class="ylg"><span class="ay">25 and under</span><span class="ap">26–29</span><span class="ao">30+</span><span class="ad">DEF</span></div>'
+             f'<div class="stb tqstb"><div class="stt"><span><b class="ay">{p_[0]:.0f}%</b> · <b class="ap">{p_[1]:.0f}%</b> · <b class="ao">{p_[2]:.0f}%</b></span><span>youth share {rk(crank(yr,t))}</span></div>'
+             f'<div class="bar ybar"><i class="y0" style="width:{p_[0]:.2f}%"></i><i class="y1" style="width:{p_[1]:.2f}%"></i><i class="y2" style="width:{p_[2]:.2f}%"></i><i class="y3" style="width:{p_[3]:.2f}%"></i></div></div>')
+    # lineups: dropped points by position
+    dmax=max(max(DP[u]) for u in TEAMS) or 1
+    o.append(sec('Dropped points','Per week: bench points that should have started, by position'))
+    o.append('<div class="tqdp">'+''.join(f'<div><i class="pz p-{p.lower()}">{p}</i><b class="tqv{" z" if DP[t][i]<0.05 else ""}">{DP[t][i]:.1f}</b><span class="tqmini"><i class="p-{p.lower()}" style="height:{100*DP[t][i]/dmax:.1f}%"></i></span></div>' for i,p in enumerate(ORD))+'</div>')
+    # margins
+    c=CLS[t];am={u:CLS[u]['avgm'] for u in TEAMS}
+    o.append(sec('Margins','Close = under 10 pts · blowout = 30+ pts'))
+    o.append('<div class="tqkg tq3">'+kpi('Close games',f'{c["close"][0]}-{c["close"][1]}')+kpi('Blowouts',f'{c["blow"][0]}-{c["blow"][1]}')+kpi('Avg margin',f'<span class="{"up" if c["avgm"]>=0.05 else "dn" if c["avgm"]<=-0.05 else ""}">{sg(c["avgm"])}</span>',crank(am,t))+'</div>')
+    # home / road
+    h=HRT[t];hs={u:HRT[u]['h']/(HRT[u]['h']+HRT[u]['r']) for u in TEAMS}
+    ah,ar=avg(h['ph']),avg(h['pr'])
+    o.append(sec('Home / Road',f'Starters at home or on the road · Wk 1–{G}'))
+    o.append(f'<div class="tqhr"><div class="tqhr1">{SB.HT}<b>{h["h"]}</b><span class="hx-bar tqhb">{SB._split(h["h"],h["r"])[len("<span class=\"hx-bar\">"):-7]}</span><b>{h["r"]}</b>{SB.RT}</div>'
+             f'<div class="tqhr2"><span>Home share</span><b>{100*hs[t]:.0f}<small>%</small></b>{rk(crank(hs,t))}</div></div>')
+    vh,vr=SB._hv(ah,ar);dd=SB._dv(ah-ar)
+    o.append('<div class="sxt hx-tb tqhrt" style="--cols:minmax(0,1fr) 56px 56px 52px">'
+             f'<div class="sxr sxhd"><span></span><span>{SB.HT}</span><span>{SB.RT}</span><span>Diff</span></div>'
+             f'<div class="sxr"><span>Points per start</span>{vh}{vr}{dd}</div>'
+             f'<div class="sxr"><span>Record when more starters</span><span class="sxv">{SB._hrrec(h["lh"])}</span><span class="sxv">{SB._hrrec(h["lr"])}</span><span></span></div></div>')
+    # byes
+    wk=list(range(D.NOW,15));B=BYS[t]
+    cells=''.join(f'<span class="bx b{min(len(B[w]),3)}">{len(B[w]) or "–"}</span>' for w in wk)
+    o.append(sec('Bye exposure','Core starters on bye each remaining week'))
+    o.append(f'<div class="sxm bym tqgrid" style="--n:{len(wk)}"><div class="sxr sxhd"><span></span>{"".join(f"<span>W{w}</span>" for w in wk)}</div><div class="sxr"><span class="mxn">On bye</span>{cells}</div></div>')
+    notes=''
+    for w in wk:
+        if not B[w]:continue
+        op=OPP[t].get(w);r=H.index(op)+1 if op else None
+        nm=''.join(f'<span>{SB.pz(p[2])}{e(p[3]+" DEF" if p[2]=="DEF" else p[1])}</span>' for p in B[w])
+        notes+=(f'<div class="bnl"><span>Wk {w}</span><b class="bnt">vs <em class="{tone(r)}">{r}</em> {e(SHORT0.get(op,op))}</b><i>{nm}</i></div>')
+    o.append(notes or '<div class="tqnone">No core starters on bye in the remaining weeks</div>')
+    return ''.join(o)
+# ---------------------------------------------------------------- Trends view (SVG line charts + CSS week scrubber)
+VW,VH,PL,PR,PT,PB=320,128,30,12,12,20
+def xs(k):return PL+(VW-PL-PR)*(k-1)/max(G-1,1)
+def chart(key,title,vals,lo,hi,fmt,ticks,inv=False,ref=None,refl='',dots=None,zero=None,area=None,readout=None,tickfmt=None):
+    ys=lambda v:PT+(VH-PT-PB)*((v-lo)/(hi-lo) if not inv else (v-lo)/(hi-lo))
+    Y=(lambda v:PT+(VH-PT-PB)*(v-lo)/(hi-lo)) if inv else (lambda v:VH-PB-(VH-PT-PB)*(v-lo)/(hi-lo))
+    g=[]
+    for tv in ticks:
+        g.append(f'<line class="tgl" x1="{PL}" x2="{VW-PR}" y1="{Y(tv):.1f}" y2="{Y(tv):.1f}"/><text class="tax" x="{PL-6}" y="{Y(tv)+3.5:.1f}" text-anchor="end">{(tickfmt or str)(tv)}</text>')
+    if zero is not None:g.append(f'<line class="tzero" x1="{PL}" x2="{VW-PR}" y1="{Y(zero):.1f}" y2="{Y(zero):.1f}"/>')
+    for k in range(1,G+1):g.append(f'<text class="tax" x="{xs(k):.1f}" y="{VH-4}" text-anchor="middle">{k}</text>')
+    if ref:g.append('<path class="tref" d="'+'M'+' L'.join(f'{xs(k):.1f} {Y(v):.1f}' for k,v in enumerate(ref,1))+'"/>')
+    if area is not None:  # luck: fill between line and zero, green above / red below
+        for k in range(1,G):
+            a,b=vals[k-1],vals[k];
+            g.append(f'<path class="tarea {"pos" if (a+b)/2>=0 else "neg"}" d="M{xs(k):.1f} {Y(0):.1f} L{xs(k):.1f} {Y(a):.1f} L{xs(k+1):.1f} {Y(b):.1f} L{xs(k+1):.1f} {Y(0):.1f}Z"/>')
+    g.append('<path class="tline" d="'+'M'+' L'.join(f'{xs(k):.1f} {Y(v):.1f}' for k,v in enumerate(vals,1))+'"/>')
+    for k,v in enumerate(vals,1):
+        c=f' {dots[k-1]}' if dots else ''
+        g.append(f'<circle class="tdot{c}" cx="{xs(k):.1f}" cy="{Y(v):.1f}" r="3"/>')
+        g.append(f'<g class="twm twm-{k}"><line class="tcur" x1="{xs(k):.1f}" x2="{xs(k):.1f}" y1="{PT-4}" y2="{VH-PB}"/><circle class="tsel{c}" cx="{xs(k):.1f}" cy="{Y(v):.1f}" r="5.5"/></g>')
+    ro=''.join(f'<b class="tro tro-{k}">{(readout or fmt)(k)}</b>' for k in range(1,G+1))
+    leg=f'<span class="tleg"><i></i>{refl}</span>' if refl else ''
+    return (f'<div class="tch"><div class="tchh"><span>{title}</span>{leg}{ro}</div>'
+            f'<svg viewBox="0 0 {VW} {VH}" class="tsvg" role="img" aria-label="{e(title)} by week">{"".join(g)}</svg></div>')
+def trends_view(t):
+    s=SER[t]
+    pts=s['pts'];lo=math.floor(min(pts+LGMED)/20)*20;hi=math.ceil(max(pts+LGMED)/20)*20
+    ch=[chart('pts','Points scored',pts,lo,hi,None,list(range(lo,hi+1,20 if hi-lo<=100 else 40)),ref=LGMED,refl='league median',
+              dots=[r.lower() for r in s['res']],readout=lambda k:f'{pts[k-1]:.1f} <small class="{s["res"][k-1].lower()}">{s["res"][k-1]}</small>'),
+        chart('st','Standings',s['stand'],1,N,None,[1,4,7,10],inv=True,readout=lambda k:ordn(s['stand'][k-1]),tickfmt=lambda v:ordn(v)),
+        chart('pfr','Points-for rank',s['pfr'],1,N,None,[1,4,7,10],inv=True,readout=lambda k:ordn(s['pfr'][k-1]),tickfmt=lambda v:ordn(v)),
+        chart('ap','All-play win %',s['ap'],0,100,None,[0,50,100],readout=lambda k:f'{s["ap"][k-1]:.0f}<small>%</small>',tickfmt=lambda v:f'{v}%'),
+        chart('lk','Luck · wins minus expected',s['luck'],min(-2,math.floor(min(s['luck']))),max(2,math.ceil(max(s['luck']))),None,
+              sorted({min(-2,math.floor(min(s['luck']))),0,max(2,math.ceil(max(s['luck'])))}),zero=0,area=True,
+              readout=lambda k:f'{sg(s["luck"][k-1],2)} <small>{s["wins"][k-1]} W · {s["xw"][k-1]:.2f} xW</small>',tickfmt=lambda v:sg(v,0) if v else '0'),
+        chart('po','Playoff odds',s['po'],0,100,None,[0,50,100],readout=lambda k:f'{s["po"][k-1]:.0f}<small>%</small>' if s['po'][k-1]<99.5 or k==G else '>99<small>%</small>',tickfmt=lambda v:f'{v}%')]
+    rc=''.join(f'<div class="trc trc-{k}"><span>Week {k}</span><b>{s["res"][k-1]} {pts[k-1]:.1f}–{SC[OPP[t][k]][k]:.1f}</b><em>vs {e(SHORT0.get(OPP[t][k],OPP[t][k]))}</em></div>' for k in range(1,G+1))
+    return f'<div class="trd">{rc}</div><div class="tcs">{"".join(ch)}</div>'
+# ---------------------------------------------------------------- assemble
+picker='<div class="tqpk" role="tablist" aria-label="Team">'+''.join(f'<label for="thx-{i}"><em class="rrk">{i+1}</em><span>{e(t)}</span></label>' for i,t in enumerate(H))+'</div>'
+wks='<div class="tqwk" role="group" aria-label="Week"><span>Week</span>'+''.join(f'<label for="thw-{k}">{k}</label>' for k in range(1,G+1))+'</div>'
+radios=(''.join(f'<input type="radio" name="thx" id="thx-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(N))
+        +'<input type="radio" name="tqv" id="thv-d" class="lr" checked><input type="radio" name="tqv" id="thv-t" class="lr">'
+        +''.join(f'<input type="radio" name="thw" id="thw-{k}" class="lr"{" checked" if k==G else ""}>' for k in range(1,G+1)))
+ctl=('<div class="tqctl"><div class="pseg tqvs" role="group" aria-label="View"><label for="thv-d">Data</label><label for="thv-t">Trends</label></div></div>')
+pans=''.join(f'<div class="tqp tqp-{i}"><div class="tqdv">{data_view(t)}</div><div class="tqtv">{wks}{trends_view(t)}</div></div>' for i,t in enumerate(H))
+sec_=(f'<section class="thx2" aria-labelledby="thh2">{radios}<div class="posh"><b id="thh2">Team Hub</b></div>'
+      f'<div class="rsub">One team at a time · Wk 1–{G}</div>{picker}{ctl}{pans}</section>')
+TL='#efd38a'
+PKCSS=('.thx2 .tqpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:2px 0 12px}'
+ '.thx2 .tqpk label{display:flex;align-items:center;gap:7px;min-height:36px;padding:6px 10px;box-sizing:border-box;border-radius:6px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;'
+ 'font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--label);white-space:nowrap;min-width:0}'
+ '.thx2 .tqpk label span{overflow:hidden;text-overflow:ellipsis;min-width:0}'
+ '.thx2 .tqpk .rrk{font-style:normal;flex:none;min-width:1.2em;text-align:right;color:var(--steel);font-variant-numeric:tabular-nums}'
+ '@media(max-width:429px){.thx2 .tqpk label{font-size:12.5px;letter-spacing:.02em;padding:6px 8px;gap:6px}}@media(max-width:374px){.thx2 .tqpk label{font-size:11.5px;letter-spacing:.01em;padding:6px 6px;gap:5px}}'
+ '.tqkn{font-size:10.5px;color:var(--dim)}')
+css=PKCSS+(''.join(f'#thx-{i}:checked~.tqpk label[for="thx-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#thx-{i}:checked~.tqpk label[for="thx-{i}"] .rrk{{color:var(--ink);opacity:.55}}#thx-{i}:checked~.tqp-{i}{{display:block}}' for i in range(N))
+ +''.join(f'#thw-{k}:checked~.tqp .tqwk label[for="thw-{k}"]{{background:var(--chalk);color:var(--ink)}}#thw-{k}:checked~.tqp .twm-{k},#thw-{k}:checked~.tqp .tro-{k}{{display:inline}}#thw-{k}:checked~.tqp .trc-{k}{{display:grid}}' for k in range(1,G+1))
+ +'#thv-d:checked~.tqctl label[for="thv-d"],#thv-t:checked~.tqctl label[for="thv-t"]{background:var(--chalk);color:var(--ink)}'
+ +'.thx2 .tqp,.thx2 .tqtv{display:none}#thv-t:checked~.tqp .tqdv{display:none}#thv-t:checked~.tqp .tqtv{display:block}'
+ +'.thx2 .tqctl{display:flex;justify-content:flex-end;margin:0 0 10px}.thx2 .tqctl .pseg{display:inline-flex}'
+ # hero
+ +'.tqhero{display:flex;flex-direction:column;gap:12px;padding:14px;margin:4px 0 10px;background:var(--deck);border:1px solid var(--hair);border-radius:12px}'
+ +'.tqid{display:flex;align-items:center;gap:12px;min-width:0}.tqid>div{display:flex;flex-direction:column;gap:3px;min-width:0}'
+ +'.tqid b{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:var(--chalk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+ +'.tqid>div>span{font-size:13px;color:var(--label);font-variant-numeric:tabular-nums}'
+ +'.tqsd{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:10px;font-family:var(--display);font-weight:700;font-size:22px;background:var(--ink);color:var(--label);box-shadow:inset 0 0 0 1px var(--line-strong,rgba(255,255,255,.14))}'
+ +'.tqsd.gold{color:#e8c15a;box-shadow:inset 0 0 0 1.5px rgba(232,193,90,.6)}.tqsd.g{color:var(--win);box-shadow:inset 0 0 0 1.5px rgba(63,214,155,.5)}.tqsd.b{color:#ff8a9a;box-shadow:inset 0 0 0 1.5px rgba(255,93,115,.5)}'
+ +'.tqid .stk{font-style:normal;font-family:var(--display);font-weight:700;font-size:11px;padding:1px 4px 0;border-radius:3px}.tqid .stk.w{color:var(--win);background:rgba(63,214,155,.12)}.tqid .stk.l{color:var(--loss);background:rgba(255,93,115,.12)}'
+ +'.tqod{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.tqod>div{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:8px;background:var(--ink);border:1px solid var(--hair)}'
+ +'.tqod span{font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}.tqod b{font-family:var(--display);font-weight:700;font-size:22px;color:var(--chalk);font-variant-numeric:tabular-nums}'
+ +'.tqod b small,.tqkv small,.tqv small,.tqhr2 b small{font-size:.6em;color:var(--steel);margin-left:1px}'
+ # kpi grid
+ +'.tqkg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 6px}.tqkg.tq3{grid-template-columns:repeat(3,minmax(0,1fr))}'
+ +'.tqk{display:flex;flex-direction:column;gap:3px;padding:9px 11px;border-radius:8px;background:var(--deck);border:1px solid var(--hair);min-width:0}'
+ +'.tqkl{font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+ +'.tqkv{font-family:var(--display);font-weight:700;font-size:21px;color:var(--chalk);font-variant-numeric:tabular-nums;line-height:1.05}.tqks{min-height:15px;font-size:11px;color:var(--steel)}'
+ +'.tqr{font-style:normal;font-family:var(--display);font-weight:700;font-size:11.5px;letter-spacing:.03em;color:var(--label)}.tqr.gold{color:#e8c15a}.tqr.g{color:var(--win)}.tqr.b{color:#ff8a9a}'
+ +'.thx2 .tqh{margin-top:20px}'
+ # positions
+ +'.tqpos{display:flex;flex-direction:column}.tqpr{display:grid;grid-template-columns:34px minmax(0,1fr) 44px 34px;align-items:center;gap:10px;min-height:34px;border-bottom:1px solid var(--hair)}'
+ +'.tqpr .pz{justify-self:start}.tqbar{height:8px;border-radius:4px;background:var(--hair);overflow:hidden}.tqbar i{display:block;height:100%;border-radius:4px;background:var(--pc)}'
+ +'.tqv{font-family:var(--display);font-weight:700;font-size:16px;color:var(--chalk);text-align:right;font-variant-numeric:tabular-nums}.tqv.z{color:var(--dim)}.tqpr .tqr{text-align:right}'
+ # grids
+ +'.tqgrid.sxm .sxr{grid-template-columns:58px repeat(var(--n),minmax(0,1fr)) 38px}.tqgrid.bym .sxr{grid-template-columns:58px repeat(var(--n),minmax(0,1fr))}'
+ +'.tqgrid .mxn{font-size:12px;color:var(--steel)}'
+ +'.tqgrid .sxr>span.tqwl{background:none!important;height:18px!important;font-size:12px!important}.tqwl.w{color:var(--win)!important}.tqwl.l{color:var(--loss)!important}'
+ +'.hm.r1{box-shadow:inset 0 0 0 1.5px #e8c15a}.hm.r10{box-shadow:inset 0 0 0 1.5px rgba(255,93,115,.85)}'
+ +'.tqstb .stt{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--steel);margin-bottom:8px}.tqstb .stt b{font-family:var(--display);font-size:16px;color:var(--chalk)}'
+ +'.tqstb .stt b.ay{color:#6fc9a4}.tqstb .stt b.ap{color:#e2c27a}.tqstb .stt b.ao{color:#e58f9c}'
+ # dropped
+ +'.tqdp{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.tqdp>div{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0 6px;border-radius:8px;background:var(--deck);border:1px solid var(--hair)}'
+ +'.tqdp .tqv{text-align:center}.tqmini{display:flex;align-items:flex-end;width:10px;height:28px;border-radius:3px;background:var(--hair);overflow:hidden}.tqmini i{display:block;width:100%;background:var(--pc);border-radius:3px}'
+ # home / road
+ +'.tqhr{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:10px;background:var(--deck);border:1px solid var(--hair);margin-bottom:6px}'
+ +'.tqhr1{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto auto;align-items:center;gap:8px}.tqhr1>b{font-family:var(--display);font-weight:700;font-size:18px;color:var(--chalk);font-variant-numeric:tabular-nums}'
+ +'.tqhb{max-width:none!important;margin:0!important;height:8px!important;border-radius:4px}'
+ +'.tqhr2{display:flex;align-items:baseline;gap:8px;font-size:12.5px;color:var(--steel)}.tqhr2 b{font-family:var(--display);font-weight:700;font-size:18px;color:var(--chalk)}'
+ +'.tqhrt .sxr>span:first-child{font-size:12.5px;color:var(--label)}'
+ +'.thx2 .bnl{grid-template-columns:44px 112px minmax(0,1fr)}.thx2 .bnl .bnt{display:block;white-space:nowrap;font-size:12.5px;color:var(--label);font-weight:500}.thx2 .bnl .bnt em{font-style:normal;font-family:var(--display);font-weight:700}'
+ +'.thx2 .bnl .bnt em.gold{color:#e8c15a}.thx2 .bnl .bnt em.g{color:var(--win)}.thx2 .bnl .bnt em.b{color:#ff8a9a}'
+ +'.tqnone{padding:10px 0;font-size:12.5px;color:var(--steel)}'
+ # trends
+ +'.tqwk{position:sticky;top:var(--tabsh,0px);z-index:5;display:grid;grid-template-columns:auto repeat('+str(G)+',minmax(0,1fr));align-items:center;gap:4px;padding:8px 0;margin:0 0 8px;background:var(--ink)}'
+ +'.tqwk>span{font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);margin-right:4px}'
+ +'.tqwk label{display:grid;place-items:center;height:32px;border-radius:8px;border:1px solid var(--hair);background:var(--deck);font-family:var(--display);font-weight:700;font-size:15px;color:var(--label);cursor:pointer}'
+ +'.trd{margin:0 0 6px}.trc{display:none;grid-template-columns:auto 1fr auto;align-items:baseline;gap:10px;padding:10px 12px;border-radius:10px;background:var(--deck);border:1px solid var(--hair)}'
+ +'.trc span{font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}.trc b{font-family:var(--display);font-weight:700;font-size:18px;color:var(--chalk);font-variant-numeric:tabular-nums}.trc em{font-style:normal;font-size:12.5px;color:var(--label);text-align:right}'
+ +'.tcs{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}@media(min-width:760px){.tcs{grid-template-columns:repeat(2,minmax(0,1fr))}}'
+ +'.tch{padding:10px 12px 6px;border-radius:10px;background:var(--deck);border:1px solid var(--hair)}'
+ +'.tchh{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}.tchh>span:first-child{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--label);white-space:nowrap}'
+ +'.tleg{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--steel);white-space:nowrap}.tleg i{width:14px;border-top:1.5px dashed var(--steel)}'
+ +'.tro{display:none;margin-left:auto;font-family:var(--display);font-weight:700;font-size:17px;color:var(--chalk);white-space:nowrap;font-variant-numeric:tabular-nums}.tro small{font-size:12px;font-weight:600;color:var(--steel);margin-left:2px}.tro small.w{color:var(--win)}.tro small.l{color:var(--loss)}'
+ +'.tsvg{display:block;width:100%;height:auto;overflow:visible}'
+ +'.tgl{stroke:var(--hair);stroke-width:1}.tzero{stroke:var(--line-strong,rgba(255,255,255,.2));stroke-width:1}'
+ +'.tax{font-family:var(--display);font-weight:600;font-size:10px;fill:var(--steel);font-variant-numeric:tabular-nums}'
+ +'.tref{fill:none;stroke:var(--steel);stroke-width:1.25;stroke-dasharray:3 3;opacity:.8}'
+ +'.tline{fill:none;stroke:var(--chalk);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}'
+ +'.tarea.pos{fill:rgba(63,214,155,.16)}.tarea.neg{fill:rgba(255,93,115,.16)}'
+ +'.tdot{fill:var(--deck);stroke:var(--chalk);stroke-width:1.5}.tdot.w{stroke:var(--win)}.tdot.l{stroke:var(--loss)}'
+ +'.twm{display:none}.tcur{stroke:'+TL+';stroke-width:1;opacity:.55}.tsel{fill:'+TL+';stroke:var(--deck);stroke-width:2}.tsel.w{fill:var(--win)}.tsel.l{fill:var(--loss)}')
+open(P+'th_section.html','w',encoding='utf-8').write(sec_)
+open(P+'th_css.css','w',encoding='utf-8').write(css)
+if __name__=='__main__':
+    t=H[1];print(t,{k:[round(x,2) if isinstance(x,float) else x for x in v] for k,v in SER[t].items()})
