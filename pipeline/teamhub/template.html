@@ -16,9 +16,9 @@ button{font:inherit;color:inherit}
 .u{font-variant-caps:all-small-caps;letter-spacing:.04em;font-family:var(--body);font-weight:600;color:var(--steel)}
 .up{color:var(--win)}.dn{color:var(--loss)}.mut{color:var(--steel)}
 /* ---------- top bar ---------- */
-.top{position:sticky;top:0;z-index:20;background:rgba(15,18,24,.86);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--hair)}
+.hdr{position:sticky;top:0;z-index:20;background:rgba(15,18,24,.86);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--hair)}
 .bar{display:flex;align-items:center;gap:10px;padding:6px var(--pad) 0;max-width:1680px;margin:0 auto;min-height:30px}
-.brand{font:700 17px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.brand{font:600 17px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .brand i{font-style:normal;color:var(--acc)}
 a.brand{text-decoration:none;display:flex;align-items:center;gap:6px;min-height:44px;margin:-8px 0;color:inherit}.brand .bk{font:600 22px/1 var(--body);color:var(--steel);margin-top:-2px}a.brand:hover .bk{color:var(--chalk)}
 .brand sup{font:600 11px/1 var(--body);letter-spacing:.06em;color:var(--steel);margin-left:4px;vertical-align:top}
@@ -28,7 +28,7 @@ a.brand{text-decoration:none;display:flex;align-items:center;gap:6px;min-height:
 .sw{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px var(--pad) 7px;max-width:1680px;margin:0 auto;-webkit-mask:linear-gradient(90deg,transparent 0,#000 var(--pad),#000 calc(100% - 24px),transparent)}
 .sw::-webkit-scrollbar{display:none}
 .chip{flex:none;display:flex;align-items:center;gap:7px;min-height:44px;min-width:44px;padding:0 12px 0 6px;border-radius:10px;border:1px solid var(--hair);background:transparent;color:var(--label);font:600 13px/1.1 var(--body);cursor:pointer;transition:border-color .2s,background .2s,color .2s;max-width:170px}
-.chip img,.chip .ini{width:28px;height:28px;border-radius:50%;flex:none;background:var(--deck-2);object-fit:cover;filter:grayscale(1) brightness(.85);display:grid;place-items:center;font:700 11px var(--display);color:var(--steel)}
+.chip img,.chip .ini{width:28px;height:28px;border-radius:50%;flex:none;background:var(--deck-2);object-fit:cover;filter:grayscale(1) brightness(.85);display:grid;place-items:center;font:600 11px var(--display);color:var(--steel)}
 .chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip:hover{border-color:var(--line-strong);color:var(--chalk)}
 .chip[aria-pressed=true]{border-color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--chalk)}
@@ -60,18 +60,18 @@ main{max-width:1680px;margin:0 auto;padding:0 0 28px}
 .ph h2{margin:0;font:600 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--label)}
 .ph .q{margin-left:auto;font:500 12px/1.2 var(--body);color:var(--steel);text-align:right}
 .big{display:flex;align-items:flex-end;gap:12px;margin:0 0 10px}
-.big .n{font:700 44px/.9 var(--display);letter-spacing:-.01em}
+.big .n{font:600 44px/.9 var(--display);letter-spacing:-.01em}
 .big .t{min-width:0;font:500 13px/1.3 var(--body);color:var(--label);padding-bottom:3px}
 .big .t small{display:block;font-weight:500;color:var(--steel);font-size:12px}
-.rk{display:inline-flex;align-items:center;gap:4px;font:700 13px/1 var(--display);letter-spacing:.04em;padding:4px 7px 3px;border-radius:4px;border:1px solid var(--line-strong);color:var(--chalk);white-space:nowrap}
+.rk{display:inline-flex;align-items:center;gap:4px;font:600 13px/1 var(--display);letter-spacing:.04em;padding:4px 7px 3px;border-radius:4px;border:1px solid var(--line-strong);color:var(--chalk);white-space:nowrap}
 .rk.top{background:color-mix(in srgb,var(--acc) 18%,transparent);border-color:color-mix(in srgb,var(--acc) 55%,transparent)}
 .chart{position:relative}
 .chart svg{display:block;width:100%;overflow:visible}
 .leg{display:flex;flex-wrap:wrap;gap:4px 14px;font:500 12px/1.2 var(--body);color:var(--steel);margin-top:8px}
 .leg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px;background:var(--steel)}
 .ax{font:500 11px var(--body);fill:var(--steel)}
-.axb{font:700 12px var(--display);letter-spacing:.03em;fill:var(--steel)}
-.vl{font:700 13px var(--display);fill:var(--chalk)}
+.axb{font:600 12px var(--display);letter-spacing:.03em;fill:var(--steel)}
+.vl{font:600 13px var(--display);fill:var(--chalk)}
 @media(min-width:768px){.ax{font-size:12px}.axb{font-size:13px}.vl{font-size:14px}}
 .gl{stroke:var(--hair);stroke-width:1}
 .hit{fill:transparent}
@@ -83,10 +83,10 @@ main{max-width:1680px;margin:0 auto;padding:0 0 28px}
 #p-hero{padding-top:14px;padding-bottom:0;display:grid;grid-template-columns:minmax(0,1fr);column-gap:28px}
 .id{display:flex;align-items:center;gap:10px;min-width:0}
 .av{width:36px;height:36px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--ink),0 0 0 3.5px var(--acc),0 6px 24px -4px var(--acc);background:var(--deck-2) center/cover}
-.id h1{margin:0;font:700 21px/1 var(--display);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.id h1{margin:0;font:600 21px/1 var(--display);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .id p{margin:3px 0 0;font:500 12px/1.2 var(--body);color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .star{display:flex;align-items:baseline;gap:8px;margin-top:12px;flex-wrap:wrap}
-.star .n{font:700 64px/.86 var(--display);letter-spacing:-.015em;text-shadow:0 0 40px color-mix(in srgb,var(--acc) 35%,transparent)}
+.star .n{font:600 64px/.86 var(--display);letter-spacing:-.015em;text-shadow:0 0 40px color-mix(in srgb,var(--acc) 35%,transparent)}
 .star .u{font-size:17px}
 .star .rk{align-self:center;font-size:14px;margin-left:2px}
 .sline{font:500 12px/1.3 var(--body);color:var(--steel);margin-top:6px}
@@ -95,32 +95,32 @@ main{max-width:1680px;margin:0 auto;padding:0 0 28px}
 .kp{padding:8px 0 8px 8px;border-left:1px solid var(--hair);min-width:0}
 .kp:first-child{border-left:0;padding-left:0}
 .kp .l{display:block;font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kp .v{display:block;font:700 30px/1 var(--display);margin-top:4px;white-space:nowrap}
+.kp .v{display:block;font:600 30px/1 var(--display);margin-top:4px;white-space:nowrap}
 .kp .v small{font-size:15px;color:var(--steel);font-weight:600}
 .dl{display:block;font:600 11px/1.1 var(--body);margin-top:3px;white-space:nowrap;color:var(--steel)}
 .odds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:10px 0 10px}
 .od .l{display:flex;justify-content:space-between;align-items:baseline;font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--steel)}
-.od .l b{font:700 20px/1 var(--display);letter-spacing:0;color:var(--chalk)}
+.od .l b{font:600 20px/1 var(--display);letter-spacing:0;color:var(--chalk)}
 .od .l b small{font-size:12px;color:var(--steel)}
 .od .bar2{height:4px;border-radius:2px;background:var(--hair);margin-top:6px;overflow:hidden}
 .od .bar2 i{display:block;height:100%;background:var(--acc);border-radius:2px;transform-origin:left}
 .od .dl{margin-top:4px}
 .live{display:flex;flex-direction:column;border-top:1px solid var(--hair);padding:8px 0 9px;gap:5px}
 .lv1{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-width:0;font:600 12px/1.2 var(--body);color:var(--label)}
-.lv1 .tag{font:700 12px/1 var(--display);letter-spacing:.08em;color:var(--steel);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.lv1 .tag{font:600 12px/1 var(--display);letter-spacing:.08em;color:var(--steel);white-space:nowrap;display:flex;align-items:center;gap:6px}
 .pd{width:8px;height:8px;border-radius:50%;background:var(--loss);box-shadow:0 0 0 0 var(--loss);animation:pulse 1.6s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,93,115,.6)}70%{box-shadow:0 0 0 8px rgba(255,93,115,0)}100%{box-shadow:0 0 0 0 rgba(255,93,115,0)}}
-.lv1 .scr{font:700 17px/1 var(--display);white-space:nowrap;color:var(--chalk)}
+.lv1 .scr{font:600 17px/1 var(--display);white-space:nowrap;color:var(--chalk)}
 .lv1 .scr span{color:var(--steel);font-weight:600}
 .lv1 .wp{margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.lv1 .wp b{font:700 17px/1 var(--display);color:var(--acc)}
+.lv1 .wp b{font:600 17px/1 var(--display);color:var(--acc)}
 .wpb{width:46px;height:4px;border-radius:2px;background:var(--hair);overflow:hidden}.wpb i{display:block;height:100%;background:var(--acc)}
 .lv1 .vs{white-space:nowrap}
 .movw{display:flex;align-items:center;gap:8px;min-width:0}
 .mvl{flex:none;font:600 11px/1 var(--body);letter-spacing:.06em;color:var(--steel)}
 .mov{flex:1;min-width:0;display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;font:500 12px/1.2 var(--body);color:var(--steel);white-space:nowrap;padding-right:44px;-webkit-mask:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
 .mv{flex:none;display:inline-flex;align-items:center;gap:5px}
-.mv b{font:700 13px/1 var(--display);color:var(--chalk)}
+.mv b{font:600 13px/1 var(--display);color:var(--chalk)}
 .mv .v{color:var(--steel)}
 .mn{display:inline-flex;align-items:center;gap:4px;color:var(--label);font-weight:600}
 .mn img{width:16px;height:16px;border-radius:50%;object-fit:cover;filter:grayscale(.3)}
@@ -130,7 +130,7 @@ main{max-width:1680px;margin:0 auto;padding:0 0 28px}
 /* ---------- pulse / scrub ---------- */
 .scrub{touch-action:pan-y;cursor:ew-resize;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .ro{display:flex;gap:8px;align-items:baseline;font:500 12px/1.3 var(--body);color:var(--label);min-height:18px;margin-bottom:4px;flex-wrap:wrap}
-.ro b{font:700 14px/1 var(--display);letter-spacing:.04em;color:var(--acc)}
+.ro b{font:600 14px/1 var(--display);letter-spacing:.04em;color:var(--acc)}
 .hint{margin-left:auto;color:var(--steel);font-size:11px}
 .wk.off{opacity:.28}
 .back{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translate(-50%,24px);opacity:0;pointer-events:none;z-index:30;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--acc);background:rgba(22,26,34,.94);backdrop-filter:blur(12px);color:var(--chalk);font:600 13px/1 var(--body);display:flex;align-items:center;gap:8px;white-space:nowrap;transition:opacity .2s,transform .2s;cursor:pointer;box-shadow:0 10px 30px -8px #000}
@@ -141,15 +141,15 @@ main{max-width:1680px;margin:0 auto;padding:0 0 28px}
 /* ---------- position tracks ---------- */
 .pr{display:grid;grid-template-columns:34px minmax(0,1fr) 46px 34px;align-items:center;gap:10px;min-height:44px;border-top:1px solid var(--hair)}
 .pr:first-of-type{border-top:0}
-.pl{font:700 14px/1 var(--display);letter-spacing:.06em;color:var(--pc)}
+.pl{font:600 14px/1 var(--display);letter-spacing:.06em;color:var(--pc)}
 .trk{position:relative;height:30px}
 .trk::before{content:"";position:absolute;left:0;right:0;top:14px;height:1px;background:var(--line-strong)}
 .trk .o{position:absolute;top:11px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--neutral-bar)}
 .trk .o.rv{width:12px;height:12px;margin-left:-6px;top:8.5px;background:transparent;border:2px solid var(--riv)}
 .trk .avg{position:absolute;top:5px;width:2px;height:20px;margin-left:-1px;background:var(--chalk);opacity:.8}
-.trk .me{position:absolute;top:6px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 2px var(--ink),0 0 14px color-mix(in srgb,var(--acc) 60%,transparent);transition:left .26s cubic-bezier(.2,.8,.2,1)}
-.pv{font:700 19px/1 var(--display);text-align:right}
-.prk{font:700 13px/1 var(--display);color:var(--steel);text-align:right}
+.trk .me{position:absolute;top:6px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 2px var(--ink),0 0 14px color-mix(in srgb,var(--acc) 60%,transparent)}
+.pv{font:600 19px/1 var(--display);text-align:right}
+.prk{font:600 13px/1 var(--display);color:var(--steel);text-align:right}
 .prk.top{color:var(--acc)}
 .p-QB{--pc:#f7739c}.p-RB{--pc:#3ddcc1}.p-WR{--pc:#5ec6f4}.p-TE{--pc:#fca95c}.p-K{--pc:#c491ff}.p-DEF{--pc:#c98a72}.p-FLEX{--pc:#9aa3b5}
 .scale{display:grid;grid-template-columns:34px minmax(0,1fr) 46px 34px;gap:10px;font:500 11px/1 var(--body);color:var(--steel);margin-top:4px}
@@ -157,30 +157,30 @@ main{max-width:1680px;margin:0 auto;padding:0 0 28px}
 /* ---------- rows (log, sos, contrib) ---------- */
 .gr{display:grid;grid-template-columns:28px 22px minmax(0,1fr) auto 54px;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--hair)}
 .gr:first-child{border-top:0}
-.gr .wk2{font:700 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
-.gr img,.gr .ini{width:22px;height:22px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2);display:grid;place-items:center;font:700 10px var(--display);color:var(--steel)}
+.gr .wk2{font:600 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
+.gr img,.gr .ini{width:22px;height:22px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2);display:grid;place-items:center;font:600 10px var(--display);color:var(--steel)}
 .gr .on{font:500 13px/1.2 var(--body);color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gr .on small{font-size:11px;color:var(--steel);margin-left:4px}
-.gr .sc{font:700 16px/1 var(--display);text-align:right;white-space:nowrap}
+.gr .sc{font:600 16px/1 var(--display);text-align:right;white-space:nowrap}
 .gr .sc span{color:var(--steel);font-weight:600}
-.res{font:700 12px/1 var(--display);padding:3px 5px 2px;border-radius:3px;color:var(--ink);margin-right:5px}
+.res{font:600 12px/1 var(--display);padding:3px 5px 2px;border-radius:3px;color:var(--ink);margin-right:5px}
 .res.W{background:var(--win)}.res.L{background:var(--loss)}.res.T{background:var(--steel)}
-.mg{position:relative;height:24px}.mg b{position:absolute;inset:0 0 auto 0;text-align:center;font:700 12px/1 var(--display)}
+.mg{position:relative;height:24px}.mg b{position:absolute;inset:0 0 auto 0;text-align:center;font:600 12px/1 var(--display)}
 .mg::before{content:"";position:absolute;left:50%;top:14px;bottom:0;width:1px;background:var(--line-strong)}
 .mg i{position:absolute;top:16px;height:6px;border-radius:1px}.mg .W{background:var(--win)}.mg .L{background:var(--loss)}
 .sr{display:grid;grid-template-columns:30px 22px minmax(0,1fr) 72px 44px;gap:8px;align-items:center;min-height:36px;border-top:1px solid var(--hair)}
 .sr:first-child{border-top:0}
 .sr .on{font:500 13px/1.2 var(--body);color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sr .bb{height:6px;background:var(--hair);border-radius:1px;position:relative}.sr .bb i{position:absolute;left:0;top:0;bottom:0;border-radius:1px}
-.sr .vv{font:700 15px/1 var(--display);text-align:right}
-.sr img,.sr .ini{width:22px;height:22px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2);display:grid;place-items:center;font:700 10px var(--display);color:var(--steel)}
-.wk2{font:700 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
+.sr .vv{font:600 15px/1 var(--display);text-align:right}
+.sr img,.sr .ini{width:22px;height:22px;border-radius:50%;filter:grayscale(1);opacity:.85;background:var(--deck-2);display:grid;place-items:center;font:600 10px var(--display);color:var(--steel)}
+.wk2{font:600 13px/1 var(--display);color:var(--steel);letter-spacing:.04em}
 .cr{display:grid;grid-template-columns:minmax(0,1fr) 52px 40px;gap:4px 10px;align-items:center;padding:6px 0;border-top:1px solid var(--hair)}
 .cr:first-child{border-top:0}
 .cr .nm{font:500 13px/1.2 var(--body);color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.cr .nm .pt{font:700 11px/1 var(--display);letter-spacing:.05em;color:var(--pc);margin-right:6px}
-.cr .nm .inj{font:700 11px/1 var(--display);letter-spacing:.04em;color:var(--loss);margin-left:5px;vertical-align:1px}
-.cr .vv{font:700 15px/1 var(--display);text-align:right}
+.cr .nm .pt{font:600 11px/1 var(--display);letter-spacing:.05em;color:var(--pc);margin-right:6px}
+.cr .nm .inj{font:600 11px/1 var(--display);letter-spacing:.04em;color:var(--loss);margin-left:5px;vertical-align:1px}
+.cr .vv{font:600 15px/1 var(--display);text-align:right}
 .cr .sh{font:600 12px/1 var(--body);color:var(--steel);text-align:right}
 .cr .cb{grid-column:1/-1;height:5px;background:var(--hair);border-radius:1px;overflow:hidden}.cr .cb i{display:block;height:100%;background:var(--pc);opacity:.9}
 @media(min-width:900px){.cgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}.cgrid .cr:nth-child(2){border-top:0}}
@@ -192,9 +192,9 @@ details[open] summary{color:var(--chalk)}
 .meth{columns:1;column-gap:32px}.meth p{margin:0 0 10px;break-inside:avoid}.meth b{color:var(--label)}
 @media(min-width:900px){.meth{columns:2}}
 /* tooltip */
-#tip{position:fixed;z-index:50;pointer-events:none;background:rgba(28,33,43,.97);border:1px solid var(--line-strong);border-radius:8px;padding:8px 10px;font:500 12.5px/1.35 var(--body);color:var(--label);box-shadow:0 12px 30px -8px rgba(0,0,0,.7);max-width:240px;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+#tip{position:fixed;z-index:50;pointer-events:none;background:#232325;border:1px solid var(--line-strong);border-radius:8px;padding:8px 10px;font:500 12.5px/1.35 var(--body);color:var(--label);box-shadow:0 12px 30px -8px rgba(0,0,0,.7);max-width:240px;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
 #tip.on{opacity:1;transform:none}
-#tip b{display:block;font:700 15px/1.1 var(--display);color:var(--chalk);letter-spacing:.02em;margin-bottom:2px}
+#tip b{display:block;font:600 15px/1.1 var(--display);color:var(--chalk);letter-spacing:.02em;margin-bottom:2px}
 /* entrance */
 .js .grid>*,.js .pairw{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
 .js .grid>:nth-child(2){animation-delay:.06s}.js .grid>:nth-child(3){animation-delay:.12s}
@@ -204,79 +204,165 @@ details[open] summary{color:var(--chalk)}
 @media(max-width:899px){.lg{display:none}}
 @media(max-width:419px){.wpb{display:none}.lv1{gap:4px 7px}.lv1 .tag{letter-spacing:.05em}}
 
-/* ---------- unslop: flat surfaces, one label style, numbers carry the weight ---------- */
-body{background:var(--ink)}
-.brand{font:700 15px/1 var(--display);letter-spacing:.1em}
-.stamp b{color:var(--chalk)}
-.chip{border-color:transparent;border-radius:8px;color:var(--steel);font-weight:500}
-.chip:hover{border-color:transparent;background:var(--deck)}
-.chip[aria-pressed=true]{border-color:var(--hair);background:var(--deck-2);color:var(--chalk)}
+
+/* ---------- unslop (after @heydamir/unslop, CC BY 4.0): graphite ramp, one accent, sentence case, 4px grid ---------- */
+:root{--ink:#141415;--deck:#19191b;--deck-2:#232325;--hair:rgba(237,237,237,.08);--line-strong:rgba(237,237,237,.14);--chalk:#ededed;--label:#a1a1a6;--steel:#85858b;--dim:#5c5c62;--win:#4cc38a;--loss:#e5484d;--neutral-bar:#55555b;--ease:cubic-bezier(.22,1,.36,1)}
+html,body{background:var(--ink)}
+/* header */
+.hdr{background:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none}
+.bar{padding:8px var(--pad) 0;min-height:32px}
+.brand{font:600 15px/1 var(--body);letter-spacing:0;text-transform:none}
+.brand .bk{font-size:20px}
+.stamp{display:flex;align-items:center;gap:12px;font:500 13px/1 var(--body);color:var(--label)}
+.bk2{min-height:32px;padding:0 12px;border-radius:6px;border:1px solid var(--line-strong);background:var(--deck-2);color:var(--chalk);font:500 13px/1 var(--body);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:background-color .15s var(--ease)}
+.bk2:hover{background:#2b2b2e}
+.sw{gap:4px;padding:8px var(--pad)}
+.chip{min-height:44px;padding:0 12px 0 8px;gap:8px;border:1px solid transparent;border-radius:8px;color:var(--label);font:500 13px/1 var(--body);max-width:none;transition:background-color .15s var(--ease),color .15s var(--ease)}
 .chip img,.chip .ini{width:24px;height:24px}
-.chip:focus-visible,button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline-color:var(--label)}
-.ph h2,.dcap,.kp .l,.od .l,.strip .tt,.mvl,.lv1 .tag,.eb{font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--steel)}
-.ph .q{font-size:12px;color:var(--steel)}
-.big{gap:10px;margin:2px 0 14px}
-.big .n{font:700 40px/.9 var(--display)}
-.big .n small{font:600 18px/1 var(--display);color:var(--steel);margin-left:2px}
-.big .t{color:var(--label);font-size:13px}
-.big .t small{margin-top:2px}
-.rk{border:0;padding:0;color:var(--steel);font:600 12px/1 var(--body)}.rk.top{background:none;color:var(--label)}
+.chip:hover{border-color:transparent;background:var(--deck);color:var(--chalk)}
+.chip[aria-pressed=true]{border-color:var(--hair);background:var(--deck-2);color:var(--chalk);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.chip:focus-visible,button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid var(--label);outline-offset:2px}
+/* labels: sentence case, 12-13px, no tracking */
+.ph h2,.dcap,.kp .l,.od .l,.strip .tt,.mvl,.lv1 .tag,.eb,.bh{font:500 13px/16px var(--body);letter-spacing:0;text-transform:none;color:var(--label)}
+.kp .l,.od .l,.dcap,.strip .tt,.mvl,.lv1 .tag,.bh{font-size:12px;color:var(--steel)}
+.ph{margin-bottom:12px;min-height:32px}
+.ph .q{font:400 12px/16px var(--body);color:var(--steel)}
+/* panels on the grid */
+.pnl{padding:20px var(--pad) 24px}
+@media(min-width:900px){.pnl,.pair>.pnl{padding:24px}}
+/* figures: Barlow 600, three sizes (64 / 40 / 16) plus KPI 32 */
+.star{margin-top:4px}
+.star .n{font:600 64px/.9 var(--display);letter-spacing:-.02em;text-shadow:none}
+.big{gap:12px;margin:0 0 16px;align-items:flex-end}
+.big .n{font:600 40px/.9 var(--display);letter-spacing:-.01em}
+.big .n small{font:500 16px/1 var(--display);color:var(--steel);margin-left:2px}
+.big .t{font:500 14px/20px var(--body);color:var(--chalk);padding-bottom:0}
+.big .t small{font:400 13px/16px var(--body);color:var(--steel);margin-top:0}
+.kp .v{font:600 32px/1 var(--display)}.kp .v small{font-size:14px;color:var(--steel)}
+.kp{padding:12px 0 12px 12px}.kp:first-child{padding-left:0}
+.dl{font:400 12px/16px var(--body);margin-top:4px}
+.od .l{align-items:baseline}.od .l b{font:600 20px/1 var(--display)}.od .l b small{font-size:12px}
+.odds{gap:12px;padding:12px 0}
+.od .bar2{height:2px;margin-top:8px;background:var(--hair)}.od .bar2 i{background:var(--label)}
+.rk{border:0;padding:0;background:none;color:var(--steel);font:400 12px/1 var(--body)}
+/* hero */
 .av{box-shadow:none;width:32px;height:32px;border:1px solid var(--hair)}
-.id h1{font-size:20px}
-.eb{margin-top:18px}
-.star{margin-top:6px}
-.star .n{text-shadow:none}
-.sline{font-size:13px;margin-top:8px;color:var(--steel)}
-.sline b{font:700 16px/1 var(--display);color:var(--chalk);letter-spacing:.01em}
-.sline i{font-style:normal;margin:0 7px;color:var(--dim)}
-.kp .v{font-weight:700}.kp .v small{font-size:14px}
-.dl{font-weight:500}
-.od .l b{font-size:20px}
-.od .bar2{height:3px;background:var(--hair)}
-.od .bar2 i{background:var(--label)}
-.pd{animation:none;box-shadow:none;width:6px;height:6px}
-.lv1 .wp b{color:var(--chalk)}
-.wpb i{background:var(--label)}
-.ro b{color:var(--chalk);font-size:13px}
-.res{background:none!important;padding:0;margin-right:7px;font-size:13px}
+.id h1{font:600 20px/1 var(--display)}
+.id p{margin-top:4px;font-size:12px}
+.eb{margin-top:20px}
+.sline{font:400 13px/16px var(--body);margin-top:8px;color:var(--steel)}
+.sline b{font:600 16px/1 var(--display);color:var(--chalk)}
+.sline i{font-style:normal;margin:0 8px;color:var(--dim)}
+#p-hero{padding-top:16px;align-items:start!important}
+@media(min-width:900px){#p-hero{padding-bottom:20px}.hl{padding-top:4px}.star .n{font-size:72px}.kp .v{font-size:32px}}
+@media(min-width:1280px){.kp .v{font-size:36px!important}.kp .l,.od .l,.dcap{font-size:12px}.dl{font-size:12px}.od .l b{font-size:22px}.od .bar2{height:2px}.kp{padding:12px 0 12px 12px}.lv1 .scr,.lv1 .wp b{font-size:18px}.lv1{font-size:13px}.mov{font-size:13px}}
+.dcap{padding:0 0 8px}
+@media(max-width:599px){.dcap{text-align:left;padding-top:16px}}
+/* live strip */
+.live{padding:12px 0;gap:8px}
+.lv1{gap:4px 8px;font:500 13px/16px var(--body)}
+.lv1 .tag{gap:8px}
+.pd{animation:none;box-shadow:none;width:6px;height:6px;background:var(--loss)}
+.lv1 .scr{font:600 18px/1 var(--display)}
+.lv1 .wp b{font:600 18px/1 var(--display);color:var(--chalk)}
+.wpb{height:2px}.wpb i{background:var(--label)}
+.movw{align-items:flex-start;gap:12px}
+.mov{gap:4px 16px;font-size:13px}
+.mv b{font:600 14px/1 var(--display)}
+@media(max-width:899px){.mov{flex-wrap:wrap;overflow:visible;padding-right:0;-webkit-mask:none;mask:none}}
+/* pulse */
+.ro{gap:8px;margin-bottom:8px;min-height:20px;font-size:13px}
+.ro b{font:600 14px/1 var(--display);color:var(--chalk);letter-spacing:0}
+.res{background:none!important;padding:0;margin-right:8px;font:600 14px/1 var(--display)}
 .res.W{color:var(--win)}.res.L{color:var(--loss)}.res.T{color:var(--steel)}
-.tog{min-height:36px;border-color:var(--hair);color:var(--steel);font-weight:500}
-.tog[aria-pressed=true]{background:none;border-color:var(--line-strong)}
-.tog i{width:8px;height:8px;border-width:1.5px}
-.trk .me{width:12px;height:12px;margin-left:-6px;top:9px;box-shadow:0 0 0 2px var(--ink)}
-.trk .o{width:5px;height:5px;margin-left:-2.5px;top:12px}
-.trk::before{background:var(--hair)}
-.trk .avg{background:var(--steel);height:14px;top:8px;opacity:1}
-.pv{font-size:18px}
-.prk{font:500 12px/1 var(--body);color:var(--steel)}.prk.top{color:var(--label)}
-.scale{color:var(--dim)}
-.gr{grid-template-columns:28px 22px minmax(0,1fr) auto 48px}
-.gr .mg{font:700 14px/1 var(--display);text-align:right;height:auto}
-.gr .mg::before{display:none}
-.gr img,.gr .ini,.sr img,.sr .ini{opacity:.7}
-.gr .on small{color:var(--dim)}
-.cr .cb{height:3px}.cr .cb i{opacity:.6}
-.cr .vv{font-size:15px}
-.sr .bb{height:3px}
-.vl{fill:var(--chalk)}
+.wk.off{opacity:1}
+.wk.off circle{fill:var(--ink);stroke:var(--neutral-bar)}
+.wk.off text{fill:var(--dim)!important}
+.ax{font:400 11px var(--body);fill:var(--steel)}
+.axb{font:500 12px var(--display);fill:var(--label);letter-spacing:.02em}
+.vl{font:600 13px var(--display);fill:var(--chalk)}
+@media(min-width:768px){.ax{font-size:12px}.axb{font-size:13px}.vl{font-size:14px}}
+.tog{min-height:32px;padding:0 12px;gap:8px;border-radius:6px;border:1px solid var(--line-strong);background:transparent;color:var(--label);font:500 13px/1 var(--body);transition:background-color .15s var(--ease),color .15s var(--ease)}
+.tog i{width:10px;height:10px;border-radius:2px;border:1.5px solid var(--riv)}
+.tog[aria-pressed=true]{background:var(--deck-2);border-color:var(--line-strong);color:var(--chalk)}
+.leg{gap:4px 16px;font:400 12px/16px var(--body);margin-top:12px}
 .leg i{height:2px}
-.back{border-color:var(--line-strong);box-shadow:none}.back b{color:var(--chalk)}
-#tip{box-shadow:none;border-radius:6px}
-.js .grid>*,.js .pairw{animation:none}
-.dots i.on{background:var(--label)}
-@media(min-width:900px){.star .n{font-size:68px}.big .n{font-size:44px}}
-@media(min-width:1280px){.kp .v{font-size:36px!important}.od .l b{font-size:22px}.od .bar2{height:3px}.kp .l,.od .l,.dcap{font-size:11px}.dl{font-size:12px}}
-#p-hero{align-items:start!important}
-.hl{padding-top:6px}
+/* luck by week */
+.strip{margin-top:16px}
 .strip .tt{margin-bottom:8px}
-@media(max-width:599px){.kp .l{letter-spacing:.03em}.dcap{text-align:left;padding-top:14px}}
-i.th{display:inline-block;width:5px!important;height:5px!important;border-radius:50%;background:var(--label)!important;margin:0 7px 0 0;vertical-align:2px}
-@media(max-width:599px){.gr,.sr{gap:6px}.gr img,.gr .ini,.sr img,.sr .ini{display:none}.gr{grid-template-columns:28px minmax(0,1fr) auto 46px}.sr{grid-template-columns:30px minmax(0,1fr) 60px 44px}}
-@media(max-width:374px){.od .l{letter-spacing:.04em}.od .l b{font-size:17px}.odds{gap:10px}.sr{grid-template-columns:28px minmax(0,1fr) 40px 42px}.gr{grid-template-columns:26px minmax(0,1fr) auto 44px}}
+.lwk{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border-top:1px solid var(--hair)}
+.lwk span{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-left:1px solid var(--hair)}
+.lwk span:first-child{border-left:0}
+.lwk b{font:600 15px/1 var(--display);color:var(--label)}
+.lwk i{font:400 11px/1 var(--body);font-style:normal;color:var(--steel)}
+.lwk .off b,.lwk .off i{color:var(--dim)}
+/* bench list */
+.bh,.br{display:grid;grid-template-columns:28px minmax(0,1fr) 48px 48px;gap:12px;align-items:center}
+.bh{padding-bottom:8px}.bh span:nth-child(n+3){text-align:right}
+.br{min-height:32px;border-top:1px solid var(--hair)}
+.bb2{position:relative;height:4px}
+.bb2 i{position:absolute;left:0;top:0;bottom:0;border-radius:1px}
+.bb2 .o{background:var(--hair);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.bb2 .p{background:var(--acc)}
+.br .vv{font:600 16px/1 var(--display);text-align:right}
+.br .lf{font:500 14px/1 var(--display);color:var(--steel);text-align:right}
+.br.off .bb2 .p{background:var(--neutral-bar)}.br.off .vv,.br.off .lf,.br.off .wk2{color:var(--dim)}
+/* position strength: tracker position tiles */
+.pr{grid-template-columns:36px minmax(0,1fr) 44px 36px;gap:12px;min-height:40px}
+.pl{display:grid;place-items:center;height:24px;border-radius:4px;background:color-mix(in srgb,var(--pc) 82%,#0b0e14);color:#0b0e14;font:600 13px/1 var(--display);letter-spacing:.02em}
+.trk{height:24px}.trk::before{top:11.5px;background:var(--hair)}
+.trk .o{width:5px;height:5px;margin-left:-2.5px;top:9.5px}
+.trk .avg{top:5px;height:14px;width:2px;background:var(--steel);opacity:1}
+.trk .me{width:12px;height:12px;margin-left:-6px;top:6px;box-shadow:0 0 0 2px var(--ink)}
+.trk .o.rv{width:10px;height:10px;margin-left:-5px;top:7px;border-width:1.5px}
+.pv{font:600 16px/1 var(--display)}
+.prk{font:400 12px/1 var(--body);color:var(--steel)}.prk.top{color:var(--chalk)}
+.scale{grid-template-columns:36px minmax(0,1fr) 44px 36px;gap:12px;color:var(--dim);margin-top:8px}
+/* rows */
+.gr{grid-template-columns:28px 24px minmax(0,1fr) auto 48px;gap:8px;min-height:40px}
+.gr img,.gr .ini,.sr img,.sr .ini{width:24px;height:24px;opacity:.75}
+.gr .sc{font:600 16px/1 var(--display)}
+.gr .mg{font:600 14px/1 var(--display);text-align:right;height:auto}
+.gr .mg::before{display:none}
+.gr .on,.sr .on{font:400 13px/16px var(--body);color:var(--chalk)}
+.wk2{font:500 13px/1 var(--display);color:var(--steel);letter-spacing:.02em}
+.sr{grid-template-columns:32px 24px minmax(0,1fr) 64px 44px;gap:8px;min-height:40px}
+.sr .bb{height:4px}.sr .vv{font:600 16px/1 var(--display)}
+i.th{display:inline-block;width:6px!important;height:6px!important;border-radius:50%;background:var(--label)!important;margin:0 8px 0 0;vertical-align:2px}
+@media(max-width:599px){.gr img,.gr .ini,.sr img,.sr .ini{display:none}.gr{grid-template-columns:28px minmax(0,1fr) auto 48px}.sr{grid-template-columns:32px minmax(0,1fr) 56px 44px}}
+@media(max-width:374px){.od .l b{font-size:17px}.odds{gap:8px}.sr{grid-template-columns:28px minmax(0,1fr) 40px 44px}.gr{grid-template-columns:28px minmax(0,1fr) auto 44px}.kp .v{font-size:26px}.star .n{font-size:56px}}
+/* contribution */
+.cr{gap:4px 12px;padding:8px 0;grid-template-columns:minmax(0,1fr) 48px 40px}
+.cr .nm{font:400 13px/16px var(--body);color:var(--chalk);display:flex;align-items:center;gap:8px}
+.cr .nm .pt{display:inline-grid;place-items:center;flex:none;width:28px;height:16px;margin:0;border-radius:3px;background:color-mix(in srgb,var(--pc) 82%,#0b0e14);color:#0b0e14;font:600 11px/1 var(--display);letter-spacing:.02em}
+.cr .vv{font:600 16px/1 var(--display)}
+.cr .sh{font:400 12px/1 var(--body)}
+.cr .cb{height:2px;background:var(--hair)}.cr .cb i{opacity:.7}
+@media(min-width:900px){.cgrid{column-gap:32px}}
+/* footer, tooltip, motion */
+footer{padding:8px var(--pad) 64px;font:400 13px/20px var(--body)}
+details summary{font:500 13px/1 var(--body);color:var(--label)}
+#tip{border-radius:8px;border-color:var(--line-strong);box-shadow:none;transition:opacity .16s var(--ease),transform .16s var(--ease)}
+#tip b{font:600 15px/1.1 var(--display)}
+.js .grid>*,.js .pairw{animation:none}
+.dots i{transition:background-color .15s var(--ease)}.dots i.on{width:6px;background:var(--label)}
+.ini{font-weight:600!important}
+.strip svg{display:block;overflow:visible;margin-top:4px}
+#p-hero>.live{grid-column:1/-1}
+@media(min-width:900px){#p-hero>.live{border-bottom:0;flex-direction:row;align-items:center;gap:24px}#p-hero>.live .lv1{flex:none}#p-hero>.live .movw{flex:1;min-width:0;align-items:center}#p-hero{padding-bottom:0}}
+.pair{align-items:start}
+.mov{flex-wrap:wrap;overflow:visible;padding-right:0;-webkit-mask:none;mask:none}
+@media(max-width:430px){.kp .v{font-size:28px}.kp{padding-left:8px}}
+@media(max-width:374px){.kp .v{font-size:25px}.kp{padding-left:6px}}
+@media(max-width:374px){.gr,.sr{gap:6px}.gr .sc{font-size:14px}.res{margin-right:4px}.gr .on,.sr .on{font-size:12px}}
+.bar{min-height:40px}
+.cst{display:block;min-height:32px}
+.gr.off .wk2,.gr.off .on,.gr.off .sc,.gr.off .sc span,.gr.off .mg{color:var(--dim)!important}
+.gr.off img,.gr.off .ini{opacity:.35}.gr.off i.th{opacity:.4}
 </style>
 </head>
 <body>
-<header class="top">
+<header class="hdr">
   <div class="bar"><a class="brand" href="../" title="Back to the league tracker"><span class="bk">‹</span>Team Hub</a><div class="lg" id="lg"></div><div class="stamp" id="stamp"></div></div>
   <nav class="sw" id="sw" aria-label="Team switcher"></nav>
 </header>
@@ -291,7 +377,6 @@ i.th{display:inline-block;width:5px!important;height:5px!important;border-radius
   <section class="pnl" id="p-cons"></section>
 </div></main>
 <footer id="ft"></footer>
-<button class="back" id="back" type="button"></button>
 <div id="tip" role="status"></div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -384,11 +469,11 @@ function hero(el){const t=T[cur],o=S(cur),p=SP(cur),g=wks(cur),last=g.at(-1),od=
  <div class="odds" ${tipA('Playoff odds · Monte Carlo',`${D.sims.toLocaleString()} sims of Wk ${K+1}–${PO.reg_end}, normal scores per team (mean/sd through Wk ${K}). Top ${PO.teams} make it, top ${PO.byes} get byes.`)}>
   ${odd('Playoffs','po',od.playoff,po&&po.playoff,'')}${odd('Bye','bye',od.bye,po&&po.bye,'')}${odd('Title','title',od.title,po&&po.title,'')}
  </div>
- ${liveHTML()}</div>`}
+ </div>${liveHTML()}`}
 
 /* --- pulse with scrub --- */
 let PZ=null; // pulse geometry
-function pulse(el){const t=T[cur],g=t.weeks,L=D.league_wk,rv=rivalOf(cur),R=T[rv];const W=pw(el),H=isPhone()?196:250;
+function pulse(el){const t=T[cur],g=t.weeks,L=D.league_wk,rv=rivalOf(cur),R=T[rv];const W=pw(el),H=isPhone()?220:300;
  const pl=34,pr=40,pt=24,pb=38;const all=[...g.map(x=>x.pts),...g.map(x=>x.opp_pts||0),...L.map(x=>x.p25),...L.map(x=>x.p75),...R.weeks.map(x=>x.pts)];
  const lo=Math.floor((Math.min(...all)-6)/10)*10,hi=Math.ceil((Math.max(...all)+6)/10)*10;
  const x=sc(0,g.length-1,pl+10,W-pr),y=sc(lo,hi,H-pb,pt);PZ={x,inv:px=>Math.round((px-pl-10)/((W-pr-pl-10)/(g.length-1))),W,H,pt,pb,n:g.length};
@@ -400,15 +485,15 @@ function pulse(el){const t=T[cur],g=t.weeks,L=D.league_wk,rv=rivalOf(cur),R=T[rv
  let inner=`<path data-m="popp" d="${P(g.map((d,i)=>[x(i),y(d.opp_pts)]))}" fill="none" stroke="var(--label)" stroke-width="1" opacity=".22"/>`;
   if(rivalOn)inner+=`<path data-m="priv" d="${P(R.weeks.map((d,i)=>[x(i),y(d.pts)]))}" fill="none" stroke="var(--riv)" stroke-width="2" stroke-dasharray="6 4" stroke-linejoin="round"/>`+R.weeks.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.pts)}" r="3" fill="var(--riv)"/>`).join('');
  inner+=`<path data-m="pline" d="${P(tp)}" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
- s+=`<g opacity=".25">${inner}</g><g clip-path="url(#pclip)">${inner.replace(/data-m="[^"]+"/g,m=>m.replace('"p','"c'))}</g>`;
+ s+=`<g class="fut">${inner.replace(/var\(--acc\)/g,'var(--neutral-bar)').replace(/var\(--riv\)/g,'var(--neutral-bar)')}</g><g clip-path="url(#pclip)">${inner.replace(/data-m="[^"]+"/g,m=>m.replace('"p','"c'))}</g>`;
  g.forEach((d,i)=>{const cx=x(i),cy=y(d.pts);
   s+=`<g class="wk" data-w="${d.w}"><circle data-m="pdot${i}" cx="${cx}" cy="${cy}" r="3.5" fill="${d.res==='W'?'var(--acc)':'var(--ink)'}" stroke="var(--acc)" stroke-width="2"/>
-  <text class="axb" x="${cx}" y="${H-pb+18}" text-anchor="middle">W${d.w}</text>
-  <text class="axb" x="${cx}" y="${H-pb+33}" text-anchor="middle" style="fill:${d.res==='W'?'var(--win)':'var(--loss)'}">${d.res}</text></g>`});
- s+=`<g id="cur" style="pointer-events:none"><line x1="0" x2="0" y1="${pt-8}" y2="${H-pb+4}" stroke="var(--chalk)" stroke-width="1" opacity=".55"/><rect x="-20" y="${pt-24}" width="40" height="17" rx="3" fill="var(--deck-2)" stroke="var(--line-strong)"/><text class="axb" x="0" y="${pt-11}" text-anchor="middle" style="fill:var(--chalk)">WK ?</text></g>`;
+  <text class="axb" x="${cx}" y="${H-pb+20}" text-anchor="middle">W${d.w}</text>
+  <text class="axb rs" x="${cx}" y="${H-pb+36}" text-anchor="middle" style="fill:${d.res==='W'?'var(--win)':'var(--loss)'}">${d.res}</text></g>`});
+ s+=`<g id="cur" style="pointer-events:none"><line x1="0" x2="0" y1="${pt-8}" y2="${H-pb+4}" stroke="var(--chalk)" stroke-width="1" opacity=".55"/><rect x="-20" y="${pt-24}" width="40" height="17" rx="3" fill="var(--deck-2)" stroke="var(--line-strong)"/><text class="axb" x="0" y="${pt-11}" text-anchor="middle" style="fill:var(--chalk)">Wk ?</text></g>`;
  s+=`<rect class="hit" x="0" y="0" width="${W}" height="${H}"/>`;
  const avg=t.pf/g.length;
- el.innerHTML=`<div class="ph"><h2>Season pulse</h2><button class="tog" id="rtog" type="button" aria-pressed="${rivalOn}"><i></i>vs ${esc(short(R))}</button></div>
+ el.innerHTML=`<div class="ph"><h2>Season pulse</h2><button class="tog" id="rtog" type="button" aria-pressed="${rivalOn}"><i></i>Compare ${esc(short(R))}</button></div>
  <div class="big"><span class="n" id="pp-n"></span><span class="t" id="pp-t"></span></div>
  <div class="ro" id="ro"></div>
  <div class="chart"><svg class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Scrub to week" aria-valuemin="1" aria-valuemax="${TH}" viewBox="0 0 ${W} ${H}" height="${H}"><defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".25"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient><clipPath id="pclip"><rect id="pclipr" x="0" y="0" width="${W}" height="${H}"/></clipPath></defs>${s}</svg></div>
@@ -417,7 +502,7 @@ function pulse(el){const t=T[cur],g=t.weeks,L=D.league_wk,rv=rivalOf(cur),R=T[rv
  $('#rtog').onclick=()=>{rivalOn=!rivalOn;renderAll(true)};
  bindScrub($('#scrub'))}
 function pulseK(){const t=T[cur],g=wks(cur),L=D.league_wk,i=K-1,d=t.weeks[i];if(!PZ)return;
- const cx=PZ.x(i);const c=$('#cur');if(c)c.setAttribute('transform',`translate(${cx},0)`);if(c)c.querySelector('text').textContent='WK '+K;
+ const cx=PZ.x(i);const c=$('#cur');if(c)c.setAttribute('transform',`translate(${cx},0)`);if(c)c.querySelector('text').textContent='Wk '+K;
  const cr=$('#pclipr');if(cr)cr.setAttribute('width',cx+(K===TH?PZ.W:6));
  document.querySelectorAll('#p-pulse .wk').forEach(n=>n.classList.toggle('off',+n.dataset.w>K));
  const avg=mean(g.map(x=>x.pts)),lm=mean(L.slice(0,K).map(x=>x.med)),ab=g.filter(x=>x.pts>L[x.w-1].med).length;
@@ -433,9 +518,8 @@ function bindScrub(sv){let drag=false;
  sv.addEventListener('pointerup',end);sv.addEventListener('pointercancel',end);
  sv.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'&&K>1){setK(K-1);e.preventDefault()}if(e.key==='ArrowRight'&&K<TH){setK(K+1);e.preventDefault()}if(e.key==='End'){setK(TH)}})}
 function setK(k){K=k;pulseK();for(const id in PANELS)if(id!=='p-pulse')PANELS[id](document.getElementById(id));
- const b=$('#back');b.classList.toggle('on',K!==TH);b.innerHTML=`Viewing through <b>Week ${K}</b> · Back to Week ${TH}`;
- $('#stamp').innerHTML=`Through <b>Week ${K}</b>${K!==TH?' (scrubbed)':''}`;hashSync()}
-$('#back').onclick=()=>setK(TH);
+ $('#stamp').innerHTML=`Through Wk ${K}${K!==TH?`<button type="button" class="bk2" data-back>Back to Wk ${TH}</button>`:''}`;hashSync()}
+$('#stamp').addEventListener('click',e=>{if(e.target.closest('[data-back]'))setK(TH)});
 
 /* --- luck dial --- */
 function luck(el){const o=S(cur),vals=RIDS.map(r=>({r,v:S(r).luck}));const W=pw(el);
@@ -443,25 +527,21 @@ function luck(el){const o=S(cur),vals=RIDS.map(r=>({r,v:S(r).luck}));const W=pw(
  el.innerHTML=`<div class="ph"><h2>Luck</h2></div>
  <div class="big"><span class="n ${o.luck>=0.5?'up':o.luck<=-0.5?'dn':''}">${N_('luck2',o.luck,'s2')}</span><span class="t">wins vs expected<small>${word} · ${o.w+o.t*.5} actual, ${o.xw.toFixed(2)} expected</small></span></div>
  <div class="strip"><div class="tt">League</div>${dotStrip(W,vals,{fmt:v=>sg(v,2),label:'Luck',key:'luck'})}</div>
- <div class="strip"><div class="tt">By week</div>${luckWeeks(W)}</div>`}
-function luckWeeks(W){const g=T[cur].weeks,h=78,mid=34,amp=26,n=g.length,bw=W/n,cw=Math.min(26,bw*.5);let s=`<line x1="0" x2="${W}" y1="${mid}" y2="${mid}" stroke="var(--line-strong)"/>`;
- g.forEach((d,i)=>{const v=(d.res==='W'?1:d.res==='T'?.5:0)-d.xw,cx=bw*(i+.5),hh=Math.abs(v)*amp,off=d.w>K;
-  s+=`<g class="wk ${off?'off':''}" ${tipA(`Week ${d.w} · ${d.res}`,`Beat ${d.apw} of ${N-1} teams (${d.xw.toFixed(2)} expected W)\nLuck ${sg(v,2)}`)}><rect class="hit" x="${cx-bw/2}" y="0" width="${bw}" height="${h}"/><rect data-m="lw${i}" x="${cx-cw/2}" y="${v>=0?mid-hh:mid}" width="${cw}" height="${Math.max(1,hh)}" rx="1.5" fill="${v>=0?'var(--win)':'var(--loss)'}" opacity=".8"/><text class="ax" x="${cx}" y="${h-2}" text-anchor="middle">${d.w}</text></g>`});
- return `<svg viewBox="0 0 ${W} ${h}" height="${h}" role="img" aria-label="Luck by week">${s}</svg>`}
+ <div class="strip"><div class="tt">By week</div>${luckWeeks()}</div>`}
+function luckWeeks(){const g=T[cur].weeks;
+ return `<div class="lwk">${g.map(d=>{const v=(d.res==='W'?1:d.res==='T'?.5:0)-d.xw;
+  return `<span class="${d.w>K?'off':''}" ${tipA(`Week ${d.w} · ${d.res}`,`Beat ${d.apw} of ${N-1} teams (${d.xw.toFixed(2)} expected W)\nLuck ${sg(v,2)}`)}><b class="${v>=0.005?'up':v<=-0.005?'dn':''}">${sg(v,2)}</b><i>W${d.w}</i></span>`}).join('')}</div>`}
 
-function bench(el){const o=S(cur),g=wks(cur);const W=pw(el),H=isPhone()?150:170,pl=30,pr=6,pt=20,pb=22;
- const hi=Math.ceil(Math.max(...T[cur].weeks.map(d=>d.opt))/25)*25;const y=sc(0,hi,H-pb,pt),n=T[cur].weeks.length,bw=(W-pl-pr)/n,cw=Math.min(30,bw*.56);
- let s='';ticks(0,hi,3).forEach(v=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
- T[cur].weeks.forEach((d,i)=>{const cx=pl+bw*(i+.5),x0=cx-cw/2,off=d.w>K;
-  s+=`<g class="wk ${off?'off':''}"><rect data-m="bo${i}" x="${x0}" y="${y(d.opt)}" width="${cw}" height="${y(0)-y(d.opt)}" fill="none" stroke="var(--line-strong)" stroke-dasharray="2 2"/>`;
-  s+=`<rect data-m="bp${i}" x="${x0}" y="${y(d.pts)}" width="${cw}" height="${y(0)-y(d.pts)}" fill="var(--acc)" opacity=".75"/>`;
-  s+=`<text class="axb" x="${cx}" y="${y(d.opt)-5}" text-anchor="middle" style="fill:var(--steel)">${d.left>0.05?'−'+Math.round(d.left):'0'}</text><text class="ax" x="${cx}" y="${H-pb+16}" text-anchor="middle">${d.w}</text>`;
-  s+=`<rect class="hit" x="${cx-bw/2}" y="0" width="${bw}" height="${H}" ${tipA(`Week ${d.w} · ${(d.eff*100).toFixed(1)}% efficient`,`Started ${f1(d.pts)} · optimal ${f1(d.opt)}\nLeft on bench ${f1(d.left)}${d.missed.length?'\nShould have started: '+d.missed.map(m=>m.n+' ('+m.pos+') '+f1(m.pts)).join(', '):''}`)}/></g>`});
+function bench(el){const o=S(cur),g=wks(cur);const W=pw(el);
+ const mx=Math.max(...T[cur].weeks.map(d=>d.opt));
+ const rows=T[cur].weeks.map(d=>`<div class="br ${d.w>K?'off':''}" ${tipA(`Week ${d.w} · ${(d.eff*100).toFixed(1)}% efficient`,`Started ${f1(d.pts)} · optimal ${f1(d.opt)}\nLeft on bench ${f1(d.left)}${d.missed.length?'\nShould have started: '+d.missed.map(m=>m.n+' ('+m.pos+') '+f1(m.pts)).join(', '):''}`)}>
+  <span class="wk2">W${d.w}</span><div class="bb2"><i class="o" style="width:${d.opt/mx*100}%"></i><i class="p" style="width:${d.pts/mx*100}%"></i></div><span class="vv">${f1(d.pts)}</span><span class="lf">${d.left>0.05?'−'+f1(d.left):'0.0'}</span></div>`).join('');
  const eff=o.pf/(o.pf+o.left);const worst=g.reduce((a,d)=>d.left>a.left?d:a,g[0]);
  el.innerHTML=`<div class="ph"><h2>Bench points</h2><span class="q">${ord(o.left_rank)} fewest</span></div>
- <div class="big"><span class="n">${N_('left',o.left,'f1')}</span><span class="t">left on bench<small>${(eff*100).toFixed(1)}% efficient · ${f1(o.left/g.length)} per week</small></span></div>
- <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}">${s}</svg></div>
- ${worst&&worst.left>0?`<div class="leg" style="color:var(--label)">Costliest: Wk ${worst.w}, ${f1(worst.left)} left${worst.missed.length?' · sat '+esc(worst.missed[0].n)+' '+f1(worst.missed[0].pts):''}${worst.res==='L'&&worst.pts+worst.left>worst.opp_pts?' · <span class="dn">would have flipped the loss</span>':''}</div>`:''}
+ <div class="big"><span class="n">${N_('left',o.left,'f1')}</span><span class="t">left on bench<small>${(eff*100).toFixed(1)}% efficient · ${f1(o.left/g.length)} per game</small></span></div>
+ <div class="bh"><span></span><span>Started of optimal</span><span>Pts</span><span>Left</span></div>
+ <div>${rows}</div>
+ ${worst&&worst.left>0?`<div class="leg cst">Costliest: Wk ${worst.w}, ${f1(worst.left)} left${worst.missed.length?' · sat '+esc(worst.missed[0].n)+' '+f1(worst.missed[0].pts):''}${worst.res==='L'&&worst.pts+worst.left>worst.opp_pts?' · <span class="dn">would have flipped the loss</span>':''}</div>`:''}
  <div class="strip"><div class="tt">League</div>${dotStrip(W,RIDS.map(r=>({r,v:S(r).left})),{lowGood:true,label:'Left on bench',key:'bench'})}</div>`}
 
 function pos(el){const o=S(cur),PO_=D.pos_order,rv=rivalOf(cur);
@@ -480,8 +560,8 @@ function pos(el){const o=S(cur),PO_=D.pos_order,rv=rivalOf(cur);
 
 function log(el){const g=wks(cur),o=S(cur);const mm=Math.max(...RIDS.flatMap(r=>T[r].weeks.map(d=>Math.abs(d.pts-d.opp_pts))));
  const top=r=>S(r).rank<=N/2;let tw=0,tl=0,bw=0,bl=0;g.forEach(d=>{const w=d.res==='W';if(top(d.opp)){w?tw++:tl++}else{w?bw++:bl++}});
- const rows=g.slice().reverse().map(d=>{const op=T[d.opp],m=d.pts-d.opp_pts,w=Math.abs(m)/mm*50;
-  return `<div class="gr" ${tipA(`Week ${d.w} · ${d.res} by ${f1(Math.abs(m))}`,`${f1(d.pts)} – ${f1(d.opp_pts)} vs ${op.name}\nWeekly score rank ${ord(d.wk_rank)} of ${N} · all-play ${d.apw}-${d.apl}`)}>
+ const rows=T[cur].weeks.slice().reverse().map(d=>{const op=T[d.opp],m=d.pts-d.opp_pts,w=Math.abs(m)/mm*50;
+  return `<div class="gr ${d.w>K?'off':''}" ${tipA(`Week ${d.w} · ${d.res} by ${f1(Math.abs(m))}`,`${f1(d.pts)} – ${f1(d.opp_pts)} vs ${op.name}\nWeekly score rank ${ord(d.wk_rank)} of ${N} · all-play ${d.apw}-${d.apl}`)}>
   <span class="wk2">W${d.w}</span>${avImg(op)}<span class="on">${top(d.opp)?'<i class="th" aria-label="top half"></i>':''}${esc(short(op))}</span>
   <span class="sc"><span class="res ${d.res}">${d.res}</span>${f1(d.pts)}<span>–${f1(d.opp_pts)}</span></span>
   <span class="mg ${m>=0?'up':'dn'}">${sg(m)}</span></div>`}).join('');
@@ -493,22 +573,23 @@ function log(el){const g=wks(cur),o=S(cur);const mm=Math.max(...RIDS.flatMap(r=>
 /* --- remaining strength of schedule --- */
 function remWeeks(){const out=[];for(let w=K+1;w<=PO.reg_end;w++){if(K===TH&&LIVE&&w===LIVE.week)continue;out.push(w)}return out}
 function ppgAt(r){return mean(T[r].weeks.filter(x=>x.w<=K).map(x=>x.pts))}
+const REMN=(()=>{let c=0;for(let w=TH+1;w<=PO.reg_end;w++){if(LIVE&&w===LIVE.week)continue;c++}return Math.max(1,c)})();
 function sosOf(r){const ws=remWeeks();const opps=ws.map(w=>{const m=(D.sched[w]||[]).find(p=>p.includes(r));return m?{w,o:m[0]===r?m[1]:m[0]}:null}).filter(Boolean);return {opps,avg:mean(opps.map(x=>ppgAt(x.o)))}}
 function sos(el){const me=sosOf(cur),all=RIDS.map(r=>({r,v:sosOf(r).avg})),W=pw(el);
  const rk=all.slice().sort((a,b)=>b.v-a.v).findIndex(x=>x.r===cur)+1,lg=mean(RIDS.map(ppgAt));
  const ppgs=RIDS.map(ppgAt),mx=Math.max(...ppgs),mn=Math.min(...ppgs);
- const rows=me.opps.map(({w,o})=>{const v=ppgAt(o),orank=RIDS.slice().sort((a,b)=>ppgAt(b)-ppgAt(a)).indexOf(o)+1;
+ const rows=me.opps.slice(0,REMN).map(({w,o})=>{const v=ppgAt(o),orank=RIDS.slice().sort((a,b)=>ppgAt(b)-ppgAt(a)).indexOf(o)+1;
   return `<div class="sr" ${tipA(`Week ${w} · ${T[o].name}`,`${f1(v)} ppg through Wk ${K} (${ord(orank)} of ${N})\n${recS(S(o))} · ${ord(S(o).rank)} in standings`)}><span class="wk2">W${w}</span>${avImg(T[o])}<span class="on">${esc(short(T[o]))}</span><div class="bb"><i style="width:${(v-mn+4)/(mx-mn+4)*100}%;background:${v>=lg?'var(--loss)':'var(--win)'};opacity:.55"></i></div><span class="vv">${f1(v)}</span></div>`}).join('');
  const ws=me.opps.map(x=>x.w);
- el.innerHTML=`<div class="ph"><h2>Remaining schedule</h2><span class="q">Wk ${ws[0]}–${ws.at(-1)}</span></div>
- <div class="big"><span class="n">${N_('sos',me.avg,'f1')}</span><span class="t">opponent avg<small>${ord(rk)} hardest · league ${f1(lg)}</small></span></div>
+ el.innerHTML=`<div class="ph"><h2>Remaining schedule</h2><span class="q">Wk ${ws[0]}–${ws.at(-1)}${me.opps.length>REMN?` · next ${REMN} listed`:''}</span></div>
+ <div class="big"><span class="n">${N_('sos',me.avg,'f1')}</span><span class="t">opponent per game<small>${ord(rk)} hardest · league ${f1(lg)}</small></span></div>
  <div>${rows||'<div class="mut">No regular-season games left.</div>'}</div>
  <div class="strip"><div class="tt">League</div>${dotStrip(W,all,{lowGood:true,label:'Remaining opp ppg',key:'sos'})}</div>`}
 
 /* --- weekly rank heatmap --- */
 function heat(el){const W=pw(el),wide=W>560,rv=rivalOf(cur);const lab=wide?Math.min(170,W*.24):46,top=20,rh=wide?26:24,n=WK.length;
  const cw=Math.min(78,(W-lab-6)/n),rows=RIDS.slice().sort((a,b)=>S(a).rank-S(b).rank),H=top+rh*N+4;
- const HA=[208,214,226],HB=[28,33,43];const col=r=>{const t=(r-1)/(N-1);return 'rgb('+HA.map((a,i)=>Math.round(a+(HB[i]-a)*Math.pow(t,.8))).join(',')+')'};
+ const HA=[222,222,226],HB=[35,35,38];const col=r=>{const t=(r-1)/(N-1);return 'rgb('+HA.map((a,i)=>Math.round(a+(HB[i]-a)*Math.pow(t,.8))).join(',')+')'};
  const txt=r=>(r-1)/(N-1)<.45?'var(--ink)':'var(--chalk)';
  let s=WK.map((w,j)=>`<text class="axb" x="${lab+cw*(j+.5)}" y="13" text-anchor="middle" style="${w>K?'opacity:.35':''}">W${w}</text>`).join('');
  rows.forEach((r,i)=>{const y0=top+i*rh,me=r===cur,isR=rivalOn&&r===rv;
@@ -519,7 +600,7 @@ function heat(el){const W=pw(el),wide=W>560,rv=rivalOf(cur);const lab=wide?Math.
  el.innerHTML=`<div class="ph"><h2>Weekly rank heatmap</h2><span class="q">weekly points rank</span></div>
  <div class="big"><span class="n">${N_('avgr',avgR,'f1')}</span><span class="t">avg weekly rank<small>${top3} of ${g.length} weeks top 3</small></span></div>
  <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Weekly points rank heatmap">${s}</svg></div>
- <div class="leg"><span><i style="background:linear-gradient(90deg,rgb(208,214,226),rgb(28,33,43));height:8px;width:56px"></i>1st to ${ord(N)}</span><span><i style="border:2px solid var(--acc);background:none;height:10px"></i>${esc(short(T[cur]))}</span></div>`}
+ <div class="leg"><span><i style="background:linear-gradient(90deg,rgb(222,222,226),rgb(35,35,38));height:8px;width:56px"></i>1st to ${ord(N)}</span><span><i style="border:2px solid var(--acc);background:none;height:10px"></i>${esc(short(T[cur]))}</span></div>`}
 
 /* --- player contribution --- */
 function contrib(el){const g=wks(cur),agg={};let tot=0;
