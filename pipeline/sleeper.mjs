@@ -161,3 +161,39 @@ export async function pullDetail(get, weeks) {
   }
   return out;
 }
+
+// Top players by position through week D (every NFL player, rostered or not): season stat totals, weekly league points,
+// names. Keeps the union of the top 60 by points and the top 60 by points per game (min. ceil(D/2) games) per position.
+const TOPK = ['pass_cmp', 'pass_att', 'pass_yd', 'pass_td', 'pass_int', 'rush_att', 'rush_yd', 'rush_td', 'rec', 'rec_tgt', 'rec_yd', 'rec_td',
+  'fum_lost', 'fgm', 'fga', 'fgm_lng', 'xpm', 'xpa', 'sack', 'int', 'fum_rec', 'def_td', 'pts_allow', 'yds_allow', 'safe', 'def_st_td'];
+export async function pullTop(get, D, keep = 60) {
+  const L = `${A}/league/${LEAGUE}`;
+  const [lg, ro, players] = await Promise.all([get(L), get(`${L}/rosters`), get(`${A}/players/nfl`)]);
+  const ss = lg.scoring_settings, weeks = await Promise.all(Array.from({ length: D }, (_, i) => get(`${S}/stats/nfl/${SEASON}/${i + 1}?season_type=regular`)));
+  const X = {};
+  weeks.forEach((rows, i) => {
+    for (const r of rows) {
+      const pos = r.player && r.player.position, s = r.stats || {};
+      if (!FPOS.has(pos) || !(s.gp > 0)) continue;
+      const e = X[r.player_id] || (X[r.player_id] = { pos, team: r.team, w: Array(D).fill(null), t: {} });
+      e.team = r.team || e.team; e.w[i] = leagueScore(s, ss);
+      for (const k of TOPK) { const v = s[k]; if (typeof v === 'number' && v) e.t[k] = k === 'fgm_lng' ? Math.max(e.t[k] || 0, v) : r2((e.t[k] || 0) + v); }
+    }
+  });
+  const minGp = Math.ceil(D / 2), pick = new Set();
+  for (const pos of FPOS) {
+    const L_ = Object.entries(X).filter(([, e]) => e.pos === pos).map(([id, e]) => {
+      const pl = e.w.filter(v => v != null); const pts = r2(pl.reduce((a, b) => a + b, 0)); return { id, pts, gp: pl.length, ppg: pl.length ? pts / pl.length : 0 };
+    });
+    L_.slice().sort((a, b) => b.pts - a.pts).slice(0, keep).forEach(o => pick.add(o.id));
+    L_.filter(o => o.gp >= minGp).sort((a, b) => b.ppg - a.ppg).slice(0, keep).forEach(o => pick.add(o.id));
+  }
+  const own = {}; for (const r of ro) for (const id of r.players || []) own[id] = r.roster_id;
+  const P = {};
+  for (const id of pick) {
+    const e = X[id], p = players[id] || {};
+    const name = e.pos === 'DEF' ? `${p.first_name || id} ${p.last_name || ''}`.trim() : (p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || id);
+    P[id] = [name, e.pos, e.team || p.team || null, e.w, e.t, own[id] || null, p.birth_date || null];
+  }
+  return { D, minGp, P };
+}

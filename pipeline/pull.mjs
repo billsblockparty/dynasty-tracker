@@ -3,11 +3,12 @@
 //   node pull.mjs weekly D         -> pull_m7.json pull_pts.json pull8.json pull8a.json
 //   node pull.mjs playoffs         -> pull_po.json
 //   node pull.mjs live W           -> live.json (in-week scores for week W)
+//   node pull.mjs top D            -> pull_top.json (top players by position through week D, all NFL players)
 //   node pull.mjs detail a-b       -> stats_detail.json (full stat lines for lineup players, weeks a..b)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { lastCompleteWeek, pullWeekly, pullPlayoffs, pullLive, pullDetail } from './sleeper.mjs';
+import { lastCompleteWeek, pullWeekly, pullPlayoffs, pullLive, pullDetail, pullTop } from './sleeper.mjs';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const out = (f, o) => fs.writeFileSync(path.join(DIR, f), JSON.stringify(o));
 async function get(u, tries = 4) {
@@ -27,6 +28,10 @@ if (cmd === 'state') {
   const x = await pullWeekly(get, +arg);
   for (const k of ['pull_m7', 'pull_pts', 'pull8', 'pull8a']) out(k + '.json', x[k]);
   console.log('weekly pull ok for week', arg);
+} else if (cmd === 'top') {
+  const x = await pullTop(get, +arg);
+  out('pull_top.json', x);
+  console.log('top pull ok:', Object.keys(x.P).length, 'players through week', arg);
 } else if (cmd === 'playoffs') {
   out('pull_po.json', await pullPlayoffs(get));
   console.log('playoff pull ok');

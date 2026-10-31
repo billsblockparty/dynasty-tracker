@@ -28,6 +28,7 @@ if mode=='weekly':
     sh('node',P+'pull.mjs','playoffs');sh('python3',P+'po_write.py')
     if D<=have and not force:  # mid-week rebuild (e.g. a code push): keep the current week's live scores instead of resetting them
         if subprocess.run(['node',P+'pull.mjs','live',str(G()+1)],cwd=P).returncode==0:subprocess.run(['python3',P+'score.py',P+'live.json','--no-build'],cwd=P)
+    subprocess.run(['node',P+'pull.mjs','top',str(G())],cwd=P)  # Players tab: top players by position (never fatal)
     sh('node',P+'pull.mjs','detail',f'1-{G()+1}')  # full stat lines for the Detailed view (all played weeks + current)
     build()
 elif mode=='live':
