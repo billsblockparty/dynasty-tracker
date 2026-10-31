@@ -511,3 +511,10 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .cr.lu .cv .fs.lv{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;background:rgba(232,193,90,.14);box-shadow:inset 1px 0 0 rgba(232,193,90,.45),inset -1px 0 0 rgba(232,193,90,.45)}
 .cr.lu:has(.sln) .cv .fs.lv{box-shadow:inset 1px 0 0 rgba(232,193,90,.45),inset -1px 0 0 rgba(232,193,90,.45),inset 0 -1px 0 rgba(232,193,90,.45)!important;border-radius:0 0 4px 4px!important}
 .cr.lu .cv .fs.lv small{color:#efd38a;opacity:1}
+/* detailed stat lines: category labels as two-tone tags (no frame), values baseline-aligned */
+.dxl>span{align-items:baseline!important}
+.dxl>u{display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;height:16px;padding:0 0 1px!important;border-radius:3px;font-size:10px!important;font-weight:700!important;letter-spacing:.05em!important;align-self:start;margin-top:0}
+.dx-pass>u{background:rgba(247,115,156,.15)}
+.dx-rush>u{background:rgba(61,220,193,.14)}
+.dx-rec>u{background:rgba(94,198,244,.15)}
+.dx-pts>u{background:rgba(238,240,244,.09);color:var(--chalk)!important}
