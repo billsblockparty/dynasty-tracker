@@ -39,7 +39,7 @@ def card(a,b):
           ('All-play',f'{T[a][10]}-{T[a][11]}',f'{T[b][10]}-{T[b][11]}',T[a][10],T[b][10]),
           ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None),
           ('On bye',str(len(byes(a,W))),str(len(byes(b,W))),-len(byes(a,W)),-len(byes(b,W))),
-          (HRLAB,hrval(hr_count(LW['out'][str(RID[a])]['st'])),hrval(hr_count(LW['out'][str(RID[b])]['st'])),None,None)]
+          (HRLAB,*[hrval(hr_count(LW['out'][str(RID[x])]['st']),hr_count(optimal(_rpool(LW['out'][str(RID[x])])))) for x in (a,b)],None,None)]
     cmp=''.join(f'<div class="mcr"><span class="{"up" if va is not None and va>vb else ""}">{x}</span><em>{l}</em><span class="{"up" if va is not None and vb>va else ""}">{y}</span></div>' for l,x,y,va,vb in rows)
     prev=[x for x in WK[a] if FULL[x[1]]==b]
     pv=''.join(f'<div class="mprev">Week {x[0]}: <b class="{"w" if x[2]>x[3] else "l"}">{e(a) if x[2]>x[3] else e(b)}</b> won {max(x[2],x[3]):.1f}–{min(x[2],x[3]):.1f}</div>' for x in prev)
@@ -80,8 +80,13 @@ def _hax(p):
     if not p or not p[6]:return ''
     return ((p[9] if len(p)>9 else ('vs' if p[3] in HOME else '@')) or '').strip()
 HRLAB='<span class="hrt hrt-h">Home</span><i class="hrd">·</i><span class="hrt hrt-r">Road</span>'
-def hrval(c):
+def _hrv(c):
     h,r_=c;return f'<b class="hrn{" hi" if h>r_ else ""}">{h}</b><i class="hrd">·</i><b class="hrn{" hi" if r_>h else ""}">{r_}</b>'
+def hrval(c,co=None):
+    """home · road count for the actual lineup; with co, the optimal lineup's count too (shown when Optimal is picked)"""
+    if co is None:return _hrv(c)
+    return f'<span class="hrv-a">{_hrv(c)}</span><span class="hrv-o">{_hrv(co)}</span>'
+def _rpool(X):return X['st']+[p for p in X['bn'] if _TAG.get(p[0],'') not in('IR','TX') and (p[4]>0 or p[5]!=0)]
 def hr_count(st):
     hs=[_hax(p) for p in st if p];return sum(x=='vs' for x in hs),sum(x=='@' for x in hs)
 def _gline(ha,opp):
@@ -412,6 +417,7 @@ css+=('.mcr em .hrt{display:inline-flex;align-items:center;justify-content:cente
       '.mcr em .hrt-h{background:rgba(63,214,155,.14);color:#7fdcb6;box-shadow:inset 0 0 0 1px rgba(63,214,155,.5)}'
       '.mcr em .hrt-r{background:rgba(150,160,255,.13);color:#b9c1ff;box-shadow:inset 0 0 0 1px rgba(150,160,255,.5)}'
       '.mcr .hrd{font-style:normal;margin:0 6px;opacity:.6}'
+      '.hrv-o{display:none}#lo-o:checked~.mwx .hrv-a{display:none}#lo-o:checked~.mwx .hrv-o{display:inline}'
       '.mcr .hrn{font-weight:500;color:var(--steel)}.mcr .hrn.hi{font-weight:700;color:var(--chalk)}')
 css+=('.cr.lu .cn .hab{position:absolute;top:-8px;bottom:-8px;width:14px;box-sizing:border-box;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-style:normal;pointer-events:none}'
       '.cr.lu .cn.a .hab{right:0}.cr.lu .cn.b .hab{left:0}'

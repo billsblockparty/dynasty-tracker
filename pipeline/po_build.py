@@ -123,7 +123,7 @@ def card(a,b,w,label):
           ('PF rank',f'#{T[a][4]}',f'#{T[b][4]}',-T[a][4],-T[b][4]),
           ('All-play',f'{T[a][10]}-{T[a][11]}',f'{T[b][10]}-{T[b][11]}',T[a][10],T[b][10]),
           ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None),
-          (MB.HRLAB,MB.hrval(MB.hr_count([mp(q,w) for q in setlineup(a,w)])),MB.hrval(MB.hr_count([mp(q,w) for q in setlineup(b,w)])),None,None)]
+          (MB.HRLAB,*[MB.hrval(MB.hr_count([mp(q,w) for q in setlineup(x,w)]),MB.hr_count(MB.optimal([mp(q,w) for q in pool(x,w)]))) for x in (a,b)],None,None)]
     cmp=''.join(f'<div class="mcr"><span class="{"up" if va is not None and va>vb else ""}">{x}</span><em>{l}</em><span class="{"up" if va is not None and vb>va else ""}">{y}</span></div>' for l,x,y,va,vb in rows)
     prev=[x for x in WK[a] if FULL[x[1]]==b]
     pv=''.join(f'<div class="mprev">Week {x[0]}: <b class="{"w" if x[2]>x[3] else "l"}">{e(a) if x[2]>x[3] else e(b)}</b> won {max(x[2],x[3]):.1f}–{min(x[2],x[3]):.1f}</div>' for x in prev)
@@ -197,7 +197,7 @@ sec=('<section class="pox" aria-labelledby="poh">'+radios+
 def _lc(k,sc):
     q=lambda r,t:','.join(f'#{k}{r}:checked~{c} {t}' for c in sc)
     return (q('lo-a',f'.lsw label[for="{k}lo-a"]')+','+q('lo-o',f'.lsw label[for="{k}lo-o"]')+','+q('lv-p',f'.lvw label[for="{k}lv-p"]')+','+q('lv-s',f'.lvw label[for="{k}lv-s"]')+'{background:var(--chalk);color:var(--ink)}'
-            +q('lo-o','.lus-a')+'{display:none}'+q('lo-o','.lus-o')+'{display:block}'+q('lv-s','.lsv')+'{display:block}'+q('lv-s','.lpv')+'{display:none}')
+            +q('lo-o','.hrv-a')+'{display:none}'+q('lo-o','.hrv-o')+'{display:inline}'+q('lo-o','.lus-a')+'{display:none}'+q('lo-o','.lus-o')+'{display:block}'+q('lv-s','.lsv')+'{display:block}'+q('lv-s','.lpv')+'{display:none}')
 css=_lc('b',['.bkx'])+_lc('p',['.ppx','.ppn'])
 css+=('.pvw{display:inline-flex;margin:0 0 14px}#pv-b:checked~.pvw label[for="pv-b"],#pv-c:checked~.pvw label[for="pv-c"]{background:var(--chalk);color:var(--ink)}'
       '#pv-c:checked~.prd,#pv-c:checked~.rkey,#pv-c:checked~.bkx,'
