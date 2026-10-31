@@ -346,11 +346,16 @@ def main():
     for k in slim["snaps"].values():
         for o in k.values(): o.pop("opt", None)
     slim.pop("checks"); slim.pop("caveats")
-    html = open(os.path.join(ROOT, "template.html"), encoding="utf-8").read()
-    html = html.replace("/*__FONTS__*/", fonts_css()).replace("__DATA__", json.dumps(slim, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
-    open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html)
+    json.dump(slim, open(os.path.join(ROOT, "page_data.json"), "w"), ensure_ascii=False, separators=(",", ":"))  # committed: lets the page be rebuilt offline
+    render(slim)
     print(f"teamhub 1.5: weeks {weeks[0]}-{weeks[-1]} | site/teamhub/index.html + data.json written | caveats: {len(caveats)}")
     for c in caveats: print("  !", c)
+
+def render(slim):
+    html = open(os.path.join(ROOT, "template.html"), encoding="utf-8").read()
+    html = html.replace("/*__FONTS__*/", fonts_css()).replace("__DATA__", json.dumps(slim, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
+    os.makedirs(OUT, exist_ok=True)
+    open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html)
 
 def fonts_css():
     """Download the latin subsets of the live site's fonts and inline them as base64 (cached)."""
@@ -368,4 +373,7 @@ def fonts_css():
         print("font inline failed:", e); return ""
 
 if __name__ == "__main__":
-    main()
+    if "--offline" in sys.argv:  # re-render from the committed page_data.json (no network)
+        render(json.load(open(os.path.join(ROOT, "page_data.json"), encoding="utf-8")))
+    else:
+        main()
