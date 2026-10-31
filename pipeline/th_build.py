@@ -58,7 +58,7 @@ def odds_asof(k,n=4000,seed=11):
         for t in TEAMS:
             if t in seen or w not in OPP[t]:continue
             o=OPP[t][w];seen|={t,o};games.append((t,o))
-    cnt={t:[0,0,0] for t in TEAMS}
+    cnt={t:[0,0,0,0] for t in TEAMS}
     for _ in range(n):
         W=dict(w0);PF=dict(pf0)
         for a,b in games:
@@ -69,11 +69,13 @@ def odds_asof(k,n=4000,seed=11):
             if i<6:cnt[t][0]+=1
             if i<2:cnt[t][1]+=1
             if i<1:cnt[t][2]+=1
+            cnt[t][3]+=i+1
     return {t:[100*c/n for c in cnt[t]] for t in TEAMS}
 OD=SB.O
 ODW={k:odds_asof(k) for k in range(1,G)}
-ODW[G]={t:[OD[t]['po'],OD[t]['bye'],OD[t]['top']] for t in TEAMS}  # current week: the same figures as Stats > Odds
-for t in TEAMS:SER[t]['po']=[ODW[k][t][0] for k in range(1,G+1)]
+ODW[G]={t:[OD[t]['po'],OD[t]['bye'],OD[t]['top'],100*sum((i+1)*v/100 for i,v in enumerate(OD[t]['dist']))] for t in TEAMS}  # current week: the same figures as Stats > Odds
+for t in TEAMS:
+    for j,key in enumerate(('po','bye','top','fin')):SER[t][key]=[ODW[k][t][j]/(100 if key=='fin' else 1) for k in range(1,G+1)]
 # ---------------------------------------------------------------- per-team matrices
 PROWS={}
 for r in csv.DictReader(open(P+'pos/pos.csv',encoding='utf-8')):
@@ -197,6 +199,23 @@ def chart(key,title,vals,lo,hi,fmt,ticks,inv=False,ref=None,refl='',dots=None,ze
     leg=f'<span class="tleg"><i></i>{refl}</span>' if refl else ''
     return (f'<div class="tch"><div class="tchh"><span>{title}</span>{leg}{ro}</div>'
             f'<svg viewBox="0 0 {VW} {VH}" class="tsvg" role="img" aria-label="{e(title)} by week">{"".join(g)}</svg></div>')
+def odds_chart(s):
+    Y=lambda v:VH-PB-(VH-PT-PB)*v/100
+    L=[('po','Playoffs','c1'),('bye','Bye','c2'),('top','#1 seed','c3')]
+    g=[]
+    for tv in (0,50,100):g.append(f'<line class="tgl" x1="{PL}" x2="{VW-PR}" y1="{Y(tv):.1f}" y2="{Y(tv):.1f}"/><text class="tax" x="{PL-6}" y="{Y(tv)+3.5:.1f}" text-anchor="end">{tv}%</text>')
+    for k in range(1,G+1):g.append(f'<text class="tax" x="{xs(k):.1f}" y="{VH-4}" text-anchor="middle">{k}</text>')
+    for key,_,c in reversed(L):
+        g.append(f'<path class="tline {c}" d="M'+' L'.join(f'{xs(k):.1f} {Y(v):.1f}' for k,v in enumerate(s[key],1))+'"/>')
+        g+= [f'<circle class="tdot {c}" cx="{xs(k):.1f}" cy="{Y(v):.1f}" r="2.6"/>' for k,v in enumerate(s[key],1)]
+    for k in range(1,G+1):
+        g.append(f'<g class="twm twm-{k}"><line class="tcur" x1="{xs(k):.1f}" x2="{xs(k):.1f}" y1="{PT-4}" y2="{VH-PB}"/>'
+                 +''.join(f'<circle class="tsel {c}" cx="{xs(k):.1f}" cy="{Y(s[key][k-1]):.1f}" r="4.5"/>' for key,_,c in reversed(L))+'</g>')
+    pc=lambda v:('>99' if 99<v<99.95 else '<1' if 0.05<v<1 else f'{v:.0f}')
+    ro=''.join(f'<span class="tro tro-{k} trm">'+''.join(f'<b class="{c}">{pc(s[key][k-1])}<small>%</small></b>' for key,_,c in L)+'</span>' for k in range(1,G+1))
+    leg='<span class="tlg3">'+''.join(f'<span class="{c}"><i></i>{lab}</span>' for _,lab,c in L)+'</span>'
+    return (f'<div class="tch"><div class="tchh"><span>Playoff odds</span>{ro}</div>{leg}'
+            f'<svg viewBox="0 0 {VW} {VH}" class="tsvg" role="img" aria-label="Playoff, bye and number one seed odds by week">{"".join(g)}</svg></div>')
 def trends_view(t):
     s=SER[t]
     pts=s['pts'];lo=math.floor(min(pts+LGMED)/20)*20;hi=math.ceil(max(pts+LGMED)/20)*20
@@ -208,7 +227,8 @@ def trends_view(t):
         chart('lk','Luck · wins minus expected',s['luck'],min(-2,math.floor(min(s['luck']))),max(2,math.ceil(max(s['luck']))),None,
               sorted({min(-2,math.floor(min(s['luck']))),0,max(2,math.ceil(max(s['luck'])))}),zero=0,area=True,
               readout=lambda k:f'{sg(s["luck"][k-1],2)} <small>{s["wins"][k-1]} W · {s["xw"][k-1]:.2f} xW</small>',tickfmt=lambda v:sg(v,0) if v else '0'),
-        chart('po','Playoff odds',s['po'],0,100,None,[0,50,100],readout=lambda k:f'{s["po"][k-1]:.0f}<small>%</small>' if s['po'][k-1]<99.5 or k==G else '>99<small>%</small>',tickfmt=lambda v:f'{v}%')]
+        odds_chart(s),
+        chart('fin','Projected finish',s['fin'],1,N,None,[1,4,7,10],inv=True,readout=lambda k:f'{s["fin"][k-1]:.1f} <small>avg finish</small>',tickfmt=lambda v:ordn(v))]
     rc=''.join(f'<div class="trc trc-{k}"><span>Week {k}</span><b>{s["res"][k-1]} {pts[k-1]:.1f}–{SC[OPP[t][k]][k]:.1f}</b><em>vs {e(SHORT0.get(OPP[t][k],OPP[t][k]))}</em></div>' for k in range(1,G+1))
     return f'<div class="trd">{rc}</div><div class="tcs">{"".join(ch)}</div>'
 # ---------------------------------------------------------------- assemble
@@ -293,6 +313,10 @@ css=PKCSS+(''.join(f'#thx-{i}:checked~.tqpk label[for="thx-{i}"]{{background:var
  +'.tline{fill:none;stroke:var(--chalk);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}'
  +'.tarea.pos{fill:rgba(63,214,155,.16)}.tarea.neg{fill:rgba(255,93,115,.16)}'
  +'.tdot{fill:var(--deck);stroke:var(--chalk);stroke-width:1.5}.tdot.w{stroke:var(--win)}.tdot.l{stroke:var(--loss)}'
+ +'.tline.c1{stroke:var(--chalk)}.tline.c2{stroke:#6fc9a4}.tline.c3{stroke:#e8c15a}.tdot.c1{stroke:var(--chalk)}.tdot.c2{stroke:#6fc9a4}.tdot.c3{stroke:#e8c15a}'
+ +'.tsel.c1{fill:var(--chalk)}.tsel.c2{fill:#6fc9a4}.tsel.c3{fill:#e8c15a}'
+ +'.trm{display:none;gap:10px}.trm b{font-family:var(--display);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}.trm b+b{margin-left:10px}.trm b small{font-size:11px;color:var(--steel);margin-left:1px}.trm b.c1{color:var(--chalk)}.trm b.c2{color:#6fc9a4}.trm b.c3{color:#e8c15a}'
+ +'.tlg3{display:flex;gap:12px;margin:0 0 4px;font-size:11px;color:var(--steel)}.tlg3 span{display:inline-flex;align-items:center;gap:5px}.tlg3 i{width:14px;height:2px;border-radius:1px;background:currentColor}.tlg3 .c1 i{background:var(--chalk)}.tlg3 .c2 i{background:#6fc9a4}.tlg3 .c3 i{background:#e8c15a}'
  +'.twm{display:none}.tcur{stroke:'+TL+';stroke-width:1;opacity:.55}.tsel{fill:'+TL+';stroke:var(--deck);stroke-width:2}.tsel.w{fill:var(--win)}.tsel.l{fill:var(--loss)}')
 open(P+'th_section.html','w',encoding='utf-8').write(sec_)
 open(P+'th_css.css','w',encoding='utf-8').write(css)
