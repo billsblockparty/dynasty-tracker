@@ -36,7 +36,7 @@ def m_odds():
                     f'<div class="odv"><span class="sxv">{o["w"]:.1f}</span><span class="sxv b c3">{pct(o["po"])}</span><span class="sxv c2">{pct(o["bye"])}</span><span class="sxv c1">{pct(o["top"])}</span></div></div>')
     hd='<div class="odv sxhd"><span>Proj W</span><span class="c3">Playoffs</span><span class="c2">Bye</span><span class="c1">#1 seed</span></div>'
     lg='<div class="olg"><span class="o1">#1 seed</span><span class="o2">Bye</span><span class="o3">Playoffs</span></div>'
-    return head('Playoff odds',f'{meta["n"]:,} simulations of Weeks {meta["weeks"][0]}–{meta["weeks"][-1]}')+lg+'<div class="odx">'+hd+''.join(rows)+'</div>'
+    return head('Playoff odds',f'{meta["n"]:,} simulations of Weeks {meta["weeks"][0]}–{meta["weeks"][-1]}' if meta['weeks'] else 'regular season complete · final seeds')+lg+'<div class="odx">'+hd+''.join(rows)+'</div>'
 # ---------- 2 Schedule swap
 M=D.schedswap()
 def m_sched():
@@ -116,7 +116,7 @@ def m_stars():
 # ---------- 8 Youth
 YO=D.youth()
 def m_youth():
-    o=[head('Production by age','Share of starters\' points by player age today'),'<div class="ylg"><span class="ay">25 and under</span><span class="ap">26–29</span><span class="ao">30+</span><span class="ad">DEF</span></div>']
+    o=[head('Production by age','Share of starters\' points by player age '+('at season end' if _dt_os.environ.get('DT_PAST')=='1' else 'today')),'<div class="ylg"><span class="ay">25 and under</span><span class="ap">26–29</span><span class="ao">30+</span><span class="ad">DEF</span></div>']
     for t in sorted(TEAMS,key=lambda t:-YO[t]['pct'][0]):
         p=YO[t]['pct']
         o.append(f'<div class="stb"><div class="stt">{nm(t)}<span><b class="ay">{p[0]:.0f}%</b> · <b class="ap">{p[1]:.0f}%</b> · <b class="ao">{p[2]:.0f}%</b></span></div>'
@@ -259,6 +259,7 @@ def m_homeroad():
     return ''.join(o)
 MODS=[('pos','Positions',None),('odds','Odds',m_odds),('sch','Schedules',m_sched),('trd','Trades',m_trades),('lu','Lineups',m_lineups),('prj','Projections',m_proj),
       ('mg','Margins',m_close),('st','Stars',m_stars),('yo','Age',m_youth),('rk','Ranks',m_heat),('by','Byes',m_byes),('hr','Home / Road',m_homeroad)]
+if NOW>14:MODS=[m for m in MODS if m[0]!='by']  # regular season over: no byes ahead
 def build():
     radios=''.join(f'<input type="radio" name="sxs" id="sx-{k}" class="lr"{" checked" if i==0 else ""}>' for i,(k,_,_) in enumerate(MODS))
     nav='<div class="lbc sxnav" role="tablist" aria-label="Stats">'+''.join(f'<label for="sx-{k}">{lab}</label>' for k,lab,_ in MODS)+'</div>'

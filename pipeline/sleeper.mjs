@@ -65,7 +65,8 @@ export async function pullWeekly(get, D) {
     }
   });
   // projections (week N), player meta for rostered players, schedule N..14, kickoffs N
-  const ids = new Set(ro.flatMap(r => r.players || []));
+  // rostered now, plus everyone in the week D and week N lineups (a player dropped since keeps his name)
+  const ids = new Set([...ro.flatMap(r => r.players || []), ...mD.flatMap(x => x.players || []), ...mN.flatMap(x => x.players || [])]);
   const [pj, players, K8] = await Promise.all([get(projURL(N)), get(`${A}/players/nfl`), kickoffs(get, N)]);
   const PJ = {};
   for (const r of pj) if (ids.has(r.player_id)) PJ[r.player_id] = [leagueScore(r.stats, ss), r.opponent || null];
@@ -92,7 +93,8 @@ export async function pullWeekly(get, D) {
 export async function pullPlayoffs(get) {
   const L = `${A}/league/${LEAGUE}`;
   const [lg, ro, sch] = await Promise.all([get(L), get(`${L}/rosters`), get(`${S}/schedule/nfl/regular/${SEASON}`)]);
-  const ss = lg.scoring_settings, ids = new Set(ro.flatMap(r => r.players || []));
+  const mw = await Promise.all([15, 16, 17].map(w => get(`${L}/matchups/${w}`).catch(() => [])));
+  const ss = lg.scoring_settings, ids = new Set([...ro.flatMap(r => r.players || []), ...mw.flat().flatMap(x => (x && x.players) || [])]);
   const out = { PO: {}, HOME: {}, KICK: {}, SCH: {} };
   for (const w of [15, 16, 17]) {
     const g = sch.filter(x => x.week == w);

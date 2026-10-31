@@ -17,7 +17,7 @@ def _norm(n):
     n=n.replace('’',"'").replace(' 👑','').strip();return {'RIPMFL':'Team RIPMFL'}.get(n,n)
 R={_norm(k):v for k,v in R0.items()}
 TEAMS=list(T)
-G=len(WK[TEAMS[0]]);NOW=G+1
+G=len(WK[TEAMS[0]]);NOW=G+1;FIN=not any(FUT.values())
 RID={v:int(k) for k,v in X['rn'].items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
 SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
@@ -43,11 +43,13 @@ STD={t:stt.pstdev([w[2] for w in WK[t]]) for t in TEAMS}
 FLOOR={t:min(w[2] for w in WK[t]) for t in TEAMS}
 AGE={t:sum(a for a in (age(p[0]) for p in R[t]) if a)/max(1,len([1 for p in R[t] if age(p[0])])) for t in TEAMS}
 own={}
-for y in ('2027','2028','2029'):
+_Y=int(_dt_os.environ.get('DT_SEASON','2026'))
+YRS=[str(_Y+1),str(_Y+2),str(_Y+3)]
+for y in YRS:
     for r in range(1,5):
         for o in range(1,11):own[(y,r,o)]=o
 for y,r,o,ow in X['tp']:
-    if y!='2026':own[(y,r,o)]=ow
+    if y in YRS:own[(y,r,o)]=ow
 FIRSTS={t:sorted([k for k,v in own.items() if v==RID[t] and k[1]==1]) for t in TEAMS}
 LGPF=sum(T[k][3] for k in TEAMS)/(10*G)
 def pl(p,mode='pts'):
@@ -141,24 +143,25 @@ def assess(t):
     if ager<=3:good.append((4,f'Young roster (avg {AGE[t]:.1f}, {ordn(ager)}-youngest).'))
     if ager>=8:bad.append((3,f'Older roster (avg {AGE[t]:.1f}, {ordn(11-ager)}-oldest).'))
     nf=len(FIRSTS[t])
-    if nf>=4:good.append((6,f'Draft capital: {nf} 1sts in 2027–29 ('+', '.join(f"{y} {SHORT[X['rn'][str(o)]]}" for y,_,o in FIRSTS[t])+').'))
-    if nf==0:bad.append((6,'No 1st-round picks in 2027, 2028 or 2029.'))
+    if nf>=4:good.append((6,f'Draft capital: {nf} 1sts in {YRS[0]}–{YRS[2][2:]} ('+', '.join(f"{y} {SHORT[X['rn'][str(o)]]}" for y,_,o in FIRSTS[t])+').'))
+    if nf==0:bad.append((6,f'No 1st-round picks in {YRS[0]}, {YRS[1]} or {YRS[2]}.'))
     # schedule
-    hard=min(fut,key=lambda f:f[4]);easy=sum(1 for f in fut if f[4]>=70)
-    if xw>=5:good.append((5,f'Soft run-in: ~{xw:.1f} projected wins left, {easy} of {len(fut)} games at 70%+.'))
-    if xw<=3:bad.append((5,f'Tough run-in: ~{xw:.1f} projected wins left; hardest is Wk {hard[0]} vs {e(FN(hard[1]))} ({hard[4]}%).'))
+    hard=min(fut,key=lambda f:f[4]) if fut else None;easy=sum(1 for f in fut if f[4]>=70)
+    if fut and xw>=5:good.append((5,f'Soft run-in: ~{xw:.1f} projected wins left, {easy} of {len(fut)} games at 70%+.'))
+    if fut and xw<=3:bad.append((5,f'Tough run-in: ~{xw:.1f} projected wins left; hardest is Wk {hard[0]} vs {e(FN(hard[1]))} ({hard[4]}%).'))
     star=max(act(t),key=lambda p:(p[2] not in('K','DEF'),p[4]))
     good.append((1,f'Best player: {pl(star)}, {star[4]:.1f} pts.'))
     good.sort(key=lambda x:-x[0]);bad.sort(key=lambda x:-x[0])
     # verdict
     seed=min(hr,mr)
-    if apr<=2:tier,tc='Contender','tc'
+    if FIN:tier,tc=(('Contender','tc') if apr<=2 else ('Playoff team','tp')) if hr<=6 else ('Missed playoffs','tl')
+    elif apr<=2:tier,tc='Contender','tc'
     elif hr<=6 and fw>=7.5:tier,tc='Playoff team','tp'
     elif hr<=6 or fw>=6.5:tier,tc='Bubble','tb'
     else:tier,tc='Long shot','tl'
     fr=f'{round(fw)}-{round(fl)}'
     return dict(tier=tier,tc=tc,good=[x for _,x in good[:5]],bad=[x for _,x in bad[:5]],
-        stats=[('Record',f'{w}-{l}',f'{ordn(hr)} H2H'),('Pts/wk',f'{pfa:.1f}',f'{ordn(pfr)}'),('All-play',f'{apw}-{apl}',f'{ordn(apr)}'),('Projected',fr,f'+{xw:.1f} W')])
+        stats=[('Record',f'{w}-{l}',f'{ordn(hr)} H2H'),('Pts/wk',f'{pfa:.1f}',f'{ordn(pfr)}'),('All-play',f'{apw}-{apl}',f'{ordn(apr)}'),(('Seed',f'{hr}','final') if FIN else ('Projected',fr,f'+{xw:.1f} W'))])
 def assess_html(t):
     a=assess(t)
     st=''.join(f'<span><em>{k}</em><b>{v}</b><i>{s}</i></span>' for k,v,s in a['stats'])
@@ -174,11 +177,11 @@ def assess_html(t):
           f'Top scorer {ln(L["top"])} ({L["top"]["pts"]:.1f}); biggest miss {ln(L["flop"])} ({L["flop"]["pts"]:.1f} vs {L["flop"]["proj"]:.1f} proj). '
           + (f'Optimal lineup would have scored {L["lost"]:.1f} more.' if L['lost']>=0.05 else 'Started the optimal lineup.')+'</p></div>')
     return (f'<div class="ras"><div class="rah"><b>Team assessment</b><i class="rat {a["tc"]}">{a["tier"]}</i></div>'+lead+
-            f'<div class="rash">Season to date</div>'
+            f'<div class="rash">{"Regular season" if FIN else "Season to date"}</div>'
             f'<div class="rak">{st}</div>'
             f'<div class="rag up"><h4>Strengths</h4><ul>{li(a["good"])}</ul></div>'
-            f'<div class="rag dn"><h4>Concerns</h4><ul>{li(a["bad"])}</ul></div>'
-            f'<div class="ran">Weeks 1–{G} results, current rosters and app win projections · refreshed with each update</div></div>')
+            f'<div class="rag dn"><h4>Concerns</h4><ul>{li(a["bad"])}</ul></div>'+
+            (f'<div class="ran">Weeks 1–{G} results and end-of-season rosters</div></div>' if FIN else f'<div class="ran">Weeks 1–{G} results, current rosters and app win projections · refreshed with each update</div></div>'))
 if __name__=='__main__':
     import re as _r
     for t in TEAMS:print(_r.sub('<[^>]+>',' ',assess_html(t))[:420]);print()

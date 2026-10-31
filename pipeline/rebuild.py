@@ -59,6 +59,9 @@ if _PL:
     h=h.replace('<label for="tab-po" class="tpo">Playoffs</label>','<label for="tab-po" class="tpo">Playoffs</label><label for="tab-pl" class="tpo">Players</label>',1)
     h=h.replace('  <div class="pane pane-po">','  <div class="pane pane-pl">\n  '+open(P+'pl_section.html',encoding='utf-8').read()+'\n  '+_GL+'\n  '+_KEY+'\n  </div>\n  <div class="pane pane-po">',1)
     _PLCSS=open(P+'pl_css.css',encoding='utf-8').read()+'#tab-pl:checked~.tabs label[for="tab-pl"]{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}#tab-pl:checked~.pane-pl{display:block}'
+if _dt_os.environ.get('DT_PAST')=='1':  # a finished past season: "Final" in place of the countdown
+    h=h.replace('<div class="clock"><b>__LEFT__</b><span>weeks left</span></div>','<div class="clock fin"><b>Final</b></div>',1)
+    h=h.replace('</style>','.clock.fin b{font-size:34px;letter-spacing:.02em;transform:translateY(1.5px)}</style>',1)
 h=h.replace('__LEFT__',str(14-DONE)).replace('__G__',str(DONE))
 h=h.replace('SEGMENTS',segs).replace('POS_SECTION',open(P+'pos/pos_section.html',encoding='utf-8').read())
 import json,subprocess as sp

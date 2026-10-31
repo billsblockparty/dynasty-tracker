@@ -1,7 +1,8 @@
 # Radial playoff bracket: seed-1 half on the left, seed-2 half on the right, meeting at the championship in the centre.
 # Quarterfinal teams sit on the outer ring; bye teams start one ring in (already in the semifinal).
 import math
-def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
+def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None):
+    # final(a,b,w) -> text for a played game's circle (the margin); None while the games are projected
     W=312.0
     RO,RQ,RS=0.40*W,0.27*W,0.17*W
     KY=1.0  # no vertical stretch (rings stay circular): room above/below each round for its label
@@ -32,7 +33,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
         x,y=pol(a,r,CY);sd=seed(t)
         sc='Bye' if bye else f'{PT[(t,w)]:.1f}'
         nodes.append(f'<span class="prn s-{(tone(sd).split() or ["n"])[0]}{" prw" if winner else ""}{" prby" if bye else ""}" style="{pos(x,y)}"><i>{sd}</i>'
-                     f'<span class="prl{" up" if above else ""}"><b>{e(SHORT[t])}</b><em>{sc}</em></span></span>')
+                     f'<span class="prl{" up" if above else ""}{" lng" if len(SHORT[t])>16 and x<CX else ""}"><b>{e(SHORT[t])}</b><em>{sc}</em></span></span>')
     def btn(k,a,r,cls=''):
         x,y=pol(a,r,CY) if r else (CX,CY);a_,b_=dict((g[0],g[2]) for g in GAMES)[k];w=wk[k];wn=win(a_,b_,w);p=winp(wn,b_ if wn==a_ else a_,w)
         lab={'qf1':'Wild<br>Card','qf2':'Wild<br>Card','sf1':'Semi<br>Final','sf2':'Semi<br>Final','fin':'Final'}[k]
@@ -44,7 +45,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
         else:
           st=('left:-10px;top:50%;transform:translate(-100%,-50%)' if not r else
               'left:50%;top:-5px;transform:translate(-50%,-100%)' if y<CY else 'left:50%;top:calc(100% + 5px);transform:translate(-50%,0)')
-        btns.append(f'<label for="bk-{k}" class="prg{cls}" style="{pos(x,y)}"><b>{p}%</b><small style="{st}">{lab}</small></label>')
+        btns.append(f'<label for="bk-{k}" class="prg{cls}{" fin" if final else ""}" style="{pos(x,y)}"><b>{final(a_,b_,w) if final else str(p)+"%"}</b><small style="{st}">{lab}</small></label>')
     for side in (L,R):
         a,b=side['pair'];wn=win(a,b,15)
         for t,ang in zip(side['pair'],side['angs']):
@@ -61,7 +62,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
         btn(side['qf'],side['qa'],RQ);btn(side['sf'],side['sa'],RS)
     btn('fin',0,0,' rf')
     svg=f'<svg viewBox="0 0 {W:.0f} {H}" aria-hidden="true">'+''.join(sorted(paths,key=lambda p:' on' in p))+'</svg>'
-    html=f'<div class="prd" style="aspect-ratio:{W:.0f}/{H}">'+svg+''.join(nodes)+''.join(btns)+'</div><div class="rkey"><span><b>Wild Card</b> Wk 15</span><span><b>Semi Final</b> Wk 16</span><span><b>Final</b> Wk 17</span><span><i class="rk-l"></i>projected path</span></div>'
+    html=f'<div class="prd" style="aspect-ratio:{W:.0f}/{H}">'+svg+''.join(nodes)+''.join(btns)+f'</div><div class="rkey"><span><b>Wild Card</b> Wk 15</span><span><b>Semi Final</b> Wk 16</span><span><b>Final</b> Wk 17</span><span><i class="rk-l"></i>{"winning" if final else "projected"} path</span></div>'
     css=('.prd{position:relative;width:100%;max-width:440px;margin:6px auto 0;container-type:inline-size}'
          '.prd svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}'
          '.prd path{fill:none;stroke:var(--line-strong);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round}'
@@ -74,6 +75,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
          '.prd .prl{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;line-height:1.15}'
          '.prd .prl.up{top:auto;bottom:calc(100% + 4px)}.prd .prby .prl{top:calc(100% + 7px)}.prd .prby .prl.up{top:auto;bottom:calc(100% + 7px)}'
          '.prd .prl b,.prd .prl em{white-space:nowrap!important}'
+         '.prd .prl.lng b{white-space:normal!important;width:7.6em;text-align:center;text-wrap:balance}'
          '.prd .prl b{font-size:12.5px;font-weight:500;color:var(--steel)}.prd .prw .prl b{color:var(--chalk)}'
          '.prd .prl em{font-style:normal;font-family:var(--display);font-weight:600;font-size:13px;color:var(--steel);letter-spacing:.02em}.prd .prby .prl em{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}'
          '.prd .prg{display:flex;flex-direction:column;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;box-sizing:border-box;cursor:pointer;'
@@ -82,5 +84,5 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
          '.prd .prg b{font-family:var(--display);font-weight:700;font-size:13px;color:var(--label);font-variant-numeric:tabular-nums;padding-top:1px}'
          '.rkey{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:11.5px;color:var(--steel)}.rkey b{font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin-right:3px}'
          '.rkey span{display:inline-flex;align-items:center;white-space:nowrap}.rk-l{display:inline-block;width:16px;height:1.5px;background:var(--steel);margin-right:6px}'
-         '.prd .prg.rf{width:58px;height:58px}.prd .prg.rf small{font-size:14px}.prd .prg.rf b{font-size:19px}')
+         '.prd .prg.rf{width:58px;height:58px}.prd .prg.rf small{font-size:14px}.prd .prg.rf b{font-size:19px}.prd .prg.fin b{font-size:11.5px;letter-spacing:0}.prd .prg.rf.fin b{font-size:16px}')
     return html,css,H

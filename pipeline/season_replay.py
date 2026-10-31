@@ -10,29 +10,46 @@ ROOT=os.path.join(REPO,'.season',Y);WS=os.path.join(ROOT,'pipeline');RAW=os.path
 REG=14
 def log(*a):print('[season]',*a,flush=True)
 # ---------- workspace
-if '--build-only' in sys.argv:
+BO='--build-only' in sys.argv  # re-sync code into an existing replay and rebuild the site only
+if BO:
     for f in os.listdir(SRC):
-        if re.search(r'\.(py|js|mjs|html|css)$',f) and f not in('data_block.js',) and not re.match(r'.*_(section|css)\.|standings\.html|DynastyStandings|po_static',f):
+        if re.search(r'\.(py|js|mjs|html|css)$',f) and f!='data_block.js' and not re.match(r'.*_(section|css)\.|standings\.html|DynastyStandings|po_static',f):
             shutil.copy(os.path.join(SRC,f),os.path.join(WS,f))
-    ENV=dict(os.environ,DT_CACHE=RAW,DT_SEASON=Y,DT_LEAGUE=LID,DT_PAST='1')
-    subprocess.run(['python3',os.path.join(WS,'run.py'),'build'],cwd=WS,env=ENV,check=True);sys.exit()
-if os.path.isdir(ROOT):shutil.rmtree(ROOT)
-os.makedirs(ROOT)
-shutil.copytree(SRC,WS,ignore=shutil.ignore_patterns('raw','__pycache__','teamhub','.cache','node_modules'))
-if os.path.isdir(os.path.join(SRC,'node_modules')):os.symlink(os.path.join(SRC,'node_modules'),os.path.join(WS,'node_modules'))
-ENV=dict(os.environ,DT_CACHE=RAW,DT_SEASON=Y,DT_LEAGUE=LID,DT_PAST='1')
+else:
+    if os.path.isdir(ROOT):shutil.rmtree(ROOT)
+    os.makedirs(ROOT)
+    shutil.copytree(SRC,WS,ignore=shutil.ignore_patterns('raw','__pycache__','teamhub','.cache','node_modules','*_section.html','*_css.css','po_static.*','standings.html','DynastyStandings.html','lists.json','live.json'))
+    if os.path.isdir(os.path.join(SRC,'node_modules')):os.symlink(os.path.join(SRC,'node_modules'),os.path.join(WS,'node_modules'))
+YEARS=','.join(['2026']+sorted([d for d in os.listdir(os.path.join(SRC,'history','raw')) if d.isdigit() and d!='2026'],reverse=True))
+# the capture's players map is today's (teams, injuries): make it that season's. NFL team = his last team in that
+# season's weekly stats (else projections); no injury tags. Written to .season/<year>/raw, with the rest linked.
+RAWX=os.path.join(ROOT,'raw')
+if not BO:
+    os.makedirs(RAWX)
+    for k in ('core','stats','proj'):os.symlink(os.path.join(RAW,k+'.json.gz'),os.path.join(RAWX,k+'.json.gz'))
+    _pm=json.load(gzip.open(os.path.join(RAW,'players.json.gz')));_u=next(iter(_pm));_pl=_pm[_u];last={}
+    for k in ('proj','stats'):  # stats last, so a real game's team wins
+        _d=json.load(gzip.open(os.path.join(RAW,k+'.json.gz')))
+        for u in sorted(_d,key=lambda u:int(re.search(r'/(\d+)\?',u).group(1))):
+            for r in _d[u]:
+                if r.get('team') and (k=='proj' or (r.get('stats') or {}).get('gp')):last[r['player_id']]=r['team']
+    for pid,p_ in _pl.items():
+        if pid in last:p_['team']=last[pid]
+        p_['injury_status']=None
+    with gzip.open(os.path.join(RAWX,'players.json.gz'),'wt',encoding='utf-8') as f:json.dump(_pm,f)
+ENV=dict(os.environ,DT_CACHE=RAWX,DT_SEASON=Y,DT_LEAGUE=LID,DT_PAST='1',DT_YEARS=YEARS)
 def node(*a):subprocess.run(['node',os.path.join(WS,'pull.mjs'),*map(str,a)],cwd=WS,env=ENV,check=True,stdout=subprocess.DEVNULL)
 def py(f,*a):subprocess.run(['python3',os.path.join(WS,f),*map(str,a)],cwd=WS,env=ENV,check=True,stdout=subprocess.DEVNULL)
 J=lambda f:json.load(open(os.path.join(WS,f),encoding='utf-8'))
 def W_(f,o):json.dump(o,open(os.path.join(WS,f),'w',encoding='utf-8'),ensure_ascii=False)
 C={}
-for k in ('core','players'):C.update(json.load(gzip.open(os.path.join(RAW,k+'.json.gz'))))
+for k in ('core','players'):C.update(json.load(gzip.open(os.path.join(RAWX,k+'.json.gz'))))
 A='https://api.sleeper.app/v1';S='https://api.sleeper.com';L=f'{A}/league/{LID}'
 LG=C[L];PL=C[f'{A}/players/nfl'];SCH=C[f'{S}/schedule/nfl/regular/{Y}']
 RN={1:'Convicts',2:"Homer's Heroes",3:'Team Ram Rod',4:'Team RIPMFL',5:'Reverse Apache Master',6:'Canton waitlist',7:'Nuts in the Face',8:"Bill's Block Party",9:'Mandingoes',10:'Cheating is Trying'}
 SH={1:"Convicts",2:"Homer's",3:"Ram Rod",4:"RIPMFL",5:"Apache",6:"Canton",7:"Nuts",8:"Bill's",9:"Mandingoes",10:"Cheating"}
 # ---------- remove the current season's state
-for f in os.listdir(WS):
+for f in ([] if BO else os.listdir(WS)):
     if re.match(r'(wk\d+|pull.*|po_home|po_proj|kick|weeks|stats|stats_detail|live|eff|skill_opt|ro_pg)\.json$',f):os.remove(os.path.join(WS,f))
 # ---------- season constants that were hard-coded for 2026
 teams_nfl=sorted({g['home'] for g in SCH}|{g['away'] for g in SCH})
@@ -45,7 +62,14 @@ def patch(f,a,b):
     p=os.path.join(WS,f);s=open(p,encoding='utf-8').read();assert a in s,(f,a[:60]);open(p,'w',encoding='utf-8').write(s.replace(a,b))
 patch('rebuild.py','BYES={5,6,7,8,9,10,11,13,14}',f'BYES={set(w for w in byeweeks if w<=REG)}')
 patch('sx_data.py','K1=datetime(2026,9,13,17,0,tzinfo=timezone.utc)',f'K1=datetime({d.year},{d.month},{d.day},17,0,tzinfo=timezone.utc)')
+# ages as of the end of that season (New Year's Day after it), not today
+for f in ('assess.py','cmp_build.py','mu_build.py','pl_build.py','po_build.py','ro_build.py','sx_data.py'):
+    p_=os.path.join(WS,f);t_=open(p_,encoding='utf-8').read()
+    t_=t_.replace('date.today()',f'date({int(Y)+1},1,1)').replace('_d.today()',f'_d({int(Y)+1},1,1)')
+    open(p_,'w',encoding='utf-8').write(t_)
 # ---------- seed files
+if BO:
+    subprocess.run(['python3',os.path.join(WS,'run.py'),'build'],cwd=WS,env=ENV,check=True);sys.exit()
 fut={RN[r]:[] for r in RN}
 for w in range(1,REG+1):
     by={}
@@ -95,6 +119,26 @@ for w in range(1,REG+1):
     node('weekly',w);py('full_update.py',w)
     log('week',w,'ok')
 node('detail',f'1-{REG}');node('top',REG);node('playoffs');py('po_write.py')
+# ---------- playoff results (Weeks 15-17) in hist.json's week format: {week: {rid: [mid, pts, starters, bench], ...}}
+PO=J('pull_po.json');HM=J('hist.json')['m'];A8=J('pull_pts.json');M8=J('pull8.json')['META']
+POA={'bracket':C[f'{L}/winners_bracket'],'losers':C[f'{L}/losers_bracket'],'w':{},'m':{}}
+for w in (15,16,17):
+    home=set(PO['HOME'][str(w)]);pw=PO['PO'][str(w)];POA['w'][str(w)]={}
+    def ent(pid,pp):
+        pj,opp,tm=(pw.get(pid) or [0,None,None])
+        tm=tm or (M8.get(pid) or [None,None,None])[2] or (A8.get(pid) or [None,''])[1] or ''
+        o='' if not opp else (opp if tm in home else '@'+opp)
+        return f"{pid}|{tm}|{pj}|{pp}|{o}"
+    for m in C[f'{L}/matchups/{w}']:
+        if m['matchup_id'] is None:continue
+        pp=m.get('players_points') or {};st=[x for x in m['starters'] if x and x!='0']
+        assert abs(sum(pp.get(x,0) for x in st)-m['points'])<0.02,(w,m['roster_id'])
+        POA['w'][str(w)][str(m['roster_id'])]=[m['matchup_id'],m['points'],','.join(ent(x,pp.get(x,0)) for x in st),','.join(ent(x,v) for x,v in pp.items() if x not in st)]
+        for x in pp:
+            if x not in HM and x not in POA['m']:
+                mm=M8.get(x) or PL.get(x) and [PL[x].get('full_name') or x,PL[x].get('position')]
+                POA['m'][x]=[(mm or [x,'?'])[1],(mm or [x])[0]]
+W_('po_actual.json',POA)
 log('replay done')
 # ---------- build the site (.season/<year>/site)
 if '--no-build' not in sys.argv:

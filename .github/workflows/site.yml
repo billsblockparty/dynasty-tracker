@@ -48,6 +48,12 @@ jobs:
           pip install numpy pillow
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
+      - name: Past seasons cache
+        # the 2025 tracker (year switch) is rebuilt only when the code or the 2025 capture changes
+        uses: actions/cache@v4
+        with:
+          path: archive
+          key: past-v1-${{ hashFiles('pipeline/*.py', 'pipeline/*.mjs', 'pipeline/gen.js', 'pipeline/new_tail.js', 'pipeline/new_head.html', 'pipeline/readability.css', 'pipeline/logos/**', 'pipeline/history/raw/**', 'pipeline/package-lock.json') }}
       - name: Pick mode
         id: mode
         run: |
@@ -63,6 +69,14 @@ jobs:
           else
             python3 pipeline/run.py ${{ steps.mode.outputs.mode }}
           fi
+      - name: Past seasons (year switch)
+        continue-on-error: true
+        run: |
+          if [ ! -f archive/2025/index.html ]; then
+            python3 pipeline/season_replay.py 2025 1207898992206155776
+            mkdir -p archive/2025 && cp .season/2025/site/index.html archive/2025/index.html
+          fi
+          mkdir -p site/2025 && cp archive/2025/index.html site/2025/index.html
       - name: Live-game probe (temporary)
         if: steps.mode.outputs.mode == 'live'
         continue-on-error: true

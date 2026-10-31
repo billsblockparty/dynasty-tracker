@@ -57,7 +57,14 @@ def best(t,w):
     return gg('QB',1)+gg('RB',2)+gg('WR',2)+gg('TE',1)+fl[:1]+gg('K',1)+gg('DEF',1)
 BEST={(t,w):best(t,w) for t in H for w in WEEKS}
 PT={(t,w):round(sum(q['pj'] for q in BEST[(t,w)] if q),1) for t in H for w in WEEKS}
+# finished playoff games (po_actual.json, written for a past season): real scores replace projections
+ACT=json.load(open(P+'po_actual.json')) if os.path.exists(P+'po_actual.json') else None
+_RN={1:"Convicts",2:"Homer's Heroes",3:"Team Ram Rod",4:"Team RIPMFL",5:"Reverse Apache Master",6:"Canton waitlist",7:"Nuts in the Face",8:"Bill's Block Party",9:"Mandingoes",10:"Cheating is Trying"}
+AW={(_RN[int(r)],int(w)):v[1] for w,d in (ACT or {}).get('w',{}).items() for r,v in d.items()}
+PT.update(AW)
+FINAL=any(k[1]==17 for k in AW)  # championship played: the bracket is the result, no projections
 def winp(a,b,w):
+    if (a,w) in AW and (b,w) in AW:return 100 if AW[(a,w)]>AW[(b,w)] else 0
     x,y=PT[(a,w)],PT[(b,w)];sd=0.215*(x+y)
     return round(100*0.5*(1+math.erf((x-y)/sd/math.sqrt(2)))) if sd else 50
 INJ={'Questionable':'Q','Doubtful':'D','Out':'O','IR':'IR'}
@@ -151,8 +158,27 @@ def byetile(k,t):
     return (f'<div class="bg bye g-{k}"><span class="bgh"><span class="bmt">Bye</span></span>'
             f'<span class="bt bw">{chip(seed(t))}<span class="bn">{e(SHORT[t])}</span></span></div>')
 import po_radial
-br,BRCSS,_RH=po_radial.build(S,GAMES,win,winp,PT,SHORT,seed,e,tone)
-bpan=''.join(f'<div class="bkp bkp-{k}">{card(a,b,w,f"Week {w} · {lab}")}{lineup(a,b,w,'b')}</div>' for k,w,(a,b),lab in GAMES)
+# ---------- finished games: result card + the lineups as played (same rows as Matchups' past weeks)
+def fcard(a,b,w,label):
+    xa,xb=AW[(a,w)],AW[(b,w)];wa=xa>xb
+    side=lambda x,v,cl,won:(f'<div class="mus {cl}"><span class="hres {"w" if won else "l"}">{"WON" if won else "LOST"}</span><b>{e(x)}</b>'
+        f'<span class="hsc">{v:.1f}</span><span class="hrk">Seed <i class="ch {tone(seed(x))}"><span class="ct">#{seed(x)}</span></i></span></div>')
+    return (f'<div class="mcard"><div class="mch"><span>{label}</span></div>'
+            f'<div class="mvs">{side(a,xa,"msl",wa)}<span class="mv2">vs</span>{side(b,xb,"msr",not wa)}</div>'
+            f'<div class="hmar">Margin <b>{abs(xa-xb):.1f}</b></div></div>')
+if FINAL:MB.W=0  # no current week: never mark a row for the live updater
+if ACT:MB.META.update({k:v for k,v in ACT['m'].items() if k not in MB.META})
+def flineup(a,b,w):
+    A_,B_=ACT['w'][str(w)][str(RIDN[a])],ACT['w'][str(w)][str(RIDN[b])];MB.HW[0]=w
+    sa=[MB.hp(x) for x in A_[2].split(',')];sb=[MB.hp(x) for x in B_[2].split(',')]
+    hdr=f'<div class="msh lsh">Lineups</div>{MB.CTL([(MB.VSW,'Order','Lineup',MB.LSW)])}<div class="lnote">green = beat projection · red = fell short</div>'
+    o=[MB.ptsrow(sa,sb)]+['<div class="lpv">']+[MB.lrow(x,y,'') for x,y in zip(sa,sb)]+['</div>',MB.sview(sa,sb)]
+    ba=sorted([MB.hp(x) for x in A_[3].split(',') if x],key=lambda q:-q[5]);bb=sorted([MB.hp(x) for x in B_[3].split(',') if x],key=lambda q:-q[5])
+    if ba or bb:o+=[MB.BH_HIST]+[MB.lrow(ba[k] if k<len(ba) else None,bb[k] if k<len(bb) else None,'') for k in range(max(len(ba),len(bb)))]
+    h='<div class="lus">'+hdr+'<div class="lus-a">'+''.join(o)+'</div>'+MB.optblock(sa,sb,sa+ba,sb+bb,A_[1],B_[1],False,MB.BH_HIST)+'</div>'
+    return h.replace('for="lo-a"','for="blo-a"').replace('for="lo-o"','for="blo-o"').replace('for="lv-p"','for="blv-p"').replace('for="lv-s"','for="blv-s"')
+br,BRCSS,_RH=po_radial.build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,(lambda a,b,w:f'+{abs(PT[(a,w)]-PT[(b,w)]):.1f}') if FINAL else None)
+bpan=''.join(f'<div class="bkp bkp-{k}">{fcard(a,b,w,f"Week {w} · {lab} · Final")}{flineup(a,b,w)}</div>' if FINAL else f'<div class="bkp bkp-{k}">{card(a,b,w,f"Week {w} · {lab}")}{lineup(a,b,w,'b')}</div>' for k,w,(a,b),lab in GAMES)
 # ---------- build-a-matchup (team A, team B, week)
 def dd(k,lab):
     return (f'<details class="dd dd-{k}"><summary><span class="ddk">{lab}</span>'+''.join(f'<span class="sv sv-{i}">{e(SHORT[t])}</span>' for i,t in enumerate(H))+
@@ -171,7 +197,8 @@ radios=('<input type="radio" name="pview" id="pv-b" class="lr" checked><input ty
         ''.join(f'<input type="radio" name="pw" id="pw-{w}" class="lr"{" checked" if w==17 else ""}>' for w in WEEKS)+
         ''.join(f'<input type="radio" name="{k}lopt" id="{k}lo-a" class="lr" checked><input type="radio" name="{k}lopt" id="{k}lo-o" class="lr"><input type="radio" name="{k}lview" id="{k}lv-p" class="lr" checked><input type="radio" name="{k}lview" id="{k}lv-s" class="lr">' for k in 'bp'))
 import gzip,base64
-if WSP:
+if FINAL:PPX=''
+elif WSP:
     _M={f'{i}-{j}-{w}':f'<div class="ppn">{card(H[i],H[j],w,f"Week {w} · {RND[w]}")}{lineup(H[i],H[j],w)}</div>' for i in range(10) for j in range(10) if i!=j for w in WEEKS}
     open(P+'po_static.html','w',encoding='utf-8').write(''.join(f'<div class="ppn pp-{k}">{v[17:]}' for k,v in _M.items()))
     open(P+'po_static.css','w').write(','.join(f'#pa-{i}:checked~#pb-{j}:checked~#pw-{w}:checked~.pp-{i}-{j}-{w}' for i in range(10) for j in range(10) if i!=j for w in WEEKS)+'{display:block}')
@@ -188,7 +215,22 @@ if WSP:
 else:
     PPX=''.join(bpanel(i,j) for i in range(10) for j in range(10) if i!=j)
 wk='<div class="pseg pwk" role="group" aria-label="Week">'+''.join(f'<label for="pw-{w}">Wk {w}</label>' for w in WEEKS)+'</div>'
-sec=('<section class="pox" aria-labelledby="poh">'+radios+
+def placings():
+    # places 1-6 from the placement games (1st, 3rd, 5th) in the winners bracket; 7-10 by regular-season seed
+    if not ACT:return ''
+    RNi={int(k):v for k,v in _RN.items()};pl={}
+    for m in ACT['bracket']:
+        if m.get('p') in(1,3,5) and m.get('w'):pl[m['p']]=RNi[m['w']];pl[m['p']+1]=RNi[m['l']]
+    if len(pl)<6:return ''
+    for i,t in enumerate(H[6:]):pl[7+i]=t
+    rows=''.join(f'<div class="pfpr{" pfp1" if p_==1 else ""}"><em>{p_}</em>{chip(seed(pl[p_]))}<b>{e(pl[p_])}</b><span class="pfprc">{T[pl[p_]][0]}-{T[pl[p_]][1]}</span></div>' for p_ in sorted(pl))
+    return '<div class="msh pfph">Final placings<small>playoff results, then regular-season seed</small></div><div class="pfpx">'+rows+'</div>'
+if FINAL:
+    sec=('<section class="pox" aria-labelledby="poh">'+radios+
+         '<div class="posh"><b id="poh">Playoffs</b></div><div class="prsub">Final · seeds by record, then points for</div>'+br+
+         '<div class="bkx">'+bpan+'</div>'+placings()+'</section>')
+else:
+    sec=('<section class="pox" aria-labelledby="poh">'+radios+
      '<div class="posh"><b id="poh">Playoffs</b></div><div class="prsub">If the season ended today · seeds by record, then points for</div>'
      '<div class="pseg pvw" role="group" aria-label="Playoff view"><label for="pv-b">Bracket</label><label for="pv-c">Custom</label></div>'+br+
      '<div class="bkx">'+bpan+'</div>'
@@ -210,6 +252,12 @@ if WSP:
 else:
     css+=','.join(f'#pa-{i}:checked~#pb-{j}:checked~.pp-{i}-{j}' for i in range(10) for j in range(10) if i!=j)+'{display:block}'
     css+=''.join(f'#pw-{w}:checked~.ppn .pwl-{w}{{display:inline}}' for w in WEEKS)
+css+=('.pox .pfph{margin-top:22px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}.pox .pfph small{font-family:var(--body);font-weight:500;font-size:11px;letter-spacing:0;text-transform:none;color:var(--steel)}.pfph{margin-bottom:8px}.pfpx{display:flex;flex-direction:column;gap:4px}'
+      '.pfpr{display:grid;grid-template-columns:1.6em 2.9em minmax(0,1fr) auto;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--hair);border-radius:6px;background:var(--ink)}'
+      '.pfpr>em{font-style:normal;font-family:var(--display);font-weight:700;font-size:15px;color:var(--steel);text-align:right;font-variant-numeric:tabular-nums}'
+      '.pfpr>b{font-weight:600;color:var(--chalk);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+      '.pfpr .pfprc{color:var(--steel);font-variant-numeric:tabular-nums;font-size:.92em}'
+      '.pfpr.pfp1>em{color:#e8c15a}.pfpr>.ch{justify-self:start}') if FINAL else ''
 open(P+'po_section.html','w',encoding='utf-8').write(sec);open(P+'po_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
     print('seeds',[SHORT[t] for t in S],'WSP',WSP,'size',len(sec))

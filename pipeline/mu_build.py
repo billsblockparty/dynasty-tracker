@@ -22,11 +22,13 @@ ORD=['QB','RB','WR','TE','K','DEF']
 def byes(t,w):return sorted([p for p in R[t] if not p[7] and BYE.get(p[3])==w],key=lambda p:(ORD.index(p[2]),-p[4]))
 def form(t,n=5):return ''.join(f'<i class="fm {"w" if x[2]>x[3] else "l"}"></i>' for x in WK[t][-n:])
 # this week's games, ordered by the better seed in each game
+FIN=not any(FUT.values())  # regular season over (a past season, or the playoffs): no current week, the latest week is a final
+WT=DONE if FIN else W        # top of the week menu
 games=[];seen=set()
-for t in H:
+for t in ([] if FIN else H):
     if t in seen: continue
     o=FULL[FUT[t][0][1]];assert FULL[FUT[o][0][1]]==t;seen|={t,o};games.append((t,o))
-assert len(games)==5
+assert FIN or len(games)==5
 def card(a,b):
     def side(x,cl):
         bl=byes(x,W)
@@ -346,7 +348,7 @@ def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False,ca='',cb=''):
     return f'<label for="{fr}"{" class=fin" if final else ""}>{line(a,ra,ta,va,ua,ca)}<i class="dv"></i>{line(b,rb,tb,vb,ub,cb)}</label>'
 _cur=lambda t:sum(lval(p)[0] for p in LW['out'][str(RID[t])]['st'])
 chips='<div class="mpk muc2" role="tablist" aria-label="Game">'+''.join(prow_(f'mu-{i}',a,b,seed(a),seed(b),streak(a),streak(b),_cur(a),_cur(b),False,rec(a),rec(b)) for i,(a,b) in enumerate(games))+'</div>'
-cur=f'<div class="mwx mwx-{W}">'+radios+chips+''.join(panel(i,a,b) for i,(a,b) in enumerate(games))+'</div>'
+cur='' if FIN else f'<div class="mwx mwx-{W}">'+radios+chips+''.join(panel(i,a,b) for i,(a,b) in enumerate(games))+'</div>'
 css=''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"]{{border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
 # ---------- historical weeks
 HS=json.load(open(P+'hist.json'));META=HS['m']
@@ -391,12 +393,12 @@ for w in range(DONE,0,-1):
     hpn=''.join(f'<div class="mup hwp{w}-{i}">{hcard(w,a,b,R2[str(RID[a])],R2[str(RID[b])])}{hlineups(R2[str(RID[a])],R2[str(RID[b])])}</div>' for i,(a,b) in enumerate(gl))
     hist+=f'<div class="mwx mwx-{w}">'+hr+hc+hpn+'</div>'
     css+=''.join(f'#hw{w}-{i}:checked~.hwc{w} label[for="hw{w}-{i}"]{{border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#hw{w}-{i}:checked~.hwp{w}-{i}{{display:block}}' for i in range(5))
-wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if w==W else ""}>' for w in range(1,W+1))
-dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
+wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if w==WT else ""}>' for w in range(1,WT+1))
+dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,WT+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
-    '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
+    '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(WT,0,-1))+'</div></details>')
 sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lcol" id="lc-p" class="lr" checked><input type="radio" name="lcol" id="lc-t" class="lr"><input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b><span id="mlive" class="mlive" data-w="{W}" hidden></span>{dd}</div>'+cur+hist+'</section>')
-css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
+css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,WT+1))
 css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0 0 12px}.mpk label:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 2.5px)}'
       '.mop .mrc{font-style:normal;flex:none;color:var(--steel);font-size:.86em;font-variant-numeric:tabular-nums;margin-left:6px}'
       '.msc .mdf{font-style:normal;margin-left:8px;font-weight:600;font-variant-numeric:tabular-nums}.msc .mdf.w{color:var(--win)}.msc .mdf.l{color:var(--loss)}'

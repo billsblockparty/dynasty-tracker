@@ -138,7 +138,7 @@ def data_view(t):
              f'<div class="bar sbar">{segs}</div><div class="stn">{names}</div></div>')
     # age
     p_=YOS[t]['pct'];yr={u:YOS[u]['pct'][0] for u in TEAMS}
-    o.append(sec('Production by age','Share of starters\' points by player age today'))
+    o.append(sec('Production by age','Share of starters\' points by player age '+('at season end' if _dt_os.environ.get('DT_PAST')=='1' else 'today')))
     o.append('<div class="ylg"><span class="ay">25 and under</span><span class="ap">26–29</span><span class="ao">30+</span><span class="ad">DEF</span></div>'
              f'<div class="stb tqstb"><div class="stt"><span><b class="ay">{p_[0]:.0f}%</b> · <b class="ap">{p_[1]:.0f}%</b> · <b class="ao">{p_[2]:.0f}%</b></span><span>youth share {rk(crank(yr,t))}</span></div>'
              f'<div class="bar ybar"><i class="y0" style="width:{p_[0]:.2f}%"></i><i class="y1" style="width:{p_[1]:.2f}%"></i><i class="y2" style="width:{p_[2]:.2f}%"></i><i class="y3" style="width:{p_[3]:.2f}%"></i></div></div>')
@@ -161,8 +161,9 @@ def data_view(t):
              f'<div class="sxr sxhd"><span></span><span>{SB.HT}</span><span>{SB.RT}</span><span>Diff</span></div>'
              f'<div class="sxr"><span>Points per start</span>{vh}{vr}{dd}</div>'
              f'<div class="sxr"><span>Record when more starters</span><span class="sxv">{SB._hrrec(h["lh"])}</span><span class="sxv">{SB._hrrec(h["lr"])}</span><span></span></div></div>')
-    # byes
+    # byes (none once the regular season is over)
     wk=list(range(D.NOW,15));B=BYS[t]
+    if not wk:return ''.join(o)
     cells=''.join(f'<span class="bx b{min(len(B[w]),3)}">{len(B[w]) or "–"}</span>' for w in wk)
     o.append(sec('Bye exposure','Core starters on bye each remaining week'))
     o.append(f'<div class="sxm bym tqgrid" style="--n:{len(wk)}"><div class="sxr sxhd"><span></span>{"".join(f"<span>W{w}</span>" for w in wk)}</div><div class="sxr"><span class="mxn">On bye</span>{cells}</div></div>')
