@@ -164,7 +164,7 @@ def lcell(p,side):
         hb=f'<i class="hab {"hab-h" if _hax(p)=="vs" else "hab-r"}" aria-label="{wd.title()}">'+''.join(f'<span>{c}</span>' for c in wd)+'</i>'
     return (f'<span class="cn {side}{" hbx" if hb else ""}">{sq}{flg}<span class="cnm"><b><span>{e(nm)}</span>{mk}{ij}</b>'
             f'<small><span class="gp{" fin" if done else ""}"{dt}>{st}</span></small></span>{hb}</span>'+
-            (f'<span class="cv {side} act"{dp}><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}"><em class="fdf">{_dif(act,proj)}</em>{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"{dp}><span class="fs pj">{v:.1f}<small>PROJ</small></span></span>'))
+            (f'<span class="cv {side} act"{dp}><span class="fs {"up" if act>=proj else "dn"}" title="Projected {proj:.1f}"><em class="fdf">{_dif(act,proj)}</em>{v:.1f}<small>FINAL</small></span></span>' if done else f'<span class="cv {side} pjc"{dp}><span class="fs pj"><em class="fdf"></em>{v:.1f}<small>PROJ</small></span></span>'))
 def lrow(pa,pb,slot):
     w=''
     if pa and pb:

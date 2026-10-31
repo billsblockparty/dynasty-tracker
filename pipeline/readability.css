@@ -527,5 +527,9 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .cr.lu .flgs .flg{position:static!important;transform:none!important;translate:none!important}
 
 /* points vs projection above the FINAL score */
-.cv .fs .fdf{font-style:normal;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
+.cv .fs .fdf{display:block;height:10px;font-style:normal;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
 .cv .fs.up .fdf{color:#7fdcb6}.cv .fs.dn .fdf{color:#ff8a9a}
+/* three lines (difference, score, label) spaced evenly, measured on the ink; the bottom border counts as the edge */
+.cr.lu .cv .fs{justify-content:space-evenly!important;gap:0!important;box-sizing:border-box}
+.cr.lu .cv .fs{padding-bottom:4.4px!important}.cr.lu:has(.sln) .cv .fs{padding-bottom:2.4px!important}
+.cr.lu .cv .fs .fdf{transform:translateY(.8px)}.cr.lu .cv .fs small{transform:translateY(-.5px)}
