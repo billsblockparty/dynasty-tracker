@@ -35,7 +35,9 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
     def btn(k,a,r,cls=''):
         x,y=pol(a,r,CY) if r else (CX,CY);a_,b_=dict((g[0],g[2]) for g in GAMES)[k];w=wk[k];wn=win(a_,b_,w);p=winp(wn,b_ if wn==a_ else a_,w)
         lab={'qf1':'QF','qf2':'QF','sf1':'SF','sf2':'SF','fin':'Final'}[k]
-        btns.append(f'<label for="bk-{k}" class="prg{cls}" style="{pos(x,y)}"><small>{lab}</small><b>{p}%</b></label>')
+        # round label sits outside the circle: radially outward for QF/SF (between the two incoming lines), left of the final
+        oa=math.radians(180 if not r else rt(a)+(-28 if math.cos(math.radians(rt(a)))<-0.3 and math.sin(math.radians(rt(a)))>0 else 28 if math.cos(math.radians(rt(a)))<-0.3 else 0));rad=29+16 if r==0 else (18+9 if k.startswith("qf") else 18+10)
+        btns.append(f'<label for="bk-{k}" class="prg{cls}" style="{pos(x,y)}"><b>{p}%</b><small style="left:calc(50% + {math.cos(oa)*rad:.1f}px);top:calc(50% - {math.sin(oa)*rad:.1f}px)">{lab}</small></label>')
     for side in (L,R):
         a,b=side['pair'];wn=win(a,b,15)
         for t,ang in zip(side['pair'],side['angs']):
@@ -69,9 +71,9 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
          '.prd .prl em{font-style:normal;font-family:var(--display);font-weight:600;font-size:13px;color:var(--steel);letter-spacing:.02em}.prd .prby .prl em{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}'
          '.prd .prg{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;box-sizing:border-box;cursor:pointer;'
          'background:var(--deck);border:1.5px solid var(--line-strong);line-height:1}'
-         '.prd .prg small{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}'
-         '.prd .prg b{font-family:var(--display);font-weight:700;font-size:13px;color:var(--label);font-variant-numeric:tabular-nums}'
+         '.prd .prg small{position:absolute;transform:translate(-50%,-50%);font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk);white-space:nowrap;line-height:1;pointer-events:none}'
+         '.prd .prg b{font-family:var(--display);font-weight:700;font-size:14px;color:var(--label);font-variant-numeric:tabular-nums;padding-top:1px}'
          '.rkey{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:11.5px;color:var(--steel)}.rkey b{font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin-right:3px}'
          '.rkey span{display:inline-flex;align-items:center;white-space:nowrap}.rk-l{display:inline-block;width:16px;height:1.5px;background:var(--steel);margin-right:6px}'
-         '.prd .prg.rf{width:58px;height:58px}.prd .prg.rf small{font-size:10px}.prd .prg.rf b{font-size:17px}')
+         '.prd .prg.rf{width:58px;height:58px}.prd .prg.rf small{font-size:14px}.prd .prg.rf b{font-size:19px}')
     return html,css,H
