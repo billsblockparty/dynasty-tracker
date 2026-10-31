@@ -359,6 +359,32 @@ details summary{font:500 13px/1 var(--body);color:var(--label)}
 .cst{display:block;min-height:32px}
 .gr.off .wk2,.gr.off .on,.gr.off .sc,.gr.off .sc span,.gr.off .mg{color:var(--dim)!important}
 .gr.off img,.gr.off .ini{opacity:.35}.gr.off i.th{opacity:.4}
+
+/* ---------- legibility: cards, titles with definitions, stacked on phones ---------- */
+main{padding:12px 12px 32px}
+.grid{gap:12px;border-left:0!important}
+.pnl,.pair>.pnl{background:var(--deck);border:1px solid var(--hair)!important;border-radius:12px;padding:16px}
+#p-hero{background:transparent;border:0!important;padding:8px 4px 4px}
+@media(min-width:900px){main{padding:16px 24px 40px}.grid{gap:16px}.pnl,.pair>.pnl{padding:24px}#p-hero{padding:8px 0 8px}}
+@media(max-width:899px){.pairw,.pair{display:contents}.dots{display:none}}
+.ph{margin-bottom:4px;min-height:24px}
+.ph h2{font:600 16px/20px var(--body);color:var(--chalk)}
+.def{margin:0 0 16px;font:400 13px/18px var(--body);color:var(--steel);max-width:44ch}
+.ph .rk,.ph .q{white-space:nowrap}
+/* luck columns */
+.lwk{border-top:0;gap:4px}
+.lwk span{border-left:0;padding:0;gap:6px}
+.lwk em{display:flex;flex-direction:column-reverse;gap:3px;width:100%;max-width:32px;font-style:normal}
+.lwk em i{height:8px;border-radius:2px;background:var(--hair)}
+.lwk .rW em i.on{background:color-mix(in srgb,var(--win) 70%,var(--deck))}
+.lwk .rL em i.on{background:color-mix(in srgb,var(--loss) 70%,var(--deck))}
+.lwk .rT em i.on{background:var(--steel)}
+.lwk u{text-decoration:none;font:600 14px/1 var(--display);margin-top:2px}
+.lwk .rW u{color:var(--win)}.lwk .rL u{color:var(--loss)}.lwk .rT u{color:var(--steel)}
+.lwk b{font:500 13px/1 var(--display)}
+.lwk small{font:400 11px/1 var(--body);color:var(--steel)}
+.lwk .off em i.on{background:var(--neutral-bar)}.lwk .off u,.lwk .off b,.lwk .off small{color:var(--dim)}
+@media(max-width:599px){.movw{flex-direction:column;gap:8px}.mov{gap:8px 16px}}
 </style>
 </head>
 <body>
@@ -517,7 +543,7 @@ function bindScrub(sv){let drag=false;
  const end=e=>{drag=false;try{sv.releasePointerCapture(e.pointerId)}catch(_){}};
  sv.addEventListener('pointerup',end);sv.addEventListener('pointercancel',end);
  sv.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'&&K>1){setK(K-1);e.preventDefault()}if(e.key==='ArrowRight'&&K<TH){setK(K+1);e.preventDefault()}if(e.key==='End'){setK(TH)}})}
-function setK(k){K=k;pulseK();for(const id in PANELS)if(id!=='p-pulse')PANELS[id](document.getElementById(id));
+function setK(k){K=k;pulseK();for(const id in PANELS)if(id!=='p-pulse')paint(id);
  $('#stamp').innerHTML=`Through Wk ${K}${K!==TH?`<button type="button" class="bk2" data-back>Back to Wk ${TH}</button>`:''}`;hashSync()}
 $('#stamp').addEventListener('click',e=>{if(e.target.closest('[data-back]'))setK(TH)});
 
@@ -527,10 +553,11 @@ function luck(el){const o=S(cur),vals=RIDS.map(r=>({r,v:S(r).luck}));const W=pw(
  el.innerHTML=`<div class="ph"><h2>Luck</h2></div>
  <div class="big"><span class="n ${o.luck>=0.5?'up':o.luck<=-0.5?'dn':''}">${N_('luck2',o.luck,'s2')}</span><span class="t">wins vs expected<small>${word} · ${o.w+o.t*.5} actual, ${o.xw.toFixed(2)} expected</small></span></div>
  <div class="strip"><div class="tt">League</div>${dotStrip(W,vals,{fmt:v=>sg(v,2),label:'Luck',key:'luck'})}</div>
- <div class="strip"><div class="tt">By week</div>${luckWeeks()}</div>`}
-function luckWeeks(){const g=T[cur].weeks;
+ <div class="strip"><div class="tt">Each week</div>${luckWeeks()}</div>`}
+function luckWeeks(){const g=T[cur].weeks,n=N-1;
  return `<div class="lwk">${g.map(d=>{const v=(d.res==='W'?1:d.res==='T'?.5:0)-d.xw;
-  return `<span class="${d.w>K?'off':''}" ${tipA(`Week ${d.w} · ${d.res}`,`Beat ${d.apw} of ${N-1} teams (${d.xw.toFixed(2)} expected W)\nLuck ${sg(v,2)}`)}><b class="${v>=0.005?'up':v<=-0.005?'dn':''}">${sg(v,2)}</b><i>W${d.w}</i></span>`}).join('')}</div>`}
+  return `<span class="${d.w>K?'off':''} r${d.res}" ${tipA(`Week ${d.w} · ${d.res==='W'?'Won':d.res==='L'?'Lost':'Tied'}`,`Outscored ${d.apw} of ${n} teams (${d.xw.toFixed(2)} expected wins)\nLuck ${sg(v,2)}`)}><em>${Array.from({length:n},(_,i)=>`<i class="${i<d.apw?'on':''}"></i>`).join('')}</em><u>${d.res}</u><b class="${v>=0.005?'up':v<=-0.005?'dn':''}">${sg(v,2)}</b><small>W${d.w}</small></span>`}).join('')}</div>
+ <div class="leg"><span><i style="background:var(--win);height:8px;width:8px;border-radius:2px"></i>won</span><span><i style="background:var(--loss);height:8px;width:8px;border-radius:2px"></i>lost</span><span>height = teams outscored, of ${n}</span></div>`}
 
 function bench(el){const o=S(cur),g=wks(cur);const W=pw(el);
  const mx=Math.max(...T[cur].weeks.map(d=>d.opt));
@@ -629,6 +656,8 @@ function cons(el){const W=pw(el),rv=rivalOf(cur);const st=RIDS.map(r=>{const p=w
  <div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Weekly score range by team">${s}</svg></div>
  <div class="leg"><span><i style="height:1.5px"></i>floor → ceiling</span><span><i style="height:9px;opacity:.4"></i>±1 std dev</span><span><i style="width:2px;height:12px;background:var(--chalk)"></i>mean</span></div>`}
 
+const DEF={'p-pulse':'Points scored each week against the league median and middle half','p-luck':'Actual wins minus the wins your scores would earn against every team each week','p-bench':'Your best possible lineup each week minus the lineup you started','p-pos':'Points per start at each position, against the other nine teams','p-log':'Every result this season, newest first','p-sos':'Opponents still to play, by the points they average','p-heat':'Where every team\'s score ranked each week, 1 = highest','p-contrib':'Each starter\'s share of the points your lineup scored','p-cons':'Each team\'s weekly range, lowest to highest score'};
+function paint(id){const el=document.getElementById(id);PANELS[id](el);const ph=el.querySelector('.ph');if(ph&&DEF[id])ph.insertAdjacentHTML('afterend',`<p class="def">${DEF[id]}</p>`)}
 const PANELS={'p-hero':hero,'p-pulse':pulse,'p-luck':luck,'p-bench':bench,'p-pos':pos,'p-log':log,'p-heat':heat,'p-sos':sos,'p-contrib':contrib,'p-cons':cons};
 
 /* ---------- footer: methods behind a toggle ---------- */
@@ -656,7 +685,7 @@ function animate(old){if(RM||!old)return;const dur=260,t0=performance.now(),jobs
   if(o.sw&&e.style.width&&o.sw!==e.style.width){const a=parseFloat(o.sw),b=parseFloat(e.style.width);jobs.push(k=>{e.style.width=(a+(b-a)*k)+'%'})}});
  if(!jobs.length)return;const step=now=>{const k=Math.max(0,Math.min(1,(now-t0)/dur)),q=1-Math.pow(1-k,3);jobs.forEach(j=>j(q));if(k<1)requestAnimationFrame(step)};jobs.forEach(j=>j(0));requestAnimationFrame(step)}
 
-function renderAll(anim){const old=anim?grab():null;for(const id in PANELS)PANELS[id](document.getElementById(id));animate(old)}
+function renderAll(anim){const old=anim?grab():null;for(const id in PANELS)paint(id);animate(old)}
 function hashSync(){history.replaceState(null,'','#team='+cur+(K!==TH?'&wk='+K:'')+(rivalOn?'&rival=1':''))}
 function select(r,user){cur=r;const t=T[r];const ro=document.documentElement.style;ro.setProperty('--acc',t.accent);ro.setProperty('--acc-a',t.accent+'2e');ro.setProperty('--riv',T[rivalOf(r)].accent);
  document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',+c.dataset.r===r));
@@ -672,7 +701,8 @@ function show(n,ev){tip.innerHTML=`<b>${esc(n.dataset.tt)}</b>${esc(n.dataset.tb
  const r=tip.getBoundingClientRect(),px=ev.clientX,py=ev.clientY;let l=px+14,tp=py-r.height-14;if(l+r.width>innerWidth-8)l=Math.max(8,px-r.width-14);if(tp<110)tp=py+18;tip.style.left=l+'px';tip.style.top=tp+'px'}
 const hide=()=>{tip.classList.remove('on');pinned=null};
 document.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const n=e.target.closest('[data-tt]');n?show(n,e):hide()});
-document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||e.target.closest('#scrub'))return;const n=e.target.closest('[data-tt]');if(n&&n!==pinned){show(n,e);pinned=n}else hide()});
+let ptype='mouse';document.addEventListener('pointerdown',e=>{ptype=e.pointerType},{passive:true});
+document.addEventListener('click',e=>{if(ptype==='mouse'||e.target.closest('#scrub,button,a'))return;const n=e.target.closest('[data-tt]');if(n&&n!==pinned){show(n,e);pinned=n}else hide()});
 addEventListener('scroll',()=>{if(pinned)hide()},{passive:true});
 })();
 </script>
