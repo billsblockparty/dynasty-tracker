@@ -142,7 +142,13 @@ def m_byes():
         rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[t])}</span>{cells}</div>')
         for w in wk:
             if len(BY[t][w])>=2:notes.append((w,t,BY[t][w]))
-    nl=''.join(f'<div class="bnl"><span>Wk {w}</span><b>{e(SHORT[t])}</b><i>{"".join(f'<span>{pz(p[2])}{e(p[3]+" DEF" if p[2]=="DEF" else p[1])}</span>' for p in ps)}</i></div>' for w,t,ps in sorted(notes))
+    HH=D._g('H');tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b' if r>=8 else ''
+    def opp(t,w):
+        f=[x for x in D.FUT[t] if x[0]==w]
+        if not f:return ''
+        o=D.FROM_SHORT.get(f[0][1],f[0][1]);r=HH.index(o)+1
+        return f'<small class="bop">vs <em class="{tone(r)}">{r}</em> {e(D.SHORT0.get(o,o))}</small>'
+    nl=''.join(f'<div class="bnl"><span>Wk {w}</span><b class="bnt">{e(D.SHORT0.get(t,t))}{opp(t,w)}</b><i>{"".join(f'<span>{pz(p[2])}{e(p[3]+" DEF" if p[2]=="DEF" else p[1])}</span>' for p in ps)}</i></div>' for w,t,ps in sorted(notes))
     return head('Bye exposure','Core starters on bye each remaining week')+f'<div class="sxm bym" style="--n:{len(wk)}"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'+head('Two or more starters out','')+nl
 # ---------- 11 Home / Road (starters' home or road games, Weeks 1..G, from hist.json)
 import json as _json
@@ -258,7 +264,10 @@ def build():
     nav='<div class="lbc sxnav" role="tablist" aria-label="Stats">'+''.join(f'<label for="sx-{k}">{lab}</label>' for k,lab,_ in MODS)+'</div>'
     pans=''.join(f'<div class="sxp sxp-{k}">'+('POS_SECTION' if f is None else f'<section class="sxc">{f()}</section>')+'</div>' for k,_,f in MODS)
     css=''.join(f'#sx-{k}:checked~.sxnav label[for="sx-{k}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#sx-{k}:checked~.sxp-{k}{{display:block}}' for k,_,_ in MODS)
-    css+=HXCSS
+    css+=HXCSS+('.bnl .bnt{display:flex;flex-direction:column;gap:3px;white-space:nowrap;overflow:visible}'
+      '.bnl .bop{font-size:11.5px;font-weight:500;color:var(--steel)}.bnl .bop em{font-style:normal;font-family:var(--display);font-weight:700;color:var(--label);margin:0 1px}'
+      '.bnl .bop em.gold{color:#e8c15a}.bnl .bop em.g{color:var(--win)}.bnl .bop em.b{color:#ff8a9a}'
+      '.hm.r1{box-shadow:inset 0 0 0 1.5px #e8c15a}.hm.r10{box-shadow:inset 0 0 0 1.5px rgba(255,93,115,.85)}')
     return radios+nav+pans,css
 if __name__=='__main__':
     h,c=build();open(P+'sx_section.html','w',encoding='utf-8').write(h);open(P+'sx_css.css','w',encoding='utf-8').write(c);print(len(h))
