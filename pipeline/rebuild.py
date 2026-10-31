@@ -45,6 +45,20 @@ else:
     import re as _re_th
     h=_re_th.sub(r'  <div class="pane pane-th">.*?\n  </div>\n(?=  <div class="pane pane-po">)','',h,flags=_re_th.S)
     h=h.replace('<label for="tab-th" class="tpo">Team Hub</label>','').replace('<input type="radio" name="tab" id="tab-th" class="lr tabr">','').replace('TH_CSS','')
+# Players tab: top 50 NFL players by position (pull_top.json). Inserted beside Playoffs; skipped if the pull is missing.
+_PL=_dt_os.path.exists(P+'pull_top.json')
+if _PL:
+    sp0.run(['python3',P+'pl_build.py'],check=True,stdout=sp0.DEVNULL)
+    _GL='<div class="glw"><span>Glossary</span><div class="pseg glc" role="group" aria-label="Glossary"><label for="gl-h">Hide</label><label for="gl-s">Show</label></div></div>'
+    _KEY=('<div class="key"><div><b>Players</b> every NFL player, rostered or not, ranked at his position by season points (half-PPR, league scoring) '
+          'or by points per game. Per game needs at least half the completed weeks played. <b>Tile</b> = position rank for the chosen sort. '
+          '<b>GP</b> games played, (bye week), then the fantasy team that rosters him or Free agent.</div>'
+          '<div><b>Stat line</b> season totals. PA yards-TD-INT, RU carries-yards-TD, REC catches-yards-TD; K FG made/attempted, LNG longest FG, XP made/attempted; '
+          'DEF SK sacks, TO takeaways (interceptions + fumble recoveries), TD defensive and return touchdowns, PA points allowed per game.</div></div>')
+    h=h.replace('<input type="radio" name="tab" id="tab-po" class="lr tabr">','<input type="radio" name="tab" id="tab-po" class="lr tabr"><input type="radio" name="tab" id="tab-pl" class="lr tabr">',1)
+    h=h.replace('<label for="tab-po" class="tpo">Playoffs</label>','<label for="tab-po" class="tpo">Playoffs</label><label for="tab-pl" class="tpo">Players</label>',1)
+    h=h.replace('  <div class="pane pane-po">','  <div class="pane pane-pl">\n  '+open(P+'pl_section.html',encoding='utf-8').read()+'\n  '+_GL+'\n  '+_KEY+'\n  </div>\n  <div class="pane pane-po">',1)
+    _PLCSS=open(P+'pl_css.css',encoding='utf-8').read()+'#tab-pl:checked~.tabs label[for="tab-pl"]{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}#tab-pl:checked~.pane-pl{display:block}'
 h=h.replace('__LEFT__',str(14-DONE)).replace('__G__',str(DONE))
 h=h.replace('SEGMENTS',segs).replace('POS_SECTION',open(P+'pos/pos_section.html',encoding='utf-8').read())
 import json,subprocess as sp
@@ -79,5 +93,5 @@ if _os.path.isdir(P+'logos'):
                 _u='data:image/webp;base64,'+_b64.b64encode(_bb.getvalue()).decode()
             except Exception:pass
             _LG+=f'.thr .nfl.tm.n-{_t},.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct{{visibility:hidden}}'
-_i=h.rindex('</style>');h=h[:_i]+open(P+'readability.css',encoding='utf-8').read()+_LG+('.tabs label.tpo{grid-column:1 / -1!important}' if _TH_OFF else '')+h[_i:]
+_i=h.rindex('</style>');h=h[:_i]+open(P+'readability.css',encoding='utf-8').read()+_LG+(_PLCSS if _PL else '')+('.tabs label.tpo{grid-column:1 / -1!important}' if _TH_OFF and not _PL else '.tabs label.tpo{grid-column:span 2!important}' if not _TH_OFF and _PL else '')+h[_i:]
 open(P+'standings.html','w',encoding='utf-8').write(h+d+t)
