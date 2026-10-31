@@ -4,26 +4,27 @@ import math
 def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
     W=312.0
     RO,RQ,RS=0.40*W,0.27*W,0.17*W
+    KY=1.32  # vertical stretch: room above/below each round for its label
     ROT=90  # whole bracket turned 90 deg anticlockwise: byes on the right, seeds 5/6 on the left, semifinals top and bottom
     rt=lambda a:(a+ROT)%360
     up=lambda a:math.sin(math.radians(rt(a)))>1e-9
     # extents from the team nodes (outer ring for QF teams, middle ring for byes); labels add ~40 above/below, ~52 sideways
-    NODES=[(a,RO) for a in (165,115,15,65)]+[(220,RQ),(320,RQ)]
-    xs=[r_*math.cos(math.radians(rt(a))) for a,r_ in NODES];ys=[r_*math.sin(math.radians(rt(a))) for a,r_ in NODES]
+    NODES=[(a,RO) for a in (165,105,15,75)]+[(245,RQ),(295,RQ)]
+    xs=[r_*math.cos(math.radians(rt(a))) for a,r_ in NODES];ys=[KY*r_*math.sin(math.radians(rt(a))) for a,r_ in NODES]
     LAB,LABV=54.0,44.0
     CX=(W-(max(xs)+LAB)-(-min(xs)+LAB))/2+(-min(xs)+LAB)
     CY=max(ys)+LABV
     H=round(CY+(-min(ys))+LABV+4)
-    def pol(a,r,cy):a=rt(a);return CX+r*math.cos(math.radians(a)),cy-r*math.sin(math.radians(a))
+    def pol(a,r,cy):a=rt(a);return CX+r*math.cos(math.radians(a)),cy-KY*r*math.sin(math.radians(a))
     (q1,q2,s1,s2,fn)=[g[2] for g in GAMES]
     # left half: 4 at 160, 5 at 120 (QF qf2), seed 1 bye at 220; right half mirrored: 3 at 20, 6 at 60 (qf1), seed 2 at 320
-    L=dict(qf='qf2',sf='sf1',pair=q2,angs=(165,115),qa=140,bye=S[0],ba=220,sa=180)
-    R=dict(qf='qf1',sf='sf2',pair=q1,angs=(15,65),qa=40,bye=S[1],ba=320,sa=0)
+    L=dict(qf='qf2',sf='sf1',pair=q2,angs=(165,105),qa=140,bye=S[0],ba=245,sa=180)
+    R=dict(qf='qf1',sf='sf2',pair=q1,angs=(15,75),qa=40,bye=S[1],ba=295,sa=0)
     wk={'qf1':15,'qf2':15,'sf1':16,'sf2':16,'fin':17}
     paths=[];nodes=[];btns=[]
     def arc(r,a1,a2,cls):
         x1,y1=pol(a1,r,CY);x2,y2=pol(a2,r,CY);d=(a2-a1+180)%360-180;big=0;sw=0 if d>0 else 1
-        paths.append(f'<path class="{cls}" d="M{x1:.2f} {y1:.2f}A{r:.2f} {r:.2f} 0 {big} {sw} {x2:.2f} {y2:.2f}"/>')
+        paths.append(f'<path class="{cls}" d="M{x1:.2f} {y1:.2f}A{r:.2f} {KY*r:.2f} 0 {big} {sw} {x2:.2f} {y2:.2f}"/>')
     def spoke(a,r1,r2,cls):
         x1,y1=pol(a,r1,CY);x2,y2=pol(a,r2,CY);paths.append(f'<path class="{cls}" d="M{x1:.2f} {y1:.2f}L{x2:.2f} {y2:.2f}"/>')
     pos=lambda x,y:f'left:{x/W*100:.3f}%;top:{y/H*100:.3f}%'
@@ -34,10 +35,12 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
                      f'<span class="prl{" up" if above else ""}"><b>{e(SHORT[t])}</b><em>{sc}</em></span></span>')
     def btn(k,a,r,cls=''):
         x,y=pol(a,r,CY) if r else (CX,CY);a_,b_=dict((g[0],g[2]) for g in GAMES)[k];w=wk[k];wn=win(a_,b_,w);p=winp(wn,b_ if wn==a_ else a_,w)
-        lab={'qf1':'QF','qf2':'QF','sf1':'SF','sf2':'SF','fin':'Final'}[k]
+        lab={'qf1':'Wild<br>Card','qf2':'Wild<br>Card','sf1':'Semi<br>Final','sf2':'Semi<br>Final','fin':'Final'}[k]
         # round label sits outside the circle: radially outward for QF/SF (between the two incoming lines), left of the final
-        oa=math.radians(180 if not r else rt(a)+(-28 if math.cos(math.radians(rt(a)))<-0.3 and math.sin(math.radians(rt(a)))>0 else 28 if math.cos(math.radians(rt(a)))<-0.3 else 0));rad=29+16 if r==0 else (18+9 if k.startswith("qf") else 18+10)
-        btns.append(f'<label for="bk-{k}" class="prg{cls}" style="{pos(x,y)}"><b>{p}%</b><small style="left:calc(50% + {math.cos(oa)*rad:.1f}px);top:calc(50% - {math.sin(oa)*rad:.1f}px)">{lab}</small></label>')
+        # round label outside the circle, its near edge a fixed gap away: left of the final, above / below the other rounds
+        st=('left:-10px;top:50%;transform:translate(-100%,-50%)' if not r else
+            'left:50%;top:-7px;transform:translate(-50%,-100%)' if y<CY else 'left:50%;top:calc(100% + 7px);transform:translate(-50%,0)')
+        btns.append(f'<label for="bk-{k}" class="prg{cls}" style="{pos(x,y)}"><b>{p}%</b><small style="{st}">{lab}</small></label>')
     for side in (L,R):
         a,b=side['pair'];wn=win(a,b,15)
         for t,ang in zip(side['pair'],side['angs']):
@@ -71,7 +74,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
          '.prd .prl em{font-style:normal;font-family:var(--display);font-weight:600;font-size:13px;color:var(--steel);letter-spacing:.02em}.prd .prby .prl em{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}'
          '.prd .prg{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;box-sizing:border-box;cursor:pointer;'
          'background:var(--deck);border:1.5px solid var(--line-strong);line-height:1}'
-         '.prd .prg small{position:absolute;transform:translate(-50%,-50%);font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk);white-space:nowrap;line-height:1;pointer-events:none}'
+         '.prd .prg small{position:absolute;transform:translate(-50%,-50%);font-family:var(--display);font-weight:700;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--chalk);white-space:nowrap;line-height:1.02;text-align:center;pointer-events:none}'
          '.prd .prg b{font-family:var(--display);font-weight:700;font-size:14px;color:var(--label);font-variant-numeric:tabular-nums;padding-top:1px}'
          '.rkey{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:11.5px;color:var(--steel)}.rkey b{font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin-right:3px}'
          '.rkey span{display:inline-flex;align-items:center;white-space:nowrap}.rk-l{display:inline-block;width:16px;height:1.5px;background:var(--steel);margin-right:6px}'
