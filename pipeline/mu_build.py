@@ -39,7 +39,7 @@ def card(a,b):
           ('All-play',f'{T[a][10]}-{T[a][11]}',f'{T[b][10]}-{T[b][11]}',T[a][10],T[b][10]),
           ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None),
           ('On bye',str(len(byes(a,W))),str(len(byes(b,W))),-len(byes(a,W)),-len(byes(b,W))),
-          ('Home · Road',*(lambda x,y:(f'{x[0]} · {x[1]}',f'{y[0]} · {y[1]}'))(hr_count(LW['out'][str(RID[a])]['st']),hr_count(LW['out'][str(RID[b])]['st'])),None,None)]
+          (HRLAB,hrval(hr_count(LW['out'][str(RID[a])]['st'])),hrval(hr_count(LW['out'][str(RID[b])]['st'])),None,None)]
     cmp=''.join(f'<div class="mcr"><span class="{"up" if va is not None and va>vb else ""}">{x}</span><em>{l}</em><span class="{"up" if va is not None and vb>va else ""}">{y}</span></div>' for l,x,y,va,vb in rows)
     prev=[x for x in WK[a] if FULL[x[1]]==b]
     pv=''.join(f'<div class="mprev">Week {x[0]}: <b class="{"w" if x[2]>x[3] else "l"}">{e(a) if x[2]>x[3] else e(b)}</b> won {max(x[2],x[3]):.1f}–{min(x[2],x[3]):.1f}</div>' for x in prev)
@@ -79,6 +79,9 @@ def _hax(p):
     """'vs' (home) / '@' (road) for a lineup entry, '' when the player has no game"""
     if not p or not p[6]:return ''
     return ((p[9] if len(p)>9 else ('vs' if p[3] in HOME else '@')) or '').strip()
+HRLAB='<span class="hrt hrt-h">Home</span><i class="hrd">·</i><span class="hrt hrt-r">Road</span>'
+def hrval(c):
+    h,r_=c;return f'<b class="hrn{" hi" if h>r_ else ""}">{h}</b><i class="hrd">·</i><b class="hrn{" hi" if r_>h else ""}">{r_}</b>'
 def hr_count(st):
     hs=[_hax(p) for p in st if p];return sum(x=='vs' for x in hs),sum(x=='@' for x in hs)
 def _gline(ha,opp):
@@ -401,6 +404,11 @@ css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;m
       '@media(max-width:449px){.mpk .pr2{grid-template-columns:1.2em minmax(0,1fr) auto 2.75em;gap:3px}.mpk .dv{margin-left:calc(1.2em + 3px)}.mpk .stk{padding:2px 3px 1px;font-size:10.5px}}'
       '@media(max-width:399px){.mpk label{padding:7px 6px;font-size:12.5px;letter-spacing:.01em}}@media(max-width:374px){.mpk label{font-size:11.5px;letter-spacing:0}.mpk .pr2{gap:4px}.mpk .stk{font-size:10px;padding:2px 3px 1px}}'
       +'')
+css+=('.mcr em .hrt{display:inline-block;font-family:var(--display);font-weight:700;font-size:inherit;letter-spacing:inherit;line-height:1;padding:2px 5px 1px;border-radius:4px;font-style:normal}'
+      '.mcr em .hrt-h{background:rgba(63,214,155,.14);color:#7fdcb6;box-shadow:inset 0 0 0 1px rgba(63,214,155,.5)}'
+      '.mcr em .hrt-r{background:rgba(150,160,255,.13);color:#b9c1ff;box-shadow:inset 0 0 0 1px rgba(150,160,255,.5)}'
+      '.mcr .hrd{font-style:normal;margin:0 6px;opacity:.6}'
+      '.mcr .hrn{font-weight:500;color:var(--steel)}.mcr .hrn.hi{font-weight:700;color:var(--chalk)}')
 css+=('.cr.lu .cn .hab{position:absolute;top:-8px;bottom:-8px;width:14px;box-sizing:border-box;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-style:normal;pointer-events:none}'
       '.cr.lu .cn.a .hab{right:0}.cr.lu .cn.b .hab{left:0}'
       '.cr.lu .cn .hab span{display:block;font-family:var(--display);font-weight:700;font-size:10.5px;line-height:10px;height:10px;text-align:center}'

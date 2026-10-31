@@ -123,7 +123,7 @@ def card(a,b,w,label):
           ('PF rank',f'#{T[a][4]}',f'#{T[b][4]}',-T[a][4],-T[b][4]),
           ('All-play',f'{T[a][10]}-{T[a][11]}',f'{T[b][10]}-{T[b][11]}',T[a][10],T[b][10]),
           ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None),
-          ('Home · Road',*(lambda x,y:(f'{x[0]} · {x[1]}',f'{y[0]} · {y[1]}'))(MB.hr_count([mp(q,w) for q in setlineup(a,w)]),MB.hr_count([mp(q,w) for q in setlineup(b,w)])),None,None)]
+          (MB.HRLAB,MB.hrval(MB.hr_count([mp(q,w) for q in setlineup(a,w)])),MB.hrval(MB.hr_count([mp(q,w) for q in setlineup(b,w)])),None,None)]
     cmp=''.join(f'<div class="mcr"><span class="{"up" if va is not None and va>vb else ""}">{x}</span><em>{l}</em><span class="{"up" if va is not None and vb>va else ""}">{y}</span></div>' for l,x,y,va,vb in rows)
     prev=[x for x in WK[a] if FULL[x[1]]==b]
     pv=''.join(f'<div class="mprev">Week {x[0]}: <b class="{"w" if x[2]>x[3] else "l"}">{e(a) if x[2]>x[3] else e(b)}</b> won {max(x[2],x[3]):.1f}–{min(x[2],x[3]):.1f}</div>' for x in prev)
