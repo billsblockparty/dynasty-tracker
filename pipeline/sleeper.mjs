@@ -165,7 +165,9 @@ export async function pullDetail(get, weeks) {
 // Top players by position through week D (every NFL player, rostered or not): season stat totals, weekly league points,
 // names. Keeps the union of the top 60 by points and the top 60 by points per game (min. ceil(D/2) games) per position.
 const TOPK = ['pass_cmp', 'pass_att', 'pass_yd', 'pass_td', 'pass_int', 'rush_att', 'rush_yd', 'rush_td', 'rec', 'rec_tgt', 'rec_yd', 'rec_td',
-  'fum_lost', 'fgm', 'fga', 'fgm_lng', 'xpm', 'xpa', 'sack', 'int', 'fum_rec', 'def_td', 'pts_allow', 'yds_allow', 'safe', 'def_st_td'];
+  'fum_lost', 'fgm', 'fga', 'fgm_lng', 'xpm', 'xpa', 'sack', 'int', 'fum_rec', 'def_td', 'pts_allow', 'yds_allow', 'safe', 'def_st_td',
+  'off_snp', 'tm_off_snp', 'pass_sack', 'pass_lng', 'rush_lng', 'rec_lng', 'blk_kick', 'ff', 'fum',
+  'fgm_0_19', 'fgm_20_29', 'fgm_30_39', 'fgm_40_49', 'fgm_50_59', 'fgm_60p', 'fgmiss_0_19', 'fgmiss_20_29', 'fgmiss_30_39', 'fgmiss_40_49', 'fgmiss_50_59', 'fgmiss_60p'];
 export async function pullTop(get, D, keep = 60) {
   const L = `${A}/league/${LEAGUE}`;
   const [lg, ro, players] = await Promise.all([get(L), get(`${L}/rosters`), get(`${A}/players/nfl`)]);
@@ -177,7 +179,7 @@ export async function pullTop(get, D, keep = 60) {
       if (!FPOS.has(pos) || !(s.gp > 0)) continue;
       const e = X[r.player_id] || (X[r.player_id] = { pos, team: r.team, w: Array(D).fill(null), t: {} });
       e.team = r.team || e.team; e.w[i] = leagueScore(s, ss);
-      for (const k of TOPK) { const v = s[k]; if (typeof v === 'number' && v) e.t[k] = k === 'fgm_lng' ? Math.max(e.t[k] || 0, v) : r2((e.t[k] || 0) + v); }
+      for (const k of TOPK) { const v = s[k]; if (typeof v === 'number' && v) e.t[k] = k.endsWith('_lng') ? Math.max(e.t[k] || 0, v) : r2((e.t[k] || 0) + v); }
     }
   });
   const minGp = Math.ceil(D / 2), pick = new Set();
