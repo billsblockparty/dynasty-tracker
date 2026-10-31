@@ -83,7 +83,7 @@ def panel(i,t):
 radios='<input type="radio" name="rcol" id="rc-p" class="lr" checked><input type="radio" name="rcol" id="rc-t" class="lr"><input type="radio" name="rview" id="rv-pos" class="lr" checked><input type="radio" name="rview" id="rv-pts" class="lr"><input type="radio" name="rq" id="rq-all" class="lr" checked><input type="radio" name="rq" id="rq-noqb" class="lr"><input type="radio" name="rsort" id="rs-p" class="lr" checked><input type="radio" name="rsort" id="rs-g" class="lr">'+''.join(f'<input type="radio" name="ros" id="ro-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(10))
 chips='<div class="roc rogd" role="tablist" aria-label="Team">'+''.join(f'<label for="ro-{i}"><em class="rrk">{i+1}</em><span>{e(SHORT[t])}</span></label>' for i,t in enumerate(H))+'</div>'
 CTRL=('<div class="rctl">'
-      '<div class="pseg rseg" role="group" aria-label="Roster view"><label for="rv-pos">By position</label><label for="rv-pts">By points</label></div>'
+      '<div class="pseg rseg" role="group" aria-label="Roster view"><label for="rv-pos">Position</label><label for="rv-pts">Points</label></div>'
       '<div class="pseg rqseg rsseg" role="group" aria-label="Sort"><label for="rs-p">Pts</label><label for="rs-g">/ Gm</label></div>'
       '<div class="pseg rcseg" role="group" aria-label="Tile colours"><label for="rc-p">Position</label><label for="rc-t">Team</label></div>'
       '<div class="pseg rqseg rqf" role="group" aria-label="Filter"><label for="rq-all">All players</label><label for="rq-noqb">No QBs</label></div></div>')
