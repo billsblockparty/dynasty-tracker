@@ -38,7 +38,8 @@ def card(a,b):
           ('PF rank',f'#{T[a][4]}',f'#{T[b][4]}',-T[a][4],-T[b][4]),
           ('All-play',f'{T[a][10]}-{T[a][11]}',f'{T[b][10]}-{T[b][11]}',T[a][10],T[b][10]),
           ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None),
-          ('On bye',str(len(byes(a,W))),str(len(byes(b,W))),-len(byes(a,W)),-len(byes(b,W)))]
+          ('On bye',str(len(byes(a,W))),str(len(byes(b,W))),-len(byes(a,W)),-len(byes(b,W))),
+          ('Home · Road',*(lambda x,y:(f'{x[0]} · {x[1]}',f'{y[0]} · {y[1]}'))(hr_count(LW['out'][str(RID[a])]['st']),hr_count(LW['out'][str(RID[b])]['st'])),None,None)]
     cmp=''.join(f'<div class="mcr"><span class="{"up" if va is not None and va>vb else ""}">{x}</span><em>{l}</em><span class="{"up" if va is not None and vb>va else ""}">{y}</span></div>' for l,x,y,va,vb in rows)
     prev=[x for x in WK[a] if FULL[x[1]]==b]
     pv=''.join(f'<div class="mprev">Week {x[0]}: <b class="{"w" if x[2]>x[3] else "l"}">{e(a) if x[2]>x[3] else e(b)}</b> won {max(x[2],x[3]):.1f}–{min(x[2],x[3]):.1f}</div>' for x in prev)
@@ -73,9 +74,22 @@ _NICK={'ARI':'Cardinals','ATL':'Falcons','BAL':'Ravens','BUF':'Bills','CAR':'Pan
 'LV':'Raiders','LAC':'Chargers','LAR':'Rams','MIA':'Dolphins','MIN':'Vikings','NE':'Patriots','NO':'Saints','NYG':'Giants',
 'NYJ':'Jets','PHI':'Eagles','PIT':'Steelers','SF':'49ers','SEA':'Seahawks','TB':'Buccaneers','TEN':'Titans','WAS':'Commanders'}
 _LOGOS={f.rpartition('.')[0] for f in (_dt_os.listdir(P+'logos') if _dt_os.path.isdir(P+'logos') else []) if f.rpartition('.')[2].lower() in('svg','png','webp')}
+HATILE=False  # playoffs set this: HOME / ROAD tile in place of the plain vs / @
+def _hax(p):
+    """'vs' (home) / '@' (road) for a lineup entry, '' when the player has no game"""
+    if not p or not p[6]:return ''
+    return ((p[9] if len(p)>9 else ('vs' if p[3] in HOME else '@')) or '').strip()
+def hr_count(st):
+    hs=[_hax(p) for p in st if p];return sum(x=='vs' for x in hs),sum(x=='@' for x in hs)
 def _gline(ha,opp):
     ha=(ha or '').strip()
     if not opp:return ha
+    if HATILE and ha in('vs','@'):
+        tile=f'<span class="hat {"h" if ha=="vs" else "r"}" title="{"Home" if ha=="vs" else "Road"}">{"H" if ha=="vs" else "R"}</span>'
+        if opp in _LOGOS and opp in _NICK:
+            lab=('at ' if ha=='@' else 'vs ')+_NICK[opp]
+            return f'{tile}<em class="nfl opp n-{opp}" role="img" aria-label="{lab}" title="{lab}"><span class="ct">{opp}</span></em>'
+        return tile+opp
     if opp not in _LOGOS or opp not in _NICK:return (ha+' ' if ha else '')+opp
     lab=('at ' if ha=='@' else 'vs ' if ha else '')+_NICK[opp]
     pre=f'<span class="gha" aria-hidden="true">{ha}</span>' if ha else ''
@@ -383,6 +397,9 @@ css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;m
       '@media(max-width:449px){.mpk .pr2{grid-template-columns:1.2em minmax(0,1fr) auto 2.75em;gap:3px}.mpk .dv{margin-left:calc(1.2em + 3px)}.mpk .stk{padding:2px 3px 1px;font-size:10.5px}}'
       '@media(max-width:399px){.mpk label{padding:7px 6px;font-size:12.5px;letter-spacing:.01em}}@media(max-width:374px){.mpk label{font-size:11.5px;letter-spacing:0}.mpk .pr2{gap:4px}.mpk .stk{font-size:10px;padding:2px 3px 1px}}'
       +'')
+css+=('.hat{display:inline-block;min-width:14px;box-sizing:border-box;text-align:center;font-style:normal;font-family:var(--display);font-weight:700;font-size:11px;line-height:1;padding:2px 2px 1.5px;border-radius:3px;margin-right:2px;vertical-align:1px}'
+      '.hat.h{color:#7fdcb6;background:rgba(63,214,155,.13);box-shadow:inset 0 0 0 1px rgba(63,214,155,.4)}'
+      '.hat.r{color:#b3bcff;background:rgba(150,160,255,.12);box-shadow:inset 0 0 0 1px rgba(150,160,255,.38)}')
 css+=('#lc-p:checked~.mwx .lcw label[for="lc-p"],#lc-t:checked~.mwx .lcw label[for="lc-t"]{background:var(--chalk);color:var(--ink)}'+team_tiles('#lc-t:checked~.mwx'))
 css+=('.mug.muc label>span{white-space:nowrap!important}@media(max-width:419px){.muc label>span{letter-spacing:.02em!important}.mug.muc label{padding-inline:2px!important}}'
       '.muc .mrk{display:inline-block;margin-right:4px;text-align:right;font-style:normal;'

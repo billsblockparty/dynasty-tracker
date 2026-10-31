@@ -74,6 +74,7 @@ def cell(q,side):
     return (f'<span class="cn {side}">{sq}<span class="cnm"><b><span>{e(nm)}</span>{ij}</b>'
             f'<small>{badge(q["nfl"])}<span class="gp">{sub}</span></small></span></span><span class="cv {side}">{q["pj"]:.1f}</span>')
 import mu_build as MB
+MB.HATILE=True  # HOME / ROAD tiles in the playoff lineups
 _W8=json.load(open(P+f'wk{G+1}.json'))
 RIDN={"Convicts":1,"Homer's Heroes":2,"Team Ram Rod":3,"Team RIPMFL":4,"Reverse Apache Master":5,"Canton waitlist":6,"Nuts in the Face":7,"Bill's Block Party":8,"Mandingoes":9,"Cheating is Trying":10}
 HOMEW=json.load(open(P+'po_home.json')) if os.path.exists(P+'po_home.json') else {}
@@ -121,7 +122,8 @@ def card(a,b,w,label):
           ('PF / wk',f'{T[a][5]:.1f}',f'{T[b][5]:.1f}',T[a][5],T[b][5]),
           ('PF rank',f'#{T[a][4]}',f'#{T[b][4]}',-T[a][4],-T[b][4]),
           ('All-play',f'{T[a][10]}-{T[a][11]}',f'{T[b][10]}-{T[b][11]}',T[a][10],T[b][10]),
-          ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None)]
+          ('Luck',f'{T[a][12]:+.2f}',f'{T[b][12]:+.2f}',None,None),
+          ('Home · Road',*(lambda x,y:(f'{x[0]} · {x[1]}',f'{y[0]} · {y[1]}'))(MB.hr_count([mp(q,w) for q in setlineup(a,w)]),MB.hr_count([mp(q,w) for q in setlineup(b,w)])),None,None)]
     cmp=''.join(f'<div class="mcr"><span class="{"up" if va is not None and va>vb else ""}">{x}</span><em>{l}</em><span class="{"up" if va is not None and vb>va else ""}">{y}</span></div>' for l,x,y,va,vb in rows)
     prev=[x for x in WK[a] if FULL[x[1]]==b]
     pv=''.join(f'<div class="mprev">Week {x[0]}: <b class="{"w" if x[2]>x[3] else "l"}">{e(a) if x[2]>x[3] else e(b)}</b> won {max(x[2],x[3]):.1f}–{min(x[2],x[3]):.1f}</div>' for x in prev)
