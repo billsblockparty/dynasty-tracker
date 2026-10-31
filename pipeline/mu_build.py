@@ -232,7 +232,7 @@ VSW='<div class="lvw pseg" role="group" aria-label="Lineup order"><label for="lv
 LSW='<div class="lsw pseg" role="group" aria-label="Lineup"><label for="lo-a">Actual</label><label for="lo-o">Optimal</label></div>'
 LDW='<div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div>'
 RKW='<div class="lrw pseg" role="group" aria-label="Position rank by"><label for="rk-t">Pts</label><label for="rk-g">/ Gm</label></div>'
-LCW='<div class="lcw pseg" role="group" aria-label="Tile colours"><label for="lc-p">Position</label><label for="lc-t">Team</label></div>'
+LCW='<div class="lcw pseg" role="group" aria-label="Tile colors"><label for="lc-p">Position</label><label for="lc-t">Team</label></div>'
 def CTL(rows):
     """lineup switches in one grid: switch | its title | title | switch per row, titles meeting in the middle"""
     return '<div class="lctl lgrid">'+''.join(f'{a}<i class="lt">{ta}</i><i class="lt ltr">{tb}</i>{b}' for a,ta,tb,b in rows)+'</div>'
@@ -280,7 +280,7 @@ def lineups(a,b):
     sc=lambda X:sum(p[5] for p in X['st'])
     ta,tb=tot(A),tot(B)
     oa_,ob_=sum(p[4] for p in A['st']),sum(p[4] for p in B['st'])
-    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW),(LCW,'Tiles','','')])}<div class="lnote">boxed = final · grey = projected</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW),(LCW,'Colors','','')])}<div class="lnote">boxed = final · grey = projected</div>'
     o=[ptsrow(A['st'],B['st'],True,RID[a],RID[b])]
     o+=['<div class="lpv">']+[lrow(pa,pb,sl if sl!='FLEX' else 'FLX') for pa,pb,sl in zip(A['st'],B['st'],SLOTS)]+['</div>',sview(A['st'],B['st'])]
     keep=lambda p:_TAG.get(p[0],'')=='' and p[4]>0 or (p[3] in DONEG and p[5]>0)
@@ -316,7 +316,7 @@ def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False):
 _cur=lambda t:sum(lval(p)[0] for p in LW['out'][str(RID[t])]['st'])
 chips='<div class="mpk muc2" role="tablist" aria-label="Game">'+''.join(prow_(f'mu-{i}',a,b,seed(a),seed(b),streak(a),streak(b),_cur(a),_cur(b)) for i,(a,b) in enumerate(games))+'</div>'
 cur=f'<div class="mwx mwx-{W}">'+radios+chips+''.join(panel(i,a,b) for i,(a,b) in enumerate(games))+'</div>'
-css=''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
+css=''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"]{{background:#232a36;border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
 # ---------- historical weeks
 HS=json.load(open(P+'hist.json'));META=HS['m']
 def hp(sp,inj=None):
@@ -326,7 +326,7 @@ def hp(sp,inj=None):
 def hlineups(A,B):
     sa=[hp(x) for x in A[2].split(',')];sb=[hp(x) for x in B[2].split(',')]
     ta,tb=A[1],B[1];pa,pb=sum(x[4] for x in sa),sum(x[4] for x in sb)
-    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW),(LCW,'Tiles','','')])}<div class="lnote">green = beat projection · red = fell short</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW),(LCW,'Colors','','')])}<div class="lnote">green = beat projection · red = fell short</div>'
     o=[ptsrow(sa,sb)]
     o+=['<div class="lpv">']+[lrow(x,y,'') for x,y in zip(sa,sb)]+['</div>',sview(sa,sb)]
     ba=sorted([hp(x) for x in A[3].split(',') if x],key=lambda q:-q[5]);bb=sorted([hp(x) for x in B[3].split(',') if x],key=lambda q:-q[5])
@@ -359,7 +359,7 @@ for w in range(DONE,0,-1):
     hc=f'<div class="mpk hwc{w}" role="tablist">'+''.join(prow_(f'hw{w}-{i}',a,b,_hx(a)[4],_hx(b)[4],'W' if R2[str(RID[a])][1]>R2[str(RID[b])][1] else 'L','W' if R2[str(RID[b])][1]>R2[str(RID[a])][1] else 'L',R2[str(RID[a])][1],R2[str(RID[b])][1],True) for i,(a,b) in enumerate(gl))+'</div>'
     hpn=''.join(f'<div class="mup hwp{w}-{i}">{hcard(w,a,b,R2[str(RID[a])],R2[str(RID[b])])}{hlineups(R2[str(RID[a])],R2[str(RID[b])])}</div>' for i,(a,b) in enumerate(gl))
     hist+=f'<div class="mwx mwx-{w}">'+hr+hc+hpn+'</div>'
-    css+=''.join(f'#hw{w}-{i}:checked~.hwc{w} label[for="hw{w}-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#hw{w}-{i}:checked~.hwp{w}-{i}{{display:block}}#hw{w}-{i}:checked~.hwc{w} label[for="hw{w}-{i}"] :is(.mrk,.sc){{color:var(--ink)!important}}' for i in range(5))
+    css+=''.join(f'#hw{w}-{i}:checked~.hwc{w} label[for="hw{w}-{i}"]{{background:#232a36;border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#hw{w}-{i}:checked~.hwp{w}-{i}{{display:block}}' for i in range(5))
 wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if w==W else ""}>' for w in range(1,W+1))
 dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
@@ -377,10 +377,12 @@ css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;m
       '.mpk .stk{font-style:normal;font-size:11px;letter-spacing:.04em;padding:2px 4px 1px;border-radius:3px;line-height:1}'
       '.mpk .stk.w{color:var(--win);background:rgba(63,214,155,.12)}.mpk .stk.l{color:var(--loss);background:rgba(255,93,115,.12)}'
       '.mpk .sc{text-align:right;font-variant-numeric:tabular-nums;color:var(--label)}.mpk .fin .sc{color:var(--steel)}.mpk .fin .sc.hi{color:var(--chalk)}'
+      '.mpk .pr2>b{color:var(--chalk)}.mpk .sc{color:var(--chalk)}.mpk .fin .sc{color:var(--steel)}.mpk .fin .sc.hi{color:var(--chalk)}'
+      '.mpk label{transition:background-color .15s,border-color .15s}'
       '.mpk .ns{display:none}@media(max-width:599px){.mpk .nf{display:none}.mpk .ns{display:inline}}'
       '@media(max-width:449px){.mpk .pr2{grid-template-columns:1.2em minmax(0,1fr) auto 2.75em;gap:3px}.mpk .dv{margin-left:calc(1.2em + 3px)}.mpk .stk{padding:2px 3px 1px;font-size:10.5px}}'
       '@media(max-width:399px){.mpk label{padding:7px 6px;font-size:12.5px;letter-spacing:.01em}}@media(max-width:374px){.mpk label{font-size:11.5px;letter-spacing:0}.mpk .pr2{gap:4px}.mpk .stk{font-size:10px;padding:2px 3px 1px}}'
-      +''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"] :is(.mrk,.sc){{color:var(--ink)!important}}' for i in range(5)))
+      +'')
 css+=('#lc-p:checked~.mwx .lcw label[for="lc-p"],#lc-t:checked~.mwx .lcw label[for="lc-t"]{background:var(--chalk);color:var(--ink)}'+team_tiles('#lc-t:checked~.mwx'))
 css+=('.mug.muc label>span{white-space:nowrap!important}@media(max-width:419px){.muc label>span{letter-spacing:.02em!important}.mug.muc label{padding-inline:2px!important}}'
       '.muc .mrk{display:inline-block;margin-right:4px;text-align:right;font-style:normal;'

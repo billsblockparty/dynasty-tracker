@@ -82,23 +82,21 @@ def panel(i,t):
     o.append(_AS(t)+'</div>');return ''.join(o)
 radios='<input type="radio" name="rcol" id="rc-p" class="lr" checked><input type="radio" name="rcol" id="rc-t" class="lr"><input type="radio" name="rview" id="rv-pos" class="lr" checked><input type="radio" name="rview" id="rv-pts" class="lr"><input type="radio" name="rq" id="rq-all" class="lr" checked><input type="radio" name="rq" id="rq-noqb" class="lr"><input type="radio" name="rsort" id="rs-p" class="lr" checked><input type="radio" name="rsort" id="rs-g" class="lr">'+''.join(f'<input type="radio" name="ros" id="ro-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(10))
 chips='<div class="roc rogd" role="tablist" aria-label="Team">'+''.join(f'<label for="ro-{i}"><em class="rrk">{i+1}</em><span>{e(SHORT[t])}</span></label>' for i,t in enumerate(H))+'</div>'
-CTRL=('<div class="rctl">'
-      '<div class="pseg rseg" role="group" aria-label="Roster view"><label for="rv-pos">Position</label><label for="rv-pts">Points</label></div>'
-      '<div class="pseg rqseg rsseg" role="group" aria-label="Sort"><label for="rs-p">Pts</label><label for="rs-g">/ Gm</label></div>'
-      '<div class="pseg rcseg" role="group" aria-label="Tile colours"><label for="rc-p">Position</label><label for="rc-t">Team</label></div>'
-      '<div class="pseg rqseg rqf" role="group" aria-label="Filter"><label for="rq-all">All players</label><label for="rq-noqb">No QBs</label></div></div>')
+CTRL=('<div class="rctl lctl lgrid">'
+      '<div class="pseg rcseg" role="group" aria-label="Tile colors"><label for="rc-p">Position</label><label for="rc-t">Team</label></div><i class="lt">Colors</i>'
+      '<i class="lt ltr">Order</i><div class="pseg rseg" role="group" aria-label="Roster view"><label for="rv-pos">Position</label><label for="rv-pts">Points</label></div>'
+      '<div class="pseg rqseg rqf" role="group" aria-label="Filter"><label for="rq-all">All</label><label for="rq-noqb">No QBs</label></div><i class="lt rqt">Filter</i>'
+      '<i class="lt ltr">Sort</i><div class="pseg rqseg rsseg" role="group" aria-label="Sort"><label for="rs-p">Pts</label><label for="rs-g">/ Gm</label></div></div>')
 sec=('<section class="rox" aria-labelledby="roh">'+radios+
      '<div class="posh"><b id="roh">Rosters</b></div><div class="rsub">Tile = position rank by <span class="rs-pt">points</span><span class="rs-pg">points per game</span> · Wk 1–'+str(DONE)+'</div>'+chips+CTRL+
      ''.join(panel(i,t) for i,t in enumerate(H))+'</section>')
 css=''.join(f'#ro-{i}:checked~.roc label[for="ro-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#ro-{i}:checked~.rop-{i}{{display:block}}' for i in range(10))
 sel=lambda pairs:','.join(f'#{i}:checked~.rctl label[for="{i}"]' for i in pairs)
 css+=(sel(['rv-pos','rv-pts','rs-p','rs-g','rc-p','rc-t','rq-all','rq-noqb'])+'{background:var(--chalk);color:var(--ink)}'
-      '.rox .rctl{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px 6px;margin:0 0 14px}'
-      '.rox .rctl .pseg{display:inline-flex!important;margin:0!important}'
-      '.rox .rctl .rseg{grid-area:1/1;justify-self:start}.rox .rctl .rsseg{grid-area:1/3;justify-self:end}.rox .rctl .rcseg{grid-area:2/1;justify-self:start}.rox .rctl .rqf{grid-area:2/3;justify-self:end;display:none!important}'
-      '#rv-pts:checked~.rctl .rqf{display:inline-flex!important}'
+      '.rox .rctl .pseg{display:grid!important;margin:0!important}'
+      '.rox .rctl .rqf,.rox .rctl .rqt{visibility:hidden}#rv-pts:checked~.rctl .rqf,#rv-pts:checked~.rctl .rqt{visibility:visible}'
       '.rox .rogd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:2px 0 12px}'
-      '@media(max-width:374px){.rox .rctl .pseg label{padding-inline:7px!important}.rox .rctl{gap:8px 4px}}'
+      
       '.rox .rogd label{display:flex;align-items:center;gap:7px;min-height:36px;padding:6px 10px;box-sizing:border-box;border-radius:6px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;'
       'font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--label);white-space:nowrap;min-width:0}'
       '.rox .rogd label span{overflow:hidden;text-overflow:ellipsis;min-width:0}'
