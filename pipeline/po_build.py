@@ -25,7 +25,7 @@ PROJ=json.load(open(P+'po_proj.json')) if os.path.exists(P+'po_proj.json') else 
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
 SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
 FULL={**{v:k for k,v in SHORT0.items()},**{k:k for k in SHORT0}};FULL["Bill's"]="Bill's Block Party"
-WEEKS=[15,16,17];RND={15:'Quarterfinals',16:'Semifinals',17:'Championship'}
+WEEKS=[15,16,17];RND={15:'Wild Card',16:'Semi Finals',17:'Championship'}
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
 chip=lambda r:f'<i class="ch {tone(r)}"><span class="ct">#{r}</span></i>'
 seed=lambda t:H.index(t)+1
@@ -134,11 +134,11 @@ q1=(S[2],S[5]);q2=(S[3],S[4])
 w1=win(*q1,15);w2=win(*q2,15)
 s1=(S[0],w2);s2=(S[1],w1)
 f=(win(*s1,16),win(*s2,16))
-GAMES=[('qf1',15,q1,'Quarterfinal'),('qf2',15,q2,'Quarterfinal'),('sf1',16,s1,'Semifinal'),('sf2',16,s2,'Semifinal'),('fin',17,f,'Championship')]
+GAMES=[('qf1',15,q1,'Wild Card'),('qf2',15,q2,'Wild Card'),('sf1',16,s1,'Semi Final'),('sf2',16,s2,'Semi Final'),('fin',17,f,'Championship')]
 def team_line(t,w,winner,proj_tag=False):
     return (f'<span class="bt{" bw" if t==winner else ""}">{chip(seed(t))}<span class="bn">{e(SHORT[t])}</span>'
             f'{"<i class=bpj>proj.</i>" if proj_tag else ""}<b>{PT[(t,w)]:.1f}</b></span>')
-RLAB={15:'Quarterfinal',16:'Semifinal',17:'Championship'}
+RLAB={15:'Wild Card',16:'Semi Final',17:'Championship'}
 def gtile(k,w,pair,lab):
     a,b=pair;wn=win(a,b,w)
     projected={'sf1':[False,True],'sf2':[False,True],'fin':[True,True]}.get(k,[False,False])
