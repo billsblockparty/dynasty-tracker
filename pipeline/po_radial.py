@@ -2,14 +2,19 @@
 # Quarterfinal teams sit on the outer ring; bye teams start one ring in (already in the semifinal).
 import math
 def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
-    W=312.0;CX=156.0
+    W=312.0
     RO,RQ,RS=0.40*W,0.27*W,0.17*W
-    TOPPAD=60.0  # room above the upper team circles for their labels
-    def pol(a,r,cy):return CX+r*math.cos(math.radians(a)),cy-r*math.sin(math.radians(a))
-    top=RO*math.sin(math.radians(65))  # upper team nodes at 65/115 deg
-    CY=TOPPAD+top
-    BOT=CY+RQ*math.sin(math.radians(40))+19+7+32  # bye circle + two-line label
-    H=round(BOT+6)
+    ROT=90  # whole bracket turned 90 deg anticlockwise: byes on the right, seeds 5/6 on the left, semifinals top and bottom
+    rt=lambda a:(a+ROT)%360
+    up=lambda a:math.sin(math.radians(rt(a)))>1e-9
+    # extents from the team nodes (outer ring for QF teams, middle ring for byes); labels add ~40 above/below, ~52 sideways
+    NODES=[(a,RO) for a in (165,115,15,65)]+[(220,RQ),(320,RQ)]
+    xs=[r_*math.cos(math.radians(rt(a))) for a,r_ in NODES];ys=[r_*math.sin(math.radians(rt(a))) for a,r_ in NODES]
+    LAB,LABV=54.0,44.0
+    CX=(W-(max(xs)+LAB)-(-min(xs)+LAB))/2+(-min(xs)+LAB)
+    CY=max(ys)+LABV
+    H=round(CY+(-min(ys))+LABV+4)
+    def pol(a,r,cy):a=rt(a);return CX+r*math.cos(math.radians(a)),cy-r*math.sin(math.radians(a))
     (q1,q2,s1,s2,fn)=[g[2] for g in GAMES]
     # left half: 4 at 160, 5 at 120 (QF qf2), seed 1 bye at 220; right half mirrored: 3 at 20, 6 at 60 (qf1), seed 2 at 320
     L=dict(qf='qf2',sf='sf1',pair=q2,angs=(165,115),qa=140,bye=S[0],ba=220,sa=180)
@@ -36,12 +41,12 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
         for t,ang in zip(side['pair'],side['angs']):
             cl='rp on' if t==wn else 'rp'
             spoke(ang,RO,RQ,cl);arc(RQ,ang,side['qa'],cl)
-            team(t,ang,RO,15,t==wn,above=ang in(115,65))
+            team(t,ang,RO,15,t==wn,above=up(ang))
         sfa,sfb=dict((g[0],g[2]) for g in GAMES)[side['sf']];swn=win(sfa,sfb,16)
         # QF winner path into the semifinal, and the bye team's path
         cl='rp on' if wn==swn else 'rp';spoke(side['qa'],RQ,RS,cl);arc(RS,side['qa'],side['sa'],cl)
         cl='rp on' if side['bye']==swn else 'rp';spoke(side['ba'],RQ,RS,cl);arc(RS,side['ba'],side['sa'],cl)
-        team(side['bye'],side['ba'],RQ,16,side['bye']==swn,bye=True)
+        team(side['bye'],side['ba'],RQ,16,side['bye']==swn,bye=True,above=up(side['ba']))
         fa,fb=fn;fw=win(fa,fb,17)
         spoke(side['sa'],RS,0,'rp on' if swn==fw else 'rp')
         btn(side['qf'],side['qa'],RQ);btn(side['sf'],side['sa'],RS)
@@ -58,7 +63,8 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone):
          '.prd .prn.s-gold>i{color:#f4c451;border-color:rgba(244,196,81,.55);background:#221f19}.prd .prn.s-g>i{color:var(--win);border-color:rgba(63,214,155,.45);background:#17241f}'
          '.prd .prn.prby>i{box-shadow:0 0 0 3px var(--deck),0 0 0 4.5px var(--line-strong)}'
          '.prd .prl{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;line-height:1.15}'
-         '.prd .prl.up{top:auto;bottom:calc(100% + 4px)}.prd .prby .prl{top:calc(100% + 7px)}'
+         '.prd .prl.up{top:auto;bottom:calc(100% + 4px)}.prd .prby .prl{top:calc(100% + 7px)}.prd .prby .prl.up{top:auto;bottom:calc(100% + 7px)}'
+         '.prd .prl b,.prd .prl em{white-space:nowrap!important}'
          '.prd .prl b{font-size:12.5px;font-weight:500;color:var(--steel)}.prd .prw .prl b{color:var(--chalk)}'
          '.prd .prl em{font-style:normal;font-family:var(--display);font-weight:600;font-size:13px;color:var(--steel);letter-spacing:.02em}.prd .prby .prl em{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}'
          '.prd .prg{display:flex;flex-direction:column;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;box-sizing:border-box;cursor:pointer;'

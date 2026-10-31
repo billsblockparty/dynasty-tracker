@@ -61,7 +61,7 @@ def sched(t):
 
 # ---------- Lineups (Sleeper starters + projections, league scoring)
 import sys as _s;_s.path.insert(0,P)
-from nfl_colors import badge_c as _badge
+from nfl_colors import team_tiles, badge_c as _badge
 from datetime import date as _d
 LW=json.load(open(P+f'wk{W}.json'));DONEG=set(LW['done']);LIVEG=set(LW.get('live',[]));HOME=set(LW['home'])
 _X=json.load(open(P+'cmp_extra.json',encoding='utf-8'));RID={v:int(k) for k,v in _X['rn'].items()};RN2={int(k):v for k,v in _X['rn'].items()}
@@ -112,7 +112,7 @@ def lcell(p,side):
     g=(_PG.get(pid) or [None])[0]  # points-per-game rank (players with 3+ games)
     big3=lambda x:x and (x>=100 or (pos=='DEF' and x>=10))
     rk=(f'<b class="rkt{" b3" if big3(r) else ""}">{r}</b>' if r else '<b class="rkt"></b>')+(f'<b class="rkg{" b3" if big3(g) else ""}">{g}</b>' if g else '<b class="rkg"></b>')
-    sq=f'<i class="pq p-{pos.lower()}"><span class="pqi"><span>{pos}</span>{rk}</span></i>'
+    sq=f'<i class="pq p-{pos.lower()} t-{tm or "FA"}"><span class="pqi"><span>{pos}</span>{rk}</span></i>'
     a=_age(pid);acl='ay' if a and a<27 else 'ap' if a and a<31 else 'ao'
     ag=f'<em class="pag {acl}">{a:.1f}</em>' if a else ''
     nm=name.split(' ')[-1] if pos!='DEF' else name.split(' ')[-1]
@@ -232,6 +232,7 @@ VSW='<div class="lvw pseg" role="group" aria-label="Lineup order"><label for="lv
 LSW='<div class="lsw pseg" role="group" aria-label="Lineup"><label for="lo-a">Actual</label><label for="lo-o">Optimal</label></div>'
 LDW='<div class="ldw pseg" role="group" aria-label="Stats"><label for="ld-l">Lean</label><label for="ld-d">Detailed</label></div>'
 RKW='<div class="lrw pseg" role="group" aria-label="Position rank by"><label for="rk-t">Pts</label><label for="rk-g">/ Gm</label></div>'
+LCW='<div class="lcw pseg" role="group" aria-label="Tile colours"><label for="lc-p">Position</label><label for="lc-t">Team</label></div>'
 def CTL(rows):
     """lineup switches in one grid: switch | its title | title | switch per row, titles meeting in the middle"""
     return '<div class="lctl lgrid">'+''.join(f'{a}<i class="lt">{ta}</i><i class="lt ltr">{tb}</i>{b}' for a,ta,tb,b in rows)+'</div>'
@@ -279,7 +280,7 @@ def lineups(a,b):
     sc=lambda X:sum(p[5] for p in X['st'])
     ta,tb=tot(A),tot(B)
     oa_,ob_=sum(p[4] for p in A['st']),sum(p[4] for p in B['st'])
-    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW)])}<div class="lnote">boxed = final · grey = projected</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW),(LCW,'Tiles','','')])}<div class="lnote">boxed = final · grey = projected</div>'
     o=[ptsrow(A['st'],B['st'],True,RID[a],RID[b])]
     o+=['<div class="lpv">']+[lrow(pa,pb,sl if sl!='FLEX' else 'FLX') for pa,pb,sl in zip(A['st'],B['st'],SLOTS)]+['</div>',sview(A['st'],B['st'])]
     keep=lambda p:_TAG.get(p[0],'')=='' and p[4]>0 or (p[3] in DONEG and p[5]>0)
@@ -309,7 +310,7 @@ def hp(sp,inj=None):
 def hlineups(A,B):
     sa=[hp(x) for x in A[2].split(',')];sb=[hp(x) for x in B[2].split(',')]
     ta,tb=A[1],B[1];pa,pb=sum(x[4] for x in sa),sum(x[4] for x in sb)
-    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW)])}<div class="lnote">green = beat projection · red = fell short</div>'
+    hdr=f'<div class="msh lsh">Lineups</div>{CTL([(VSW,'Order','Lineup',LSW),(LDW,'Stats','Rank',RKW),(LCW,'Tiles','','')])}<div class="lnote">green = beat projection · red = fell short</div>'
     o=[ptsrow(sa,sb)]
     o+=['<div class="lpv">']+[lrow(x,y,'') for x,y in zip(sa,sb)]+['</div>',sview(sa,sb)]
     ba=sorted([hp(x) for x in A[3].split(',') if x],key=lambda q:-q[5]);bb=sorted([hp(x) for x in B[3].split(',') if x],key=lambda q:-q[5])
@@ -346,8 +347,9 @@ wr=''.join(f'<input type="radio" name="mwk" id="mw-{w}" class="lr"{" checked" if
 dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week {w}</span>' for w in range(1,W+1))+
     '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
     '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
-sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b><span id="mlive" class="mlive" data-w="{W}" hidden></span>{dd}</div>'+cur+hist+'</section>')
+sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lcol" id="lc-p" class="lr" checked><input type="radio" name="lcol" id="lc-t" class="lr"><input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b><span id="mlive" class="mlive" data-w="{W}" hidden></span>{dd}</div>'+cur+hist+'</section>')
 css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
+css+=('#lc-p:checked~.mwx .lcw label[for="lc-p"],#lc-t:checked~.mwx .lcw label[for="lc-t"]{background:var(--chalk);color:var(--ink)}'+team_tiles('#lc-t:checked~.mwx'))
 css+=('.mug.muc label>span{white-space:nowrap!important}@media(max-width:419px){.muc label>span{letter-spacing:.02em!important}.mug.muc label{padding-inline:2px!important}}'
       '.muc .mrk{display:inline-block;margin-right:4px;text-align:right;font-style:normal;'
       'font-family:var(--display);font-weight:700;font-size:inherit;letter-spacing:0;color:var(--steel);font-variant-numeric:tabular-nums}'
