@@ -518,3 +518,10 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 .dx-rush>u{background:rgba(61,220,193,.14)}
 .dx-rec>u{background:rgba(94,198,244,.15)}
 .dx-pts>u{background:rgba(238,240,244,.09);color:var(--chalk)!important}
+
+.cr.lu .flg.fk{background:rgba(238,240,244,.10);color:#c3cad8;box-shadow:inset 0 0 0 1px rgba(238,240,244,.32)}
+.cr.lu .flgs{position:absolute;bottom:-17px;display:flex;gap:2px;transform:translateY(50%)}
+.cr.lu .cn.a .flgs{left:calc(0px - var(--bw) - var(--bg2))}
+.cr.lu .cn.b .flgs{right:calc(0px - var(--bw) - var(--bg2));left:auto}
+.cr.lu .flgs .flg{padding:2px 2.5px 2.5px!important;font-size:10px!important;letter-spacing:.02em!important}
+.cr.lu .flgs .flg{position:static!important;transform:none!important;translate:none!important}

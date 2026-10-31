@@ -144,13 +144,121 @@ def m_byes():
             if len(BY[t][w])>=2:notes.append((w,t,BY[t][w]))
     nl=''.join(f'<div class="bnl"><span>Wk {w}</span><b>{e(SHORT[t])}</b><i>{"".join(f'<span>{pz(p[2])}{e(p[3]+" DEF" if p[2]=="DEF" else p[1])}</span>' for p in ps)}</i></div>' for w,t,ps in sorted(notes))
     return head('Bye exposure','Core starters on bye each remaining week')+f'<div class="sxm bym" style="--n:{len(wk)}"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'+head('Two or more starters out','')+nl
+# ---------- 11 Home / Road (starters' home or road games, Weeks 1..G, from hist.json)
+import json as _json
+def _hr_data():
+    HS=_json.load(open(P+'hist.json',encoding='utf-8'));META=HS['m']
+    RN={int(k):v for k,v in _json.load(open(P+'cmp_extra.json',encoding='utf-8'))['rn'].items()}
+    tm={t:dict(h=0,r=0,lh=[0,0],lr=[0,0],ev=[0,0],ph=[],pr=[]) for t in TEAMS}
+    pos={};starts=[]
+    for w in sorted(HS['w'],key=int):
+        if int(w)>G:continue
+        byg={}
+        for rid,v in HS['w'][w].items():byg.setdefault(v[0],[]).append((RN[int(rid)],v))
+        for (ta,A),(tb,B) in byg.values():
+            for t,X,O in ((ta,A,B),(tb,B,A)):
+                h=r=0
+                for sp in X[2].split(','):
+                    pid,_,pj,act,o=sp.split('|')
+                    if not o:continue  # starter on bye / no game
+                    home=not o.startswith('@');pj=float(pj);act=float(act);ps=META[pid][0]
+                    h+=home;r+=not home
+                    (tm[t]['ph'] if home else tm[t]['pr']).append(act)
+                    starts.append((home,ps,pj,act))
+                tm[t]['h']+=h;tm[t]['r']+=r
+                won=X[1]>O[1]
+                k='lh' if h>r else 'lr' if r>h else 'ev'
+                tm[t][k][0 if won else 1]+=1
+    return tm,starts
+HRT,HRS=_hr_data()
+def _hrrec(a):return f'{a[0]}-{a[1]}'
+def _pc(a):return f'{100*a[0]/(a[0]+a[1]):.0f}<small>%</small>' if a[0]+a[1] else '–'
+def _avg(v):return sum(v)/len(v) if v else 0
+def _hv(a,b,fmt='{:.1f}'):
+    """home value / road value: the higher one bright and bold, the other muted"""
+    f=lambda v:fmt.format(round(v,1)+0.0).replace('-','−') if abs(round(v,1))>=0.05 else fmt.format(0.0).replace('+','')
+    return (f'<span class="sxv hx-n{" hi" if a>b+1e-9 else ""}">{f(a)}</span>',f'<span class="sxv hx-n{" hi" if b>a+1e-9 else ""}">{f(b)}</span>')
+def _dv(d,fmt='{:+.1f}'):
+    c='hx-h' if d>=0.05 else 'hx-r' if d<=-0.05 else ''
+    t=fmt.format(d).replace("-","−") if c else '0.0'
+    return f'<span class="sxv b hx-d {c}">{t}</span>'
+def _split(h,r):
+    return f'<span class="hx-bar"><i class="hx-bh" style="width:{100*h/(h+r):.2f}%"></i><i class="hx-br" style="width:{100*r/(h+r):.2f}%"></i></span>'
+HT='<span class="hx-t hx-th">Home</span>';RT='<span class="hx-t hx-tr">Road</span>'
+HXCSS=('.hx-t{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;height:17px;padding:0 calc(5px - .06em) 1px 5px;border-radius:3px;'
+       'font-family:var(--display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;line-height:1;vertical-align:middle}'
+       '.hx-th{background:rgba(63,214,155,.14);color:#7fdcb6;box-shadow:inset 0 0 0 1px rgba(63,214,155,.5)}'
+       '.hx-tr{background:rgba(150,160,255,.13);color:#b9c1ff;box-shadow:inset 0 0 0 1px rgba(150,160,255,.5)}'
+       '.hx-lg{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin:2px 0 6px;font-size:12px;color:var(--steel)}.hx-lg span+.hx-t{margin-left:8px}'
+       '.hx-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:6px;max-width:160px;background:var(--hair)}'
+       '.hx-bar i{display:block;height:100%}.hx-bh{background:rgba(63,214,155,.75)}.hx-br{background:rgba(150,160,255,.7)}'
+       '.hx-tb .sxhd span{display:flex;align-items:center;justify-content:flex-end}.hx-tb .sxhd span:first-child{justify-content:flex-start}'
+       '.hx-tb .sxr>span:not(:first-child){text-align:right;justify-self:end}'
+       '.hx-cn{color:var(--label)}.hx-tb .sxn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;min-width:0}'
+       '.hx-n{color:var(--steel);font-weight:500}.hx-n.hi{color:var(--chalk);font-weight:700}'
+       '.hx-d.hx-h{color:#7fdcb6}.hx-d.hx-r{color:#b9c1ff}'
+       '.hx-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:4px 0 10px}'
+       '.hx-card{display:grid;grid-template-columns:minmax(0,1fr) auto;min-width:0;grid-template-rows:auto auto;align-items:center;gap:6px 10px;padding:10px 12px;border:1px solid var(--hair);border-radius:8px;background:var(--ink)}'
+       '.hx-card>.hx-t{grid-row:1;grid-column:1;justify-self:start}.hx-card>b{grid-row:1;grid-column:2;justify-self:end;font-family:var(--display);font-size:20px;font-weight:700;color:var(--chalk)}'
+       '.hx-card>span.sxv{grid-row:2;grid-column:2;justify-self:end;font-family:var(--display);font-size:15px;font-weight:600;color:var(--label)}'
+       '.hx-card>em{grid-row:2;grid-column:1;font-style:normal;font-size:12px;color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}'
+       '@media(max-width:389px){.hx-card{padding:10px 10px;column-gap:6px}.hx-card>em{font-size:11px}.hx-card>b{font-size:18px!important}}'
+       '.hx-pl{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}.hx-pl small{font-size:11px;color:var(--steel);font-variant-numeric:tabular-nums}'
+       '.hx-all{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:17px;border-radius:3px;background:rgba(238,240,244,.09);font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--chalk)}'
+       '.hx-grp{display:grid;grid-template-columns:minmax(0,1fr) 102px 102px;column-gap:6px;margin:2px 0 2px;font-family:var(--display);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--label)}'
+       '.hx-grp span:not(:first-child){text-align:center;padding-bottom:4px;border-bottom:1px solid var(--line-strong,rgba(255,255,255,.14))}')
+def m_homeroad():
+    o=[head('Home / Road',f'Starters playing at home or on the road · Wk 1–{G} · starters on bye left out'),
+       f'<div class="hx-lg">{HT}<span>home game</span>{RT}<span>road game</span></div>']
+    # 1 league ranking by home share
+    rows=[[nmb(t,_split(HRT[t]['h'],HRT[t]['r'])),f'<span class="sxv hx-cn">{HRT[t]["h"]}</span>',f'<span class="sxv hx-cn">{HRT[t]["r"]}</span>',
+           f'<span class="sxv b">{100*HRT[t]["h"]/(HRT[t]["h"]+HRT[t]["r"]):.0f}<small>%</small></span>']
+          for t in sorted(TEAMS,key=lambda t:(-HRT[t]['h']/(HRT[t]['h']+HRT[t]['r']),-HRT[t]['h']))]
+    o.append(head('Most home starts','Ranked by share of starters playing at home'))
+    o.append(table([('Team',''),(HT,'50px'),(RT,'50px'),('Home %','52px')],rows,'hx-tb'))
+    # 2 record by lineup lean
+    LH=[sum(HRT[t]['lh'][i] for t in TEAMS) for i in (0,1)];LR=[sum(HRT[t]['lr'][i] for t in TEAMS) for i in (0,1)];EV=[sum(HRT[t]['ev'][i] for t in TEAMS) for i in (0,1)]
+    o.append(head('Record by lineup lean','Games where more starters were at home, or more on the road'+(f' · {sum(EV)} even split{"s" if sum(EV)!=1 else ""} left out' if sum(EV) else '')))
+    o.append('<div class="hx-sum">'
+             f'<div class="hx-card">{HT}<b class="sxv">{_hrrec(LH)}</b><span class="sxv">{_pc(LH)}</span><em>more at home</em></div>'
+             f'<div class="hx-card">{RT}<b class="sxv">{_hrrec(LR)}</b><span class="sxv">{_pc(LR)}</span><em>more on road</em></div></div>')
+    rows=[[nm(t),f'<span class="sxv">{_hrrec(HRT[t]["lh"])}</span>',f'<span class="sxv">{_hrrec(HRT[t]["lr"])}</span>'] for t in sorted(TEAMS,key=lambda t:-(HRT[t]['lh'][0]+HRT[t]['lr'][0]))]
+    o.append(table([('Team',''),(HT,'64px'),(RT,'64px')],rows,'hx-tb'))
+    # 3 scoring by position
+    POS=['QB','RB','WR','TE','K','DEF']
+    def grp(f):
+        hh=[x for x in HRS if x[0] and f(x)];rr=[x for x in HRS if not x[0] and f(x)];return hh,rr
+    rows=[];rows2=[]
+    for lab,f in [('All',lambda x:True)]+[(p_,lambda x,p_=p_:x[1]==p_) for p_ in POS]:
+        hh,rr=grp(f)
+        if not hh or not rr:continue
+        tag=f'<span class="hx-pl">{"<b class=hx-all>All</b>" if lab=="All" else pz(lab)}<small>{len(hh)} · {len(rr)}</small></span>'
+        ah,ar=_avg([x[3] for x in hh]),_avg([x[3] for x in rr])
+        rows.append([tag,*_hv(ah,ar),_dv(ah-ar)])
+        bh,br=100*sum(x[3]>x[2] for x in hh)/len(hh),100*sum(x[3]>x[2] for x in rr)/len(rr)
+        vh,vr=_avg([x[3]-x[2] for x in hh]),_avg([x[3]-x[2] for x in rr])
+        rows2.append([tag,*_hv(bh,br,'{:.0f}%'),*_hv(vh,vr,'{:+.1f}')])
+    o.append(head('Points per start','Average points by position · small figures = home · road starts'))
+    o.append(table([('Pos',''),(HT,'56px'),(RT,'56px'),('Diff','52px')],rows,'hx-tb hx-pt'))
+    o.append(head('Against projection','Share of starts that beat the Sleeper projection, and average points over or under it'))
+    o.append('<div class="hx-grp"><span></span><span>Beat proj</span><span>Pts vs proj</span></div>')
+    o.append(table([('Pos',''),(HT,'48px'),(RT,'48px'),(HT,'48px'),(RT,'48px')],rows2,'hx-tb hx-pt hx-pj'))
+    # 4 per team scoring
+    rows=[]
+    for t in sorted(TEAMS,key=lambda t:-(_avg(HRT[t]['ph'])-_avg(HRT[t]['pr']))):
+        ah,ar=_avg(HRT[t]['ph']),_avg(HRT[t]['pr'])
+        rows.append([nm(t),*_hv(ah,ar),_dv(ah-ar)])
+    o.append(head('Points per start by team','Each team\'s starters at home and on the road · sorted by the gap'))
+    o.append(table([('Team',''),(HT,'56px'),(RT,'56px'),('Diff','52px')],rows,'hx-tb'))
+    return ''.join(o)
 MODS=[('pos','Positions',None),('odds','Odds',m_odds),('sch','Schedules',m_sched),('trd','Trades',m_trades),('lu','Lineups',m_lineups),('prj','Projections',m_proj),
-      ('mg','Margins',m_close),('st','Stars',m_stars),('yo','Age',m_youth),('rk','Ranks',m_heat),('by','Byes',m_byes)]
+      ('mg','Margins',m_close),('st','Stars',m_stars),('yo','Age',m_youth),('rk','Ranks',m_heat),('by','Byes',m_byes),('hr','Home / Road',m_homeroad)]
 def build():
     radios=''.join(f'<input type="radio" name="sxs" id="sx-{k}" class="lr"{" checked" if i==0 else ""}>' for i,(k,_,_) in enumerate(MODS))
     nav='<div class="lbc sxnav" role="tablist" aria-label="Stats">'+''.join(f'<label for="sx-{k}">{lab}</label>' for k,lab,_ in MODS)+'</div>'
     pans=''.join(f'<div class="sxp sxp-{k}">'+('POS_SECTION' if f is None else f'<section class="sxc">{f()}</section>')+'</div>' for k,_,f in MODS)
     css=''.join(f'#sx-{k}:checked~.sxnav label[for="sx-{k}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#sx-{k}:checked~.sxp-{k}{{display:block}}' for k,_,_ in MODS)
+    css+=HXCSS
     return radios+nav+pans,css
 if __name__=='__main__':
     h,c=build();open(P+'sx_section.html','w',encoding='utf-8').write(h);open(P+'sx_css.css','w',encoding='utf-8').write(c);print(len(h))

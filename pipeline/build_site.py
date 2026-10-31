@@ -15,6 +15,13 @@ head=('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta 
       '<meta name="robots" content="noindex">\n')
 s=head+s.replace('<meta charset="utf-8">\n','',1)
 UPD+='<script>'+open(P+'live.js',encoding='utf-8').read()+'</script>'  # in-page live scores (Matchups)
+# remember the selected tab / switches across reloads (radio state), so a refresh comes back to the same view and
+# Safari's restored scroll position lands where it was instead of in the middle of Standings
+UPD+=('<script>(function(){var K="dt-radios";try{var s=JSON.parse(sessionStorage.getItem(K)||"[]");'
+      's.forEach(function(id){var e=document.getElementById(id);if(e&&e.type==="radio")e.checked=true})}catch(e){}'
+      'document.addEventListener("change",function(ev){var t=ev.target;if(!t||t.type!=="radio")return;'
+      'try{var ids=[].map.call(document.querySelectorAll("input[type=radio]:checked"),function(x){return x.id}).filter(Boolean);'
+      'sessionStorage.setItem(K,JSON.stringify(ids))}catch(e){}},true)})()</script>')
 j=s.index('</style>')+len('</style>');s=s[:j]+'\n</head>\n<body>'+s[j:]+UPD+f'\n<!-- built {stamp} -->\n</body>\n</html>\n'
 s=s.replace('</style>','body{margin:0}</style>',1)
 # small TeamHub link on the eyebrow line (live site only; the download file stays as is). Negative margins keep the

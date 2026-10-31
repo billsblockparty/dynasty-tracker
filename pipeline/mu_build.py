@@ -109,7 +109,7 @@ def _age(pid):
     y,m,dd=map(int,b.split('-'));return (_d.today()-_d(y,m,dd)).days/365.25
 SLOTS=['QB','RB','RB','WR','WR','TE','FLEX','K','DEF']
 INJ={'Questionable':'Q','Doubtful':'D','Out':'O','IR':'IR'}
-from statline import statline as _sl, fumbles as _fl, detail as _dx
+from statline import statline as _sl, fumbles as _fl, fumbles_kept as _fk, detail as _dx
 def lval(p):
     done=p[8] if len(p)>8 else p[3] in DONEG
     return (p[5],True) if done else (p[4],False)
@@ -142,7 +142,10 @@ def lcell(p,side):
     if pos!='DEF' and len(name.split(' '))>2 and name.split(' ')[-2]=='St.':nm='St. '+nm
     ij=f'<i class="inj i-{INJ[inj]}">{INJ[inj]}</i>' if inj in INJ else ''
     _f=_fl(p[10] if len(p)>10 else W,pid,pos) if lval(p)[1] else 0
-    flg=f'<i class="flg">{_f if _f>1 else ""}FL</i>' if _f else ''  # lost fumble: small flag under the position band
+    _k=_fk(p[10] if len(p)>10 else W,pid) if lval(p)[1] and pos not in('K','DEF') else 0
+    _fl_=f'<i class="flg">{_f if _f>1 else ""}FL</i>' if _f else ''  # lost fumble (red)
+    _fk_=f'<i class="flg fk">{_k if _k>1 else ""}FK</i>' if _k else ''  # fumble kept by the offense (grey, no points lost)
+    flg=(f'<span class="flgs">{_fl_}{_fk_}</span>' if _f and _k else _fl_ or _fk_)
     v,done=lval(p)
     ha=_gline((p[9] if len(p)>9 else ('vs' if tm in HOME else '@')),opp)
     # finished games: the points tile already says FINAL, so the game line is just home/away + opponent

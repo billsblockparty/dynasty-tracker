@@ -111,3 +111,13 @@ def detail(w,pid,pos):
     bd=breakdown(d);bd={k:bd[k] for k in ('Pass','Rush','Rec','Kick','Def','Fum') if k in bd}
     if bd:L.append(_line('PTS',[f'<b><em>{k}</em>{v:.1f}</b>' if v>=0 else f'<b><em>{k}</em>−{-v:.1f}</b>' for k,v in bd.items()]))
     return ''.join(L)
+
+_DXK=None
+def fumbles_kept(w,pid):
+    """fumbles recovered by the offense (fumbled, not lost): no points lost, shown as a grey FK flag"""
+    global _DXK
+    if _DXK is None:
+        try:_DXK=json.load(open(__DTP__+'stats_detail.json'))
+        except Exception:_DXK={}
+    s=_DXK.get(str(w),{}).get(pid) or {}
+    return max(0,int(s.get('fum',0) or 0)-int(s.get('fum_lost',0) or 0))
