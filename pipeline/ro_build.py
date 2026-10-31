@@ -15,7 +15,7 @@ SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Hero
 SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
 ORD=['QB','RB','WR','TE','K','DEF']
 e=html.escape
-import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge,NFL_CSS
+import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge,NFL_CSS,team_tiles
 IRX='<svg class="irx" viewBox="0 0 12 12" role="img" aria-label="Injured reserve"><rect width="12" height="12" rx="3" fill="#ff5d73"/><path d="M6 2.6v6.8M2.6 6h6.8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>'
 BYE=K.pop('_bye')
 from datetime import date
@@ -47,7 +47,7 @@ def prow(pid,name,pos,nfl,pts,gp,tag='',flat=False,pgm=False):
     pg=f'{pts/gp:.1f}' if gp else '–'
     if pgm: rk=PG[pid][0] if PG.get(pid) else None
     big=rk and (rk>=100 or (pos=='DEF' and rk>=10))
-    sq=f'<i class="pq p-{pos.lower()}{" l3" if big and pts>0 else ""}"><span class="pqi"><span>{pos}</span>{f"<b>{rk}</b>" if pts>0 and rk else ""}</span></i>'
+    sq=f'<i class="pq p-{pos.lower()}{" l3" if big and pts>0 else ""} t-{nfl or "FA"}"><span class="pqi"><span>{pos}</span>{f"<b>{rk}</b>" if pts>0 and rk else ""}</span></i>'
     a=age(pid);ag=f'<em class="pag {acl(a)}">{a:.1f}</em>' if a else ''
     return (f'<div class="rr2">{sq}'
             f'<span class="rn"><b>{nmh(name,pos)}{badge(nfl).replace('<em class="nfl','<em class="nfl tm',1) if nfl else ""}{ag}{IRX if tag=="IR" else ""}{TXC if (tag=="TX" and flat) else ""}</b><small><span class="gp">{gp} GP</span>{byh}</small></span>'
@@ -80,12 +80,32 @@ def panel(i,t):
             o+= [prow(p[0],p[1],p[2],p[3],p[4],p[6],p[7],True,sk=='g') for p in sorted(pl,key=key) if keep(p)]
             o.append('</div>')
     o.append(_AS(t)+'</div>');return ''.join(o)
-radios='<input type="radio" name="rview" id="rv-pos" class="lr" checked><input type="radio" name="rview" id="rv-pts" class="lr"><input type="radio" name="rq" id="rq-all" class="lr" checked><input type="radio" name="rq" id="rq-noqb" class="lr"><input type="radio" name="rsort" id="rs-p" class="lr" checked><input type="radio" name="rsort" id="rs-g" class="lr">'+''.join(f'<input type="radio" name="ros" id="ro-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(10))
-chips='<div class="lbc roc" role="tablist" aria-label="Team">'+''.join(f'<label for="ro-{i}">{e(SHORT[t])}</label>' for i,t in enumerate(H))+'</div>'
+radios='<input type="radio" name="rcol" id="rc-p" class="lr" checked><input type="radio" name="rcol" id="rc-t" class="lr"><input type="radio" name="rview" id="rv-pos" class="lr" checked><input type="radio" name="rview" id="rv-pts" class="lr"><input type="radio" name="rq" id="rq-all" class="lr" checked><input type="radio" name="rq" id="rq-noqb" class="lr"><input type="radio" name="rsort" id="rs-p" class="lr" checked><input type="radio" name="rsort" id="rs-g" class="lr">'+''.join(f'<input type="radio" name="ros" id="ro-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(10))
+chips='<div class="roc rogd" role="tablist" aria-label="Team">'+''.join(f'<label for="ro-{i}"><em class="rrk">{i+1}</em><span>{e(SHORT[t])}</span></label>' for i,t in enumerate(H))+'</div>'
+CTRL=('<div class="rctl">'
+      '<div class="pseg rseg" role="group" aria-label="Roster view"><label for="rv-pos">By position</label><label for="rv-pts">By points</label></div>'
+      '<div class="pseg rqseg rsseg" role="group" aria-label="Sort"><label for="rs-p">Pts</label><label for="rs-g">/ Gm</label></div>'
+      '<div class="pseg rcseg" role="group" aria-label="Tile colours"><label for="rc-p">Position</label><label for="rc-t">Team</label></div>'
+      '<div class="pseg rqseg rqf" role="group" aria-label="Filter"><label for="rq-all">All players</label><label for="rq-noqb">No QBs</label></div></div>')
 sec=('<section class="rox" aria-labelledby="roh">'+radios+
-     '<div class="posh"><b id="roh">Rosters</b></div><div class="rsub">Tile = position rank by <span class="rs-pt">points</span><span class="rs-pg">points per game</span> · Wk 1–'+str(DONE)+'</div>'+chips+'<div class="pseg rseg" role="group" aria-label="Roster view"><label for="rv-pos">By position</label><label for="rv-pts">By points</label></div><div class="pseg rqseg rsseg" role="group" aria-label="Sort"><label for="rs-p">Pts</label><label for="rs-g">Pts/g</label></div><div class="pseg rqseg" role="group" aria-label="Filter"><label for="rq-all">All players</label><label for="rq-noqb">No QBs</label></div>'+
+     '<div class="posh"><b id="roh">Rosters</b></div><div class="rsub">Tile = position rank by <span class="rs-pt">points</span><span class="rs-pg">points per game</span> · Wk 1–'+str(DONE)+'</div>'+chips+CTRL+
      ''.join(panel(i,t) for i,t in enumerate(H))+'</section>')
 css=''.join(f'#ro-{i}:checked~.roc label[for="ro-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#ro-{i}:checked~.rop-{i}{{display:block}}' for i in range(10))
+sel=lambda pairs:','.join(f'#{i}:checked~.rctl label[for="{i}"]' for i in pairs)
+css+=(sel(['rv-pos','rv-pts','rs-p','rs-g','rc-p','rc-t','rq-all','rq-noqb'])+'{background:var(--chalk);color:var(--ink)}'
+      '.rox .rctl{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px 6px;margin:0 0 14px}'
+      '.rox .rctl .pseg{display:inline-flex!important;margin:0!important}'
+      '.rox .rctl .rseg{grid-area:1/1;justify-self:start}.rox .rctl .rsseg{grid-area:1/3;justify-self:end}.rox .rctl .rcseg{grid-area:2/1;justify-self:start}.rox .rctl .rqf{grid-area:2/3;justify-self:end;display:none!important}'
+      '#rv-pts:checked~.rctl .rqf{display:inline-flex!important}'
+      '.rox .rogd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:2px 0 12px}'
+      '@media(max-width:374px){.rox .rctl .pseg label{padding-inline:7px!important}.rox .rctl{gap:8px 4px}}'
+      '.rox .rogd label{display:flex;align-items:center;gap:7px;min-height:36px;padding:6px 10px;box-sizing:border-box;border-radius:6px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;'
+      'font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--label);white-space:nowrap;min-width:0}'
+      '.rox .rogd label span{overflow:hidden;text-overflow:ellipsis;min-width:0}'
+      '@media(max-width:429px){.rox .rogd label{font-size:12.5px;letter-spacing:.02em;padding:6px 8px;gap:6px}}@media(max-width:374px){.rox .rogd label{font-size:11.5px;letter-spacing:.01em;padding:6px 6px;gap:5px}}'
+      '.rox .rogd .rrk{font-style:normal;flex:none;min-width:1.2em;text-align:right;color:var(--steel);font-variant-numeric:tabular-nums}'
+      +''.join(f'#ro-{i}:checked~.roc label[for="ro-{i}"] .rrk{{color:var(--ink);opacity:.55}}' for i in range(10))
+      +team_tiles('#rc-t:checked~.rop'))
 open(P+'ro_section.html','w',encoding='utf-8').write(sec)
 open(P+'ro_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':

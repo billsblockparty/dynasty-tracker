@@ -9,7 +9,7 @@ P=__DTP__
 e=html.escape
 X=json.load(open(P+'pull_top.json',encoding='utf-8'))
 D,MIN,PL=X['D'],X['minGp'],X['P']
-import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge,NFLC
+import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge,NFLC,team_tiles
 BYE=json.load(open(P+'ro_ranks.json',encoding='utf-8')).get('_bye',{})
 RN={int(k):v for k,v in json.load(open(P+'cmp_extra.json',encoding='utf-8'))['rn'].items()}
 SHORT0={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
@@ -82,9 +82,11 @@ def row(o,pos):
             f'<span class="pst">{statline(pos,o["t"],o["gp"] or 1)}</span></span>'
             f'<span class="rv">{o["pts"]:.1f}</span><span class="rg2">{o["ppg"]:.1f}</span></div>')
 radios=(''.join(f'<input type="radio" name="plp" id="pl-{p.lower()}" class="lr"{" checked" if p=="QB" else ""}>' for p in ORD)
-        +'<input type="radio" name="pls" id="pl-sp" class="lr" checked><input type="radio" name="pls" id="pl-sg" class="lr">')
+        +'<input type="radio" name="pls" id="pl-sp" class="lr" checked><input type="radio" name="pls" id="pl-sg" class="lr">'
+        +'<input type="radio" name="plcol" id="plc-p" class="lr"><input type="radio" name="plcol" id="plc-t" class="lr" checked>')
 chips='<div class="lbc roc plc" role="tablist" aria-label="Position">'+''.join(f'<label for="pl-{p.lower()}">{p}</label>' for p in ORD)+'</div>'
-seg='<div class="pseg plseg" role="group" aria-label="Sort"><label for="pl-sp">Pts</label><label for="pl-sg">/ Gm</label></div>'
+seg=('<div class="plrow"><div class="pseg plcs" role="group" aria-label="Tile colours"><label for="plc-p">Position</label><label for="plc-t">Team</label></div>'
+     '<div class="pseg plseg" role="group" aria-label="Sort"><label for="pl-sp">Pts</label><label for="pl-sg">/ Gm</label></div></div>')
 blocks=''.join(f'<div class="plb plb-{p.lower()}" role="tabpanel" aria-label="{NAMES[p]}"><div class="rtop"><b>{NAMES[p]}</b><span><span class="pl-pt">Top {min(TOP,chk[p][0])} by points</span><span class="pl-pg">Top {min(TOP,chk[p][1])} by points per game</span></span></div>'
                f'<div class="rcol"><span>Player</span><span class="ca">Pts</span><span class="cb">/g</span></div><div class="pll">'+''.join(row(o,p) for o in rows_by[p])+'</div></div>' for p in ORD)
 sec=(f'<section class="plx" aria-labelledby="plh">{radios}<div class="posh"><b id="plh">Players</b></div>'
@@ -95,14 +97,13 @@ ids=[p.lower() for p in ORD]
 PC={'qb':'#f7739c','rb':'#3ddcc1','wr':'#5ec6f4','te':'#fca95c','k':'#c491ff','def':'#c98a72'}
 css=(''.join(f'.plx .plc label[for="pl-{i}"]{{color:{PC[i]};border-color:color-mix(in srgb,{PC[i]} 45%,transparent)}}'
              f'#pl-{i}:checked~.plc label[for="pl-{i}"]{{background:color-mix(in srgb,{PC[i]} 82%,#0b0e14);color:#0b0e14;border-color:transparent}}#pl-{i}:checked~.plb-{i}{{display:block}}' for i in ids)
- +'#pl-sp:checked~.plseg label[for="pl-sp"],#pl-sg:checked~.plseg label[for="pl-sg"]{background:var(--chalk);color:var(--ink)}'
+ +'#pl-sp:checked~.plrow label[for="pl-sp"],#pl-sg:checked~.plrow label[for="pl-sg"],#plc-p:checked~.plrow label[for="plc-p"],#plc-t:checked~.plrow label[for="plc-t"]{background:var(--chalk);color:var(--ink)}'
  +'.plx .plb{display:none}.plx .pll{display:flex;flex-direction:column}.plx .plr{order:var(--a)}#pl-sg:checked~.plb .plr{order:var(--b)}'
  +'#pl-sp:checked~.plb .xa,#pl-sg:checked~.plb .xb{display:none}'
  +'.plx .kb,.plx .pl-pg{display:none}#pl-sg:checked~.plb .kb,#pl-sg:checked~.rsub .pl-pg,#pl-sg:checked~.plb .pl-pg{display:inline}#pl-sg:checked~.plb .ka,#pl-sg:checked~.rsub .pl-pt,#pl-sg:checked~.plb .pl-pt{display:none}'
  +'.plx .plc{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.plx .plc label{text-align:center;padding-inline:0}'
- +'.plx .plseg{display:inline-flex;margin:10px 0 12px}'
- +''.join(f'.plx .pq.t-{t}{{--pc:{bg};color:{fg}!important}}' for t,(bg,fg) in NFLC.items())
- +'.plx .pq .pqi>span,.plx .pq .pqi>b{color:inherit!important}.plx .rr2>.pq{box-shadow:inset -1px 0 0 rgba(255,255,255,.08)}'
+ +'.plx .plrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0 12px}.plx .plrow .pseg{display:inline-flex;margin:0}'
+ +team_tiles('#plc-t:checked~.plb')+'.plx .rr2>.pq{box-shadow:inset -1px 0 0 rgba(255,255,255,.08)}'
  +'.plx .rr2{grid-template-columns:minmax(0,1fr) 54px 40px!important}'
  +'@media(max-width:429px){.plx .nmx.lg .fn,.plx .dc{display:none}.plx .nmx.lg .fi{display:inline}}'
  +'@media(max-width:374px){.plx .pag{display:none}.plx .pst b{font-size:14px}.plx .pst b.fr{font-size:12.5px;letter-spacing:-.01em}.plx .pst{gap:6px 4px}.plx .pst u{font-size:9px;letter-spacing:.02em}}'

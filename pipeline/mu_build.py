@@ -297,7 +297,7 @@ def panel(i,a,b):
             f'<div class="msw"><label for="mt{i}a">{e(a)}</label><label for="mt{i}b">{e(b)}</label></div>'
             f'<div class="msch msch-a">{sched(a)}</div><div class="msch msch-b">{sched(b)}</div></div>')
 radios=''.join(f'<input type="radio" name="mus" id="mu-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(5))
-chips='<div class="mug muc" role="tablist" aria-label="Game">'+''.join(f'<label for="mu-{i}"><span>{e(SHORT[a])}</span><i></i><span>{e(SHORT[b])}</span></label>' for i,(a,b) in enumerate(games))+'</div>'
+chips='<div class="mug muc" role="tablist" aria-label="Game">'+''.join(f'<label for="mu-{i}"><span><em class="mrk {tone(seed(a))}">{seed(a)}</em>{e(SHORT[a])}</span><i></i><span><em class="mrk {tone(seed(b))}">{seed(b)}</em>{e(SHORT[b])}</span></label>' for i,(a,b) in enumerate(games))+'</div>'
 cur=f'<div class="mwx mwx-{W}">'+radios+chips+''.join(panel(i,a,b) for i,(a,b) in enumerate(games))+'</div>'
 css=''.join(f'#mu-{i}:checked~.muc label[for="mu-{i}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
 # ---------- historical weeks
@@ -348,6 +348,11 @@ dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week 
     '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
 sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b><span id="mlive" class="mlive" data-w="{W}" hidden></span>{dd}</div>'+cur+hist+'</section>')
 css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
+css+=('.mug.muc label>span{white-space:nowrap!important}@media(max-width:419px){.muc label>span{letter-spacing:.02em!important}.mug.muc label{padding-inline:2px!important}}'
+      '.muc .mrk{display:inline-block;margin-right:4px;text-align:right;font-style:normal;'
+      'font-family:var(--display);font-weight:700;font-size:inherit;letter-spacing:0;color:var(--steel);font-variant-numeric:tabular-nums}'
+      '.muc .mrk.gold{color:#e8c15a}.muc .mrk.g{color:var(--win)}.muc .mrk.b{color:#ff8a9a}'
+      +''.join(f'#mu-{i}:checked~.muc label[for="mu-{i}"] .mrk{{color:var(--ink);opacity:.55}}' for i in range(5)))
 open(P+'mu_section.html','w',encoding='utf-8').write(sec);open(P+'mu_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
     for a,b in games: print(a,'v',b,len(byes(a,W)),len(byes(b,W)))

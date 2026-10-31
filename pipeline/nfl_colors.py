@@ -10,3 +10,8 @@ def badge(t):
     bg,fg=NFLC.get(t,('#3a4254','#eef0f4'));return f'<em class="nfl" style="background:{bg};color:{fg}"><span class="ct">{t}</span></em>'
 def badge_c(t):return f'<em class="nfl n-{t}"><span class="ct">{t}</span></em>'
 NFL_CSS=''.join(f'.n-{t}{{background:{bg};color:{fg}}}' for t,(bg,fg) in NFLC.items())
+def team_tiles(on):
+    """CSS that paints position tiles (.pq carrying a t-TEAM class) in NFL team colours when the selector `on` matches,
+    e.g. on='#plc-t:checked~.plb'. Text inside the tile follows the team's contrasting colour."""
+    return (''.join(f'{on} .pq.t-{t}{{--pc:{bg};color:{fg}!important}}' for t,(bg,fg) in NFLC.items())
+            +f'{on} .pq[class*=" t-"] .pqi>span,{on} .pq[class*=" t-"] .pqi>b{{color:inherit!important}}')
