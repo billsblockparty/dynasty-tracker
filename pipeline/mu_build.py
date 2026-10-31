@@ -51,7 +51,7 @@ def sched(t):
         won=x[2]>x[3];ww+=won;wl+=not won;op=FULL[x[1]]
         tag='<i class="mt hi" title="Week high score">HI</i>' if x[4]==1 else '<i class="mt lo" title="Week low score">LO</i>' if x[4]==10 else ''
         o.append(f'<div class="mrow"><span class="mwk">Wk {x[0]}</span><i class="mres {"w" if won else "l"}"><span class="ct">{"W" if won else "L"}</span></i>'
-                 f'<span class="mmid"><span class="mop"><span>{e(op)}</span>{tag}</span><span class="msc"><b>{x[2]:.1f}</b><span>–</span>{x[3]:.1f}</span></span><span class="mrun">{ww}-{wl}</span></div>')
+                 f'<span class="mmid"><span class="mop"><span>{e(op)}</span>{tag}</span><span class="msc">{f"<b>{x[2]:.1f}</b><span>–</span>{x[3]:.1f}" if won else f"{x[2]:.1f}<span>–</span><b>{x[3]:.1f}</b>"}<i class="mdf {"w" if won else "l"}">{"+" if won else "−"}{abs(x[2]-x[3]):.1f}</i></span></span><span class="mrun">{ww}-{wl}</span></div>')
     o.append('<div class="msh"><span>Remaining</span></div>')
     for x in FUT[t]:
         op=FULL[x[1]];bl=len(byes(t,x[0]))
@@ -389,7 +389,8 @@ dd=('<details class="dd wdd"><summary>'+''.join(f'<span class="sv wsv-{w}">Week 
     '<div class="ddm">'+''.join(f'<label for="mw-{w}"><i>{"Now" if w==W else "Final"}</i>Week {w}</label>' for w in range(W,0,-1))+'</div></details>')
 sec=('<section class="mux" aria-labelledby="muh">'+'<input type="radio" name="lcol" id="lc-p" class="lr" checked><input type="radio" name="lcol" id="lc-t" class="lr"><input type="radio" name="lopt" id="lo-a" class="lr" checked><input type="radio" name="lopt" id="lo-o" class="lr"><input type="radio" name="lview" id="lv-p" class="lr" checked><input type="radio" name="lview" id="lv-s" class="lr"><input type="radio" name="ldet" id="ld-l" class="lr" checked><input type="radio" name="ldet" id="ld-d" class="lr"><input type="radio" name="lrank" id="rk-t" class="lr" checked><input type="radio" name="lrank" id="rk-g" class="lr">'+wr+f'<div class="posh"><b id="muh">Matchups</b><span id="mlive" class="mlive" data-w="{W}" hidden></span>{dd}</div>'+cur+hist+'</section>')
 css+=''.join(f'#mw-{w}:checked~.posh .wsv-{w}{{display:inline}}#mw-{w}:checked~.mwx-{w}{{display:block}}#mw-{w}:checked~.posh label[for="mw-{w}"]{{background:var(--chalk);color:var(--ink)}}' for w in range(1,W+1))
-css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0 0 12px}.mpk label:last-child:nth-child(odd){grid-column:1/-1}'
+css+=('.mpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0 0 12px}.mpk label:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 2.5px)}'
+      '.msc .mdf{font-style:normal;margin-left:8px;font-weight:600;font-variant-numeric:tabular-nums}.msc .mdf.w{color:var(--win)}.msc .mdf.l{color:var(--loss)}'
       '.mpk label{display:flex;flex-direction:column;gap:4px;padding:7px 9px;box-sizing:border-box;border-radius:6px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;'
       'font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--label);white-space:nowrap;min-width:0}'
       '.mpk .pr2{display:grid;grid-template-columns:1.3em minmax(0,1fr) auto auto 3.1em;align-items:center;gap:5px;min-width:0;line-height:1.15}'
