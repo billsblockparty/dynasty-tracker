@@ -9,7 +9,7 @@ P=__DTP__
 e=html.escape
 X=json.load(open(P+'pull_top.json',encoding='utf-8'))
 D,MIN,PL=X['D'],X['minGp'],X['P']
-import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge
+import sys;sys.path.insert(0,P);from nfl_colors import badge_c as badge,NFLC
 BYE=json.load(open(P+'ro_ranks.json',encoding='utf-8')).get('_bye',{})
 RN={int(k):v for k,v in json.load(open(P+'cmp_extra.json',encoding='utf-8'))['rn'].items()}
 SHORT0={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
@@ -30,15 +30,30 @@ def nn(x):return f'(−{n(-x)})' if x<0 else n(x)
 def grp(lab,nums):return f'<span class="sit"><u>{lab}</u> {"-".join(nn(x) for x in nums)}</span>'
 def td3(a,b,c):return [a,b]+([c] if c else [])
 def statline(pos,t,gp):
+    """Labelled season grid, 2 rows x 5 (Sleeper-style). Rates are computed from season totals; '–' when undefined."""
     g=lambda k:t.get(k,0) or 0
-    if pos=='QB':o=[grp('PA',[g('pass_yd'),g('pass_td')]+([g('pass_int')] if g('pass_int') else []))]+([grp('RU',td3(g('rush_att'),g('rush_yd'),g('rush_td')))] if g('rush_att') else [])
-    elif pos=='RB':o=([grp('RU',td3(g('rush_att'),g('rush_yd'),g('rush_td')))] if g('rush_att') else [])+([grp('REC',td3(g('rec'),g('rec_yd'),g('rec_td')))] if g('rec') else [])
-    elif pos in('WR','TE'):o=([grp('REC',td3(g('rec'),g('rec_yd'),g('rec_td')))] if g('rec') else [])+([grp('RU',td3(g('rush_att'),g('rush_yd'),g('rush_td')))] if g('rush_att') else [])
-    elif pos=='K':o=[f'<span class="sit"><u>FG</u> {n(g("fgm"))}/{n(g("fga"))}</span>']+([f'<span class="sit"><u>LNG</u> {n(g("fgm_lng"))}</span>'] if g('fgm_lng') else [])+[f'<span class="sit"><u>XP</u> {n(g("xpm"))}/{n(g("xpa"))}</span>']
+    r=lambda a,b,f='{:.1f}':(f.format(a/b) if b else '–')
+    pc=lambda a,b:(f'{100*a/b:.0f}%' if b else '–')
+    fr=lambda m,a:f'{n(m)}/{n(a)}'
+    snp=pc(g('off_snp'),g('tm_off_snp'))
+    lng=lambda k:n(g(k)) if g(k) else '–'
+    if pos=='QB':
+        c=[('SNP%',snp),('CMP/ATT',fr(g('pass_cmp'),g('pass_att'))),('CMP%',pc(g('pass_cmp'),g('pass_att'))),('PASS YD',n(g('pass_yd'))),('PASS TD',n(g('pass_td'))),
+           ('INT',n(g('pass_int'))),('YD/ATT',r(g('pass_yd'),g('pass_att'))),('SACKED',n(g('pass_sack'))),('RUSH YD',nn(g('rush_yd'))),('RUSH TD',n(g('rush_td')))]
+    elif pos=='RB':
+        c=[('SNP%',snp),('RUSH',n(g('rush_att'))),('RUSH YD',nn(g('rush_yd'))),('YD/CAR',r(g('rush_yd'),g('rush_att'))),('RUSH TD',n(g('rush_td'))),
+           ('TGT',n(g('rec_tgt'))),('REC',n(g('rec'))),('REC YD',nn(g('rec_yd'))),('REC TD',n(g('rec_td'))),('FUM',n(g('fum_lost')))]
+    elif pos in('WR','TE'):
+        c=[('SNP%',snp),('TGT',n(g('rec_tgt'))),('REC',n(g('rec'))),('REC YD',nn(g('rec_yd'))),('REC TD',n(g('rec_td'))),
+           ('CATCH%',pc(g('rec'),g('rec_tgt'))),('YD/REC',r(g('rec_yd'),g('rec'))),('YD/TGT',r(g('rec_yd'),g('rec_tgt'))),('LNG',lng('rec_lng')),('RUSH YD',nn(g('rush_yd')))]
+    elif pos=='K':
+        bk=lambda ks:fr(sum(g('fgm_'+k) for k in ks),sum(g('fgm_'+k)+g('fgmiss_'+k) for k in ks))
+        c=[('FG',fr(g('fgm'),g('fga'))),('FG%',pc(g('fgm'),g('fga'))),('LNG',lng('fgm_lng')),('XP',fr(g('xpm'),g('xpa'))),('XP%',pc(g('xpm'),g('xpa'))),
+           ('0–19',bk(['0_19'])),('20–29',bk(['20_29'])),('30–39',bk(['30_39'])),('40–49',bk(['40_49'])),('50+',bk(['50_59','60p']))]
     else:
-        tds=g('def_td')+g('def_st_td')
-        o=[f'<span class="sit"><u>SK</u> {n(g("sack"))}</span>',f'<span class="sit"><u>TO</u> {n(g("int")+g("fum_rec"))}</span>']+([f'<span class="sit"><u>TD</u> {n(tds)}</span>'] if tds else [])+[f'<span class="sit"><u>PA</u> {g("pts_allow")/gp:.1f}<u>/g</u></span>']
-    return '<i class="sd">·</i>'.join(o)
+        c=[('SK',n(g('sack'))),('INT',n(g('int'))),('FR',n(g('fum_rec'))),('FF',n(g('ff'))),('TD',n(g('def_td')+g('def_st_td'))),
+           ('TO',n(g('int')+g('fum_rec'))),('SFTY',n(g('safe'))),('BLK',n(g('blk_kick'))),('PA/G',r(g('pts_allow'),gp)),('YDS/G',r(g('yds_allow'),gp,'{:.0f}') if g('yds_allow') else '–')]
+    return ''.join(f'<span><u>{l}</u><b{" class=fr" if "/" in v else ""}>{v}</b></span>' for l,v in c)
 def crank(vals):  # competition rank, higher value first
     s=sorted(vals,reverse=True);return lambda v:1+sum(1 for x in s if x>v+1e-9)
 rows_by={};chk={}
@@ -60,7 +75,7 @@ def row(o,pos):
     a=age(o['bd']);ag=f'<em class="pag {acl(a)}">{a:.1f}</em>' if a and pos!='DEF' else ''
     own=f'<i class="own"><span class="of">{e(RN[o["own"]])}</span><span class="os">{e(SHORT0.get(RN[o["own"]],RN[o["own"]]))}</span></i>' if o['own'] in RN else '<i class="own fa">Free agent</i>'
     cls='rr2 plr'+('' if ina else ' xa')+('' if inb else ' xb')
-    sq=f'<i class="pq p-{pos.lower()}"><span class="pqi"><span>{pos}</span><b class="ka">{o["ra"]}</b><b class="kb">{o["rb"] or ""}</b></span></i>'
+    sq=f'<i class="pq p-{pos.lower()} t-{o["nfl"] or "FA"}"><span class="pqi"><span>{pos}</span><b class="ka">{o["ra"]}</b><b class="kb">{o["rb"] or ""}</b></span></i>'
     nb=badge(o['nfl']).replace('<em class="nfl','<em class="nfl tm',1) if o['nfl'] else ''
     return (f'<div class="{cls}" style="--a:{o["ra"]};--b:{o["rb"] or 999}">{sq}'
             f'<span class="rn"><b>{nmh(o["name"],pos)}{nb}{ag}</b><small><span class="gp">{o["gp"]} GP</span>{byh}{own}</small>'
@@ -69,7 +84,7 @@ def row(o,pos):
 radios=(''.join(f'<input type="radio" name="plp" id="pl-{p.lower()}" class="lr"{" checked" if p=="QB" else ""}>' for p in ORD)
         +'<input type="radio" name="pls" id="pl-sp" class="lr" checked><input type="radio" name="pls" id="pl-sg" class="lr">')
 chips='<div class="lbc roc plc" role="tablist" aria-label="Position">'+''.join(f'<label for="pl-{p.lower()}">{p}</label>' for p in ORD)+'</div>'
-seg='<div class="pseg plseg" role="group" aria-label="Sort"><label for="pl-sp">Pts</label><label for="pl-sg">Pts/g</label></div>'
+seg='<div class="pseg plseg" role="group" aria-label="Sort"><label for="pl-sp">Pts</label><label for="pl-sg">/ Gm</label></div>'
 blocks=''.join(f'<div class="plb plb-{p.lower()}" role="tabpanel" aria-label="{NAMES[p]}"><div class="rtop"><b>{NAMES[p]}</b><span><span class="pl-pt">Top {min(TOP,chk[p][0])} by points</span><span class="pl-pg">Top {min(TOP,chk[p][1])} by points per game</span></span></div>'
                f'<div class="rcol"><span>Player</span><span class="ca">Pts</span><span class="cb">/g</span></div><div class="pll">'+''.join(row(o,p) for o in rows_by[p])+'</div></div>' for p in ORD)
 sec=(f'<section class="plx" aria-labelledby="plh">{radios}<div class="posh"><b id="plh">Players</b></div>'
@@ -83,15 +98,24 @@ css=(''.join(f'#pl-{i}:checked~.plc label[for="pl-{i}"]{{background:var(--chalk)
  +'#pl-sp:checked~.plb .xa,#pl-sg:checked~.plb .xb{display:none}'
  +'.plx .kb,.plx .pl-pg{display:none}#pl-sg:checked~.plb .kb,#pl-sg:checked~.rsub .pl-pg,#pl-sg:checked~.plb .pl-pg{display:inline}#pl-sg:checked~.plb .ka,#pl-sg:checked~.rsub .pl-pt,#pl-sg:checked~.plb .pl-pt{display:none}'
  +'.plx .plc{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.plx .plc label{text-align:center;padding-inline:0}'
- +'.plx .plseg{margin:10px 0 12px}'
- +'.plx .rr2{grid-template-columns:minmax(0,1fr) 54px 36px!important}'
+ +'.plx .plseg{display:inline-flex;margin:10px 0 12px}'
+ +''.join(f'.plx .pq.t-{t}{{--pc:{bg};color:{fg}!important}}' for t,(bg,fg) in NFLC.items())
+ +'.plx .pq .pqi>span,.plx .pq .pqi>b{color:inherit!important}.plx .rr2>.pq{box-shadow:inset -1px 0 0 rgba(255,255,255,.08)}'
+ +'.plx .rr2{grid-template-columns:minmax(0,1fr) 54px 40px!important}'
  +'@media(max-width:429px){.plx .nmx.lg .fn,.plx .dc{display:none}.plx .nmx.lg .fi{display:inline}}'
- +'@media(max-width:374px){.plx .pag{display:none}.plx .pst{font-size:11px;letter-spacing:-.01em}.plx .pst u{font-size:9px}.plx .pst .sd{margin:0 3px}}'
- +'.plx .rcol{display:grid;grid-template-columns:minmax(0,1fr) 54px 36px;column-gap:8px;padding:0 10px 6px calc(34px + 9px)}'
- +'#pl-sp:checked~.plb .rcol .ca,#pl-sg:checked~.plb .rcol .cb{color:var(--chalk)}#pl-sp:checked~.plb .rv,#pl-sg:checked~.plb .rg2{color:var(--chalk)}#pl-sg:checked~.plb .rv{color:var(--label)}'
+ +'@media(max-width:374px){.plx .pag{display:none}.plx .pst b{font-size:14px}.plx .pst b.fr{font-size:12.5px;letter-spacing:-.01em}.plx .pst{gap:6px 4px}.plx .pst u{font-size:9px;letter-spacing:.02em}}'
+ +'.plx .rcol{display:grid;grid-template-columns:minmax(0,1fr) 54px 40px;column-gap:8px;padding:0 10px 6px calc(34px + 9px)}'
+ +'#pl-sp:checked~.plb .rcol .ca,#pl-sg:checked~.plb .rcol .cb{color:var(--chalk)}'
+ +'.plx .plr .rv,.plx .plr .rg2{text-align:right;white-space:nowrap;line-height:22px!important;height:22px}'
+ +'#pl-sg:checked~.plb .plr .rg2{font:700 19px/22px var(--display)!important;letter-spacing:.01em;color:var(--chalk)!important}'
+ +'#pl-sg:checked~.plb .plr .rv{font:400 12.5px/22px var(--body)!important;letter-spacing:normal;color:var(--steel)!important}'
  +'.plx .rn small{display:flex;align-items:baseline;gap:0 6px;min-width:0;white-space:nowrap}.plx .own{font-style:normal;color:var(--label);overflow:hidden;text-overflow:ellipsis;min-width:0}.plx .own::before{content:"·";margin-right:6px;color:var(--steel)}.plx .own.fa{color:var(--steel)}'
  +'.plx .os{display:none}@media(max-width:429px){.plx .of{display:none}.plx .os{display:inline}}'
- +'.plx .rn{overflow:visible}.plx .pst{width:calc(100% + 106px);box-sizing:border-box}'
- +'.plx .pst{display:block;margin-top:3px;font-size:12px;line-height:16px;color:var(--label);white-space:nowrap}.plx .pst u{text-decoration:none;font-size:10px;color:var(--steel);margin-right:2px}.plx .pst .sd{font-style:normal;color:var(--steel);margin:0 6px}')
+ +'.plx .rn{overflow:visible}.plx .plr{align-items:start}.plx .plr .rv,.plx .plr .rg2{align-self:start;padding-top:10px}'
+ +'.plx .pst{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px 6px;width:calc(100% + 110px);box-sizing:border-box;margin-top:8px;padding-top:8px;border-top:1px solid var(--hair)}'
+ +'.plx .pst span{display:flex;flex-direction:column;gap:2px;min-width:0}'
+ +'.plx .pst u{text-decoration:none;font:600 9.5px/1.1 var(--body);letter-spacing:.04em;color:var(--steel);white-space:nowrap}'
+ +'.plx .pst b{font:600 15px/1.1 var(--display);color:var(--chalk);white-space:nowrap;font-variant-numeric:tabular-nums}'
+ +'.plx .snp{font-style:normal;color:var(--label)}.plx .snp::before{content:"·";margin-right:6px;color:var(--steel)}')
 open(P+'pl_css.css','w',encoding='utf-8').write(css)
 print('players tab:',{p:chk[p] for p in ORD},'| bytes',len(sec))
