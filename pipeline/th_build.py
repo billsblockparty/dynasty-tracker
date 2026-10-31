@@ -177,12 +177,15 @@ def data_view(t):
 # ---------------------------------------------------------------- Trends view (SVG line charts + CSS week scrubber)
 VW,VH,PL,PR,PT,PB=320,128,30,12,12,20
 def xs(k):return PL+(VW-PL-PR)*(k-1)/max(G-1,1)
-def chart(key,title,vals,lo,hi,fmt,ticks,inv=False,ref=None,refl='',dots=None,zero=None,area=None,readout=None,tickfmt=None):
+def chart(key,title,vals,lo,hi,fmt,ticks,inv=False,ref=None,refl='',dots=None,zero=None,area=None,readout=None,tickfmt=None,seeds=False):
     ys=lambda v:PT+(VH-PT-PB)*((v-lo)/(hi-lo) if not inv else (v-lo)/(hi-lo))
     Y=(lambda v:PT+(VH-PT-PB)*(v-lo)/(hi-lo)) if inv else (lambda v:VH-PB-(VH-PT-PB)*(v-lo)/(hi-lo))
     g=[]
     for tv in ticks:
         g.append(f'<line class="tgl" x1="{PL}" x2="{VW-PR}" y1="{Y(tv):.1f}" y2="{Y(tv):.1f}"/><text class="tax" x="{PL-6}" y="{Y(tv)+3.5:.1f}" text-anchor="end">{(tickfmt or str)(tv)}</text>')
+    if seeds:  # bye line (2nd) and playoff line (6th)
+        for v,c,lab in ((2,'tby','Bye'),(6,'tpo','Playoffs')):
+            g.append(f'<line class="{c}" x1="{PL}" x2="{VW-PR}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/><text class="{c}t" x="{PL+4}" y="{Y(v)-3:.1f}" text-anchor="start">{lab}</text>')
     if zero is not None:g.append(f'<line class="tzero" x1="{PL}" x2="{VW-PR}" y1="{Y(zero):.1f}" y2="{Y(zero):.1f}"/>')
     for k in range(1,G+1):g.append(f'<text class="tax" x="{xs(k):.1f}" y="{VH-4}" text-anchor="middle">{k}</text>')
     if ref:g.append('<path class="tref" d="'+'M'+' L'.join(f'{xs(k):.1f} {Y(v):.1f}' for k,v in enumerate(ref,1))+'"/>')
@@ -221,14 +224,14 @@ def trends_view(t):
     pts=s['pts'];lo=math.floor(min(pts+LGMED)/20)*20;hi=math.ceil(max(pts+LGMED)/20)*20
     ch=[chart('pts','Points scored',pts,lo,hi,None,list(range(lo,hi+1,20 if hi-lo<=100 else 40)),ref=LGMED,refl='league median',
               dots=[r.lower() for r in s['res']],readout=lambda k:f'{pts[k-1]:.1f} <small class="{s["res"][k-1].lower()}">{s["res"][k-1]}</small>'),
-        chart('st','Standings',s['stand'],1,N,None,[1,4,7,10],inv=True,readout=lambda k:ordn(s['stand'][k-1]),tickfmt=lambda v:ordn(v)),
+        chart('st','Standings',s['stand'],1,N,None,[1,4,7,10],inv=True,seeds=True,readout=lambda k:ordn(s['stand'][k-1]),tickfmt=lambda v:ordn(v)),
         chart('pfr','Points-for rank',s['pfr'],1,N,None,[1,4,7,10],inv=True,readout=lambda k:ordn(s['pfr'][k-1]),tickfmt=lambda v:ordn(v)),
         chart('ap','All-play win %',s['ap'],0,100,None,[0,50,100],readout=lambda k:f'{s["ap"][k-1]:.0f}<small>%</small>',tickfmt=lambda v:f'{v}%'),
         chart('lk','Luck · wins minus expected',s['luck'],min(-2,math.floor(min(s['luck']))),max(2,math.ceil(max(s['luck']))),None,
               sorted({min(-2,math.floor(min(s['luck']))),0,max(2,math.ceil(max(s['luck'])))}),zero=0,area=True,
               readout=lambda k:f'{sg(s["luck"][k-1],2)} <small>{s["wins"][k-1]} W · {s["xw"][k-1]:.2f} xW</small>',tickfmt=lambda v:sg(v,0) if v else '0'),
         odds_chart(s),
-        chart('fin','Projected finish',s['fin'],1,N,None,[1,4,7,10],inv=True,readout=lambda k:f'{s["fin"][k-1]:.1f} <small>avg finish</small>',tickfmt=lambda v:ordn(v))]
+        chart('fin','Projected finish',s['fin'],1,N,None,[1,4,7,10],inv=True,seeds=True,readout=lambda k:f'{s["fin"][k-1]:.1f} <small>avg finish</small>',tickfmt=lambda v:ordn(v))]
     rc=''.join(f'<div class="trc trc-{k}"><span>Week {k}</span><b>{s["res"][k-1]} {pts[k-1]:.1f}–{SC[OPP[t][k]][k]:.1f}</b><em>vs {e(SHORT0.get(OPP[t][k],OPP[t][k]))}</em></div>' for k in range(1,G+1))
     return f'<div class="trd">{rc}</div><div class="tcs">{"".join(ch)}</div>'
 # ---------------------------------------------------------------- assemble
@@ -239,8 +242,14 @@ radios=(''.join(f'<input type="radio" name="thx" id="thx-{i}" class="lr"{" check
         +''.join(f'<input type="radio" name="thw" id="thw-{k}" class="lr"{" checked" if k==G else ""}>' for k in range(1,G+1)))
 ctl=('<div class="tqctl"><div class="pseg tqvs" role="group" aria-label="View"><label for="thv-d">Data</label><label for="thv-t">Trends</label></div></div>')
 pans=''.join(f'<div class="tqp tqp-{i}"><div class="tqdv">{data_view(t)}</div><div class="tqtv">{wks}{trends_view(t)}</div></div>' for i,t in enumerate(H))
+JS=('<script>(function(){var VW=%d,PL=%d,PR=%d,G=%d;function pick(sv,x){var r=sv.getBoundingClientRect();var vx=(x-r.left)*VW/r.width;'
+    'var k=Math.round((vx-PL)/((VW-PL-PR)/(G-1)))+1;k=Math.max(1,Math.min(G,k));var el=document.getElementById("thw-"+k);'
+    'if(el&&!el.checked){el.checked=true;el.dispatchEvent(new Event("change",{bubbles:true}))}}'
+    'var act=null;document.addEventListener("pointerdown",function(e){var sv=e.target.closest&&e.target.closest(".thx2 .tsvg");if(!sv)return;act=sv;pick(sv,e.clientX)});'
+    'document.addEventListener("pointermove",function(e){if(act)pick(act,e.clientX)});'
+    '["pointerup","pointercancel"].forEach(function(t){document.addEventListener(t,function(){act=null})})})()</script>')%(VW,PL,PR,G)
 sec_=(f'<section class="thx2" aria-labelledby="thh2">{radios}<div class="posh"><b id="thh2">Team Hub</b></div>'
-      f'<div class="rsub">One team at a time · Wk 1–{G}</div>{picker}{ctl}{pans}</section>')
+      f'<div class="rsub">One team at a time · Wk 1–{G}</div>{picker}{ctl}{pans}</section>'+JS)
 TL='#efd38a'
 PKCSS=('.thx2 .tqpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:2px 0 12px}'
  '.thx2 .tqpk label{display:flex;align-items:center;gap:7px;min-height:36px;padding:6px 10px;box-sizing:border-box;border-radius:6px;border:1px solid var(--hair);background:var(--ink);cursor:pointer;'
@@ -317,6 +326,9 @@ css=PKCSS+(''.join(f'#thx-{i}:checked~.tqpk label[for="thx-{i}"]{{background:var
  +'.tsel.c1{fill:var(--chalk)}.tsel.c2{fill:#6fc9a4}.tsel.c3{fill:#e8c15a}'
  +'.trm{display:none;gap:10px}.trm b{font-family:var(--display);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}.trm b+b{margin-left:10px}.trm b small{font-size:11px;color:var(--steel);margin-left:1px}.trm b.c1{color:var(--chalk)}.trm b.c2{color:#6fc9a4}.trm b.c3{color:#e8c15a}'
  +'.tlg3{display:flex;gap:12px;margin:0 0 4px;font-size:11px;color:var(--steel)}.tlg3 span{display:inline-flex;align-items:center;gap:5px}.tlg3 i{width:14px;height:2px;border-radius:1px;background:currentColor}.tlg3 .c1 i{background:var(--chalk)}.tlg3 .c2 i{background:#6fc9a4}.tlg3 .c3 i{background:#e8c15a}'
+ +'.tby{stroke:#8ec5ff;stroke-width:1;opacity:.55;stroke-dasharray:4 3}.tpo{stroke:var(--chalk);stroke-width:1;opacity:.4;stroke-dasharray:4 3}'
+ +'.tbyt{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.06em;text-transform:uppercase;fill:#8ec5ff;opacity:.8}.tpot{font-family:var(--display);font-weight:600;font-size:9px;letter-spacing:.06em;text-transform:uppercase;fill:var(--chalk);opacity:.6}'
+ +'.tsvg{cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}'
  +'.twm{display:none}.tcur{stroke:'+TL+';stroke-width:1;opacity:.55}.tsel{fill:'+TL+';stroke:var(--deck);stroke-width:2}.tsel.w{fill:var(--win)}.tsel.l{fill:var(--loss)}')
 open(P+'th_section.html','w',encoding='utf-8').write(sec_)
 open(P+'th_css.css','w',encoding='utf-8').write(css)
