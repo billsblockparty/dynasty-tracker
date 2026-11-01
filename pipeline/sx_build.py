@@ -60,7 +60,7 @@ def m_everyweek():
     hd='<span></span>'+''.join(f'<span>{C3.get(b,CODE[b])}</span>' for b in order)
     rows=[]
     for a in order:
-        cells=''.join('<span class="mx ewd"></span>' if a==b else f'<span class="mx{" up" if EW[a][b][0]>EW[a][b][1] else " dn" if EW[a][b][0]<EW[a][b][1] else ""}" title="{e(a)} {_rec(EW[a][b])} vs {e(b)}">{EW[a][b][0]}</span>' for b in order)
+        cells=''.join('<span class="mx dg"></span>' if a==b else f'<span class="mx{" up" if EW[a][b][0]>EW[a][b][1] else " dn" if EW[a][b][0]<EW[a][b][1] else ""}" title="{e(a)} {_rec(EW[a][b])} vs {e(b)}">{EW[a][b][0]}</span>' for b in order)
         rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[a])}</span>{cells}</div>')
     mat=f'<div class="sxm ewm"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'
     pr=sorted({tuple(sorted((a,b))) for a in TEAMS for b in TEAMS if a!=b})
