@@ -351,9 +351,10 @@ def streak(t,upto=None):
 def nmx(t):
     full=e(SHORT[t]);sh=e(SHORT0.get(t,t))
     return f'<span class="nf">{full}</span><span class="ns">{sh}</span>'
-try:
-    import lg as _LG;_AVR={t:_LG.RID[t] for t,f in _LG.AV.items() if f}   # manager faces (leagues that have them)
-except Exception:_AVR={}
+# team logos from Sleeper (fetch_avatars.py), inlined as small webp images
+import base64 as _b64
+_AVR={t:r for t,r in RID.items() if _dt_os.path.exists(f'{P}avatars/{r}.webp')}
+_AVCSS=''.join(f'.av-{r}{{background-image:url(data:image/webp;base64,'+_b64.b64encode(open(f'{P}avatars/{r}.webp','rb').read()).decode()+')}' for r in _AVR.values())
 def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False,ca='',cb='',pa=None,ja=None,jb=None,fa='',fb=''):
     """one game in the picker (about Sleeper's matchup-card height), two mirrored halves:
     1) face (if any) and win chance at the outer edge, live points with the projection under them at the inner edge
@@ -478,7 +479,8 @@ css+=('.mug.muc label>span{white-space:nowrap!important}@media(max-width:419px){
       '.muc .mrk.gold{color:#e8c15a}.muc .mrk.g{color:var(--win)}.muc .mrk.b{color:#ff8a9a}'
       +''.join(f'#mu-{i}:checked~.muc label[for="mu-{i}"] .mrk{{color:var(--ink);opacity:.55}}' for i in range(5)))
 # picker: one card per game at about Sleeper's height, two mirrored halves
-css+=('.mpk{grid-template-columns:1fr!important;gap:8px}.mpk label:last-child:nth-child(odd){grid-column:auto;justify-self:stretch;width:auto}'
+css+=_AVCSS+('.g4 .av{display:inline-block;border-radius:50%;background-color:var(--deck-2);background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 0 0 1px var(--hair)}'
+      '.mpk{grid-template-columns:1fr!important;gap:8px}.mpk label:last-child:nth-child(odd){grid-column:auto;justify-self:stretch;width:auto}'
       '.mpk label.g4{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:10px;align-items:start;padding:7px 12px;'
       'font-size:15px;letter-spacing:.02em;min-height:92px;box-sizing:border-box}'
       '.g4 .g4vs{align-self:center;font-style:normal;display:grid;place-items:center;width:30px;height:28px;border-radius:7px;background:var(--ink);box-shadow:inset 0 0 0 1px var(--hair);'

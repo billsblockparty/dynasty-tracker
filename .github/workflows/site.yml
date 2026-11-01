@@ -48,6 +48,9 @@ jobs:
           pip install numpy pillow
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
+      - name: Team logos
+        continue-on-error: true
+        run: python3 pipeline/fetch_avatars.py
       - name: Past seasons cache
         # the 2025 tracker (year switch) is rebuilt only when the code or the 2025 capture changes
         uses: actions/cache@v4
