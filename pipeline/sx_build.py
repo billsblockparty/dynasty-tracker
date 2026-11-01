@@ -53,14 +53,16 @@ def m_sched():
             head('Schedule luck','Actual wins vs average across all 10 schedules')+table([('Team',''),('Wins','42px'),('Avg','42px'),('Luck','46px')],lr))
 EW=D.everyweek()
 def _rec(r):return f'{r[0]}-{r[1]}'+(f'-{r[2]}' if r[2] else '')
+C3={"Team Ram Rod":"RAM","Bill's Block Party":"BBP","Homer's Heroes":"HOM","Mandingoes":"MAN","Team RIPMFL":"RIP","Cheating is Trying":"CHE",
+    "Convicts":"CON","Nuts in the Face":"NUT","Reverse Apache Master":"APA","Canton waitlist":"CAN"}  # three-letter column heads
 def m_everyweek():
     order=D.PH
-    hd='<span></span>'+''.join(f'<span>{CODE[b]}</span>' for b in order)
+    hd='<span></span>'+''.join(f'<span>{C3.get(b,CODE[b])}</span>' for b in order)
     rows=[]
     for a in order:
         cells=''.join('<span class="mx ewd"></span>' if a==b else f'<span class="mx{" up" if EW[a][b][0]>EW[a][b][1] else " dn" if EW[a][b][0]<EW[a][b][1] else ""}" title="{e(a)} {_rec(EW[a][b])} vs {e(b)}">{EW[a][b][0]}</span>' for b in order)
         rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[a])}</span>{cells}</div>')
-    mat=f'<div class="sxm"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'
+    mat=f'<div class="sxm ewm"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'
     pr=sorted({tuple(sorted((a,b))) for a in TEAMS for b in TEAMS if a!=b})
     def line(a,b):
         r=EW[a][b]
@@ -283,7 +285,7 @@ def build():
     nav='<div class="lbc sxnav" role="tablist" aria-label="Stats">'+''.join(f'<label for="sx-{k}">{lab}</label>' for k,lab,_ in MODS)+'</div>'
     pans=''.join(f'<div class="sxp sxp-{k}">'+('POS_SECTION' if f is None else f'<section class="sxc">{f()}</section>')+'</div>' for k,_,f in MODS)
     css=''.join(f'#sx-{k}:checked~.sxnav label[for="sx-{k}"]{{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}}#sx-{k}:checked~.sxp-{k}{{display:block}}' for k,_,_ in MODS)
-    css+=HXCSS+'.sxm .sxr>span.ewd{background:var(--line-strong);opacity:.55}.ewl .sxr>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.ewl .sxr>span:nth-child(2){text-align:center}'+('.bnl .bnt{display:flex;flex-direction:column;gap:3px;white-space:nowrap;overflow:visible}'
+    css+=HXCSS+'.ewm .sxhd span{letter-spacing:0!important}.sxm .sxr>span.ewd{background:var(--line-strong);opacity:.55}.ewl .sxr>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.ewl .sxr>span:nth-child(2){text-align:center}'+('.bnl .bnt{display:flex;flex-direction:column;gap:3px;white-space:nowrap;overflow:visible}'
       '.bnl .bop{font-size:11.5px;font-weight:500;color:var(--steel)}.bnl .bop em{font-style:normal;font-family:var(--display);font-weight:700;color:var(--label);margin:0 1px}'
       '.bnl .bop em{display:inline-flex;align-items:center;justify-content:center;width:20px;height:16px;padding-bottom:1px;box-sizing:border-box;margin:0 4px 0 3px;border-radius:3px;background:rgba(238,240,244,.08);font-size:11px;vertical-align:1px}'
       '.bnl .bop em.gold{color:#e8c15a;background:rgba(232,193,90,.14)}.bnl .bop em.g{color:var(--win);background:rgba(63,214,155,.12)}.bnl .bop em.b{color:#ff8a9a;background:rgba(255,93,115,.12)}'
