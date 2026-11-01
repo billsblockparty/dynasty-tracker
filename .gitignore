@@ -12,3 +12,4 @@ pipeline/live.json
 .cache/
 .season/
 archive/
+pipeline/psim.json
