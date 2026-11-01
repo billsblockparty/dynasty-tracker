@@ -82,6 +82,9 @@ for _t in _D.TEAMS:
             _o=_c[0];_outs.remove(_o);_a[_i['pos']]+=_i['pts']-_o['pts']
     _DP[_t]=[round(_a[k]/_D.G,2) for k in ['QB','RB','WR','TE','K','DEF']]
 d+='// dropped points per week by position [QB,RB,WR,TE,K,DEF]: bench player who should have started minus the starter he replaces, credited to the bench player\'s position\nconst DP='+json.dumps(_DP)+';\n'
+_SO0,_=_D.odds()
+_SO={_t:[round(sum((k+1)*q for k,q in enumerate(_o['dist']))/100,1),_o['top'],_o['bye'],_o['po']] for _t,_o in _SO0.items()}
+d+='// season-end sim (the playoff-odds model, 20,000 runs): [average finishing seed, % 1st, % bye, % playoffs]\nconst SO='+json.dumps({_t:[round(x,2) for x in v] for _t,v in _SO.items()})+';\n'
 import os as _os,base64 as _b64
 _LG='';_MIME={'svg':'image/svg+xml','png':'image/png','webp':'image/webp'}
 if _os.path.isdir(P+'logos'):
