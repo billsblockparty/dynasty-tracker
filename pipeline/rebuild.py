@@ -66,7 +66,10 @@ h=h.replace('__LEFT__',str(14-DONE)).replace('__G__',str(DONE))
 # title: the gold-and-teal script 'League' artwork in place of the typed word
 import base64 as _b64l
 if _dt_os.path.exists(P+'league_script.webp'):
-    h=h.replace('<span class="lgi">League</span>','<img class="lgs" alt="League" src="data:image/webp;base64,'+_b64l.b64encode(open(P+'league_script.webp','rb').read()).decode()+'">',1)
+    h=h.replace('<h1>The <span class="lgi">League</span>','<h1 style="white-space:nowrap">The <span class="lgi">League</span>',1)
+    # sizing lives in the head too: the main stylesheet sits after the 10 MB body, so without this the art paints full-size first
+    h=h.replace('<h1 style="white-space:nowrap">','<style>h1 .lgs{height:1.4em;vertical-align:-.448em}@media(max-width:380px){h1 .lgs{height:1.38em!important;vertical-align:-.442em!important}}@media(min-width:430px){h1 .lgs{height:1.65em!important;vertical-align:-.528em!important}}@media(min-width:1100px){h1 .lgs{height:1.85em!important;vertical-align:-.592em!important}}</style><h1 style="white-space:nowrap">',1)
+    h=h.replace('<span class="lgi">League</span>','<img class="lgs" alt="League" width="736" height="322" style="display:inline-block;width:auto;height:1.4em;vertical-align:-.448em;margin-left:.06em" src="data:image/webp;base64,'+_b64l.b64encode(open(P+'league_script.webp','rb').read()).decode()+'">',1)
 h=h.replace('SEGMENTS',segs).replace('POS_SECTION',open(P+'pos/pos_section.html',encoding='utf-8').read())
 import json,subprocess as sp
 EF={t:v[:2] for t,v in json.load(open(P+'eff.json')).items()}
