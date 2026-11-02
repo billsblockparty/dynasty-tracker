@@ -159,6 +159,10 @@ if(typeof RNI!=='undefined')document.querySelectorAll('.tqid .tqsd[data-rk]').fo
 // seed numeral art: put each image's top-left corner on a whole device pixel so its edges stay sharp
 function rniSnap(){const d=devicePixelRatio||1;document.querySelectorAll('.board .rni,.tqid .rni').forEach(i=>{if(!i.offsetParent)return;i.style.translate='';const r=i.getBoundingClientRect(),z=i.currentCSSZoom||1;const dx=(Math.round(r.left*d)/d-r.left)/z,dy=(Math.round(r.top*d)/d-r.top)/z;if(dx||dy)i.style.translate=dx.toFixed(3)+'px '+dy.toFixed(3)+'px'})}
 
+// standings stat lines: one shared text scale (1 = 15px), lowered in small steps until no line is clipped
+function sbFit(){document.querySelectorAll('.board').forEach(bd=>{bd.style.setProperty('--sbs','1');const L=[...bd.querySelectorAll('.sb .stx:not(.spl)')].filter(x=>x.offsetParent);let k=1;
+  while(k>.78&&L.some(x=>x.scrollWidth>x.clientWidth+.5)){k-=.02;bd.style.setProperty('--sbs',k.toFixed(2))}})}
+sbFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(sbFit);addEventListener('resize',()=>requestAnimationFrame(sbFit));document.addEventListener('change',()=>requestAnimationFrame(sbFit));document.fonts&&document.fonts.addEventListener('loadingdone',sbFit);
 ravFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(ravFit);addEventListener('resize',()=>requestAnimationFrame(ravFit));document.addEventListener('change',()=>requestAnimationFrame(ravFit));document.fonts&&document.fonts.addEventListener('loadingdone',ravFit);
 tnFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(tnFit);addEventListener('resize',()=>requestAnimationFrame(tnFit));document.addEventListener('change',()=>requestAnimationFrame(tnFit));
 // rank tiles never taller than the figure they rank: tile top = the figure's digit top, tile bottom = its baseline
