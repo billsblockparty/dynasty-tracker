@@ -70,6 +70,18 @@ jobs:
           elif [ "${{ github.event.schedule }}" = "17 10 * * 2" ] || [ "${{ github.event.schedule }}" = "17 15 * * 2" ]; then m=weekly;
           else m=live; fi
           echo "mode=$m" >> "$GITHUB_OUTPUT"; echo "Mode: $m"
+      - name: FantasyPros cache
+        uses: actions/cache@v4
+        with:
+          path: pipeline/fp
+          key: fp-${{ github.run_id }}
+          restore-keys: fp-
+      - name: FantasyPros projections (second opinion for the pre-game sim; skipped without FP_API_KEY)
+        continue-on-error: true
+        env:
+          FP_API_KEY: ${{ secrets.FP_API_KEY }}
+        run: |
+          python3 pipeline/fp_pull.py
       - name: Build
         run: |
           if [ "${{ steps.mode.outputs.mode }}" = "selftest" ]; then
