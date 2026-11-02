@@ -32,17 +32,15 @@ s=s.replace('</style>','body{margin:0}</style>',1)
 # small TeamHub link on the eyebrow line (live site only; the download file stays as is). Negative margins keep the
 # line box unchanged, so nothing else on the page moves; the ::after pad gives it a 44px tap target.
 _EB='<div class="eyebrow">Official</div>'
-if _EB in s and not PAST:
+if False:  # TeamHub link retired: the Team Hub tab replaces the separate page
     s=s.replace(_EB,'<div class="eyebrow">Official<a class="thl" href="teamhub/">TeamHub<span aria-hidden="true">›</span></a></div>',1)
     s=s.replace('</style>','.thl{position:relative;display:inline-block;vertical-align:top;margin:-2px 0 -2px 10px;padding:3px 8px 2px 9px;border-radius:999px;'
       'border:1px solid rgba(255,122,26,.55);background:rgba(255,122,26,.12);color:#ff9a4d;font:700 12px/1 var(--display);letter-spacing:.1em;text-decoration:none}'
       '.thl span{margin-left:4px;letter-spacing:0}.thl::after{content:"";position:absolute;inset:-13px -8px}.thl:hover{background:rgba(255,122,26,.22);color:#ffb27a}</style>',1)
-elif not PAST:
-    print('build_site: eyebrow not found; TeamHub link skipped')
 # year switch in the top-right corner, above the countdown; absolutely placed, so the header grid is unchanged
 if len(YEARS)>1:
     href=lambda y:('./' if not PAST else '../') if y==CUR else (('' if not PAST else '../')+y+'/')
-    sw='<nav class="yrs" aria-label="Season">'+''.join(f'<a href="{href(y)}"'+(' class="on" aria-current="page"' if y==Y else '')+f'>{y}</a>' for y in YEARS)+'</nav>'
+    sw='<nav class="yrs" aria-label="Season">'+''.join(f'<a href="{href(y)}"'+(' class="on" aria-current="page"' if y==Y else '')+f'>{y}</a>' for y in sorted(YEARS))+'</nav>'
     s=s.replace('<h1>The League</h1>',sw+'<h1>The League</h1>',1)
     s=s.replace('</style>','header{position:relative}.yrs{position:absolute;top:-17px;right:0;display:inline-flex;gap:2px;padding:2px;border:1px solid var(--hair);border-radius:999px;background:var(--ink)}'
       '.yrs a{position:relative;display:block;padding:4px 8px 3px;border-radius:999px;font:700 11.5px/1 var(--display);letter-spacing:.06em;color:var(--steel);text-decoration:none;font-variant-numeric:tabular-nums}'
