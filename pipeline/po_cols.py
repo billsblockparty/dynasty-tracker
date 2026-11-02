@@ -65,7 +65,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=N
          'border:1px solid var(--line-strong);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}'
          '.pby{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;gap:4px}'
          '.pbyt{box-sizing:border-box;flex:none;border-radius:10px;background:var(--deck-2);border:1px solid var(--line-strong);overflow:hidden}'
-         '.pby .pbe{flex:1;height:auto;border-radius:10px;background:rgba(255,255,255,.03)}'
+         '.pby .pbe{flex:1;height:auto;background:none}'
          '.pbd{display:block;height:1px;background:var(--hair);flex:none}'
          '.pbt{display:flex;flex-direction:column;justify-content:center;gap:4px;height:70px;padding:0 8px;box-sizing:border-box;min-width:0}'
          '.pbr,.pbr2{display:flex;align-items:center;gap:6px;line-height:1;min-width:0}.pbsp{flex:1}'
