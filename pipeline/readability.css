@@ -616,3 +616,6 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 /* palette: deep green page (The Athletic Football Show), slate panels a step lighter so the shadows read */
 :root{--pg:#12291f;--ink:#151a21;--deck:#20252e;--deck-2:#272d38;--hair:#323947;--line-strong:#434b5b}
 .lgi{color:#fe852e}
+
+/* season-sim Finish: plain coloured figure, same size as the odds beside it */
+.dpc.so .sof.gold{color:#f4c451!important}.dpc.so .sof.g{color:var(--win)!important}.dpc.so .sof.b{color:var(--loss)!important}
