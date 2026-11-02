@@ -2,7 +2,7 @@
 # (Week 17), all three on one screen. Each team row: logo with the seed on it and the points scored; win chance and the
 # projection (live once the week starts); the (short) team name. Elbow lines join each game to the next round; the winners' path is lit.
 # Same call as po_radial.build, plus av (team -> logo class or '') and live (team, week) -> (points, projection, started).
-def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=None):
+def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=None,done=lambda a,b,w:False):
     G={k:(w,pair) for k,w,pair,_ in GAMES}
     CG=10                                # gap between columns (px); column width --cw = a third of the width less the gaps
     LW=2.5                               # connector line width
@@ -29,8 +29,9 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=N
                 f'<span class="pbr pbnr"><span class="bn">{e(SHORT[t])}</span>{wp}</span></span>')
     def match(k,col,top):
         w,(a,b)=G[k];wn=win(a,b,w);pa=None if final else winp(a,b,w)
+        dec=bool(final) or done(a,b,w)   # only a finished game marks a loser; until then both teams stay full strength
         box.append(f'<label for="bk-{k}" class="pbm" style="left:{X[col]};top:{top:.1f}px;width:{CW};height:{MH}px">'
-                   f'{team(a,w,a==wn,pa)}<i class="pbd"></i>{team(b,w,b==wn,None if pa is None else 100-pa)}</label>')
+                   f'{team(a,w,a==wn or not dec,pa,played=dec)}<i class="pbd"></i>{team(b,w,b==wn or not dec,None if pa is None else 100-pa,played=dec)}</label>')
         return wn
     def bye(t,top):
         box.append(f'<div class="pby" style="left:{X[0]};top:{top:.1f}px;width:{CW};height:{MH}px">'
