@@ -69,7 +69,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=N
          '.pbd{display:block;height:1px;background:var(--hair);flex:none}'
          '.pbt{display:flex;flex-direction:column;justify-content:center;gap:4px;height:70px;padding:0 8px;box-sizing:border-box;min-width:0}'
          '.pbr,.pbr2{display:flex;align-items:center;gap:6px;line-height:1;min-width:0}.pbsp{flex:1}'
-         '.pbav{display:inline-flex;align-items:center;gap:6px;flex:none;height:24px}.pbav .pbsd{position:static;margin:0;transform:none;height:16px;min-width:18px;padding:0 5px;font-size:10.5px;font-weight:600;line-height:16px;text-align:center;font-style:normal}'
+         '.pbav{display:inline-flex;align-items:flex-end;gap:6px;flex:none;height:24px}.pbav .pbsd{position:static;margin:0;transform:none;height:16px;min-width:18px;padding:0 5px;font-size:10.5px;font-weight:600;line-height:16px;text-align:center;font-style:normal}'
          '.pbx .ch.gold{background:rgba(244,196,81,.16);color:#f4c451;box-shadow:inset 0 0 0 1px rgba(244,196,81,.45)}'
          '.pba{display:inline-block;width:24px;height:24px;flex:none;border-radius:50%;background-color:var(--deck-2);background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 0 0 1px var(--hair)}'
          '.pbs{font-family:var(--display);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;color:var(--steel)}'
