@@ -55,11 +55,14 @@ async function sleeperChain() {
     const rid2user = {}; for (const r of rosters) rid2user[r.roster_id] = r.owner_id;
     const uname = {}; for (const u of users) uname[u.user_id] = (u.metadata || {}).team_name || u.display_name;
     const rname = rid => (TEAMS.sleeper_roster || {})[String(rid)] || uname[rid2user[rid]] || `Team ${rid}`;
-    for (const d of drafts) {
-      if (d.status !== 'complete') continue;
-      const key = String(y) + (drafts.filter(x => x.status === 'complete').length > 1 ? '-' + d.draft_id.slice(-4) : '');
+    // one draft per season: the latest completed one (the first Sleeper season also has the roster-migration drafts)
+    const done = drafts.filter(x => x.status === 'complete').sort((a, b) => (b.start_time || 0) - (a.start_time || 0));
+    for (const d of done.slice(0, 1)) {
+      const key = String(y);
       const pk = await get(`${A}/draft/${d.draft_id}/picks`);
-      const s2r = d.slot_to_roster_id || {};
+      // slot -> roster: slot_to_roster_id when Sleeper fills it, else the draft order (user -> slot) joined to roster owners
+      let s2r = d.slot_to_roster_id || {};
+      if (!Object.keys(s2r).length && d.draft_order) { const u2r = {}; for (const r of rosters) u2r[r.owner_id] = r.roster_id; s2r = {}; for (const [u, sl] of Object.entries(d.draft_order)) if (u2r[u]) s2r[sl] = u2r[u]; }
       out[key] = { src: 'sleeper', year: y, type: d.settings && d.settings.rounds > 8 ? 'startup' : 'rookie', rounds: d.settings ? d.settings.rounds : null, teams: d.settings ? d.settings.teams : null,
         draft_type: d.type, name: (d.metadata || {}).name || null, start: d.start_time || null, season_type: d.season_type || null, settings: d.settings || {}, slots: Object.fromEntries(Object.entries(s2r).map(([s, r]) => [s, rname(r)])),
         picks: pk.map(p => { const m = p.metadata || {}; return [p.round, p.pick_no, p.draft_slot, rname(s2r[p.draft_slot]), rname(p.roster_id), `${m.first_name || ''} ${m.last_name || ''}`.trim(), m.position || null, m.team || null, ''] }) };
@@ -68,6 +71,7 @@ async function sleeperChain() {
     L = lg.previous_league_id;
   }
 }
+for (const k of Object.keys(out)) if (/-/.test(k)) delete out[k];
 for (const y of [2021, 2022, 2023, 2024]) {
   if (old[y] && old[y].src === 'mfl') { log.push(`mfl ${y} kept`); continue; }
   try { out[y] = await mfl(y); log.push(`mfl ${y} ${out[y].picks.length} picks`); } catch (e) { log.push(`mfl ${y} failed: ${e}`); }
