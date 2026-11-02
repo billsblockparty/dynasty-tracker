@@ -85,6 +85,9 @@ d+='// dropped points per week by position [QB,RB,WR,TE,K,DEF]: bench player who
 import psim as _PSM
 _SO0=_PSM.run()['teams']
 _SO={_t:[round(sum((k+1)*q for k,q in enumerate(_o['dist']))/100,1),_o['top'],_o['bye'],_o['po']] for _t,_o in _SO0.items()}
+_X0=json.load(open(P+'cmp_extra.json',encoding='utf-8'))
+_AVR={v:int(k) for k,v in _X0['rn'].items() if _dt_os.path.exists(P+f'avatars/{k}.webp')}
+d+='// team logo ids (Sleeper team avatars, .av-N)\nconst AVR='+json.dumps(_AVR,ensure_ascii=False)+';\n'
 d+='// season-end sim (player-level sim, 20,000 runs): [average finishing seed, % 1st, % bye, % playoffs]\nconst SO='+json.dumps({_t:[round(x,2) for x in v] for _t,v in _SO.items()})+';\n'
 import os as _os,base64 as _b64
 _LG='';_MIME={'svg':'image/svg+xml','png':'image/png','webp':'image/webp'}
