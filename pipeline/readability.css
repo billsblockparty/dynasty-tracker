@@ -657,3 +657,5 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 .wkc i.po+i.por{position:absolute;left:0;right:0;bottom:0;border-radius:3px 3px 3px 3px;background:var(--pylon);opacity:.38}
 .wkc .wv.pov{color:var(--pylon);opacity:.9}
 /* rank numeral column: 44px so the 40px-digit art fits every tier (patch 43px wide) */
+/* Team Hub hero: seed numeral art, same digit height as the standings */
+.tqid .tqsd.rnh{--rd:40px;display:flex;align-items:center;justify-content:center;width:44px;height:calc(var(--rd)*72/56);flex:none;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-width:0!important}
