@@ -58,11 +58,10 @@ async function sleeperChain() {
     for (const d of drafts) {
       if (d.status !== 'complete') continue;
       const key = String(y) + (drafts.filter(x => x.status === 'complete').length > 1 ? '-' + d.draft_id.slice(-4) : '');
-      if (old[key] && old[key].src === 'sleeper') { log.push(`sleeper ${key} kept`); continue; }
       const pk = await get(`${A}/draft/${d.draft_id}/picks`);
       const s2r = d.slot_to_roster_id || {};
       out[key] = { src: 'sleeper', year: y, type: d.settings && d.settings.rounds > 8 ? 'startup' : 'rookie', rounds: d.settings ? d.settings.rounds : null, teams: d.settings ? d.settings.teams : null,
-        draft_type: d.type, slots: Object.fromEntries(Object.entries(s2r).map(([s, r]) => [s, rname(r)])),
+        draft_type: d.type, name: (d.metadata || {}).name || null, start: d.start_time || null, season_type: d.season_type || null, settings: d.settings || {}, slots: Object.fromEntries(Object.entries(s2r).map(([s, r]) => [s, rname(r)])),
         picks: pk.map(p => { const m = p.metadata || {}; return [p.round, p.pick_no, p.draft_slot, rname(s2r[p.draft_slot]), rname(p.roster_id), `${m.first_name || ''} ${m.last_name || ''}`.trim(), m.position || null, m.team || null, ''] }) };
       log.push(`sleeper ${key} ${pk.length} picks`);
     }
