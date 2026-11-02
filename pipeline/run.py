@@ -10,11 +10,12 @@ def G():return int(re.search(r'const G=(\d+);',open(P+'data_block.js',encoding='
 def build():
     sh('python3',P+'rebuild.py');sh('node',P+'gen.js');sh('python3',P+'build_static.py');sh('python3',P+'build_site.py')
 mode=sys.argv[1] if len(sys.argv)>1 else 'build';force='--force' in sys.argv
+MODE0=mode
 if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'history/manifest.json')):
     subprocess.run(['node',P+'history.mjs'],cwd=P)  # never fatal; one-time import of past seasons (MFL 2021-24, Sleeper 2025)
     if mode=='history':mode='weekly'
 # draft history (Drafts tab): fetched once, then kept; a 'history' run refetches the unfinished ones
-if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'history/drafts.json')):
+if MODE0 in('weekly','history') and (MODE0=='history' or not os.path.exists(P+'history/drafts.json')):
     subprocess.run(['node',P+'drafts.mjs'],cwd=P)  # never fatal
 if mode=='weekly':
     st=json.loads(subprocess.run(['node',P+'pull.mjs','state'],check=True,cwd=P,capture_output=True,text=True).stdout)

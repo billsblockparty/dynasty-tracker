@@ -60,10 +60,12 @@ async function sleeperChain() {
     for (const d of done.slice(0, 1)) {
       const key = String(y);
       const pk = await get(`${A}/draft/${d.draft_id}/picks`);
+      let dtp = []; try { dtp = await get(`${A}/draft/${d.draft_id}/traded_picks`); } catch (e) { }
       // slot -> roster: slot_to_roster_id when Sleeper fills it, else the draft order (user -> slot) joined to roster owners
       let s2r = d.slot_to_roster_id || {};
       if (!Object.keys(s2r).length && d.draft_order) { const u2r = {}; for (const r of rosters) u2r[r.owner_id] = r.roster_id; s2r = {}; for (const [u, sl] of Object.entries(d.draft_order)) if (u2r[u]) s2r[sl] = u2r[u]; }
       out[key] = { src: 'sleeper', year: y, type: d.settings && d.settings.rounds > 8 ? 'startup' : 'rookie', rounds: d.settings ? d.settings.rounds : null, teams: d.settings ? d.settings.teams : null,
+        raw: { draft_order: d.draft_order || null, slot_to_roster_id: d.slot_to_roster_id || null, traded_picks: dtp, rosters: rosters.map(r => [r.roster_id, r.owner_id]), picks: pk.map(p => [p.round, p.pick_no, p.draft_slot, p.roster_id, p.picked_by]) },
         draft_type: d.type, name: (d.metadata || {}).name || null, start: d.start_time || null, season_type: d.season_type || null, settings: d.settings || {}, slots: Object.fromEntries(Object.entries(s2r).map(([s, r]) => [s, rname(r)])),
         picks: pk.map(p => { const m = p.metadata || {}; return [p.round, p.pick_no, p.draft_slot, rname(s2r[p.draft_slot]), rname(p.roster_id), `${m.first_name || ''} ${m.last_name || ''}`.trim(), m.position || null, m.team || null, ''] }) };
       log.push(`sleeper ${key} ${pk.length} picks`);
