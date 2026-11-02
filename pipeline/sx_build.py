@@ -121,7 +121,7 @@ def m_trades():
             fb=f'<div class="tpk"><i class="pkc fb">${s["faab"]}</i>FAAB</div>' if s['faab'] else ''
             body=pl+pk+fb or '<div class="tpk">–</div>'
             tot='<span>No games yet</span>' if pend else ('<span>No players</span>' if not s['pl'] else f'<b>{s["tot"]:.1f}</b><span>pts since</span>')
-            return f'<div class="tsd{" win" if win else ""}"><div class="tnm">{e(s["team"])}</div><div class="trc">receives</div>{body}<div class="ttot">{tot}</div></div>'
+            return f'<div class="tsd{" win" if win else ""}"><div class="tnm"><i class="pav" data-avt="{e(s["team"])}" aria-hidden="true"></i><span>{e(s["team"])}</span></div><div class="trc">receives</div>{body}<div class="ttot">{tot}</div></div>'
         when=f'{x["date"]} · counts from Week {x["eff"]}' if not pend else f'{x["date"]} · no games since'
         if x['eff']==1:when=f'{x["date"]} · before Week 1'
         out.append(f'<div class="trd"><div class="trw">{when}</div><div class="trg">{side(a,b)}{side(b,a)}</div></div>')
