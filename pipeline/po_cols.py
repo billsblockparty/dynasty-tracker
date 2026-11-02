@@ -33,8 +33,8 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=N
                    f'{team(a,w,a==wn,pa)}<i class="pbd"></i>{team(b,w,b==wn,None if pa is None else 100-pa)}</label>')
         return wn
     def bye(t,top):
-        box.append(f'<div class="pbm pby" style="left:{X[0]};top:{top:.1f}px;width:{CW};height:{MH}px">'
-                   f'{team(t,15,True,bye=True)}<i class="pbd"></i><span class="pbt pbe">Bye</span></div>')
+        box.append(f'<div class="pby" style="left:{X[0]};top:{top:.1f}px;width:{CW};height:{MH}px">'
+                   f'<div class="pbyt">{team(t,15,True,bye=True)}</div><span class="pbt pbe">Bye</span></div>')
     def elbow(col,ya,yb,on_a,on_b,yn):
         """Sleeper-style: from the right edge of each feeder game across to the middle of the next column, then
         down (or up) into the top (or bottom) of the next game; the winner's line is lit"""
@@ -46,7 +46,7 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=N
     bye(S[0],y[0]);q2=match('qf2',0,y[1]);bye(S[1],y[2]);q1=match('qf1',0,y[3])
     s1=match('sf1',1,sfc[0]-MH/2);s2=match('sf2',1,sfc[1]-MH/2)
     fw=match('fin',2,fc-MH/2)
-    elbow(0,c[0],c[1],s1==S[0],s1==q2,sfc[0]);elbow(0,c[2],c[3],s2==S[1],s2==q1,sfc[1]);elbow(1,sfc[0],sfc[1],fw==s1,fw==s2,fc)
+    elbow(0,y[0]+(TB+2)/2,c[1],s1==S[0],s1==q2,sfc[0]);elbow(0,y[2]+(TB+2)/2,c[3],s2==S[1],s2==q1,sfc[1]);elbow(1,sfc[0],sfc[1],fw==s1,fw==s2,fc)
     hd=''.join(f'<span class="pbh" style="left:{X[i]};width:{CW}"><b>{r}</b>Week {wk}</span>' for i,(r,wk) in enumerate((('Wild Card',15),('Semi Finals',16),('Final',17))))
     html=(f'<div class="prd pbx"><div class="pbk" style="height:{H}px">{hd}{"".join(ln)}{"".join(box)}</div></div>'
           '<script>(function(){function fit(){document.querySelectorAll(".pbt .bn").forEach(function(el){if(!el.clientWidth||el.dataset.fw==el.clientWidth)return;'
@@ -63,11 +63,14 @@ def build(S,GAMES,win,winp,PT,SHORT,seed,e,tone,final=None,av=lambda t:'',live=N
          '.pbh b{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--label)}'
          '.pbm{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;border-radius:10px;background:var(--deck-2);'
          'border:1px solid var(--line-strong);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}'
-         '.pbm.pby{cursor:default;background:var(--deck)}'
+         '.pby{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;gap:4px}'
+         '.pbyt{box-sizing:border-box;flex:none;border-radius:10px;background:var(--deck-2);border:1px solid var(--line-strong);overflow:hidden}'
+         '.pby .pbe{flex:1;height:auto;border-radius:10px;background:rgba(255,255,255,.03)}'
          '.pbd{display:block;height:1px;background:var(--hair);flex:none}'
          '.pbt{display:flex;flex-direction:column;justify-content:center;gap:4px;height:70px;padding:0 8px;box-sizing:border-box;min-width:0}'
          '.pbr,.pbr2{display:flex;align-items:center;gap:6px;line-height:1;min-width:0}.pbsp{flex:1}'
-         '.pbav{position:relative;display:inline-flex;flex:none;width:30px;height:24px}.pbav.nl{width:auto}.pbav .pbsd{position:absolute;right:0;bottom:-3px;transform:scale(.82);transform-origin:right bottom}.pbav.nl .pbsd{position:static;transform:none}'
+         '.pbav{display:inline-flex;align-items:center;gap:6px;flex:none;height:24px}.pbav .pbsd{position:static;margin:0;transform:none;height:16px;min-width:18px;padding:0 5px;font-size:10.5px;font-weight:600;line-height:16px;text-align:center;font-style:normal}'
+         '.pbx .ch.gold{background:rgba(244,196,81,.16);color:#f4c451;box-shadow:inset 0 0 0 1px rgba(244,196,81,.45)}'
          '.pba{display:inline-block;width:24px;height:24px;flex:none;border-radius:50%;background-color:var(--deck-2);background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 0 0 1px var(--hair)}'
          '.pbs{font-family:var(--display);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;color:var(--steel)}'
          '.pbwp{font-family:var(--display);font-weight:700;font-size:11.5px;letter-spacing:.03em;color:var(--steel)}.pbwp.w{color:var(--win)}.pbwp.l{color:#ff8a9a}'
