@@ -22,7 +22,7 @@ def table(D,cls):
     o=[f'<div class="pt {cls}" role="table"><div class="pr ph" role="row"><span role="columnheader">Team</span>'+''.join(f'<span role="columnheader"><i class="pp p-{p.lower()}"><span class="ct">{p}</span></i></span>' for p in POS)+'</div>']
     for i,t in enumerate(H):
         tc='tier-bye' if i<2 else 'tier-po' if i<6 else 'tier-out'
-        cells=''.join((lambda r,tie:f'<span role="cell"><b>{D[t][p]:.1f}</b><i class="ch {tone(r)}"><span class="ct">{"T" if tie else "#"}{r}</span></i></span>')(*rank(D,p,t)) for p in POS)
+        cells=''.join((lambda r,tie:f'<span role="cell"><b>{D[t][p]:.1f}</b><i class="ch {tone(r)}"><span class="ct">{"T" if tie else ""}{r}</span></i></span>')(*rank(D,p,t)) for p in POS)
         o.append(f'<div class="pr {tc}" role="row"><span role="rowheader"><em>{i+1}</em><i class="pav" data-avt="{t.replace(chr(34),'&quot;')}" aria-hidden="true"></i><span class="psn">{SHORT[t]}</span><span class="pfn">{t}</span></span>{cells}</div>')
     o.append('</div>');return '\n'.join(o)
 NG=[(norm(r['team']),p,int(r.get('nogame_'+p) or 0)) for r in rows for p in POS if int(r.get('nogame_'+p) or 0)]

@@ -24,7 +24,7 @@ def ps(t,p):r=POSR[t];return float(r[p])/max(1,int(r['starts_'+p])-int(r.get('no
 def rk(vals,t,desc=True):
     v=vals[t];return 1+sum((x>v+1e-9) if desc else (x<v-1e-9) for x in vals.values()),sum(abs(x-v)<1e-9 for x in vals.values())>1
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
-def chip(r,tie=False):return f'<i class="ch {tone(r)}"><span class="ct">{"T" if tie else "#"}{r}</span></i>'
+def chip(r,tie=False):return f'<i class="ch {tone(r)}"><span class="ct">{"T" if tie else ""}{r}</span></i>'
 ordn=A.ordn
 def badge(tm):return f'<em class="nfl tm n-{tm}"><span class="ct">{tm}</span></em>' if tm else ''
 def pz(pos):return f'<i class="pp p-{pos.lower()}"><span class="ct">{pos}</span></i>'
