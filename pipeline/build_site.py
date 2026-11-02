@@ -5,6 +5,8 @@ os.makedirs(OUT,exist_ok=True)
 # Year switch: this build's season (DT_SEASON, default the current one) and the past seasons published under site/<year>/
 CUR='2026';Y=os.environ.get('DT_SEASON',CUR);PAST=Y!=CUR
 RAWD=os.path.join(P,'history','raw');YEARS=os.environ['DT_YEARS'].split(',') if os.environ.get('DT_YEARS') else [CUR]+sorted([d for d in (os.listdir(RAWD) if os.path.isdir(RAWD) else []) if d.isdigit() and d!=CUR],reverse=True)
+# MyFantasyLeague seasons (history/mfl_<year>.json) get archive pages from history_pages.py, so their buttons link too
+YEARS=YEARS+[y for y in ('2021','2022','2023','2024') if os.path.exists(os.path.join(P,'history',f'mfl_{y}.json')) and y not in YEARS]
 s=open(P+'standings.html',encoding='utf-8').read()
 now=datetime.datetime.now(zoneinfo.ZoneInfo('America/New_York'));stamp=now.strftime('%a %b %-d, %-I:%M %p ET');ver=now.strftime('%Y%m%d%H%M%S')
 UPD=('<div id="upd" role="status" hidden><span>New scores</span><button type="button" onclick="location.reload()">Refresh</button></div>'

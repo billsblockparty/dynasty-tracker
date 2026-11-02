@@ -9,6 +9,7 @@ def sh(*c):
 def G():return int(re.search(r'const G=(\d+);',open(P+'data_block.js',encoding='utf-8').read()).group(1))
 def build():
     sh('python3',P+'rebuild.py');sh('node',P+'gen.js');sh('python3',P+'build_static.py');sh('python3',P+'build_site.py')
+    if os.environ.get('DT_PAST')!='1':subprocess.run(['python3',P+'history_pages.py'],cwd=P)  # MFL season archive pages; never fatal
 mode=sys.argv[1] if len(sys.argv)>1 else 'build';force='--force' in sys.argv
 MODE0=mode
 if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'history/manifest.json')):
@@ -50,6 +51,7 @@ elif mode=='live':
     if _old and _dtw.datetime.now().minute<10:subprocess.run(['node',P+'pull.mjs','wire',str(G())],cwd=P)
     sh('python3',P+'score.py',P+'live.json')  # applies scores and runs rebuild/gen/build_static
     sh('python3',P+'build_site.py')
+    subprocess.run(['python3',P+'history_pages.py'],cwd=P)  # MFL season archive pages; never fatal
 else:
     build()
 if os.path.exists(P+'history/log.json') and os.path.isdir(P+'../site'):
