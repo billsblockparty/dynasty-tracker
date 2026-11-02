@@ -37,7 +37,7 @@ def card(a,b):
         return (f'<div class="mus {cl}">{chip(seed(x))}<b>{e(x)}</b><span class="mrec">{rec(x)}</span><span class="mform">{form(x)}</span></div>',
                 f'<div class="mbl {cl}">{lst}</div>')
     sa,ba=side(a,'msl');sb,bb=side(b,'msr')
-    ma,mb,pw=_sg(a,b);pa=round(pw*100);pb=100-pa
+    ma,mb,pw=_pre(a,b);pa=round(pw*100);pb=100-pa
     rows=[('Sim pts',f'{ma:.1f}',f'{mb:.1f}',ma,mb),('Sim win',f'{pa}%',f'{pb}%',pa,pb),
           ('PF / wk',f'{T[a][5]:.1f}',f'{T[b][5]:.1f}',T[a][5],T[b][5]),
           ('PF rank',f'#{T[a][4]}',f'#{T[b][4]}',-T[a][4],-T[b][4]),
@@ -381,16 +381,16 @@ def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False,ca='',cb='',pa=None,ja=None,jb=No
 # uncertainty is a 27-point spread for a full week (actual minus projected starter totals, this league), shrinking as games end.
 _LEFT=LW.get('left',{});TSD=27.0
 import psim as _PSM
-_PG={}
-for _a,_b,_ma,_mb,_pa in _PSM.run()['games']:_PG[(_a,_b)]=(_ma,_mb,_pa/100);_PG[(_b,_a)]=(_mb,_ma,1-_pa/100)
+_PSG={}
+for _a,_b,_ma,_mb,_pa in _PSM.run()['games']:_PSG[(_a,_b)]=(_ma,_mb,_pa/100);_PSG[(_b,_a)]=(_mb,_ma,1-_pa/100)
 _PRE={}
-for _a,_b,_ma,_mb,_pa in _PSM.run().get('pre',[]):_PRE[(_a,_b)]=(_ma,_mb);_PRE[(_b,_a)]=(_mb,_ma)
+for _a,_b,_ma,_mb,_pa in _PSM.run().get('pre',[]):_PRE[(_a,_b)]=(_ma,_mb,_pa/100);_PRE[(_b,_a)]=(_mb,_ma,1-_pa/100)
 def _pre(a,b):
     """the pre-game sim score for this week's game (the 20,000-run sim before kickoff); stays fixed through the week"""
-    return _PRE.get((a,b)) or _sg(a,b)[:2]
+    return _PRE.get((a,b)) or _sg(a,b)
 def _sg(a,b):
     """this week's game in the player-level sim (live): mean points each side and a's win chance; the team model otherwise"""
-    return _PG.get((a,b)) or _SD.simgame(a,b)
+    return _PSG.get((a,b)) or _SD.simgame(a,b)
 def _lx(p):
     if lval(p)[1]:return p[5],0.0
     if p[3] in LIVEG:f=float(_LEFT.get(p[3],0.5));return p[5]+p[4]*f,f
@@ -399,7 +399,7 @@ def _lp(t):
     st=[p for p in LW['out'][str(RID[t])]['st'] if p];x=[_lx(p) for p in st];s2=sum(p[4]**2 for p in st)
     return sum(e for e,_ in x),(TSD**2*sum(w*p[4]**2 for (_,w),p in zip(x,st))/s2 if s2 else 0.0)
 def _lwin(a,b):
-    if (a,b) in _PG:return max(1,min(99,round(_PG[(a,b)][2]*100))) if 0<_PG[(a,b)][2]<1 else round(_PG[(a,b)][2]*100)
+    if (a,b) in _PSG:return max(1,min(99,round(_PSG[(a,b)][2]*100))) if 0<_PSG[(a,b)][2]<1 else round(_PSG[(a,b)][2]*100)
     from math import erf,sqrt
     (ea,va),(eb,vb)=_lp(a),_lp(b)
     if va+vb<1e-6:return 100 if ea>eb else 0 if eb>ea else 50
