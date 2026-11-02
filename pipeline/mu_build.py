@@ -374,7 +374,7 @@ def prow_(fr,a,b,ra,rb,ta,tb,va,vb,final=False,ca='',cb='',pa=None,ja=None,jb=No
                 f'<span class="g4w"><span class="g4p {cls}">{lab}</span><span class="g4b"><i class="{cls}" style="width:{wd}%"></i></span></span>'
                 f'<b class="gn">{e(SHORT[t])}</b>'
                 f'<span class="gb"><span class="grc">{rc}</span><i class="stk {tg[:1].lower()}">{tg}</i><span class="gfm">{fm}</span></span></span>')
-    return (f'<label for="{fr}" class="g4{" fin" if fz else ""}">{half(a,ra,ta,va,ua,ca,ja,fa,"gl",pa,ua,oa)}<span class="g4m"><i class="g4vs">vs</i>{f'<span class="g4sim" title="Average simulated score"><small>Sim</small><b>{sm[0]:.0f}<i>–</i>{sm[1]:.0f}</b></span>' if sm else ''}</span>'
+    return (f'<label for="{fr}" class="g4{" fin" if fz else ""}">{half(a,ra,ta,va,ua,ca,ja,fa,"gl",pa,ua,oa)}<span class="g4m"><i class="g4vs">vs</i>{f'<span class="g4sim" title="Pre-game sim: average score over 20,000 simulated games"><small>Sim</small><b>{sm[0]:.0f}<i>–</i>{sm[1]:.0f}</b></span>' if sm else ''}</span>'
             f'{half(b,rb,tb,vb,ub,cb,jb,fb,"gr",None if pa is None else 100-pa,ub,ob)}</label>')
 # In-week projection and win chance, the way Sleeper does them: finished players count their points, live players their
 # points plus the projection for the share of their game still to play (game clock), the rest their projection. Each team's
@@ -383,6 +383,11 @@ _LEFT=LW.get('left',{});TSD=27.0
 import psim as _PSM
 _PG={}
 for _a,_b,_ma,_mb,_pa in _PSM.run()['games']:_PG[(_a,_b)]=(_ma,_mb,_pa/100);_PG[(_b,_a)]=(_mb,_ma,1-_pa/100)
+_PRE={}
+for _a,_b,_ma,_mb,_pa in _PSM.run().get('pre',[]):_PRE[(_a,_b)]=(_ma,_mb);_PRE[(_b,_a)]=(_mb,_ma)
+def _pre(a,b):
+    """the pre-game sim score for this week's game (the 20,000-run sim before kickoff); stays fixed through the week"""
+    return _PRE.get((a,b)) or _sg(a,b)[:2]
 def _sg(a,b):
     """this week's game in the player-level sim (live): mean points each side and a's win chance; the team model otherwise"""
     return _PG.get((a,b)) or _SD.simgame(a,b)
@@ -403,7 +408,7 @@ _pj=lambda t:round(_lp(t)[0],1)   # live projected total (Sleeper's figure under
 _pg=lambda t:round(sum(p[4] for p in LW['out'][str(RID[t])]['st'] if p),1)   # pre-game projection
 _mdone=lambda a,b:all(lval(p)[1] for t in (a,b) for p in LW['out'][str(RID[t])]['st'] if p)
 _cur=lambda t:round(sum(p[5] for p in LW['out'][str(RID[t])]['st'] if p),2)  # points scored so far
-chips='<div class="mpk muc2" role="tablist" aria-label="Game">'+''.join(prow_(f'mu-{i}',a,b,seed(a),seed(b),streak(a),streak(b),_cur(a),_cur(b),False,rec(a),rec(b),_lwin(a,b),_pj(a),_pj(b),form(a),form(b),_sg(a,b)[:2],_pg(a),_pg(b),_mdone(a,b)) for i,(a,b) in enumerate(games))+'</div>'
+chips='<div class="mpk muc2" role="tablist" aria-label="Game">'+''.join(prow_(f'mu-{i}',a,b,seed(a),seed(b),streak(a),streak(b),_cur(a),_cur(b),False,rec(a),rec(b),_lwin(a,b),_pj(a),_pj(b),form(a),form(b),_pre(a,b),_pg(a),_pg(b),_mdone(a,b)) for i,(a,b) in enumerate(games))+'</div>'
 cur='' if FIN else f'<div class="mwx mwx-{W}">'+radios+chips+''.join(panel(i,a,b) for i,(a,b) in enumerate(games))+'</div>'
 css=''.join(f'#mu-{i}:checked~.muc2 label[for="mu-{i}"]{{border-color:var(--chalk);box-shadow:inset 0 0 0 1px var(--chalk)}}#mu-{i}:checked~.mup-{i}{{display:block}}' for i in range(5))
 # ---------- historical weeks
@@ -511,11 +516,11 @@ css+=_AVCSS+('.g4 .av{display:inline-block;border-radius:50%;background-color:va
       '.mpk{grid-template-columns:1fr!important;gap:8px}.mpk label:last-child:nth-child(odd){grid-column:auto;justify-self:stretch;width:auto}'
       '.mpk label.g4{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:6px;align-items:start;padding:11px 10px 10px;'
       'font-size:15px;letter-spacing:.02em;min-height:92px;box-sizing:border-box}'
-      '.g4 .g4m{align-self:stretch;display:flex;flex-direction:column;align-items:center}'
+      '.g4 .g4m{align-self:stretch;display:flex;flex-direction:column;align-items:center;width:42px;flex:none}'
       '.g4 .g4vs{margin:auto 0;width:28px!important;height:28px;font-style:normal;display:grid;place-items:center;width:30px;height:28px;border-radius:7px;background:var(--ink);box-shadow:inset 0 0 0 1px var(--hair);'
       'font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.06em;color:var(--dim)}'
-      '.g4 .g4sim{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1;font-family:var(--display);font-weight:700;font-size:11.5px;color:var(--label);font-variant-numeric:tabular-nums;white-space:nowrap}'
-      '.g4 .g4sim small{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}.g4 .g4sim b{font-weight:700;white-space:nowrap}.g4 .g4sim i{font-style:normal;margin:0 1px;color:var(--dim)}'
+      '.g4 .g4sim{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:0;height:23px;overflow:visible;gap:2px;line-height:1;font-family:var(--display);font-weight:700;font-size:14px;color:var(--label);font-variant-numeric:tabular-nums;white-space:nowrap}'
+      '.g4 .g4sim small{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}.g4 .g4sim b{font-weight:700;white-space:nowrap}.g4 .g4sim i{font-style:normal;margin:0 1px;color:var(--dim)}'
       '.g4 .gs{display:flex;flex-direction:column;min-width:0}'
       '.g4 .g4t{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"av . o sc" "av sd sd pj";column-gap:4px;row-gap:2px;align-items:baseline;min-height:34px;line-height:1}'
       '.g4 .gr .g4t{grid-template-areas:"sc o . av" "pj sd sd av";grid-template-columns:auto auto minmax(0,1fr) auto}'
