@@ -8,6 +8,7 @@ from nfl_colors import badge_c as badge
 e=html.escape
 T,TEAMS,G,NOW,SHORT,CODE=D.T,D.TEAMS,D.G,D.NOW,D.SHORT,D.CODE
 def rec(t):return f'{T[t][0]}-{T[t][1]}'
+def mxn(t):return f'<span class="mxn"><i class="pav" data-avt="{e(t)}" aria-hidden="true"></i><span class="psn">{e(SHORT[t])}</span><span class="pfn">{e(t)}</span></span>'
 def nm(t):return f'<span class="sxn">{e(t)}</span>'
 def sgn(x,d=1):return ('+' if x>=0.05 else '−' if x<=-0.05 else '')+f'{abs(x):.{d}f}'
 def pct(x):
@@ -72,7 +73,7 @@ def m_sched():
     rows=[]
     for a in order:
         cells=''.join(f'<span class="mx{" dg" if a==b else " up" if M[a][b]>M[a][a] else " dn" if M[a][b]<M[a][a] else ""}">{M[a][b]}</span>' for b in order)
-        rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[a])}</span>{cells}</div>')
+        rows.append(f'<div class="sxr">{mxn(a)}{cells}</div>')
     mat=f'<div class="sxm"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'
     av={a:sum(M[a][b] for b in TEAMS)/10 for a in TEAMS}
     lr=[[nmb(a,dvb(T[a][0]-av[a],1.2)),f'<span class="sxv">{T[a][0]}</span>',f'<span class="sxv">{av[a]:.1f}</span>',f'<span class="sxv b {"up" if T[a][0]-av[a]>=0.5 else "dn" if T[a][0]-av[a]<=-0.5 else ""}">{sgn(T[a][0]-av[a])}</span>'] for a in sorted(TEAMS,key=lambda a:-(T[a][0]-av[a]))]
@@ -88,7 +89,7 @@ def m_everyweek():
     rows=[]
     for a in order:
         cells=''.join('<span class="mx dg"></span>' if a==b else f'<span class="mx{" up" if EW[a][b][0]>EW[a][b][1] else " dn" if EW[a][b][0]<EW[a][b][1] else ""}" title="{e(a)} {_rec(EW[a][b])} vs {e(b)}" tabindex="0" role="button" data-a="{e(a)}" data-b="{e(b)}" data-w="{EW[a][b][0]}" data-l="{EW[a][b][1]}" data-t="{EW[a][b][2]}">{EW[a][b][0]}</span>' for b in order)
-        rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[a])}</span>{cells}</div>')
+        rows.append(f'<div class="sxr">{mxn(a)}{cells}</div>')
     mat=(f'<div class="ewb" aria-live="polite"><span class="ewa"></span><b class="ewr">Tap a cell for the full record</b><span class="ewo"></span></div>'
          f'<div class="sxm ewm"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'
          '<script>(function(){var m=document.currentScript.previousElementSibling,b=m.previousElementSibling,cur=null,H=b.querySelector(".ewr").textContent;'
@@ -169,7 +170,7 @@ def m_cons():
     order=sorted(TEAMS,key=lambda t:S[t]['cv'])
     X=lambda v:2+(v-lo)/(hi-lo)*96
     def rnk(k,t):v=S[t][k];return 1+sum(1 for u in TEAMS if S[u][k]>v+1e-9)
-    tn=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b' if r>N-3 else ''
+    tn=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==N else 'b' if r>N-3 else ''
     chip=lambda r:f'<i class="ch {tn(r)}"><span class="ct">#{r}</span></i>'
     for i,t in enumerate(order):
         x=S[t]
@@ -232,7 +233,7 @@ def m_heat():
     rows=[]
     for t in sorted(TEAMS,key=lambda t:sum(HE[t])):
         cells=''.join(f'<span class="hm r{r}">{r}</span>' for r in HE[t])
-        rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[t])}</span>{cells}<span class="hav">{sum(HE[t])/G:.1f}</span></div>')
+        rows.append(f'<div class="sxr">{mxn(t)}{cells}<span class="hav">{sum(HE[t])/G:.1f}</span></div>')
     return head('Weekly score rank','1 = highest score that week')+f'<div class="sxm hmx" style="--n:{G}"><div class="sxr sxhd">{hd}</div>{"".join(rows)}</div>'
 # ---------- 10 Byes
 BY=D.byes()
@@ -242,7 +243,7 @@ def m_byes():
     rows=[];notes=[]
     for t in D.PH:
         cells=''.join(f'<span class="bx b{min(len(BY[t][w]),3)}">{len(BY[t][w]) or "–"}</span>' for w in wk)
-        rows.append(f'<div class="sxr"><span class="mxn">{e(SHORT[t])}</span>{cells}</div>')
+        rows.append(f'<div class="sxr">{mxn(t)}{cells}</div>')
         for w in wk:
             if len(BY[t][w])>=2:notes.append((w,t,BY[t][w]))
     HH=D._g('H');tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b' if r>=8 else ''
