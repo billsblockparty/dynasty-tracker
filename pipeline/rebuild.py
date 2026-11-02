@@ -63,6 +63,10 @@ if _dt_os.environ.get('DT_PAST')=='1':  # a finished past season: "Final" in pla
     h=h.replace('<div class="clock"><b>__LEFT__</b><span>weeks left</span></div>','<div class="clock fin"><b>Final</b></div>',1)
     h=h.replace('</style>','.clock.fin b{font-size:34px;letter-spacing:.02em;transform:translateY(1.5px)}</style>',1)
 h=h.replace('__LEFT__',str(14-DONE)).replace('__G__',str(DONE))
+# title: the gold-and-teal script 'League' artwork in place of the typed word
+import base64 as _b64l
+if _dt_os.path.exists(P+'league_script.webp'):
+    h=h.replace('<span class="lgi">League</span>','<img class="lgs" alt="League" src="data:image/webp;base64,'+_b64l.b64encode(open(P+'league_script.webp','rb').read()).decode()+'">',1)
 h=h.replace('SEGMENTS',segs).replace('POS_SECTION',open(P+'pos/pos_section.html',encoding='utf-8').read())
 import json,subprocess as sp
 EF={t:v[:2] for t,v in json.load(open(P+'eff.json')).items()}

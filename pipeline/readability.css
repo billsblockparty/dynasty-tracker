@@ -631,3 +631,8 @@ html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!importan
 /* palette J1 (Jaguars Rivalries): near-black page, deep teal-black panels, alabaster text, gold LEAGUE */
 html:root{--pg:#0c1316;--ink:#0f1c20;--deck:#14272d;--deck-2:#1a323a;--hair:#24444d;--line-strong:#2f5761;--chalk:#ece6da;--label:#cfc6b6;--steel:#a59d8f}
 .lgi{color:#c9a15a!important}h1{color:#ece6da}
+/* title: script 'League' artwork; letters' baseline (68% down the image) sits on THE's baseline */
+header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left:.06em;height:1.4em;vertical-align:-0.448em}
+@media(max-width:380px){h1 .lgs{height:1.38em;vertical-align:-0.442em}}
+@media(min-width:430px){h1 .lgs{height:1.65em;vertical-align:-0.528em}}
+@media(min-width:1100px){h1 .lgs{height:1.85em;vertical-align:-0.592em}}
