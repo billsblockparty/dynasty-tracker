@@ -116,7 +116,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           rm -f .github/selftest
           git add -A pipeline .github
-          if ! git diff --cached --quiet; then git commit -m "Weekly data refresh"; git pull --rebase origin main; git push; fi
+          if ! git diff --cached --quiet; then git commit -m "Weekly data refresh"; git pull --rebase -X theirs origin main; git push; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }
