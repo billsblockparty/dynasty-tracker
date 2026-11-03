@@ -83,6 +83,15 @@ if len(YEARS)>1:
       '@supports not (text-box:trim-both cap alphabetic){.yrs .yb b{padding:6px 0 5px}}'
       '@media(max-width:640px){.yrs.n4,.yrs.n5,.yrs.n6,.yrs.n7,.yrs.n8{width:100%;gap:8px 7px}.yrs.n4 .cf,.yrs.n5 .cf,.yrs.n6 .cf,.yrs.n7 .cf,.yrs.n8 .cf{display:none}'
       '.yrs.n4 .cs,.yrs.n5 .cs,.yrs.n6 .cs,.yrs.n7 .cs,.yrs.n8 .cs{display:inline}.yrs .yb small{padding:0;font-size:10px}.yrs .yb b{font-size:12.5px;letter-spacing:.04em;text-indent:.04em;padding:6.83px 0 7.17px}}</style>',1)
+# BBP surfaces green-teal, not blue (Nicklaus, 2026-11-03): every dark blue-grey neutral (surfaces, borders, bar tracks,
+# rings, ink) moved to hue ~178 with its relative luminance kept, so every contrast ratio is unchanged. Text, tier,
+# win/loss, chart and NFL team colours are not in the map. Applied to the finished page so hard-coded values in any
+# builder's CSS, inline styles and chart SVGs are covered too.
+TEAL={"#101b1f": "#0f1c1b", "#1a2c33": "#1a2d2c", "#203841": "#223938", "#2c4a54": "#2d4b4a", "#070d10": "#060e0e", "#0b0e14": "#090f0f", "#0c1316": "#0b1313", "#0f1218": "#0c1313", "#0f1c20": "#0e1d1c", "#101820": "#0d1919", "#14181f": "#101919", "#161a22": "#121c1b", "#14272d": "#122827", "#1c212b": "#172323", "#1a323a": "#173332", "#262c38": "#202f2e", "#2c3240": "#253535", "#24444d": "#204644", "#353c4b": "#2d3f3f", "#3a4254": "#304645", "#2f5761": "#2b5957", "#4b5262": "#415655", "#4a5263": "#405655"}
+import re as _ret
+s=_ret.sub(r'#[0-9a-fA-F]{6}\b',lambda m:TEAL.get(m.group(0).lower(),m.group(0)),s)
+s=_ret.sub(r'rgba\(\s*6\s*,\s*11\s*,\s*15\s*,',lambda m:'rgba(6,14,14,',s)
+s=_ret.sub(r'rgba\(\s*16\s*,\s*27\s*,\s*31\s*,',lambda m:'rgba(15,28,27,',s)
 open(os.path.join(OUT,'index.html'),'w',encoding='utf-8').write(s)
 shutil.copy(P+'DynastyStandings.html',os.path.join(OUT,'DynastyStandings.html'))
 open(os.path.join(OUT,'.nojekyll'),'w').close()
