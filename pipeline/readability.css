@@ -967,7 +967,7 @@ body{background:var(--pg)}
    the dark ring on the anti-aliased edge) */
 .seg10 i,.l5d i{background-clip:padding-box!important}
 /* BBP: FAAB tile in alabaster with dark figures (kit palette) */
-.board .r .nm .fab b{background:#ECE8DD!important;color:#101b1f!important;box-shadow:0 0 0 1px rgba(16,27,31,.55),2px 2px 0 1px rgba(0,0,0,.55),2px 2px 6px 1px rgba(0,0,0,.35)}
+.board .r .nm .fab b{background:#D9D0BC!important;color:#101b1f!important;box-shadow:0 0 0 1px rgba(16,27,31,.55),2px 2px 0 1px rgba(0,0,0,.55),2px 2px 6px 1px rgba(0,0,0,.35)}
 .board .r .nm .fab:active b{box-shadow:0 0 0 1px rgba(16,27,31,.55)}
 /* 2026-11-03 (later): tier banners replaced by cutoff lines (YILM-site style): a dark strip under the last seed of a
    tier with the label in the tier colour, a 2px rule in that colour, and the count at the right ("Top 6 in"). No
