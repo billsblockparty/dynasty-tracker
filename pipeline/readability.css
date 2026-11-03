@@ -1059,8 +1059,9 @@ body *:not(.ch):not(.pp):not(.pz):not(.dfvia):not(.dfcp):not(.nfl):not([class*="
 .dfcp{box-shadow:none!important}
 /* no gradients on surfaces */
 .board,.tcard,.r,.dtp,.sxc,.posx,.lbx,.rox,.mux,.cmx,.wrt,.mcard{background-image:none!important}
-/* BBP avatars/logos: flat circle, 2px ring in the plate colour, no shadow */
-.av,.pav.av,.board .r>.rk .rav,.pane-sx .av,.pane-sx .pav.av{box-shadow:0 0 0 2px var(--frame)!important}
 #list.board{box-shadow:var(--sh-hard)!important}
 .yrs .yb b{box-shadow:var(--sh-hard)!important}.yrs a.yb:active b{box-shadow:none!important}
 html:root{--dim:#969dac}  /* 4.5:1 on the lightest surface (zebra); was #626b7c, 2.3-3.3:1 */
+/* 2026-11-03 colour revert (Nicklaus): green-teal build-time map removed, surfaces back to their source values; the plate
+   keeps the darker #060E0E it had under the map (1.11:1 against the page #101B1F, darker) */
+html:root{--frame:#060E0E;--plate:#060E0E}
