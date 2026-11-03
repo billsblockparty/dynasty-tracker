@@ -8,7 +8,17 @@ from nfl_colors import badge_c as badge
 e=html.escape
 T,TEAMS,G,NOW,SHORT,CODE=D.T,D.TEAMS,D.G,D.NOW,D.SHORT,D.CODE
 def rec(t):return f'{T[t][0]}-{T[t][1]}'
-def mxn(t):return f'<span class="mxn"><i class="pav" data-avt="{e(t)}" aria-hidden="true"></i><span class="psn">{e(SHORT[t])}</span><span class="pfn">{e(t)}</span></span>'
+import json as _js
+try:_OWN=_js.load(open(P+'owners.json',encoding='utf-8'))
+except Exception:_OWN={}
+try:
+    import lg as _lgc;_NK=dict(getattr(_lgc,'NICK',{}) or {})
+except Exception:_NK={}
+def coach(t):return _OWN.get(t) or _NK.get(t) or SHORT[t]  # the manager's name (BBP owners.json, YILM league nicknames)
+# matrix row label: face/logo + team name (desktop) or + manager name (phones, where team names would be cut)
+def mxn(t):return f'<span class="mxn"><i class="pav" data-avt="{e(t)}" aria-hidden="true"></i><span class="psn">{e(SHORT[t])}</span><span class="pfn">{e(t)}</span><span class="pcn{" l" if len(coach(t))>=7 else ""}">{e(coach(t))}</span></span>'
+# matrix column head: face/logo + manager name (name hidden on phones, where columns are ~20px)
+def mxh(t):return f'<span class="mxh" title="{e(t)}"><i class="pav" data-avt="{e(t)}" aria-hidden="true"></i><b>{e(coach(t))}</b></span>'
 def nm(t):return f'<span class="sxn">{e(t)}</span>'
 def sgn(x,d=1):return ('+' if x>=0.05 else '−' if x<=-0.05 else '')+f'{abs(x):.{d}f}'
 def pct(x):
@@ -69,7 +79,7 @@ def m_draft():
 M=D.schedswap()
 def m_sched():
     order=D.PH
-    hd='<span></span>'+''.join(f'<span>{CODE[b]}</span>' for b in order)
+    hd='<span></span>'+''.join(mxh(b) for b in order)
     rows=[]
     for a in order:
         cells=''.join(f'<span class="mx{" dg" if a==b else " up" if M[a][b]>M[a][a] else " dn" if M[a][b]<M[a][a] else ""}">{M[a][b]}</span>' for b in order)
@@ -85,7 +95,7 @@ C3={"Team Ram Rod":"RAM","Bill's Block Party":"BBP","Homer's Heroes":"HOM","Mand
     "Convicts":"CON","Nuts in the Face":"NUT","Reverse Apache Master":"APA","Canton waitlist":"CAN"}  # three-letter column heads
 def m_everyweek():
     order=D.PH
-    hd='<span></span>'+''.join(f'<span>{C3.get(b,CODE[b])}</span>' for b in order)
+    hd='<span></span>'+''.join(mxh(b) for b in order)
     rows=[]
     for a in order:
         cells=''.join('<span class="mx dg"></span>' if a==b else f'<span class="mx{" up" if EW[a][b][0]>EW[a][b][1] else " dn" if EW[a][b][0]<EW[a][b][1] else ""}" title="{e(a)} {_rec(EW[a][b])} vs {e(b)}" tabindex="0" role="button" data-a="{e(a)}" data-b="{e(b)}" data-w="{EW[a][b][0]}" data-l="{EW[a][b][1]}" data-t="{EW[a][b][2]}">{EW[a][b][0]}</span>' for b in order)
