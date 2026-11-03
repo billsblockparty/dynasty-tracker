@@ -699,6 +699,6 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 .board.sbm .r>.sb{display:grid!important}
 /* mid-rank dots a step brighter so they read against the panel */
 .seg10:not(.g):not(.b) i.on{background:#aab5bc!important}
-/* team logos: an identical circle behind (same size as the ring), shifted 3px right and 3px down, no blur */
-.av,.pav.av,.board .r>.rk .rav{box-shadow:0 0 0 1px var(--line-strong),3px 3px 0 1px rgba(0,0,0,.6)!important}
+/* team logos: an identical circle behind (same size as the ring) shifted 2px right and 2px down, plus the same circle softened (blur) at that offset so the edge fades; both stay round */
+.av,.pav.av,.board .r>.rk .rav{box-shadow:0 0 0 1px var(--line-strong),2px 2px 0 1px rgba(0,0,0,.55),2px 2px 6px 1px rgba(0,0,0,.35)!important}
 .seg10.gold:not(.g):not(.b) i.on{background:#e8c15a!important}
