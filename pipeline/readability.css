@@ -1063,5 +1063,5 @@ body *:not(.ch):not(.pp):not(.pz):not(.dfvia):not(.dfcp):not(.nfl):not([class*="
 .yrs .yb b{box-shadow:var(--sh-hard)!important}.yrs a.yb:active b{box-shadow:none!important}
 html:root{--dim:#969dac}  /* 4.5:1 on the lightest surface (zebra); was #626b7c, 2.3-3.3:1 */
 /* 2026-11-03 colour revert (Nicklaus): green-teal build-time map removed, surfaces back to their source values; the plate
-   keeps the darker #060E0E it had under the map (1.11:1 against the page #101B1F, darker) */
-html:root{--frame:#060E0E;--plate:#060E0E}
+   is #070C0E (Nicklaus, 2026-11-03; same hue as the page #101B1F, 1.12:1 darker) */
+html:root{--frame:#070C0E;--plate:#070C0E}
