@@ -128,6 +128,14 @@ _SO={_t:[round(sum((k+1)*q for k,q in enumerate(_o['dist']))/100,1),_o['top'],_o
 _X0=json.load(open(P+'cmp_extra.json',encoding='utf-8'))
 _AVR={v:int(k) for k,v in _X0['rn'].items() if _dt_os.path.exists(P+f'avatars/{k}.webp')}
 d+='// team logo ids (Sleeper team avatars, .av-N)\nconst AVR='+json.dumps(_AVR,ensure_ascii=False)+';\n'
+# FAAB balances (standings card tiles): pull_faab.json from node pull.mjs faab; current season only (the page refreshes them from Sleeper on load)
+try:
+    _FB=json.load(open(P+'pull_faab.json',encoding='utf-8')) if _dt_os.path.exists(P+'pull_faab.json') and _dt_os.environ.get('DT_PAST')!='1' else None
+    try:_RNF={int(k):v for k,v in json.load(open(P+'cmp_extra.json',encoding='utf-8'))['rn'].items()}
+    except Exception:import lg as _lgf;_RNF=dict(_lgf.RN)
+    if _FB and _FB.get('budget'):
+        d+='// FAAB: budget, league id, roster id -> team, dollars left per team\nconst FAABB='+str(int(_FB['budget']))+',FAABL='+json.dumps(str(_FB['league']))+',FAABR='+json.dumps({k:v for k,v in _RNF.items()},ensure_ascii=False)+',FAAB='+json.dumps({_RNF[int(k)]:int(v) for k,v in _FB['left'].items() if int(k) in _RNF},ensure_ascii=False)+';\n'
+except Exception as _e:print('faab skipped:',_e)
 # standings seed numerals (Jaguars Rivalries art): 1-2 alabaster patch (bye), 3-6 gold glow (playoffs), 7+ white shadow
 import base64 as _b64r
 _RNI={r:'data:image/webp;base64,'+_b64r.b64encode(open(P+f'ranknum/r{r}.webp','rb').read()).decode() for r in range(1,13) if _dt_os.path.exists(P+f'ranknum/r{r}.webp')}
