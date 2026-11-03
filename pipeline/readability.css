@@ -1065,3 +1065,30 @@ html:root{--dim:#969dac}  /* 4.5:1 on the lightest surface (zebra); was #626b7c,
 /* 2026-11-03 colour revert (Nicklaus): green-teal build-time map removed, surfaces back to their source values; the plate
    is #070C0E (Nicklaus, 2026-11-03; same hue as the page #101B1F, 1.12:1 darker) */
 html:root{--frame:#070C0E;--plate:#070C0E}
+
+/* 2026-11-03 (Nicklaus) ROW SEPARATION, four steps in one hue, darkest to lightest: outer frame < divider < darker row (panel)
+   < lighter row. Rows keep alternating shades AND get a 1px divider (half the 2px frame): an agreed exception to the
+   "zebra or divider, not both" rule. Same system on the standings cards, the desktop table and the Stats tables.
+   :not(#z) only lifts specificity above the plate-colour border rule. */
+html:root{--row-lt:#243F49;--row-divider:#121F24}
+#list>.tcard>.r:nth-child(even){background:var(--row-lt)}
+#list>.tcard>.r+.r{border-top:1px solid var(--row-divider)!important}
+.dtp .dtt tbody tr.dtr.dra td{background:var(--row-lt)}
+.dtp .dtt tbody tr.dtr+tr.dtr td:not(#z){border-top:1px solid var(--row-divider)!important}
+.pt>.pr:not(.ph):nth-child(even),.sxt>.sxr:not(.sxhd):nth-child(even){background:var(--row-lt)}
+.pt>.pr:not(.ph)+.pr:not(.ph):not(#z),.sxt>.sxr:not(.sxhd)+.sxr:not(.sxhd):not(#z){border-top:1px solid var(--row-divider)!important}
+
+/* 2026-11-03 (Nicklaus) ROW SPACING, identical on both trackers: 16px inset left, right and top (desktop rows are zoomed
+   1.1, so 16px/1.1); bottom (--rpb) sized so the ink gap under the last line equals the top gap */
+.board .r{--rpx:16px;--rpt:16px}
+@media(min-width:1100px){.board .r{--rpx:calc(16px/1.1);--rpt:calc(16px/1.1)}}
+#list>.tcard>.r{padding:var(--rpt) var(--rpx) var(--rpb,var(--rpt))!important}
+/* bottom inset: the last line's ink sits 16px above the row edge (Dumb ends on PA; Nerd on the season chart) */
+#dn-lean:checked~.board .r{--rpb:8px}
+#dn-full:checked~.board .r{--rpb:17px}
+@media(min-width:1100px){
+ #dn-lean:checked~#list.board>.tcard>.r.r{grid-template-rows:repeat(5,auto) 1fr!important}  /* Dumb: no empty Nerd tracks (their gaps padded the bottom) */
+ #dn-full:checked~.board .r{--rpb:15px}
+}
+/* muted text lifted to 4.5:1 on the new lighter row #243F49 (same hue): --dim #969dac -> #9fa5b3, --steel #a59d8f -> #aba497 */
+html:root{--dim:#9fa5b3;--steel:#aba497}
