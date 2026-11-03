@@ -817,16 +817,6 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 #list.board>.tcard>.r.r>.strip{grid-row:12!important}
 #list.board>.tcard>.r.r>.nm{grid-column:2 / 5!important}
 }
-/* BBP seed tiles: split-flap set (ranknum/r1-12.webp, cropped to the tile edge). Every tile is exactly the logo's height
-   (--ravh), top and bottom level with the logo; centred in one slot as wide as the widest tile (10, 280:288), so the
-   logos line up down the board. Flat, no shadow: the housing buffer already reads as depth (mechanical scoreboard). */
-.board .r{--rks:calc(var(--ravh)*280/288)}
-.board .r{grid-template-columns:calc(var(--rks) + 8px + var(--ravc,var(--ravh))) minmax(0,1fr) 84px 78px}
-@media(max-width:380px){.board .r{grid-template-columns:calc(var(--rks) + 6px + var(--ravc,var(--ravh))) minmax(0,1fr) 72px 78px}}
-.board .r>.rk .rkn{flex:0 0 var(--rks)!important;height:var(--ravh)!important;display:flex;align-items:center;justify-content:center}
-.board .rni.p,.board .rni.g,.board .rni.w{height:var(--ravh);width:auto;margin:0;filter:none}
-.tqid .tqsd.rnh{height:44px;width:auto}
-.tqid .rni.p,.tqid .rni.g,.tqid .rni.w{height:44px;width:auto;margin:0;filter:none}
 /* tier header band (2026-11-03): from the tear line down to just under the tier name, tinted in the tier colour, with a
    2px rule at its foot marking the cut. Name / seeds / Line in lighter tints of the same colour. */
 #list>.tcard>.tier{margin:0 -14px!important;padding:14px 14px 11px!important;background-color:color-mix(in srgb,var(--tc) 19%,transparent);border-bottom:2px solid color-mix(in srgb,var(--tc) 62%,transparent)}
@@ -846,3 +836,40 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 .l5d{gap:3px!important}.l5d i{box-shadow:0 0 0 1px rgba(6,11,15,.95)}
 @media(max-width:420px){.seg10 i{width:5px!important;height:5px!important;box-shadow:0 0 0 .7px rgba(6,11,15,.95)!important}.seg10:has(i:nth-child(11)) i{width:4px!important;height:4px!important;box-shadow:0 0 0 .6px rgba(6,11,15,.95)!important}}
 @media(max-width:380px){.seg10 i{width:4px!important;height:4px!important;box-shadow:0 0 0 .6px rgba(6,11,15,.95)!important}.seg10:has(i:nth-child(11)) i{width:3.5px!important;height:3.5px!important;box-shadow:0 0 0 .5px rgba(6,11,15,.95)!important}}
+/* ===== BBP kit palette + tiered rank tiles (Standings Redesign Spec, 2026-11-03). BBP only. =====
+   Tokens: page, panel, row-alt keep the old lightness on the Jaguars teal hue; tier colours and the season chart's
+   playoff / NFL-bye colours come from the kit. Status colours (form dots, W/L streaks, arrows, rank chips) unchanged. */
+html:root{--pg:#101b1f;--deck:#1a2c33;--row-alt:#203841;--tier-bye:#e2cf93;--tier-po:#19b5c4;--tier-ch:#cda74b;--chart-po-line:#0097a7;--chart-po-fill:#023442;--chart-po-val:#19b5c4;--chart-nfl-bye:#5a6870}
+body{background:var(--pg)}
+/* panel role: standings panel, every second row, header bands, nav buttons, year tabs, toggle tracks */
+.tabs label{background:var(--deck)}
+.yrs .yb b{background:var(--deck)}
+.pseg,.tg{background:var(--deck)!important}
+/* row-alt role: the other team rows (first row of each tier) and the FAAB pills */
+#list>.tcard>.r:nth-child(even){background:var(--row-alt)}
+.board .r .nm .fab b{background:var(--row-alt)}
+/* tiers: label, sub-labels and the rule under each header at full tier colour; band = tier colour 10% over panel */
+.tier-bye{--tc:var(--tier-bye)}.tier-po{--tc:var(--tier-po)}.tier-out{--tc:var(--tier-ch)}
+#list>.tcard>.tier{background-color:color-mix(in srgb,var(--tc) 10%,var(--deck))!important;border-bottom-color:var(--tc)!important}
+#list>.tcard>.tier b,#list>.tcard>.tier span,#list>.tcard>.tier em{color:var(--tc)!important}
+#list>.tcard>.tier span,#list>.tcard>.tier em{opacity:1!important}
+.r:focus-visible{outline-color:var(--tier-po)}
+/* standings: season sim BYE / PLAYOFFS labels and the desktop table's tier rows and odds columns */
+.dpc.so.s2 b{color:var(--tier-bye)!important}.dpc.so.s3 b{color:var(--tier-po)!important}
+.dtt tr.dtb.bye td{color:var(--tier-bye)}.dtt tr.dtb.po td{color:var(--tier-po)}.dtt tr.dtb.out td{color:var(--tier-ch)}
+.dtt td.c2{color:var(--tier-bye)}.dtt td.c3{color:var(--tier-po)}
+/* season chart: weeks 15-17 (outline, fill, totals, legend) and the NFL bye lines (weeks 5-14) + legend */
+.wkc i.po,.weeks i.po{box-shadow:inset 0 0 0 1.5px var(--chart-po-line)!important;opacity:1!important}
+.wkc i.po+i.por{background:var(--chart-po-fill)!important;opacity:1!important}
+.wkc .wv.pov{color:var(--chart-po-val)!important;opacity:1!important}
+.weeks-k .kp::before{box-shadow:inset 0 0 0 1.5px var(--chart-po-line)!important}
+.wkc.bye .wb::after,.weeks-k .kb::before{background:var(--chart-nfl-bye)!important}
+/* rank tiles: one rule for every seed (shadow baked into the image; no per-tier size, margin, filter or opacity);
+   fixed 52px rank column, tile centred, so names stay aligned when 10-12 are wider */
+.board .r{--rks:52px;--rt:44px}
+.board .r{grid-template-columns:calc(var(--rks) + 8px + var(--ravc,var(--ravh))) minmax(0,1fr) 84px 78px}
+@media(max-width:380px){.board .r{grid-template-columns:calc(var(--rks) + 6px + var(--ravc,var(--ravh))) minmax(0,1fr) 72px 78px}}
+.board .r>.rk .rkn{flex:0 0 var(--rks)!important;height:var(--ravh)!important;display:flex;align-items:center;justify-content:center}
+.rni,.board .rni.p,.board .rni.g,.board .rni.w,.tqid .rni.p,.tqid .rni.g,.tqid .rni.w{display:block!important;height:var(--rt,44px)!important;width:auto!important;max-width:none!important;margin:0!important;filter:none!important;opacity:1!important}
+.tqid .tqsd.rnh{--rt:44px;width:52px!important;height:auto!important;display:flex!important;justify-content:center}
+.dtt tr.bye td.dsd{color:var(--tier-bye)}.dtt tr.po td.dsd{color:var(--tier-po)}
