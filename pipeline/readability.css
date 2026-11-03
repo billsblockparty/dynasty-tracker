@@ -739,3 +739,5 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 @media(max-width:420px){.sb{--dotw:68px}}
 @media(max-width:380px){.sb{--dotw:54px}}
 .sb .stx .pw{margin-left:3px!important}
+/* Luck unit: W (wins gained or lost against expected), grey like /wk */
+.st.s2 .lku{font-style:normal;color:var(--dim);margin-left:4px;font-family:var(--body);font-weight:400;text-transform:none;letter-spacing:0;font-size:.9em}
