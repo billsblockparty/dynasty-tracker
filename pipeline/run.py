@@ -18,6 +18,8 @@ if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'his
 # draft history (Drafts tab): fetched once, then kept; a 'history' run refetches the unfinished ones
 if MODE0 in('weekly','history') and (MODE0=='history' or not os.path.exists(P+'history/drafts.json')):
     subprocess.run(['node',P+'drafts.mjs'],cwd=P)  # never fatal
+if MODE0 in('weekly','history'):
+    subprocess.run(['node',P+'career.mjs'],cwd=P)  # Drafts tab: career points of every drafted player (never fatal)
 if mode=='weekly':
     st=json.loads(subprocess.run(['node',P+'pull.mjs','state'],check=True,cwd=P,capture_output=True,text=True).stdout)
     D=st['done'];have=G()
