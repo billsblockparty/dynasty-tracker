@@ -929,3 +929,6 @@ body{background:var(--pg)}
  .dtt tr.dtb td{background-color:color-mix(in srgb,var(--tc) 10%,var(--deck));border-bottom-color:var(--tc)}
  .dtt tr.dtb .dtbh b,.dtt tr.dtb .dtbh span,.dtt tr.dtb .dtbh em{color:var(--tc)}
 }
+/* 2026-11-03: desktop card: first column = rank slot + logo + the same 9px gap the phone layout has, so the name and FAAB
+   tile no longer butt against the logo */
+@media (min-width:1100px){#list.board>.tcard>.r.r{grid-template-columns:111px 270px 84px 78px minmax(0,1fr)!important}}
