@@ -819,11 +819,11 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 }
 /* BBP seed tiles: split-flap set (ranknum/r1-12.webp, cropped to the tile edge). Every tile is exactly the logo's height
    (--ravh), top and bottom level with the logo; centred in one slot as wide as the widest tile (10, 280:288), so the
-   logos line up down the board. Shadow matches the logo's (hard 2px/2px offset + soft blur). */
+   logos line up down the board. Flat, no shadow: the housing buffer already reads as depth (mechanical scoreboard). */
 .board .r{--rks:calc(var(--ravh)*280/288)}
 .board .r{grid-template-columns:calc(var(--rks) + 8px + var(--ravc,var(--ravh))) minmax(0,1fr) 84px 78px}
 @media(max-width:380px){.board .r{grid-template-columns:calc(var(--rks) + 6px + var(--ravc,var(--ravh))) minmax(0,1fr) 72px 78px}}
 .board .r>.rk .rkn{flex:0 0 var(--rks)!important;height:var(--ravh)!important;display:flex;align-items:center;justify-content:center}
-.board .rni.p,.board .rni.g,.board .rni.w{height:var(--ravh);width:auto;margin:0;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.55)) drop-shadow(2px 2px 5px rgba(0,0,0,.3))}
+.board .rni.p,.board .rni.g,.board .rni.w{height:var(--ravh);width:auto;margin:0;filter:none}
 .tqid .tqsd.rnh{height:44px;width:auto}
-.tqid .rni.p,.tqid .rni.g,.tqid .rni.w{height:44px;width:auto;margin:0;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.55)) drop-shadow(2px 2px 5px rgba(0,0,0,.3))}
+.tqid .rni.p,.tqid .rni.g,.tqid .rni.w{height:44px;width:auto;margin:0;filter:none}
