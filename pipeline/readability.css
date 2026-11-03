@@ -741,3 +741,10 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 .sb .stx .pw{margin-left:3px!important}
 /* Luck unit: W (wins gained or lost against expected), grey like /wk */
 .st.s2 .lku{font-style:normal;color:var(--dim);margin-left:4px;font-family:var(--body);font-weight:400;text-transform:none;letter-spacing:0;font-size:.9em}
+/* standings card: no Hi / Lo / Avg line; a bigger team name centred on the seed numeral and logo */
+.board .r>.nm{grid-row:1 / span 2!important;align-self:center!important}
+.board .r .nm .tn{font-size:22px;line-height:1.15}
+@media(max-width:380px){.board .r .nm .tn{font-size:19px}}
+/* bigger team logo beside the seed numeral (numeral size unchanged) */
+.board .r{--ravh:50px!important}
+@media(max-width:380px){.board .r{--ravh:44px!important}}
