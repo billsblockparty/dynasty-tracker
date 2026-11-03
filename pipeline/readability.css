@@ -1092,3 +1092,8 @@ html:root{--row-lt:#243F49;--row-divider:#121F24}
 }
 /* muted text lifted to 4.5:1 on the new lighter row #243F49 (same hue): --dim #969dac -> #9fa5b3, --steel #a59d8f -> #aba497 */
 html:root{--dim:#9fa5b3;--steel:#aba497}
+
+/* 2026-11-03 (Nicklaus) rank column 52px, 9px to the logo at every width (YILM the same) */
+.board .r{grid-template-columns:calc(var(--rks) + 9px + var(--ravc,var(--ravh))) minmax(0,1fr) 84px 78px}
+@media(max-width:380px){.board .r{grid-template-columns:calc(var(--rks) + 9px + var(--ravc,var(--ravh))) minmax(0,1fr) 72px 78px}}
+.board .r>.rk .rav{margin-left:9px!important}
