@@ -1,0 +1,973 @@
+{
+ "coverage": {
+  "MFL 2021": {
+   "LOCK_ALL_PLAYERS": 19,
+   "FREE_AGENT": 222,
+   "IR": 73,
+   "TAXI": 3,
+   "BBID_WAIVER": 56,
+   "BBID_AUTO_PROCESS_WAIVERS": 14,
+   "TRADE": 1,
+   "UNLOCK_ALL_PLAYERS": 1,
+   "DRAFT_PICK": 150
+  },
+  "MFL 2022": {
+   "LOCK_ALL_PLAYERS": 20,
+   "FREE_AGENT": 327,
+   "IR": 134,
+   "BBID_WAIVER": 80,
+   "BBID_AUTO_PROCESS_WAIVERS": 17,
+   "TAXI": 30,
+   "TRADE": 22,
+   "DRAFT_PICK": 40
+  },
+  "MFL 2023": {
+   "LOCK_ALL_PLAYERS": 27,
+   "FREE_AGENT": 317,
+   "IR": 127,
+   "TAXI": 31,
+   "BBID_WAIVER": 57,
+   "BBID_AUTO_PROCESS_WAIVERS": 17,
+   "TRADE": 15,
+   "UNLOCK_ALL_PLAYERS": 3,
+   "DRAFT_PICK": 40
+  },
+  "MFL 2024": {
+   "LOCK_ALL_PLAYERS": 26,
+   "TAXI": 77,
+   "FREE_AGENT": 352,
+   "IR": 154,
+   "BBID_WAIVER": 94,
+   "BBID_AUTO_PROCESS_WAIVERS": 17,
+   "TRADE": 27,
+   "UNLOCK_ALL_PLAYERS": 1,
+   "DRAFT_PICK": 40
+  },
+  "Sleeper 2025": {
+   "free_agent:complete": 401,
+   "trade:complete": 34,
+   "waiver:complete": 115,
+   "waiver:failed": 53,
+   "commissioner:complete": 24,
+   "draft:rookie": 40,
+   "draft:supplemental": 30,
+   "draft:import": 150
+  },
+  "Sleeper 2026": {
+   "waiver:complete": 59,
+   "waiver:failed": 27,
+   "free_agent:complete": 248,
+   "trade:complete": 15,
+   "commissioner:complete": 1,
+   "draft:rookie": 40
+  }
+ },
+ "events": 2997,
+ "player_map": {
+  "dynastyprocess": 460,
+  "defense": 32
+ },
+ "unmatched": {},
+ "slots": {
+  "2022 slot 1": "Reverse Apache Master",
+  "2022 slot 2": "Nuts in the Face",
+  "2022 slot 3": "Cheating is Trying",
+  "2022 slot 4": "Mandingoes",
+  "2022 slot 5": "Team Ram Rod",
+  "2022 slot 6": "Team RIPMFL",
+  "2022 slot 7": "Convicts",
+  "2022 slot 8": "Bill's Block Party",
+  "2022 slot 9": "Canton waitlist",
+  "2022 slot 10": "Homer's Heroes",
+  "2023 slot 1": "Nuts in the Face",
+  "2023 slot 2": "Team Ram Rod",
+  "2023 slot 3": "Mandingoes",
+  "2023 slot 4": "Cheating is Trying",
+  "2023 slot 5": "Bill's Block Party",
+  "2023 slot 6": "Convicts",
+  "2023 slot 7": "Homer's Heroes",
+  "2023 slot 8": "Reverse Apache Master",
+  "2023 slot 9": "Canton waitlist",
+  "2023 slot 10": "Team RIPMFL",
+  "2024 slot 1": "Bill's Block Party",
+  "2024 slot 2": "Cheating is Trying",
+  "2024 slot 3": "Mandingoes",
+  "2024 slot 4": "Nuts in the Face",
+  "2024 slot 5": "Canton waitlist",
+  "2024 slot 6": "Reverse Apache Master",
+  "2024 slot 7": "Team Ram Rod",
+  "2024 slot 8": "Convicts",
+  "2024 slot 9": "Team RIPMFL",
+  "2024 slot 10": "Homer's Heroes"
+ },
+ "issues": [],
+ "chain_gaps": [
+  {
+   "pick": "2026 R2 (Nuts in the Face)",
+   "kind": "used by a team that did not hold it",
+   "holder": "Nuts in the Face",
+   "used_by": "Convicts",
+   "date": "2026-06-28"
+  }
+ ],
+ "handover": [
+  {
+   "pick": "2025 R1 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2025 R1 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2025 R1 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2025 R1 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R1 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2025 R1 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2025 R1 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R1 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2025 R1 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2025 R1 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2025 R2 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2025 R2 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2025 R2 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2025 R2 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R2 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2025 R2 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2025 R2 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R2 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2025 R2 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2025 R2 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R3 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2025 R3 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2025 R3 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2025 R3 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R3 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2025 R3 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2025 R3 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2025 R3 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2025 R3 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2025 R3 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2025 R4 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2025 R4 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2025 R4 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2025 R4 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2025 R4 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2025 R4 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2025 R4 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2025 R4 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2025 R4 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2025 R4 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R1 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R1 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R1 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R1 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R1 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2026 R1 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R1 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2026 R1 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2026 R1 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2026 R1 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R2 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2026 R2 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R2 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2026 R2 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2026 R2 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2026 R2 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R2 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2026 R2 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2026 R2 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2026 R2 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R3 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R3 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R3 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2026 R3 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2026 R3 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2026 R3 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2026 R3 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2026 R3 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2026 R3 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2026 R3 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2026 R4 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2026 R4 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2026 R4 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2026 R4 (Convicts)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2026 R4 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2026 R4 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Convicts",
+   "sleeper_start": "Convicts"
+  },
+  {
+   "pick": "2026 R4 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2026 R4 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2026 R4 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2026 R4 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2027 R1 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2027 R1 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2027 R1 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2027 R1 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2027 R1 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2027 R1 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2027 R1 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2027 R2 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2027 R2 (Canton waitlist)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Canton waitlist",
+   "sleeper_start": "Canton waitlist"
+  },
+  {
+   "pick": "2027 R2 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2027 R2 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2027 R2 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2027 R2 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2027 R2 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2027 R2 (Team RIPMFL)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team RIPMFL",
+   "sleeper_start": "Team RIPMFL"
+  },
+  {
+   "pick": "2027 R2 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2027 R3 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2027 R3 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2027 R3 (Team Ram Rod)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Team Ram Rod",
+   "sleeper_start": "Team Ram Rod"
+  },
+  {
+   "pick": "2028 R1 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2028 R1 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2028 R1 (Nuts in the Face)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Nuts in the Face",
+   "sleeper_start": "Nuts in the Face"
+  },
+  {
+   "pick": "2028 R2 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  },
+  {
+   "pick": "2028 R3 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2028 R3 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2028 R4 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
+   "pick": "2029 R1 (Cheating is Trying)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Cheating is Trying",
+   "sleeper_start": "Cheating is Trying"
+  },
+  {
+   "pick": "2029 R1 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
+   "pick": "2029 R3 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
+   "pick": "2029 R3 (Reverse Apache Master)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Reverse Apache Master",
+   "sleeper_start": "Reverse Apache Master"
+  }
+ ],
+ "picks": 230,
+ "roster_stitch": {
+  "Bill's Block Party": {
+   "mfl_end": 17,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [],
+   "new_in_sleeper": [
+    "4066"
+   ]
+  },
+  "Canton waitlist": {
+   "mfl_end": 19,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "11586"
+   ],
+   "new_in_sleeper": []
+  },
+  "Cheating is Trying": {
+   "mfl_end": 19,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "11583"
+   ],
+   "new_in_sleeper": []
+  },
+  "Convicts": {
+   "mfl_end": 20,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "10229",
+    "11533",
+    "11596",
+    "11624",
+    "11630",
+    "11631",
+    "11643",
+    "4046",
+    "4144",
+    "5846",
+    "5859",
+    "6786",
+    "6813",
+    "7021",
+    "7523",
+    "7591",
+    "7611",
+    "8111",
+    "8205",
+    "DEN"
+   ],
+   "new_in_sleeper": [
+    "10235",
+    "11576",
+    "11579",
+    "4984",
+    "4988",
+    "6151",
+    "6219",
+    "6768",
+    "6783",
+    "6819",
+    "7561",
+    "8132",
+    "8137",
+    "8146",
+    "9484",
+    "9753",
+    "9756",
+    "DET"
+   ]
+  },
+  "Homer's Heroes": {
+   "mfl_end": 21,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "10235",
+    "11576",
+    "11579",
+    "11592",
+    "11597",
+    "11619",
+    "4984",
+    "4988",
+    "6151",
+    "6219",
+    "6768",
+    "6783",
+    "6819",
+    "7561",
+    "8132",
+    "8137",
+    "8146",
+    "9484",
+    "9753",
+    "9756",
+    "DET"
+   ],
+   "new_in_sleeper": [
+    "11566",
+    "11604",
+    "11632",
+    "11647",
+    "2197",
+    "3294",
+    "4227",
+    "5012",
+    "7547",
+    "7569",
+    "8134",
+    "8138",
+    "8144",
+    "8151",
+    "9221",
+    "9224",
+    "9493",
+    "MIA"
+   ]
+  },
+  "Mandingoes": {
+   "mfl_end": 20,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "11559",
+    "8208"
+   ],
+   "new_in_sleeper": []
+  },
+  "Nuts in the Face": {
+   "mfl_end": 17,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [],
+   "new_in_sleeper": [
+    "11583"
+   ]
+  },
+  "Reverse Apache Master": {
+   "mfl_end": 19,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "11640"
+   ],
+   "new_in_sleeper": []
+  },
+  "Team RIPMFL": {
+   "mfl_end": 19,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "11577"
+   ],
+   "new_in_sleeper": []
+  },
+  "Team Ram Rod": {
+   "mfl_end": 19,
+   "sleeper_import": 18,
+   "missing_in_sleeper": [
+    "11566",
+    "11604",
+    "11632",
+    "11647",
+    "1433",
+    "2197",
+    "3294",
+    "4227",
+    "5012",
+    "7547",
+    "7569",
+    "8134",
+    "8138",
+    "8144",
+    "8151",
+    "9221",
+    "9224",
+    "9493",
+    "MIA"
+   ],
+   "new_in_sleeper": [
+    "10229",
+    "11533",
+    "11624",
+    "11630",
+    "11631",
+    "4046",
+    "4144",
+    "5846",
+    "5859",
+    "6786",
+    "6813",
+    "7021",
+    "7523",
+    "7591",
+    "7611",
+    "8111",
+    "8205",
+    "DEN"
+   ]
+  }
+ }
+}
