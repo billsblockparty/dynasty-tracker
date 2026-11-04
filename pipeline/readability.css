@@ -1268,3 +1268,5 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
 .dpc.so.s3 b:not(#z){color:var(--text-dim)!important}
 .dtt td.c3:not(#z){color:var(--chalk)!important}
 .pr.tier-po>span[role="rowheader"] em:not(#z){color:var(--chalk)!important}
+/* Season sim labels (#1, Bye) take the sim label colour like Finish and Playoffs; gold marks top seeds only (DESIGN.md §2.3, Nicklaus 2026-11-04) */
+.dpc.so.s1 b:not(#z),.dpc.so.s2 b:not(#z){color:var(--text-dim)!important}
