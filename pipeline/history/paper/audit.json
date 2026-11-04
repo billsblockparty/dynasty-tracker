@@ -802,94 +802,20 @@
    "mfl_end": 20,
    "sleeper_import": 18,
    "missing_in_sleeper": [
-    "10229",
-    "11533",
     "11596",
-    "11624",
-    "11630",
-    "11631",
-    "11643",
-    "4046",
-    "4144",
-    "5846",
-    "5859",
-    "6786",
-    "6813",
-    "7021",
-    "7523",
-    "7591",
-    "7611",
-    "8111",
-    "8205",
-    "DEN"
+    "11643"
    ],
-   "new_in_sleeper": [
-    "10235",
-    "11576",
-    "11579",
-    "4984",
-    "4988",
-    "6151",
-    "6219",
-    "6768",
-    "6783",
-    "6819",
-    "7561",
-    "8132",
-    "8137",
-    "8146",
-    "9484",
-    "9753",
-    "9756",
-    "DET"
-   ]
+   "new_in_sleeper": []
   },
   "Homer's Heroes": {
    "mfl_end": 21,
    "sleeper_import": 18,
    "missing_in_sleeper": [
-    "10235",
-    "11576",
-    "11579",
     "11592",
     "11597",
-    "11619",
-    "4984",
-    "4988",
-    "6151",
-    "6219",
-    "6768",
-    "6783",
-    "6819",
-    "7561",
-    "8132",
-    "8137",
-    "8146",
-    "9484",
-    "9753",
-    "9756",
-    "DET"
+    "11619"
    ],
-   "new_in_sleeper": [
-    "11566",
-    "11604",
-    "11632",
-    "11647",
-    "2197",
-    "3294",
-    "4227",
-    "5012",
-    "7547",
-    "7569",
-    "8134",
-    "8138",
-    "8144",
-    "8151",
-    "9221",
-    "9224",
-    "9493",
-    "MIA"
-   ]
+   "new_in_sleeper": []
   },
   "Mandingoes": {
    "mfl_end": 20,
@@ -928,46 +854,335 @@
    "mfl_end": 19,
    "sleeper_import": 18,
    "missing_in_sleeper": [
-    "11566",
-    "11604",
-    "11632",
-    "11647",
-    "1433",
-    "2197",
-    "3294",
-    "4227",
-    "5012",
-    "7547",
-    "7569",
-    "8134",
-    "8138",
-    "8144",
-    "8151",
-    "9221",
-    "9224",
-    "9493",
-    "MIA"
+    "1433"
    ],
-   "new_in_sleeper": [
-    "10229",
-    "11533",
-    "11624",
-    "11630",
-    "11631",
-    "4046",
-    "4144",
-    "5846",
-    "5859",
-    "6786",
-    "6813",
-    "7021",
-    "7523",
-    "7591",
-    "7611",
-    "8111",
-    "8205",
-    "DEN"
-   ]
+   "new_in_sleeper": []
   }
- }
+ },
+ "import_fix": [
+  {
+   "player": "4984",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "11566",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "7591",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "4046",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "9224",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "6768",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "11576",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "8138",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "7021",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "8205",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "9221",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "8132",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "9753",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "8151",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "7611",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "6813",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "7569",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "4988",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "10235",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "11632",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "5859",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "6786",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "9493",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "9756",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "6783",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "7547",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "5846",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "11631",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "8134",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "8137",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "6819",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "5012",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "11630",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "8111",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "11604",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "8146",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "9484",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "4227",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "4144",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "11533",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "3294",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "6219",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "DET",
+   "draft": "import",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "MIA",
+   "draft": "import",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "DEN",
+   "draft": "import",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "6151",
+   "draft": "supplemental",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "8144",
+   "draft": "supplemental",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "10229",
+   "draft": "supplemental",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "11624",
+   "draft": "supplemental",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  },
+  {
+   "player": "11647",
+   "draft": "supplemental",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "7561",
+   "draft": "supplemental",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "11579",
+   "draft": "supplemental",
+   "label": "Convicts",
+   "actual": "Homer's Heroes"
+  },
+  {
+   "player": "2197",
+   "draft": "supplemental",
+   "label": "Homer's Heroes",
+   "actual": "Team Ram Rod"
+  },
+  {
+   "player": "7523",
+   "draft": "supplemental",
+   "label": "Team Ram Rod",
+   "actual": "Convicts"
+  }
+ ]
 }

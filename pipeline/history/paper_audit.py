@@ -104,6 +104,37 @@ for y,d in sorted(SY.items()):
             COV[f'Sleeper {y}'][f'draft:{kind}']+=1
 EV.sort(key=lambda e:e['ts'])
 
+# ---------- Sleeper import (2025-03-19, import + supplemental drafts): the draft record labels three rosters wrongly
+# (MFL Convicts' players under Team Ram Rod, Team Ram Rod's under Homer's Heroes, Homer's Heroes' under Convicts),
+# yet every later Sleeper move and the live rosters show each player on his MFL owner's roster (Nicklaus, 2026-11-04:
+# a bad import record). The import owner is therefore taken from Sleeper itself: the team the player's first later
+# Sleeper move takes him from; with no later move, the Sleeper roster that holds him now; else the draft label.
+HOLD={}
+for y in sorted(SY,reverse=True):
+    for r in SY[y]['rosters']:
+        for p in r['players'] or []:HOLD.setdefault(p,ST.get(r['roster_id']))
+IMPORT_FIX=[]
+for i,e in enumerate(EV):
+    if e['src']!='Sleeper' or e['type']!='draft' or e.get('kind') not in('import','supplemental'):continue
+    pid,lab=e['moves'][0][1],e['moves'][0][3];true=None
+    for f in EV[i+1:]:
+        m=next((m for m in f['moves'] if m[0]=='player' and m[1]==pid),None)
+        if m:true=m[2];break
+    else:true=HOLD.get(pid)
+    if true and true!=lab:
+        IMPORT_FIX.append(dict(player=pid,draft=e['kind'],label=lab,actual=true))
+        e['moves']=[('player',pid,None,true)];e['teams']=[true];e['label_team']=lab
+# carry-over: an import pick that only re-creates the player's end-of-MFL roster spot is not a move; the Paper Trail hides it
+# (supplemental picks of free agents, e.g. Evan Engram, stay as acquisitions)
+_end={}
+for e in EV:
+    if e['src']=='MFL':
+        for m in e['moves']:
+            if m[0]=='player':_end[m[1]]=m[3]
+for e in EV:
+    if e['src']=='Sleeper' and e.get('kind') in('import','supplemental'):
+        m=e['moves'][0];e['carryover']=_end.get(m[1]) is not None and _end.get(m[1])==m[3]
+
 # ---------- MFL current-year slots (DP_r_p): original owner of each slot, solved from the pick chains (never assumed)
 def chain_owner(fp,until):
     """owner of a future pick (as named FP) after all FP trades before `until` (ms)"""
@@ -228,7 +259,7 @@ nm=lambda i:(SP.get(i) or ['?'])[0]
 # ---------- report
 out=dict(coverage={k:dict(v) for k,v in COV.items()},events=len(EV),player_map=dict(REP['via']),unmatched=REP['unmatched'],
          slots={f'{y} slot {s}':o for (y,s),o in sorted(SLOT.items())},issues=ISSUES,chain_gaps=GAPS,handover=HAND,
-         picks=len(CH),roster_stitch=STITCH)
+         picks=len(CH),roster_stitch=STITCH,import_fix=IMPORT_FIX)
 json.dump(out,open(P+'audit.json','w'),indent=1,default=str)
 json.dump([dict(e,moves=[list(m) for m in e['moves']]) for e in EV],open(P+'events.json','w'),default=str)
 if __name__=='__main__':
@@ -238,6 +269,7 @@ if __name__=='__main__':
     print('slot issues',ISSUES);print('slots',out['slots'])
     print('chain gaps',len(GAPS))
     for g in GAPS:print('  ',g)
+    import collections as _c;print('import fixes',len(IMPORT_FIX),_c.Counter((f['label'],f['actual']) for f in IMPORT_FIX))
     bad=[h for h in HAND if h.get('issue')];print('handover rows',len(HAND),'issues',len(bad))
     for h in bad:print('  ',h)
     print('handover start sources',collections.Counter((h['mfl_snapshot'] is not None,h['sleeper_start'] is not None) for h in HAND))
