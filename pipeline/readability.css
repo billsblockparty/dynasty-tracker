@@ -1107,3 +1107,6 @@ html:root{--pg:#0C1215;--frame:#04080A;--plate:#04080A}
 html:root{--text-dim:#A0A8B8;--dim:var(--text-dim)}
 .board .r em.lb,.board .r .chl,.board .r .cw,.board .r i.pw,.board .r .lku,.board .r .fab small,.board .r .mv.eq,.board .r .dpc.so.s0>b{color:var(--text-dim)!important}
 .board .r .cw b,.board .r .pw b{color:var(--chalk)!important}
+
+/* 2026-11-03 (Nicklaus) desktop table: equal ink gaps either side of the simulations divider, >= 16px: set by simGap()
+   in new_tail.js (Proj finish padding-left 16px, Tot eff padding-right to match; other columns pinned, TEAM gives the width) */
