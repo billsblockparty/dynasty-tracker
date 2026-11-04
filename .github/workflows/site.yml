@@ -82,7 +82,17 @@ jobs:
           FP_API_KEY: ${{ secrets.FP_API_KEY }}
         run: |
           python3 pipeline/fp_pull.py
+      - name: Tab chunk cache
+        # on-demand tabs: the previous builds' chunk files stay published, so a page left open across a deploy can
+        # still open its tabs (pipeline/lazy.py keeps the last 6 changed builds' chunks)
+        uses: actions/cache@v4
+        with:
+          path: .chunks
+          key: chunks-${{ github.run_id }}
+          restore-keys: chunks-
       - name: Build
+        env:
+          DT_CHUNKS: ${{ github.workspace }}/.chunks
         run: |
           if [ "${{ steps.mode.outputs.mode }}" = "selftest" ]; then
             python3 pipeline/run.py live && python3 pipeline/run.py weekly --force
