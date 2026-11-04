@@ -1216,3 +1216,13 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
 @media(max-width:380px){.wpf .wpb{padding-left:var(--wpp,9px);padding-right:var(--wpp,9px)}}
 .wpb.wflx{color:var(--chalk)}
 .wpb.wflx.on{color:var(--ink)}
+
+/* 2026-11-03 (Nicklaus) SHADOW DEPTH scales with the element: offset ~5% of height, whole px, min 1px; dark elements on
+   dark rows 1px; light elements (FAAB tile, active pills) keep --sh-hard. --sh-1 = the 1px step (straight down: the
+   1:3 direction of --sh-hard rounds to 0 across at 1px down). */
+:root{--sh-1:0 1px 0 0 var(--frame)}
+.dftl{box-shadow:var(--sh-1)!important}
+/* Drafts original order: the standings logo treatment (50px: ring 1, 2px/2px hard + 6px soft, spread 1) scaled by size:
+   40px x0.8 -> offsets 2, blur 5; 36px x0.72 -> offsets 1, blur 4 (ring and spread stay 1px) */
+.dfoi .pav.av{box-shadow:0 0 0 1px var(--line-strong),2px 2px 0 1px rgba(0,0,0,.55),2px 2px 5px 1px rgba(0,0,0,.35)!important}
+@media(max-width:380px){.dfoi .pav.av{box-shadow:0 0 0 1px var(--line-strong),1px 1px 0 1px rgba(0,0,0,.55),1px 1px 4px 1px rgba(0,0,0,.35)!important}}
