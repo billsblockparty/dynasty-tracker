@@ -18,6 +18,7 @@ jobs:
         with: { node-version: '20' }
       - name: Pull transaction logs
         run: node pipeline/history/paper_pull.mjs
+        env: { PAPER_MFL: '1' }
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"

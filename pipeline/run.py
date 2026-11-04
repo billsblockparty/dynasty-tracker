@@ -37,6 +37,8 @@ if mode=='weekly':
         if subprocess.run(['node',P+'pull.mjs','live',str(G()+1)],cwd=P).returncode==0:subprocess.run(['python3',P+'score.py',P+'live.json','--no-build'],cwd=P)
     subprocess.run(['node',P+'pull.mjs','faab'],cwd=P)  # FAAB balances (never fatal)
     subprocess.run(['node',P+'pull.mjs','wire',str(G())],cwd=P)  # THE WIRE (never fatal)
+    # Paper Trail: Sleeper transactions, drafts and traded picks (MFL is frozen), then the normalised event list; never fatal
+    if os.path.exists(P+'history/paper_pull.mjs') and subprocess.run(['node',P+'history/paper_pull.mjs'],cwd=P).returncode==0:subprocess.run(['python3',P+'history/paper_audit.py'],cwd=P,stdout=subprocess.DEVNULL)
     subprocess.run(['node',P+'pull.mjs','top',str(G())],cwd=P)  # Players tab: top players by position (never fatal)
     sh('node',P+'pull.mjs','detail',f'1-{G()+1}')  # full stat lines for the Detailed view (all played weeks + current)
     build()

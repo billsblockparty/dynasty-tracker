@@ -260,9 +260,9 @@ nm=lambda i:(SP.get(i) or ['?'])[0]
 out=dict(coverage={k:dict(v) for k,v in COV.items()},events=len(EV),player_map=dict(REP['via']),unmatched=REP['unmatched'],
          slots={f'{y} slot {s}':o for (y,s),o in sorted(SLOT.items())},issues=ISSUES,chain_gaps=GAPS,handover=HAND,
          picks=len(CH),roster_stitch=STITCH,import_fix=IMPORT_FIX)
-json.dump(out,open(P+'audit.json','w'),indent=1,default=str)
-json.dump([dict(e,moves=[list(m) for m in e['moves']]) for e in EV],open(P+'events.json','w'),default=str)
-if __name__=='__main__':
+if __name__=='__main__':  # importable (paper_build.py) without rewriting the report files
+    json.dump(out,open(P+'audit.json','w'),indent=1,default=str)
+    json.dump([dict(e,moves=[list(m) for m in e['moves']]) for e in EV],open(P+'events.json','w'),default=str)
     for k,v in out['coverage'].items():print(k,v)
     print('events',len(EV),'picks tracked',len(CH));print('player map',out['player_map']);print('unmatched',len(out['unmatched']))
     for k,v in list(out['unmatched'].items())[:40]:print('  ',k,v)
