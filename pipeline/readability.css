@@ -1097,3 +1097,13 @@ html:root{--dim:#9fa5b3;--steel:#aba497}
 .board .r{grid-template-columns:calc(var(--rks) + 9px + var(--ravc,var(--ravh))) minmax(0,1fr) 84px 78px}
 @media(max-width:380px){.board .r{grid-template-columns:calc(var(--rks) + 9px + var(--ravc,var(--ravh))) minmax(0,1fr) 72px 78px}}
 .board .r>.rk .rav{margin-left:9px!important}
+
+/* 2026-11-03 (Nicklaus, BBP only) darker page + two text levels in the standings cards.
+   Page --pg #101B1F -> #0C1215 (same hue). Frame darkened #070C0E -> #04080A so frames and offset shadows still read
+   (L* gap to the page 3.1; #070C0E would leave 2.0, under the ~2.3 just-noticeable step). */
+html:root{--pg:#0C1215;--frame:#04080A;--plate:#04080A}
+/* labels and units step back (--text-dim #A0A8B8: 6.05:1 panel, 4.67:1 lighter row, 7.9:1 page); values stay cream.
+   --dim follows it, so there is one muted grey. Status, tier, position colours and rank chips unchanged. */
+html:root{--text-dim:#A0A8B8;--dim:var(--text-dim)}
+.board .r em.lb,.board .r .chl,.board .r .cw,.board .r i.pw,.board .r .lku,.board .r .fab small,.board .r .mv.eq,.board .r .dpc.so.s0>b{color:var(--text-dim)!important}
+.board .r .cw b,.board .r .pw b{color:var(--chalk)!important}
