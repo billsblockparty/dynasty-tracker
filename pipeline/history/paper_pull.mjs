@@ -58,7 +58,7 @@ async function sleeperLeague(L) {
   return o;
 }
 (async () => {
-  for (const y of [2021, 2022, 2023, 2024]) W(`mfl_${y}.json`, await mfl(y));
+  for (const y of [2021, 2022, 2023, 2024, 2025]) W(`mfl_${y}.json`, await mfl(y));  // 2025: whatever MFL holds after the rollover (the league moved to Sleeper in March 2025)
   // Sleeper: current league and its previous_league_id chain
   let L = process.env.DT_LEAGUE || '1335450123487961088';
   const ids = new Set();
