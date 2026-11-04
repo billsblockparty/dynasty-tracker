@@ -1226,3 +1226,23 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
    40px x0.8 -> offsets 2, blur 5; 36px x0.72 -> offsets 1, blur 4 (ring and spread stay 1px) */
 .dfoi .pav.av{box-shadow:0 0 0 1px var(--line-strong),2px 2px 0 1px rgba(0,0,0,.55),2px 2px 5px 1px rgba(0,0,0,.35)!important}
 @media(max-width:380px){.dfoi .pav.av{box-shadow:0 0 0 1px var(--line-strong),1px 1px 0 1px rgba(0,0,0,.55),1px 1px 4px 1px rgba(0,0,0,.35)!important}}
+
+/* 2026-11-03 (Nicklaus) Drafts list: NFL draft slot column left of RPTS ("RD 1" over "PK 8", overall pick; UDFA; '–'),
+   34px, centred, 12px to the tile and >= 12px after the name + logo. Tile and RPTS header share one width per round
+   (--dftw characters x 7.5px + padding). Phones (<760px): the GM column shows the avatar only (44px; name/VIA in its
+   title) so the name keeps its room (Nicklaus). */
+.dfr .dfp .dfpl{gap:12px!important}
+.dfnl{flex:none;width:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:600 11px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;font-variant-numeric:tabular-nums;color:var(--text-dim);white-space:nowrap}
+.dfnl i{font-style:normal}
+.dftl{min-width:0!important;width:calc(var(--dftw,3) * 7.5px + 16px)}
+.dfrh .dfhp{display:flex!important;justify-content:flex-start!important;gap:12px}
+.dfrh .dfhp>i:first-child{flex:1 1 auto}
+.dfhn{flex:none;width:34px;text-align:center}
+.dfhr{flex:none;width:calc(var(--dftw,3) * 7.5px + 16px);text-align:center!important}
+@media(max-width:380px){.dftl{width:calc(var(--dftw,3) * 7.5px + 12px)}.dfhr{width:calc(var(--dftw,3) * 7.5px + 12px)}}
+@media(max-width:759px){
+ .dfp,.dfrh{--dfbw:44px!important}
+ .dfby>span{display:none!important}
+ .dfby{justify-content:center!important;padding-left:0!important;padding-right:0!important;gap:0!important}
+ .dfhg{text-align:center;padding-left:0!important}
+}
