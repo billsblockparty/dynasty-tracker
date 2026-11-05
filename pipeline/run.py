@@ -10,6 +10,7 @@ def G():return int(re.search(r'const G=(\d+);',open(P+'data_block.js',encoding='
 def build():
     sh('python3',P+'rebuild.py');sh('node',P+'gen.js');sh('python3',P+'build_static.py');sh('python3',P+'build_site.py')
     if os.environ.get('DT_PAST')!='1':subprocess.run(['python3',P+'history_pages.py'],cwd=P)  # MFL season archive pages; never fatal
+    if os.environ.get('DT_PAST')!='1' and os.path.exists(P+'memdebug.cjs'):subprocess.run(['node',P+'memdebug.cjs'],cwd=P,timeout=600)  # TEMPORARY Safari memory test pages (site/debug/mem/); never fatal
 mode=sys.argv[1] if len(sys.argv)>1 else 'build';force='--force' in sys.argv
 MODE0=mode
 if mode in('weekly','history') and (mode=='history' or not os.path.exists(P+'history/manifest.json')):
