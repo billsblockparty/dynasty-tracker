@@ -181,7 +181,7 @@ function ravFit(){let mx=0;const bd=document.querySelector('.board');document.qu
 // Team Hub hero: the same seed numeral art in place of the framed number
 if(typeof RNI!=='undefined')document.querySelectorAll('.tqid .tqsd[data-rk]').forEach(el=>{const r=+el.dataset.rk;if(!RNI[r])return;el.className='tqsd rnh';el.innerHTML=`<img class="rni ${r<=2?'p':r<=6?'g':'w'}" src="${RNI[r]}" alt="${r}" aria-label="Rank ${r}">`});
 // seed numeral art: put each image's top-left corner on a whole device pixel so its edges stay sharp
-function rniSnap(){const d=devicePixelRatio||1;document.querySelectorAll('.board .rni,.tqid .rni').forEach(i=>{if(!i.offsetParent)return;i.style.translate='';const r=i.getBoundingClientRect(),z=i.currentCSSZoom||1;const dx=(Math.round(r.left*d)/d-r.left)/z,dy=(Math.round(r.top*d)/d-r.top)/z;if(dx||dy)i.style.translate=dx.toFixed(3)+'px '+dy.toFixed(3)+'px'})}
+function rniSnap(){const d=(devicePixelRatio||1)*((window.visualViewport&&visualViewport.scale)||1);document.querySelectorAll('.board .rni,.tqid .rni').forEach(i=>{if(!i.offsetParent)return;i.style.translate='';const r=i.getBoundingClientRect(),z=i.currentCSSZoom||1;const dx=(Math.round(r.left*d)/d-r.left)/z,dy=(Math.round(r.top*d)/d-r.top)/z;if(dx||dy)i.style.translate=dx.toFixed(3)+'px '+dy.toFixed(3)+'px'})}
 
 // standings stat lines: one shared text scale (1 = 15px), lowered in small steps until no line is clipped
 // desktop (>=1100px): only the left-hand lines (PF, PA) set the shared scale; Tot Eff sits in the wide right-hand column.
@@ -244,7 +244,7 @@ function fit(){
   for(const j of jobs){j.mid=j.pb.getBoundingClientRect().bottom-j.cap*j.zc/2}  // read after sizing, so the line has settled: the figure's real baseline (a zero-size marker on it), not one estimated from font metrics: those are rounded differently by layout
   for(const j of jobs)j.pb.remove();
   for(const j of jobs){  // centre every tile on the figure's cap height (a flex row centres on the line box, which sits lower)
-    const tr=j.t.getBoundingClientRect(),d=(j.mid-(tr.top+tr.bottom)/2)/j.z;if(Math.abs(d)>0.1)j.t.style.setProperty('transform','translateY('+d.toFixed(2)+'px)','important')}
+    const tr=j.t.getBoundingClientRect(),d=(j.mid-(tr.top+tr.bottom)/2)/j.z;if(Math.abs(d)>0.01)j.t.style.setProperty('transform','translateY('+d.toFixed(2)+'px)','important')}
 }
 // size one rank tile from the digits' ink: outer height H, the same gap from ink to edge on top and bottom, the same on
 // left and right, never closer than 1.75px to the frame (the number shrinks to make room); width fixed for two digits so a column lines up

@@ -128,7 +128,7 @@ def page(Y):
           f'<div class="hxc">{dsec}</div>'
           f'<div class="key"><div><b>{Y} archive</b> the season as it was played on MyFantasyLeague: team names are that season\'s, with today\'s owners underneath. '
           'Scores and standings come from MFL\'s own records.</div></div></div></div>')
-    return ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+    return ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=0.85, viewport-fit=cover">\n'
             f'<meta name="robots" content="noindex">\n<title>The League · {Y}</title>\n{LINKS}{STY}<style>{CSS}{wcss}{dcss}.yrs a.yb{{cursor:pointer}}</style>\n</head>\n<body>{body}'
             '<script>var AVR='+json.dumps(AVR)+';document.querySelectorAll(".pav[data-avt]").forEach(function(e){var r=AVR[e.dataset.avt];if(r)e.classList.add("av","av-"+r);else e.classList.add("nl")})</script>'
             '<script>(function(){function f(){document.querySelectorAll(".dfpl b").forEach(function(b){b.style.fontSize="";var p=b.parentElement,s=parseFloat(getComputedStyle(b).fontSize);while(p.scrollWidth>p.clientWidth+.5&&s>11){s-=.5;b.style.fontSize=s+"px"}});document.querySelectorAll(".hxg .t span b,.hxs .tn b").forEach(function(b){b.style.fontSize="";var s=parseFloat(getComputedStyle(b).fontSize);while(b.scrollWidth>b.clientWidth+.5&&s>10){s-=.5;b.style.fontSize=s+"px"}})}f();addEventListener("resize",function(){requestAnimationFrame(f)});document.addEventListener("change",function(){requestAnimationFrame(f)});document.fonts&&document.fonts.ready.then(f)})()</script>'
