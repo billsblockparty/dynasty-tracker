@@ -842,7 +842,7 @@ header h1{white-space:nowrap}h1 .lgs{display:inline-block;width:auto;margin-left
 /* ===== BBP kit palette + tiered rank tiles (Standings Redesign Spec, 2026-11-03). BBP only. =====
    Tokens: page, panel, row-alt keep the old lightness on the Jaguars teal hue; tier colours and the season chart's
    playoff / NFL-bye colours come from the kit. Status colours (form dots, W/L streaks, arrows, rank chips) unchanged. */
-html:root{--pg:#101b1f;--deck:#1a2c33;--row-alt:#203841;--tier-bye:#e2cf93;--tier-po:#E4DDCD;--tier-ch:#006778;--chart-po-line:#0097a7;--chart-po-fill:#023442;--chart-po-val:#19b5c4;--chart-nfl-bye:#5a6870}
+html:root{--pg:#101b1f;--deck:#1a2c33;--row-alt:#203841;--tier-bye:#e2cf93;--tier-po:#19B5C4;--tier-ch:#2A2E33;--chart-po-line:#0097a7;--chart-po-fill:#023442;--chart-po-val:#19b5c4;--chart-nfl-bye:#5a6870}
 body{background:var(--pg)}
 /* panel role: standings panel, every second row, header bands, nav buttons, year tabs, toggle tracks */
 .tabs label{background:var(--deck)}
@@ -869,12 +869,13 @@ body{background:var(--pg)}
 .wkc.bye .wb::after,.weeks-k .kb::before{background:var(--chart-nfl-bye)!important}
 /* rank tiles: one rule for every seed (shadow baked into the image; no per-tier size, margin, filter or opacity);
    fixed 52px rank column, tile centred, so names stay aligned when 10-12 are wider */
-.board .r{--rks:52px;--rt:44px}
+.board .r{--rks:52px;--rt:49px}  /* scoreboard pack: 4px transparent margin in an 80px image, so 49px = 44.1px visible tile */
+@media(max-width:380px){.board .r{--rt:48px}}  /* logo is 44px here: 48px = 43.2px visible, never taller than the logo */
 .board .r{grid-template-columns:calc(var(--rks) + 8px + var(--ravc,var(--ravh))) minmax(0,1fr) 84px 78px}
 @media(max-width:380px){.board .r{grid-template-columns:calc(var(--rks) + 6px + var(--ravc,var(--ravh))) minmax(0,1fr) 72px 78px}}
 .board .r>.rk .rkn{flex:0 0 var(--rks)!important;height:var(--ravh)!important;display:flex;align-items:center;justify-content:center}
 .rni,.board .rni.p,.board .rni.g,.board .rni.w,.tqid .rni.p,.tqid .rni.g,.tqid .rni.w{display:block!important;height:var(--rt,44px)!important;width:auto!important;max-width:none!important;margin:0!important;filter:none!important;opacity:1!important}
-.tqid .tqsd.rnh{--rt:44px;width:52px!important;height:auto!important;display:flex!important;justify-content:center}
+.tqid .tqsd.rnh{--rt:49px;width:52px!important;height:auto!important;display:flex!important;justify-content:center}
 .dtt tr.bye td.dsd{color:var(--tier-bye)}.dtt tr.po td.dsd{color:var(--tier-po)}
 /* 2026-11-03: head-to-head / schedule-swap matrices: column heads = face/logo + manager name (face only on phones);
    phone row labels = face/logo + manager name (team names were cut); firmer cells with a frame */
@@ -1002,7 +1003,7 @@ body{background:var(--pg)}
  .dtp .dtt tbody tr.dtr:has(+tr.dtl) td,.dtp .dtt tbody tr.dtr:last-child td{border-bottom:0}
  .dtt td.dwl{line-height:1}
  .dtt td.dwl small.wlb{display:block;margin:2px 0 0;font:500 10.5px/1 var(--body);color:var(--steel)!important;white-space:nowrap}
- .dtt td.dsd .rni{height:24px!important;margin:-2px auto!important}
+ .dtt td.dsd .rni{height:27px!important;margin:-3.5px auto!important}  /* 24.3px visible; same 20px in the row as before */
 }
 /* 2026-11-03: Points by position: the rank tile stays centred under the figure in every view; "16 GP" (Per start) hangs
    to the right of the tile, out of the flow, so switching Per start / Per week / Total never moves the tile */
