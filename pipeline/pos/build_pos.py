@@ -15,6 +15,7 @@ G=int(re.search(r'const G=(\d+);',s).group(1))
 PW={t:{p:v/G for p,v in d.items()} for t,d in TOT.items()}
 SHORT={"Team Ram Rod":"Ram Rod","Bill's Block Party":"Block Party","Homer's Heroes":"Homer's","Mandingoes":"Mandingoes","Team RIPMFL":"RIPMFL","Cheating is Trying":"Cheating","Convicts":"Convicts","Nuts in the Face":"Nuts","Reverse Apache Master":"Apache","Canton waitlist":"Canton"}
 SHORT0=dict(SHORT);SHORT={k:k for k in SHORT}  # full team names everywhere; SHORT0 keeps the data-file short names
+PSN={'Reverse Apache Master':'Rev. Apache Master'}  # phones (2026-11-05 text floor): the full name needs a 3rd line at 11px
 tone=lambda r:'gold' if r==1 else 'g' if r<=3 else 'b last' if r==10 else 'b' if r>=8 else ''
 def rank(D,p,t):
     v=D[t][p];return 1+sum(D[x][p]>v+1e-9 for x in D),sum(abs(D[x][p]-v)<1e-9 for x in D)>1
@@ -23,7 +24,7 @@ def table(D,cls):
     for i,t in enumerate(H):
         tc='tier-bye' if i<2 else 'tier-po' if i<6 else 'tier-out'
         cells=''.join((lambda r,tie:f'<span role="cell"><b>{D[t][p]:.1f}</b><i class="ch {tone(r)}"><span class="ct">{"T" if tie else ""}{r}</span></i></span>')(*rank(D,p,t)) for p in POS)
-        o.append(f'<div class="pr {tc}" role="row"><span role="rowheader"><em>{i+1}</em><i class="pav" data-avt="{t.replace(chr(34),'&quot;')}" aria-hidden="true"></i><span class="psn">{SHORT[t]}</span><span class="pfn">{t}</span></span>{cells}</div>')
+        o.append(f'<div class="pr {tc}" role="row"><span role="rowheader"><em>{i+1}</em><i class="pav" data-avt="{t.replace(chr(34),'&quot;')}" aria-hidden="true"></i><span class="psn">{PSN.get(t,SHORT[t])}</span><span class="pfn">{t}</span></span>{cells}</div>')
     o.append('</div>');return '\n'.join(o)
 NG=[(norm(r['team']),p,int(r.get('nogame_'+p) or 0)) for r in rows for p in POS if int(r.get('nogame_'+p) or 0)]
 NOTE=('<p class="ptnote">Per start leaves out starts with no game: '+', '.join(f'{t} {p} ({n} bye start{"s" if n>1 else ""})' for t,p,n in NG)+'.</p>') if NG else ''
