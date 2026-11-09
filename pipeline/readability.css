@@ -1377,3 +1377,16 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
 /* season strips of 4-8 years: the full team names need ~98px per button at 12.5px; below 1100px the strip is capped at the 528px content width (78px buttons),
    so it spans the content width with the short coach names there, as phones in portrait already did below 640px */
 @media(max-width:1099px){nav.yrs.n4,nav.yrs.n5,nav.yrs.n6,nav.yrs.n7,nav.yrs.n8{width:100%;gap:8px 7px}nav.yrs.n4 .cf,nav.yrs.n5 .cf,nav.yrs.n6 .cf,nav.yrs.n7 .cf,nav.yrs.n8 .cf{display:none}nav.yrs.n4 .cs,nav.yrs.n5 .cs,nav.yrs.n6 .cs,nav.yrs.n7 .cs,nav.yrs.n8 .cs{display:inline}}
+/* 2026-11-08 SHOTGUN TALLY (BBP only: league house rule). Beer-mug icon + count of starters at zero or less, completed weeks (SGT, rebuild.py).
+   Icon: inline SVG, height .7em = the count's cap height (Barlow Condensed 700 cap = .700em), bottom on the baseline, fill --text-dim
+   (graphic contrast 6.05:1 on --deck, 4.67:1 on --row-lt); count --chalk, tabular; 4px of ink between them (--sgl = the digit's left bearing).
+   Cards: on the FAAB tile's line, count 13px (Nicklaus, 2026-11-08; mug 9.1px = its cap), box trimmed to cap/baseline like the 11px FAAB
+   label so the two share a cap centre; 8px of ink after the FAAB label (its trailing .1em letter-spacing + the B's .024em bearing at 11px = 1.364px taken off).
+   Desktop table: inline after the team name on its baseline, count sized so its cap = the name's (.997em: Plex .698 / Barlow .700),
+   8px of ink after the name's last letter (--sgr); line-height 0 so the line box does not change. Teams with none show nothing. */
+.board .r .nm .fbl{display:flex;align-items:center;flex:none}
+.sgt{font-style:normal;font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:0;color:var(--chalk);white-space:nowrap;cursor:default}
+.sgt .sgi{display:inline-block;height:.7em;width:.63em;vertical-align:baseline;margin:0 calc(4px - var(--sgl,0em)) 0 0;fill:currentColor;color:var(--text-dim);overflow:visible}
+.board .r .nm .sgt{display:block;flex:none;font-size:13px;line-height:1;text-box:trim-both cap alphabetic;margin-left:calc(8px - 1.364px)}
+.dtt td.dtm span.dtn{display:block;gap:0}
+.dtt td.dtm .dtn .sgt{font-size:.997em;line-height:0;margin-left:calc(8px - var(--sgr,0em) / .997)}

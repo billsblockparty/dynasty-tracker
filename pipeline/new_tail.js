@@ -60,6 +60,19 @@ function season(t){
   }
   return s+`</svg>`;
 }
+// Shotgun tally (BBP house rule, 2026-11-08): beer-mug icon + count of starters who scored zero or less (SGT, completed weeks, rebuild.py).
+// Icon = inline SVG on the count's baseline (fill currentColor = --text-dim). Tried and measured (2026-11-08): a background image (WebKit and
+// Chromium draw the tile at whole CSS px: 7.1 / 8.0px instead of 7.7) and a JS grid snap (WebKit: count off the FAAB label by a device px);
+// the plain SVG is the closest in WebKit (icon-to-digit 0-1 device px, count level with FAAB).
+const SGI='<svg class="sgi" viewBox="0 0 9 10" aria-hidden="true" focusable="false"><path d="M0 2H6.4V9.2A.8 .8 0 0 1 5.6 10H.8A.8 .8 0 0 1 0 9.2Z"/><circle cx="1.3" cy="1.9" r="1.3"/><circle cx="3.2" cy="1.4" r="1.4"/><circle cx="5.1" cy="1.9" r="1.3"/><path d="M6.2 3.4H7.05A1.3 1.3 0 0 1 8.35 4.7V5.9A1.3 1.3 0 0 1 7.05 7.2H6.2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+// Gaps are set to the ink: SGD = left side bearing of Barlow Condensed 700's tabular digits, SGR = right side bearing of the
+// IBM Plex Sans 600 letter a desktop name ends with (em, read from the font files), so icon-to-count and name-to-icon are measured glyph to glyph.
+const SGD=[.045,.067,.046,.044,.019,.053,.052,.045,.05,.039];
+const SGR={"a":.03,"b":.045,"c":.025,"d":.074,"e":.039,"f":.015,"g":0,"h":.068,"i":.062,"j":.062,"k":.005,"l":.023,"m":.068,"n":.068,"o":.039,"p":.045,"q":.074,"r":.02,"s":.039,"t":.037,"u":.074,"v":.011,"w":.022,"x":.019,"y":.01,"z":.037,"A":.021,"B":.047,"C":.031,"D":.052,"E":.058,"F":.046,"G":.071,"H":.082,"I":.053,"J":.078,"K":.015,"L":.032,"M":.082,"N":.082,"O":.052,"P":.038,"Q":.052,"R":.048,"S":.05,"T":.025,"U":.077,"V":.016,"W":.027,"X":.018,"Y":.01,"Z":.038,"0":.04,"1":.03,"2":.054,"3":.071,"4":.036,"5":.047,"6":.044,"7":.057,"8":.045,"9":.049,"'":.073,".":.07};
+function sgTag(t,dt){const a=typeof SGT!=='undefined'&&SGT[t];if(!a||!a.length)return '';const s=String(a.length);
+  const f=v=>v<0?'−'+(+Math.abs(v).toFixed(2)):'0';
+  const lab=`Shotguns this season: ${s} — `+a.map(([w,p,v])=>`W${w} ${p} (${f(v)})`).join(', ');
+  return `<i class="sgt" role="img" title="${esc(lab).replace(/"/g,'&quot;')}" aria-label="${esc(lab).replace(/"/g,'&quot;')}" style="--sgl:${SGD[+s[0]]}em${dt?';--sgr:'+(SGR[t.slice(-1)]||0)+'em':''}">${SGI}${s}</i>`}
 function draw(med){
   const o=med?M:H;
   const wl=x=>{const e=T[x];return med?[e[0]+e[2],e[1]+G-e[2]]:[e[0],e[1]]};
@@ -84,7 +97,7 @@ function draw(med){
       +FUT[t].map(g=>`<div class="gm fut"><div class="h"><span>Wk ${g[0]}</span></div><div class="up">Upcoming</div><div class="vs">vs ${esc(fn(g[1]))}</div></div>`).join('');
     return tierHtml+`<div class="r ${tc}${i>=6?' out':''}${op?' open':''}" data-t="${esc(t)}" tabindex="0" role="button" aria-expanded="${op}">
       <div class="rk"><span class="rkn">${typeof RNI!=='undefined'&&RNI[i+1]?`<img class="rni ${i<2?'p':i<6?'g':'w'}" src="${RNI[i+1]}" alt="${i+1}" aria-label="Rank ${i+1}">`:i+1}</span>${typeof AVR!=='undefined'&&AVR[t]?`<i class="av rav av-${AVR[t]}" aria-hidden="true"></i>`:'<i class="rav nl"></i>'}</div>
-      <div class="nm"><span class="tn">${esc(t)} ${mv}</span>${typeof FAAB!=='undefined'&&FAAB[t]!=null?`<label for="tab-wr" class="fab" title="FAAB left: $${FAAB[t]} of $${FAABB} (opens The Wire)"><b>$${FAAB[t]}</b><small>FAAB</small></label>`:''}</div>
+      <div class="nm"><span class="tn">${esc(t)} ${mv}</span>${(()=>{const sg=sgTag(t),fb=typeof FAAB!=='undefined'&&FAAB[t]!=null?`<label for="tab-wr" class="fab" title="FAAB left: $${FAAB[t]} of $${FAABB} (opens The Wire)"><b>$${FAAB[t]}</b><small>FAAB</small></label>`:'';return fb&&sg?`<span class="fbl">${fb}${sg}</span>`:fb+sg})()}</div>
       <div class="sb s-pf"><div class="stx"><em class="lb">PF</em><span class="pf">${d[3].toFixed(2)}</span>${chip(d[4])} <i class="pw"><span class="pws">· </span><b class="pwv">${d[5].toFixed(1)}</b>/wk <b class="psd" title="Weekly spread: standard deviation of the team's weekly scores">±${SDV(t).toFixed(0)}</b></i></div>${seg(d[4])}</div>
       <div class="sb s-pa"><div class="stx"><em class="lb">PA</em><span class="v">${d[6].toFixed(2)}</span>${chip(d[7])} <i class="pw"><span class="pws">· </span><b class="pwv">${d[8].toFixed(1)}</b>/wk</i></div>${seg(d[7])}</div>
       <div class="sb s-lu"><div class="stx"><em class="lb">Tot Eff</em><span class="v">${EF[t][0].toFixed(0)}%</span>${chip(rankEf(t),tiedEf(t))} <i class="pw"><span class="pws">· </span><b class="lw">${EF[t][1].toFixed(1)}</b>/wk</i></div>${seg(rankEf(t))}</div>
@@ -121,7 +134,7 @@ function dtab(med){
   for(const r of sorted){
     if(key==='seed'&&tier(r.i)!==lt){const pv=lt;lt=tier(r.i);if(pv){const pl=pv==='bye'?['bye','Bye line','Top '+BY+' bye']:['po','Playoff line','Top '+PN+' in'];h+=`<tr class="dtl"><td colspan="${cols.length}"><div class="pline pl-${pl[0]}" role="separator"><b>${pl[1]}</b><i></i><span>${pl[2]}</span></div></td></tr>`}}
     const k_=(h.match(/class="dtr /g)||[]).length;
-    h+=`<tr class="dtr ${tier(r.i)}${k_%2?'':' dra'}" data-t="${esc(r.t)}"><td class="dsd">${typeof RNI!=='undefined'&&RNI[r.i+1]?`<img class="rni dri" src="${RNI[r.i+1]}" alt="${r.i+1}" aria-label="Rank ${r.i+1}">`:r.i+1}</td><td class="dtm"><span>${av(r.t)}${esc(r.t)}</span></td>`+
+    h+=`<tr class="dtr ${tier(r.i)}${k_%2?'':' dra'}" data-t="${esc(r.t)}"><td class="dsd">${typeof RNI!=='undefined'&&RNI[r.i+1]?`<img class="rni dri" src="${RNI[r.i+1]}" alt="${r.i+1}" aria-label="Rank ${r.i+1}">`:r.i+1}</td><td class="dtm"><span>${av(r.t)}${(sg=>sg?`<span class="dtn">${esc(r.t)}${sg}</span>`:esc(r.t))(sgTag(r.t,1))}</span></td>`+
        `<td class="dwl"><b>${r.w}-${r.l}</b>${med?`<small class="wlb">H2H ${r.hw}-${r.hl} · Top-${N/2} ${r.mw}-${G-r.mw}</small>`:''}</td><td><i class="dsk ${r.st[0]==='W'?'w':'l'}">${r.st}</i></td><td><span class="dl5">${r.l5.map(x=>`<i class="${x?'w':'l'}"></i>`).join('')}</span></td>`+
        `<td>${r.pf.toFixed(1)}${chip(r.pfr)}</td><td><b>${r.pw.toFixed(1)}</b><small>±${r.sd.toFixed(0)}</small></td><td>${r.pa.toFixed(1)}${chip(r.par)}</td><td><b>${r.paw.toFixed(1)}</b></td>`+
        `<td>${r.apw}-${r.apl}${chip(r.apr)}</td><td><b>${r.xw.toFixed(2)}</b></td><td class="${r.lk>=0.05?'up':r.lk<=-0.05?'dn':''}">${(r.lk>=0?'+':'−')+Math.abs(r.lk).toFixed(2)}</td><td>${r.ef.toFixed(0)}%</td>`+

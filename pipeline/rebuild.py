@@ -136,6 +136,24 @@ try:
     if _FB and _FB.get('budget'):
         d+='// FAAB: budget, league id, roster id -> team, dollars left per team\nconst FAABB='+str(int(_FB['budget']))+',FAABL='+json.dumps(str(_FB['league']))+',FAABR='+json.dumps({k:v for k,v in _RNF.items()},ensure_ascii=False)+',FAAB='+json.dumps({_RNF[int(k)]:int(v) for k,v in _FB['left'].items() if int(k) in _RNF},ensure_ascii=False)+';\n'
 except Exception as _e:print('faab skipped:',_e)
+# Shotgun tally (BBP house rule, 2026-11-08): every starter who scored zero or less, and every empty starting slot (id '0' / ''),
+# in completed weeks only (hist.json 'w' holds a week only after the weekly run has finished it; the live week is never in it),
+# regular season and playoffs alike; current season only. SGT = {team: [[week, player, points], ...]} (teams with none left out).
+try:
+    if _dt_os.environ.get('DT_PAST')!='1':
+        _HSG=json.load(open(P+'hist.json',encoding='utf-8'));_SGM=_HSG['m']
+        _SGT={}
+        for _w in sorted(_HSG['w'],key=int):
+            for _rid,_e in _HSG['w'][_w].items():
+                _tm=_RNF.get(int(_rid))
+                if not _tm:continue
+                for _s in (_e[2].split(',') if _e[2] else []):
+                    _f=_s.split('|');_pid=_f[0]
+                    if _pid in ('','0'):_SGT.setdefault(_tm,[]).append([int(_w),'Empty slot',0]);continue
+                    _pt=float(_f[3]) if len(_f)>3 and _f[3] not in ('','None') else 0.0
+                    if _pt<=0:_SGT.setdefault(_tm,[]).append([int(_w),_SGM.get(_pid,['',_pid])[1],round(_pt,2)])
+        d+='// shotgun tally: starters at zero or less (and empty slots), completed weeks only: team -> [[week, player, points], ...]\nconst SGT='+json.dumps(_SGT,ensure_ascii=False)+';\n'
+except Exception as _e:print('shotgun tally skipped:',_e)
 # standings seed numerals (Jaguars Rivalries art): 1-2 alabaster patch (bye), 3-6 gold glow (playoffs), 7+ white shadow
 import base64 as _b64r
 _RNI={r:'data:image/webp;base64,'+_b64r.b64encode(open(P+f'ranknum/r{r}.webp','rb').read()).decode() for r in range(1,13) if _dt_os.path.exists(P+f'ranknum/r{r}.webp')}
