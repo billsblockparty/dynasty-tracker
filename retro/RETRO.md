@@ -157,7 +157,7 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 | Standings, desktop (>= 1100px) | NOT STARTED (token overrides and the CSS rank tiles only) | small |
 | Leaderboards, Players, The Wire, Compare | NOT STARTED | small each (token-driven tables and pills) |
 | Stats, Rosters, Team Hub, Playoffs, Drafts list | NOT STARTED | medium each (pastel pills with dark text, matrices and bars, SVG charts, bracket and schedule cells) |
-| Matchups | NOT STARTED | large (cards fall to black, win-probability bars, live states) |
+| Matchups | NOT STARTED, except the lineup score cells (rule 11, 2026-11-10; also in Playoffs lineups) | large (cards fall to black, win-probability bars, live states) |
 | Paper Trail | NOT STARTED | large (`BC7` digit outlines and `tileSnap` are Barlow-specific) |
 | Drafts desktop board | NOT STARTED | large (pastel position cells) |
 
@@ -173,6 +173,17 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
 - Past-season pages stay Classic's.
 - Bye = yellow, playoff = periwinkle (the reverse of the loop's two line colours; it follows Classic's gold bye tier).
 - `theme_build.py` runs after `retro/build.py`, `continue-on-error`.
+
+## Decisions (2026-11-10, from Nicklaus's iPhone and desktop Safari reports)
+
+- 2026-11-10 · Dark ink never carries the black shadow or outline (rule 2); the default shadow's colour is derived from
+  the ink (`--shk`) · the blanket T1 shadow sat behind Classic's dark text on every pastel tile outside Standings
+  (position tiles, pick tiles, selected white segments: 4,241 text nodes over 100 tab states at 402P), read as doubled
+  letters.
+- 2026-11-10 · Lineup score cells: figure 18.375px -> 14.5px (11.5px for a lineup with a five-character figure), label
+  tracking .06em -> 0, ink + shadow centred (rule 11) · in Classic's 38px cell the Martian Mono figure left 1.6px to
+  the frame and its shadow reached the frame line.
+- 2026-11-10 · FK / FL flex chips: no shadow (chips are T0, rule 2).
 
 ## Mechanism ("always-current clone")
 
@@ -241,10 +252,25 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 
 1. **Rows:** lighter row `--blue` > darker row `--blue-2` > divider `--blue-3` > frame black; alternating shades AND
    a divider. Measured with the grain's mean: 1.27:1, 1.17:1, 1.58:1.
-2. **Type treatment by role.** T2 (black 2px outline under the fill + 2px hard shadow): header title, weeks-left
-   figure, team names, records, group buttons, rank-tile digits (18px and up). T1 (1px hard shadow, no outline):
-   every other light text. T0 (nothing): dark text on a light tile (FAAB, streak, refresh pill, chart bar numbers)
-   and chip digits. The outline is not used under 18px: at 11px neighbouring letters fuse.
+2. **Type treatment by role, and the dark-ink rule.** T2 (black 2px outline under the fill + 2px hard shadow): header
+   title, weeks-left figure, team names, records, group buttons, rank-tile digits (18px and up). T1 (1px hard shadow,
+   no outline): every other light text. T0 (nothing): dark text on a light tile, and chip digits and letters (rank
+   chips, FK / FL flex chips). The outline is not used under 18px: at 11px neighbouring letters fuse.
+   **Dark-ink rule (2026-11-10): the black hard shadow and the black outline are only ever applied to LIGHT ink on a
+   darker surface. Dark ink (any text whose colour is darker than its own surface) gets no text-shadow and no
+   text-stroke, on every tab, themed or not.** How theme.css holds it:
+   - *Layer 1, automatic.* T1 is not a fixed black: its colour is computed from the ink. `--shk` =
+     `oklch(from currentColor 0 0 0 / clamp(0,(l - .4)*20,1))`, black whose alpha is 0 while the element's own text
+     colour has OKLCH lightness <= .40 and 1 from .45. `text-shadow` inherits as the formula, so each element resolves
+     it against its own colour (checked in Chromium 153 and WebKitGTK 2.52). Classic's dark inks (`#0f1218`,
+     `#0b0e14`, black, the NFL team inks: all below L .30) get no shadow wherever Classic uses them, including tabs
+     that are not themed yet and components added later; light inks on the blue and purple surfaces (L >= .60) keep
+     it. Engines without relative colours (before Safari 18 / Chrome 131) skip the declaration and show no T1 shadow.
+   - *Layer 2, by name.* Light ink on a LIGHT surface cannot be seen by the formula: those surfaces switch the shadow
+     off themselves (block "dark-ink rule, layer 2" at the end of theme.css; today the dropdown menus `.ddm`).
+   - The outline (T2) is never a default: it is set on the named roles above only, all of which the theme colours
+     white or yellow. Do not add a fixed `text-shadow: ... var(--black)` to a selector whose ink Classic decides.
+   - Check: `darkink` audit under "Checks before shipping" = 0.
 3. **Contrast, computed against the plain (lightest) surface:** ≥ 4.5:1 small text, ≥ 3:1 large text and graphics.
    Text that sits straight on the ground must stay in the purple zone (first 1100px); the orange end of the
    gradient is 2.82:1 against white and may only show behind panels.
@@ -272,10 +298,48 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 10. **CSS first.** `retro/theme.js` holds only what CSS cannot do, each item with its reason: (1) re-fit after
     H2H / Median (a Classic bug, DESIGN.md §8; remove when Classic re-fits by itself); (2) rule 7 (CSS cannot see a
     tile's text or where it meets the device-pixel grid). It wraps Classic's `tnFit` (runs after it and once more two
-    frames later) and never rewrites a Classic fitter.
+    frames later) and never rewrites a Classic fitter; (3) rule 11 for the lineup score cells (CSS cannot see which
+    glyphs a figure starts and ends with, or how many it has): sets `--fx` per cell and `fs5` per lineup from the
+    text alone, no layout reads, at load and for nodes added later (`MutationObserver`).
+11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
+    or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
+    gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
+    screenshots (text switched off and on, the difference is the ink), not from layout boxes.
+    Done for the **lineup score cells** (Matchups and Playoffs lineups, `.cr.lu .cv .fs`: delta, points figure,
+    FINAL / LIVE / PROJ). The cell is Classic's (38px, 36px inside its frame lines) and Martian Mono is monospaced
+    (the decimal point takes a full .525em), so the figure is 14.5px instead of Classic's 18.375px: the widest
+    four-character figure is 27.7px of ink + 1px of shadow. A lineup that holds a five-character figure ("100.0",
+    "-10.4") shows every figure at 11.5px (`fs5`): one size per lineup, never per cell. The label's tracking is 0.
+    Ink centring by `text-indent` (half of it moves the line): figure from the first and last glyph's bearings
+    (theme.js), delta and label by constants per state. Not chosen: tighter tracking (at -.05em the bearings of "00"
+    already leave 0.01px, and keeping 18.375px would need -.16em; the face has no narrower width than 75 and no
+    proportional figures) and wider cells (44px instead of 38px would keep 18.375px, but takes 6px from each name
+    column and moves every name and logo beside them).
+    Every other framed element on Matchups is listed, not fixed, under Known issues.
 
 ## Known issues
 
+- **Rule 11 is met by the lineup score cells only.** Other framed elements on Matchups whose ink (with shadow) comes
+  within 2px of the frame, measured 2026-11-10 (440P and 1920; to do with that tab): road "@" tiles `.gha.ht.r` (23 in a final week, 14 in a projected one: 0.5 to 1.3px above the glyph, 1.2 to 2.0px
+  below), home "vs" tiles `.gha.ht.h` (1 of 12: 1.96px above), FK / FL chips `.flg` (7: 1.0 to 1.7px above),
+  matchup-card rank chips `.hrk .ch` (2: 0.4 to 1.6px above and below), injury tags `.inj` Q / O (2: 1.5px above),
+  "N on bye" chips `.mby` (3: 0.8 to 1.5px below), card streak tiles `.gb .stk` at 1920 only (up to 4 of 10 read 0px
+  to the right or below: check when theming), the open week menu's own row `.ddm label` (0px left). All of these are
+  top / bottom except the last two; left and right are >= 2.3px everywhere else. Position tiles `.pq`, the toggles and
+  the score cells have every gap >= 2px.
+- **Score cells, limits.** A figure of six characters or more would not keep 3px (none can occur: a player's points).
+  On engines where `theme.js` does not run the figure uses a mean bearing (up to 0.65px off centre). The cell's own
+  position on the device-pixel grid is not corrected (as rule 7 does for the FAAB and rank tiles): up to 1 device pixel,
+  0.33px at 3x. WebKitGTK rounds glyph advances to whole pixels (Safari does not); `theme.js` measures the advance
+  once and compensates.
+- **Not themed yet, contrast.** The dark-ink audit also lists text under 4.5:1 (3:1 large) on the tabs that are NOT
+  STARTED: per tab, worst state at 440P: Players 123 (past bye
+  weeks `.by.past` #4b5262 on `--blue-2` 1.34:1, age flags, team-colour position tiles), Stats 91 (matrix cells
+  4.3 to 4.4:1), Playoffs 75 (schedule view chips and times 1.9 to 2.4:1, projected figures 3.08:1), Matchups 58
+  (projected figures `.fs.pj` #8f98ab 3.08:1, delta 4.11:1, REC label 4.12:1, FL chip 3.81:1), Team Hub 53, Standings
+  45 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"), Rosters 43,
+  Compare 41, Paper Trail 27, The Wire 4, Drafts 0, Leaderboards 0. Light ink on a light surface: the dropdown menus
+  `.ddm` (white panel; `--peri-lt` rank figures 1.7:1 and the yellow selected name 1.06:1), Compare and Playoffs.
 - **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
   values: the mug-to-count and label-to-mug gaps are off by a fraction of a pixel here. `BC7` (Paper Trail digit
   outlines) is Barlow Condensed 700: Paper Trail's TIMES TRADED tiles will be wrong until that tab is themed.
@@ -301,6 +365,14 @@ tokens. Position labels on the cards are Classic's position colours lightened to
   previous build except what the change is about; computed contrast scan: 0 under the limits.
 - Tile ink centring from screenshots: WebKitGTK with `GDK_SCALE=3` at the phone layout widths (424 / 473 / 518 CSS
   px), tile edges read from the pixels; Chromium at device scale 3 for comparison.
+- **Dark-ink audit (rule 2):** on the built copy, every tab and every state a radio or button reaches (100 states), at
+  402P, 440P and 1440, Chromium and WebKitGTK: for each visible text node the ink colour, the surface under it (sampled
+  from a screenshot taken with all text switched off), and the computed `text-shadow` / `-webkit-text-stroke`. Fail =
+  ink darker than its surface with a dark shadow or a dark stroke. Must be 0.
+- **Frame gaps (rule 11):** score cells of a full lineup (starters and bench, both teams; FINAL, LIVE, PROJ; worst cases
+  "88.8", "100.0", "-1.2", "+11.8", "−11.8") at 360P, 402P, 440P, 1440, 1920, Chromium and WebKitGTK (3x phones, 2x
+  desktop): ink including shadow = the pixels that change when text is switched off, edges weighted by coverage.
+  Left and right >= 3px and within 0.5px of each other, top and bottom >= 2px. Boxes outside the cells: none moved.
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).

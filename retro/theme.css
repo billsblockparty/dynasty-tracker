@@ -64,15 +64,27 @@ html.retro:root{
 /* ================= PART 2: type ================= */
 /* The face is declared by theme_build.py in <head>: condensed width only (font-stretch:75%) and size-adjust:87.5%,
    so the family IS the condensed face at Classic's cap height, in layout and in the fitters' canvas measurements. */
-html.retro body{font-stretch:75%;-webkit-font-smoothing:antialiased;word-spacing:-.22em;
-  /* treatment T1 (default, every text): hard 1px shadow, no outline */
-  text-shadow:1px 1px 0 var(--black)}
+/* DARK-INK RULE (RETRO.md, rule 2): the black hard shadow and the black outline only ever go on LIGHT ink over a darker surface.
+   Dark ink gets neither, on every tab, themed or not.
+   Mechanism, layer 1 (automatic): the default shadow's colour is computed from the ink it sits behind. --shk is black whose alpha
+   follows the lightness of the element's OWN text colour (OKLCH L of currentColor: alpha 0 up to L .40, 1 from L .45). text-shadow
+   inherits as this formula, not as a resolved colour, so every element resolves it against its own colour: Classic's dark inks
+   (#0f1218, #0b0e14, #000, the NFL team inks #002244, #101820 ... all L < .30) get no shadow wherever Classic puts them, and the
+   light inks used on the blue and purple surfaces (L >= .60) keep the full 1px shadow. No list of components to maintain.
+   Engines without relative colours (before Safari 18 / Chrome 131): the declaration is skipped and they get no default shadow.
+   Layer 2 (explicit): where LIGHT ink sits on a LIGHT surface the formula cannot know, so those surfaces switch it off by name
+   (list at the end of PART 4). The outline is never inherited-by-default: it is set on the named T2 roles only. */
+html.retro:root{--shk:oklch(from currentColor 0 0 0 / clamp(0,(l - .4)*20,1))}
+html.retro body{font-stretch:75%;-webkit-font-smoothing:antialiased;word-spacing:-.22em;text-shadow:none}
+/* treatment T1 (default, every light text): hard 1px shadow, no outline */
+@supports (color:oklch(from currentColor 0 0 0 / clamp(0,(l - .4)*20,1))){html.retro body{text-shadow:1px 1px 0 var(--shk)}}
 html.retro body,html.retro body *{letter-spacing:-.05em!important}
-/* treatment T2 (display text, 18px and up): black outline under the fill + 2px hard shadow */
+/* treatment T2 (display text, 18px and up; white or yellow ink on blue / purple by the theme's own colour rules): black outline
+   under the fill + 2px hard shadow */
 html.retro header h1,html.retro .clock b,html.retro .board .r .tn,html.retro .board .r .rr b,html.retro nav.tabs label{
   -webkit-text-stroke:2px var(--black);paint-order:stroke fill;text-shadow:2px 2px 0 var(--black)}
 html.retro .board .r .tn *{-webkit-text-stroke:0;text-shadow:1px 1px 0 var(--black)}
-/* treatment T0 (dark text on a light tile): nothing */
+/* treatment T0 (dark text on a light tile): nothing. Kept by name for the Standings tiles; everywhere else layer 1 does it */
 html.retro .board .r .nm .fab b,html.retro .wkc i.done .wrk,html.retro #upd,html.retro #upd *{-webkit-text-stroke:0;text-shadow:none}
 
 /* ================= PART 3: ground and grain ================= */
@@ -93,7 +105,7 @@ html.retro .yrs .yb.na b{color:var(--peri-lt)}
 html.retro #grp-gd:checked~.tnav nav.tabs label[for="grp-gd"],html.retro #grp-lab:checked~.tnav nav.tabs label[for="grp-lab"],
 html.retro #grp-fo:checked~.tnav nav.tabs label[for="grp-fo"],html.retro .yrs .yb.on b{
   background:var(--badge);color:var(--white);box-shadow:inset 0 0 0 2px var(--white),var(--sh-hard)!important}
-html.retro .yrs .yb b{box-shadow:var(--sh-hard);text-shadow:1px 1px 0 var(--black)}
+html.retro .yrs .yb b{box-shadow:var(--sh-hard)}   /* its shadow is the default (PART 2): Drafts' and Paper Trail's selected year is black on white */
 html.retro .yrs .yb.on small{color:var(--white)}
 html.retro .pseg,html.retro .tg,html.retro .tnav .lbc.tsub{background:var(--blue-3)!important;border-radius:4px}
 html.retro .tnav .tsub label,html.retro .tg button,html.retro .pseg label{border-radius:2px!important}
@@ -188,3 +200,28 @@ html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="12"]){--dx:0.0109;--dy:0.
 /* --- refresh pill --- */
 html.retro #upd{background:var(--white);color:var(--black);border-radius:4px;box-shadow:inset 0 0 0 2px var(--black),4px 4px 0 0 var(--black)}
 html.retro #upd button{background:var(--badge);color:var(--white);border-radius:2px;text-shadow:1px 1px 0 var(--black)}
+
+/* --- lineup score cells (Matchups and Playoffs lineups: delta, points figure, FINAL / LIVE / PROJ) ---
+   FRAME RULE (RETRO.md, rule 11): inside a framed cell the ink INCLUDING its shadow keeps >= 3px from the inner edge of the frame
+   left and right, the two gaps equal within 0.5px, and >= 2px top and bottom.
+   The cell is Classic's: 38px wide with a 1px frame line each side = 36px inside. Martian Mono is monospaced (.525em a glyph, the
+   decimal point too), so Classic's 18.375px figure is 34.9px of advance for "21.7": 1.6px to the frame, less the 1px shadow.
+   One size for every score cell, 14.5px: the widest four-character figure is 27.7px of ink + 1px shadow = 3.6px each side.
+   A lineup that holds a five-character figure ("100.0", "-10.4") gets .fs5 from theme.js and every cell in it drops to 11.5px
+   (28.4px of ink + shadow, 3.8px each side). Centring: flex centres the advance box, not the ink; text-indent moves the line by half
+   its value. Figure and delta: --fx / --fy (theme.js, from the first and last glyph's bearings) - .05em (the trailing letter-spacing)
+   - 1px (the shadow lies to the right). Label: a constant per state (FINAL, LIVE, PROJ).
+   Bearings from the font's outlines, wdth 75 (x .875 for size-adjust). The label's tracking is 0 (Classic: .06em), as in tiles. */
+html.retro .cr.lu .cv .fs{font-size:14.5px!important;text-indent:calc(var(--fx,-.004em) - .05em - 1px + var(--fxd,0px))}
+html.retro .fs5 .cr.lu .cv .fs{font-size:11.5px!important;--fxd:var(--fxe,0px)}
+html.retro .cr.lu .cv .fs .fdf{text-indent:calc(var(--fy,.0125em) - .05em - 1px + var(--fxf,0px))}
+html.retro .cr.lu .cv .fs small{letter-spacing:0!important;text-indent:calc(-.053em - 1px + var(--fxg,0px))}
+html.retro .cr.lu .cv .fs.lv small{text-indent:calc(-.0615em - 1px + var(--fxg,0px))}
+html.retro .cr.lu .cv .fs.pj small{text-indent:calc(-.009em - 1px + var(--fxg,0px))}
+/* --fxd / --fxe / --fxf / --fxg (theme.js, on <html>): how far this engine's glyph advance is from the font's .525em at 14.5 / 11.5 /
+   10 / 11px. 0 in Safari and Chromium; WebKitGTK rounds advances to whole px (14.5px: 7.61 -> 8), which moves the last glyph's ink. */
+
+/* --- dark-ink rule, layer 2: light surfaces that can hold LIGHT ink (the ink formula in PART 2 cannot see the surface) --- */
+html.retro .ddm,html.retro .ddm *{text-shadow:none;-webkit-text-stroke:0}
+/* flex-slot chips in the lineups (FK / FL, 10.5px in an 18 x 15px ring): light ink, but a chip: T0 like the rank chips (rule 2) */
+html.retro .flg{text-shadow:none}

@@ -65,3 +65,35 @@
   if(typeof orig==='function')window.tnFit=function(){clear();var r=orig.apply(this,arguments);fit();later();return r};
   if(window.__fitAll)requestAnimationFrame(function(){window.__fitAll()});else fit();
 })();
+/* 3. Lineup score cells (Matchups and Playoffs): the points figure's ink centring, and one smaller size for a lineup that holds a
+      five-character figure (theme.css, "lineup score cells"; RETRO.md rule 11).
+      Why a script: CSS cannot see which glyphs a figure starts and ends with ("1" has .068em of room on its left, "4" .017em on
+      its right, so "13.4" sits 0.6px right of where "0.7" does), nor how many characters it has.
+      What it does: per cell, --fx (points figure) and --fy (delta) = (right bearing of the last glyph - left bearing of the first) in em (tables L / R below: Martian
+      Mono wght 700 at wdth 75, from retro/fonts with fontTools, x .875 for size-adjust); per lineup (.lus), class fs5 when any of
+      its figures has five characters or more. It reads text only, never layout (one probe at start measures this engine's glyph advance: WebKitGTK rounds it to whole
+      px), and holds no element between runs.
+      When: once at load, and for every node added later (a tab built on demand, a pane put back, live scores rewriting a cell). */
+(function(){
+  var K=.875,L={"0":.029,"1":.0777,"2":.054,"3":.049,"4":.0332,"5":.0468,"6":.046,"7":.0699,"8":.0473,"9":.046,"-":.0303,"+":.0303,"\u2212":.0303},
+      R={"0":.029,"1":.0377,"2":.054,"3":.049,"4":.0193,"5":.0493,"6":.046,"7":.0699,"8":.0473,"9":.046};
+  function fig(fs){for(var n=fs.firstChild;n;n=n.nextSibling)if(n.nodeType===3){var t=n.nodeValue.trim();if(t)return t}return ''}
+  function off(t){var a=L[t.charAt(0)],b=R[t.charAt(t.length-1)];return (a===undefined||b===undefined)?'':((b-a)*K).toFixed(4)+'em'}
+  function put(fs,k,v){if(fs.style.getPropertyValue(k)!==v){if(v)fs.style.setProperty(k,v);else fs.style.removeProperty(k)}}
+  function run(root){
+    var list=root.matches&&root.matches('.cv .fs')?[root]:(root.querySelectorAll?root.querySelectorAll('.cr.lu .cv .fs'):[]);if(!list.length)return;
+    var ups=[],i,j;
+    for(i=0;i<list.length;i++){var fs=list[i],df=fs.firstElementChild;put(fs,'--fx',off(fig(fs)));put(fs,'--fy',df&&df.className==='fdf'?off(df.textContent.trim()):'');
+      var row=fs.closest('.cr.lu'),p=row&&(row.closest('.lus')||row.parentNode);if(p&&ups.indexOf(p)<0)ups.push(p)}
+    for(i=0;i<ups.length;i++){var c=ups[i].querySelectorAll('.cr.lu .cv .fs'),five=false;for(j=0;j<c.length&&!five;j++)five=fig(c[j]).length>4;
+      if(ups[i].classList.contains('fs5')!==five)ups[i].classList.toggle('fs5',five)}}
+  // one layout read, once: the advance this engine gives a glyph at the four sizes used in the cells (see theme.css, --fxd ...)
+  function probe(){var S=[['--fxd','700 14.5px'],['--fxe','700 11.5px'],['--fxf','700 10px'],['--fxg','600 11px']],d=document.createElement('div'),sp=[],w,i;
+    d.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap';
+    for(i=0;i<S.length;i++){var e=document.createElement('span');e.style.cssText='display:block;width:max-content;font:'+S[i][1]+'/1 "Martian Mono"';e.style.setProperty('letter-spacing','0','important');e.textContent='0000000000';d.appendChild(e);sp.push(e)}
+    document.body.appendChild(d);w=sp.map(function(e){return e.getBoundingClientRect().width/10});d.remove();
+    for(i=0;i<S.length;i++){var dl=w[i]-.525*parseFloat(S[i][1].split(' ')[1]);if(Math.abs(dl)>=.02&&Math.abs(dl)<1)document.documentElement.style.setProperty(S[i][0],dl.toFixed(3)+'px')}}
+  if(document.fonts&&document.fonts.load)Promise.all([document.fonts.load('700 14.5px "Martian Mono"'),document.fonts.load('600 11px "Martian Mono"')]).then(probe,function(){});
+  run(document);
+  if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
+})();
