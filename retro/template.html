@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DynastyCast Now</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple:#332370; --orange:#e28144; --blue:#354e84; --gray:#545658;
+  --yellow:#ffff6f; --peri:#8b9df8; --white:#fff; --black:#000;
+  --win:#7dffa0; --loss:#ff8f8f;
+  --line:#8da4e8;                         /* LDL top rule */
+  --badge-hi:#5f6def; --badge-lo:#2040fa; /* ODL badge fill */
+  --glow:rgba(255,255,255,.25);           /* panel inner glow */
+  --drift:#222;                           /* luminance drift layer */
+  --halo:rgba(255,255,255,.35);           /* soft-focus text glow */
+  --wash:#808080;                         /* desaturation overlay */
+  --card:linear-gradient(180deg,#8da4e8 0 12.5%,#7b8eef 0 25%,#6a7af0 0 37.5%,#5f6def 0 50%,#4d5ff5 0 62.5%,#3a50f7 0 75%,#2040fa 0 87.5%,#00f 0);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--white);overflow:hidden}
+body{font-family:"Martian Mono",ui-monospace,monospace;-webkit-font-smoothing:antialiased}
+
+/* whole "tube". No filter here: iOS Safari re-rasterises a filtered ancestor at low resolution after each
+   animation, so soft focus comes from a text glow and the wash from a saturation-blend overlay instead */
+.tube{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+
+/* 4:3 frame on wide screens ("md"), full bleed on phones */
+.frame{position:relative;width:100%;height:100%;overflow:hidden;background:var(--purple);
+  container-type:size;display:grid;grid-template-rows:auto 1fr auto;
+  font-stretch:75%;letter-spacing:-.05em;font-size:clamp(.875rem,4vw,1.125rem);
+  --side:24px;--g:8px;--bh:calc(clamp(3rem,18vw,5rem)*2/3)}
+@media (min-width:768px) and (min-aspect-ratio:1/1){
+  .frame{width:auto;height:min(100%,calc(100vw*3/4));aspect-ratio:4/3;
+    grid-template-rows:18.75% 1fr 16.6667%;font-size:min(4vh,3vw);
+    --side:7.8125%;--g:1cqh;--bh:12.5cqh}
+}
+.frame.on{animation:tvon 1.6s linear both}
+@keyframes tvon{
+  0%{transform:scale(0,.005);animation-timing-function:ease}
+  44%{transform:scale(.875,.005);animation-timing-function:ease}
+  50%{transform:scale(1,.005)}
+  69%{transform:scale(1,.475)}
+  100%{transform:scale(1,1)}
+}
+/* turn-on flash: white overlay in step with the old brightness(10) -> brightness(1), then hidden */
+.flash{background:var(--white);opacity:0;visibility:hidden;z-index:30}
+.frame.on .flash{animation:flash 1.6s linear both}
+@keyframes flash{
+  0%{opacity:.9;visibility:visible;animation-timing-function:ease}
+  44%{opacity:.9;animation-timing-function:ease}
+  50%{opacity:.9}
+  69%{opacity:0;visibility:visible}
+  100%{opacity:0;visibility:hidden}
+}
+
+/* the retro type treatment, on every descendant: black outline under the fill, hard offset shadow */
+.frame *{-webkit-text-stroke:2px #000;paint-order:stroke;text-shadow:.375cqw .375cqw #000,0 0 .06em var(--halo)}
+@media (min-width:768px) and (min-aspect-ratio:1/1){.frame *{-webkit-text-stroke-width:.375cqw}}
+
+/* ---------- header ---------- */
+.hdr{height:clamp(3rem,18vw,5rem);display:grid;align-items:end}
+.bar{height:66.6667%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding-inline:var(--side);
+  background-image:linear-gradient(135deg,transparent 75%,var(--purple) 75%),
+                   linear-gradient(to bottom,var(--orange),var(--purple))}
+@media (min-width:768px) and (min-aspect-ratio:1/1){
+  .hdr{height:100%}
+  .bar{gap:2.5vw}
+}
+.mk{flex:none;height:100%;aspect-ratio:466/367;transform:scale(1.1);filter:drop-shadow(.2em .2em 0 #000);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:2px solid var(--white);border-radius:.3em;box-shadow:0 0 0 1px var(--peri);
+  background:linear-gradient(to bottom,var(--badge-hi),var(--badge-lo));
+  color:var(--white);font-weight:800;text-align:center;line-height:1;letter-spacing:0;font-size:calc(var(--bh)*.4)}
+.mk small{display:block;font-size:.48em;font-weight:800;margin-top:.2em}
+h1{flex:1;min-width:0;color:var(--yellow);font-weight:600;font-size:1.15em;line-height:1.25em;word-spacing:100vw;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+h1 span{display:block;word-spacing:normal;white-space:nowrap}
+.clock{flex:none;text-align:end;font-weight:500;font-stretch:112.5%;font-size:.75em;line-height:1.4;
+  text-transform:uppercase;font-variant-numeric:tabular-nums;margin-inline-end:12px}
+@media (min-width:768px) and (min-aspect-ratio:1/1){.clock{margin-inline-end:1vw}}
+
+/* ---------- body / panels ---------- */
+.stage{position:relative;overflow:hidden;background:linear-gradient(to bottom,var(--purple),var(--orange))}
+.scr{position:absolute;inset:0;display:none}
+.scr.act{display:flex;flex-direction:column;animation:reveal .55s steps(12) both}
+@keyframes reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+.panel{height:100%;min-height:0;background:var(--blue);margin-inline:var(--side);padding:24px;display:flex;flex-direction:column;
+  box-shadow:inset 0 0 12px 12px var(--glow)}
+@media (min-width:768px) and (min-aspect-ratio:1/1){.panel{padding:4cqh;box-shadow:inset 0 0 2cqh 2cqh var(--glow)}}
+
+/* rows: packed at the top */
+.rows{display:flex;flex-direction:column;gap:var(--g);min-height:0}
+.row{display:grid;align-items:center;column-gap:.55em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rowt{font-weight:500}
+.hd{color:var(--yellow);font-weight:500;font-size:.78em;text-transform:uppercase;margin-bottom:var(--g)}
+.ic{width:1.45em;height:1.45em;image-rendering:pixelated;border:.1em solid #fff;box-shadow:.12em .12em 0 #000;display:block}
+.dim{color:var(--peri)}
+.y{color:var(--yellow)}
+.r{text-align:end}
+.nm{overflow:hidden}
+
+/* standings */
+.st .row{grid-template-columns:1.6em 1.45em 1fr 3.1em 4.6em}
+/* phone: the wider side margins leave the name column short at 360, so the W-L and PF columns give some back
+   (PF 4.2em holds 1999.9; at 4.6em the longest short name had 0.6px to spare at 360) */
+@media (max-width:767px),(max-aspect-ratio:1/1){.st .row{grid-template-columns:1.4em 1.45em 1fr 2.6em 4.2em}}
+.st .row.cut,.st .row.bye{padding-bottom:calc(var(--g)/2);margin-bottom:calc(var(--g)/-2)}
+.st .row.cut{border-bottom:.14em dashed var(--yellow)}
+.st .row.bye{border-bottom:.14em solid var(--peri)}
+.legend{display:flex;justify-content:space-between;font-size:.7em;margin-top:.5em;text-transform:uppercase}
+.legend b{font-weight:500}
+.legend i{display:inline-block;width:1.6em;height:0;vertical-align:middle;margin-inline-end:.4em}
+
+/* matchups, current conditions */
+.mu .row{grid-template-columns:1.45em 1fr 3.5em 3.6em}
+.mu .grp,.rs .grp{display:flex;flex-direction:column;padding-bottom:var(--g);border-bottom:.1em solid rgba(255,255,255,.35)}
+.mu .grp:last-child,.rs .grp:last-child{border-bottom:0;padding-bottom:0}
+.pct{font-size:.8em}
+/* week results */
+.rs .row{grid-template-columns:1fr auto}
+.rs .row>span:first-child{display:flex;gap:.55em;align-items:center;min-width:0}
+/* almanac */
+.al .row{grid-template-columns:1fr auto;align-items:center}
+.al .lab{color:var(--yellow);text-transform:uppercase;font-size:.78em;display:block}
+.al .who{display:flex;gap:.5em;align-items:center}
+.al .big{font-weight:600}
+
+/* extended-outlook cards (Hall of Champions) */
+.cards{height:100%;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;
+  padding-block:24px;margin-inline:24px;font-size:clamp(.875rem,4vw,1.125rem)}
+@media (min-width:768px) and (min-aspect-ratio:1/1){
+  .cards{grid-template-columns:repeat(5,minmax(0,1fr));gap:2cqh;margin-inline:7.8125%;padding-block:0;font-size:4cqh}
+}
+.card{background:var(--card);border:.2em solid var(--white);box-shadow:inset 0 0 0 .2em #000;display:flex;flex-direction:column;
+  align-items:center;justify-content:space-around;padding:.5em .2em;text-align:center;min-width:0;min-height:0}
+.card .yr{color:var(--yellow);font-weight:600}
+.card .ic{width:2.4em;height:2.4em}
+.card .t{font-size:.72em;font-weight:500;line-height:1.25;text-transform:uppercase;white-space:nowrap}
+@media (max-width:767px),(max-aspect-ratio:1/1){.card .t{font-size:.9em}}
+/* md fit: 4vh type is too tall for 10-11 stacked rows at the given gap, so tighten row line-height and
+   icons, and cut the gap per screen (font size untouched); the almanac goes to one line per record */
+@media (min-width:768px) and (min-aspect-ratio:1/1){
+  .panel .row{line-height:1.15}
+  .panel .ic{width:1.1em;height:1.1em}
+  .st .row{grid-template-columns:1.6em 1.1em 1fr 3.1em 4.6em}
+  .mu .row{grid-template-columns:1.1em 1fr 3.5em 3.6em}
+  .st{--g:0px}
+  .mu{--g:4px}
+  .al .row>span:first-child{display:flex;align-items:center;gap:1em}
+  .al .lab{flex:0 0 11.5em}
+}
+.ttl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5em}
+.ttl .t{color:var(--yellow);text-transform:uppercase;font-weight:500;font-size:.85em}
+
+/* ---------- lower display line ---------- */
+.ldl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;align-content:center;column-gap:.8em;row-gap:8px;
+  padding:18px var(--side);background:var(--blue);border-top:2px solid var(--line);color:var(--white);
+  font-weight:500;text-transform:uppercase;font-size:.85em}
+@media (min-width:768px) and (min-aspect-ratio:1/1){.ldl{padding-block:0}}
+.ldl .msg{min-width:0;white-space:nowrap;overflow:hidden}
+.ldl .msg span{display:inline-block;animation:reveal .45s steps(10) both}
+.pg{grid-column:1/-1;display:flex;justify-content:center;gap:4px}
+.pg i{display:block;width:10px;height:3px;background:var(--white);opacity:.25}
+.pg i.on{opacity:1}
+.snd{flex:none;font:inherit;color:var(--white);background:transparent;border:1px solid var(--white);padding:.25em .55em;cursor:pointer;
+  box-shadow:none;text-transform:uppercase;font-size:.75em}
+
+/* ---------- screen overlays: luminance drift, grain ---------- */
+.ov{position:absolute;inset:0;pointer-events:none;z-index:20}
+.drift{background:linear-gradient(to bottom,var(--black),var(--drift) 50%,var(--black));background-size:100% 300%;
+  mix-blend-mode:screen;opacity:.06;animation:drift 8s linear infinite alternate}
+@keyframes drift{from{background-position:0 0}to{background-position:0 100%}}
+/* 10% desaturation without a filter */
+.desat{background:var(--wash);mix-blend-mode:saturation;opacity:.1}
+canvas.grain{width:100%;height:100%;mix-blend-mode:overlay;opacity:.18}
+
+/* ---------- start screen ---------- */
+.start{position:absolute;inset:0;z-index:40;display:grid;place-items:center;text-align:center;background:#000;padding:2em}
+.start p{font-stretch:75%;line-height:2;max-width:30ch;margin:0 auto 1.6em;font-size:.95em}
+.start button{font:inherit;font-stretch:75%;color:#fff;background:transparent;border:1px solid #fff;padding:.9em 1.6em;
+  text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.start button:hover{background:#fff;color:#000}
+.start .sub{font-size:.7em;color:#aaa;margin-top:1.4em;text-transform:uppercase}
+.start .sub{white-space:nowrap}
+.frame{cursor:pointer}
+.hidden{display:none}
+/* ---------- port additions (retro/RETRO.md) ---------- */
+/* names: full name when it fits, else the league short form (fitNames). The reference's overflow:hidden on .nm and h1
+   shaved the black outline and hard shadow at the box edges (measured), so neither box clips now: fitNames guarantees the
+   text fits. The ticker keeps its clip box, widened by side padding that only the outline and shadow may use */
+.nm{overflow:visible;min-width:0}
+h1{overflow:visible}
+.ldl .msg{padding-inline:.25em;margin-inline:-.25em}
+.al .row>span:first-child,.al .who{min-width:0}
+.card .t.nm{max-width:100%}
+.start .cl{display:inline-block;margin-top:1.6em;font-size:.7em;color:#aaa;text-transform:uppercase;letter-spacing:.06em;
+  text-decoration:underline;text-underline-offset:.3em}
+.start .cl:hover{color:#fff}
+</style>
+</head>
+<body>
+<div class="tube">
+  <div class="frame" id="frame">
+    <header class="hdr"><div class="bar">
+      <div class="mk" aria-hidden="true">ODL<small>DYNASTY</small></div>
+      <h1 id="title"><span>League</span><span>Standings</span></h1>
+      <div class="clock" id="clock"></div>
+    </div></header>
+    <main class="stage" id="stage"></main>
+    <footer class="ldl">
+      <div class="msg" id="ldl"></div>
+      <button class="snd" id="snd" type="button">Sound off</button>
+      <div class="pg" id="pg" aria-hidden="true"></div>
+    </footer>
+    <div class="ov desat"></div>
+    <div class="ov drift"></div>
+    <div class="ov"><canvas class="grain" id="grain"></canvas></div>
+    <div class="ov flash"></div>
+  </div>
+  <div class="start" id="start">
+    <div>
+      <p>Official Dynasty League<br>Local Report</p>
+      <button type="button" id="go">Start DynastyCast</button>
+      <div class="sub">Tap left or right to change page</div>
+      <a class="cl" href="../">Classic</a>
+    </div>
+  </div>
+</div>
+<script>
+/*__RETRO_DATA__*/
+const $=s=>document.querySelector(s);
+const f2=n=>Number(n).toFixed(2), f1=n=>Number(n).toFixed(1);
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const icon=t=>`<img class="ic" src="${D.av[t]}" alt="">`;
+const sh=t=>D.sh[t];
+/* a team name: starts as the full name; fitNames swaps in the short form only where the full one does not fit */
+const nm=(t,tag='span',cls='')=>`<${tag} class="${cls}nm" data-full="${esc(t)}" data-short="${esc(sh(t))}">${esc(t)}</${tag}>`;
+const sg=n=>(n>0?'+':'')+f2(n);
+
+/* each screen: title (two lines) + builder. Built from D by a function so a data update can rebuild the list */
+const WKST={pre:'Pre-game',live:'Live',final:'Final'};
+const mkScreens=()=>[
+ {t:['League','Standings'], h(){
+   const rows=D.stand.map((s,i)=>`<div class="row rowt ${i===1?'bye':''} ${i===5?'cut':''}">
+     <span class="y">${i+1}</span>${icon(s.t)}${nm(s.t)}
+     <span class="r">${s.w}-${s.l}</span><span class="r">${f1(s.pf)}</span></div>`).join('');
+   return `<div class="panel st"><div class="row hd"><span>#</span><span></span><span>Team · Week ${D.G}</span><span class="r">W-L</span><span class="r">PF</span></div>
+     <div class="rows">${rows}</div>
+     <div class="legend"><span><i style="border-top:.14em solid var(--peri)"></i><b>Bye line</b></span><span><i style="border-top:.14em dashed var(--yellow)"></i><b>Playoff line</b></span></div></div>`}},
+ {mu:1,t:['Current','Scoreboard'], h(){
+   const g=D.mus.map(m=>`<div class="grp">
+     <div class="row rowt">${icon(m.a)}${nm(m.a)}<span class="r">${f1(m.ap)}</span><span class="r dim pct">${m.wa}%</span></div>
+     <div class="row rowt">${icon(m.b)}${nm(m.b)}<span class="r">${f1(m.bp)}</span><span class="r dim pct">${m.wb}%</span></div></div>`).join('');
+   return `<div class="panel mu"><div class="row hd"><span></span><span>Week ${D.G+1} · ${WKST[D.wk]||'Live'}</span><span class="r">Pts</span><span class="r">Win</span></div><div class="rows">${g}</div></div>`}},
+ {mu:1,t:['Week '+(D.G+1),'Forecast'], h(){
+   const g=D.mus.map(m=>`<div class="grp">
+     <div class="row rowt">${icon(m.a)}${nm(m.a)}<span class="r">${f1(m.aj)}</span><span class="r dim pct">${m.wa}%</span></div>
+     <div class="row rowt">${icon(m.b)}${nm(m.b)}<span class="r">${f1(m.bj)}</span><span class="r dim pct">${m.wb}%</span></div></div>`).join('');
+   return `<div class="panel mu"><div class="row hd"><span></span><span>Projected</span><span class="r">Proj</span><span class="r">Win</span></div><div class="rows">${g}</div></div>`}},
+ {t:['Week '+D.G,'Results'], h(){
+   const g=D.res.map(r=>`<div class="grp">
+     <div class="row rowt"><span>${icon(r.a)}${nm(r.a)}</span><span class="r">${f2(r.sa)}</span></div>
+     <div class="row rowt dim"><span>${icon(r.b)}${nm(r.b)}</span><span class="r">${f2(r.sb)}</span></div></div>`).join('');
+   return `<div class="panel rs"><div class="rows">${g}</div></div>`}},
+ {t:['League','Almanac'], h(){
+   const A=D.alm, it=(lab,v,t,extra='')=>`<div class="row rowt"><span><span class="lab">${lab}</span><span class="who">${icon(t)}${nm(t)}${extra}</span></span><span class="big r">${v}</span></div>`;
+   return `<div class="panel al"><div class="rows">
+     ${it('Record high · Wk '+A.hi.w,f2(A.hi.v),A.hi.t)}
+     ${it('Record low · Wk '+A.lo.w,f2(A.lo.v),A.lo.t)}
+     ${it('Hottest offense · PF',f1(A.pf[0]),A.pf[1])}
+     ${it('Heaviest rainfall · PA',f1(A.pa[0]),A.pa[1])}
+     ${it('Best all-play',A.apb[2],A.apb[1])}
+     ${it('Luck index · high',sg(A.lk[0]),A.lk[1])}
+     ${it('Luck index · low',sg(A.ul[0]),A.ul[1])}
+   </div></div>`}},
+ {t:['Hall of','Champions'], h(){
+   const c=Object.entries(D.champs).map(([y,t])=>`<div class="card"><div class="yr tag">${y}</div>${icon(t)}${nm(t,'div','t ')}</div>`).join('');
+   return `<div class="cards">${c}</div>`}}
+].filter(s=>D.mus||!s.mu);
+let SCREENS=mkScreens();
+
+/* ticker messages: m(name=>text) gives the full-name and the short-name wording; ldlFit picks per message */
+const both=f=>({f:f(x=>x),s:f(sh)});
+const mkLdl=()=>[
+ both(()=>D.mus?`Official Dynasty League · Week ${D.G+1}`:`Official Dynasty League · Week ${D.G}`),
+ ...(D.mus||[]).map(m=>both(n=>`${n(m.a)} ${f1(m.ap)} · ${n(m.b)} ${f1(m.bp)}`)),
+ both(n=>`${n(D.stand[0].t)} ${D.stand[0].w}-${D.stand[0].l} · Top seed`),
+ both(()=>`Top 6 make playoffs · Weeks 15-17`)
+];
+let LDL=mkLdl();
+
+/* ---- loop: synced to the wall clock, like "on the 8s" late joins ---- */
+const DUR=10000; let offset=0, cur=-1, stale=false, pend=null;
+const stage=$('#stage');
+const mkStage=()=>{stage.innerHTML=SCREENS.map((s,i)=>`<section class="scr" data-i="${i}"></section>`).join('')};
+mkStage();
+/* called at every screen change, before the new screen is drawn. A changed template reloads the page (see auto-update);
+   new data is swapped in place: screen list, stage and ticker are rebuilt, nothing else is touched (clock sync, music) */
+function change(){
+  if(stale){ try{sessionStorage.setItem('dc-resume','1')}catch(e){} stale=false; location.reload(); return false; }
+  if(pend){ const n=pend; pend=null; n.av=Object.assign({},D.av,n.av||{}); D=n;
+    SCREENS=mkScreens(); LDL=mkLdl(); mkStage(); cur=Math.min(cur,SCREENS.length-1); return true; }
+  return false;
+}
+const at=()=>Math.floor((Date.now()+offset)/DUR)%SCREENS.length;
+function show(i){
+  cur=i;
+  const s=SCREENS[i];
+  stage.querySelectorAll('.scr').forEach(el=>{el.classList.remove('act');el.innerHTML=''});
+  const el=stage.querySelector(`[data-i="${i}"]`); el.innerHTML=s.h(); el.classList.add('act');
+  $('#title').innerHTML=s.t.map(x=>`<span>${x}</span>`).join('');
+  $('#pg').innerHTML=SCREENS.map((_,k)=>`<i${k===i?' class="on"':''}></i>`).join('');
+  requestAnimationFrame(fitNames);
+}
+function fitNames(){ // per name element: full team name, else the league short form; never clipped
+  const L=[...document.querySelectorAll('.nm[data-full]')];
+  L.forEach(n=>{n.textContent=n.dataset.full});                       // write all, then read all, then write
+  const over=L.map(n=>!fits(n,n));
+  L.forEach((n,k)=>{if(over[k]) n.textContent=n.dataset.short});
+  ldlFit();
+}
+/* does the text of t fit the content box of its clip box b? (text width from a Range, to a fraction of a pixel; the
+   box's side padding is room for the outline and hard shadow, never for letters) */
+const RG=document.createRange();
+function fits(b,t){ const c=getComputedStyle(b); RG.selectNodeContents(t);
+  return RG.getBoundingClientRect().width<=b.getBoundingClientRect().width-parseFloat(c.paddingLeft)-parseFloat(c.paddingRight)+.05; }
+function ldlFit(){ // per ticker message: full names if the whole message fits, else short names
+  const b=$('#ldl'), s=b.firstElementChild; if(!s||!s.dataset.f) return;
+  s.textContent=s.dataset.f; if(!fits(b,s)) s.textContent=s.dataset.s;
+}
+addEventListener('resize',fitNames);
+if(document.fonts){ document.fonts.ready.then(fitNames); document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',fitNames); }
+let li=0;
+function tick(){
+  let i=at();
+  if(i!==cur){ if(cur!==-1&&change()) i=at(); show(i); }
+  const d=new Date();
+  $('#clock').innerHTML=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit'})+'<br>'+
+    d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}).replace(/,/g,'');
+}
+setInterval(tick,250); tick();
+function ldl(){ const m=LDL[li++%LDL.length]; $('#ldl').innerHTML=`<span data-f="${esc(m.f)}" data-s="${esc(m.s)}">${esc(m.f)}</span>`; ldlFit(); }
+setInterval(ldl,4000); ldl();
+/* ---- navigation: left half = previous, right half = next; the chosen screen gets its full 10s ---- */
+function go(d){ change(); const N=SCREENS.length, now=Date.now(), to=((cur+d)%N+N)%N;
+  offset=to*DUR-(now%(N*DUR))+N*DUR;   // floor((now+offset)/DUR)%N === to, (now+offset)%DUR === 0
+  show(to); tick(); }
+$('#frame').addEventListener('click',e=>{const r=$('#frame').getBoundingClientRect(); go(e.clientX<r.left+r.width/2?-1:1);});
+addEventListener('keydown',e=>{ if(!$('#start').classList.contains('hidden')) return;
+  if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}
+  else if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(1);} });
+
+/* ---- grain: tiny noise canvas, upscaled and overlay-blended ---- */
+const gcv=$('#grain'), gc=gcv.getContext('2d'); let gi=null;
+function gsize(){const r=$('#frame').getBoundingClientRect();gcv.width=Math.max(1,Math.round(r.width/2));gcv.height=Math.max(1,Math.round(r.height/2));gi=gc.createImageData(gcv.width,gcv.height);}
+gsize(); addEventListener('resize',gsize);
+setInterval(()=>{const a=gi.data;for(let i=0;i<a.length;i+=4){const v=128+(Math.random()-.5)*24|0;a[i]=a[i+1]=a[i+2]=v;a[i+3]=255}gc.putImageData(gi,0,0)},83);
+
+/* ---- music: upbeat "Local on the 8s"-style swing, all Web Audio synthesis ----
+   112 BPM, 4/4, triplet swing. Form: Intro(2, piano + brush pickup, played once) | A(8) | A'(8) | B(8) | A''(8) | Tag(2) -> back to A.
+   makeBand(ctx,out) works on any AudioContext (live or Offline); events(n) lists bar n's notes. */
+const MASTER=.12;                                       // master level: full render matched to Brief 3 (RMS ~0.008)
+const BPM=112, BEAT=60/BPM, BAR=BEAT*4, SW=2/3;          // swung off-beat eighth at 2/3 of the beat
+const INTRO=2, LOOP=34;                                  // 2 intro bars, then a 34-bar loop (4x8 + 2-bar tag)
+const mf=m=>440*Math.pow(2,(m-69)/12);
+const CH={ // open, bright voicings (MIDI): 3rd/6th/9th on top, nothing clustered low. r = bass root; t/f = steps above r for the walk; q = quality
+ Cmaj9:{v:[55,64,71,74],r:36,t:4,f:7,q:'M'},  A7_13:{v:[55,61,66,71],r:33,t:4,f:7,q:'D'},  Dm9:{v:[53,60,64,69],r:38,t:3,f:7,q:'m'},
+ G13:{v:[53,59,64,69],r:31,t:4,f:7,q:'D'},    Em7:{v:[55,62,67,71],r:40,t:3,f:7,q:'m'},    A7b9:{v:[55,61,64,70],r:33,t:4,f:7,q:'D'},
+ C69:{v:[55,64,69,74],r:36,t:4,f:7,q:'M'},    G7s5:{v:[53,59,63,69],r:31,t:4,f:8,q:'D'},   Fmaj9:{v:[57,64,67,72],r:41,t:4,f:7,q:'M'},
+ Fsdim7:{v:[54,60,63,69],r:42,t:3,f:6,q:'dim'}, C_G:{v:[55,64,67,72],r:31,t:5,f:9,q:'M'},  D9:{v:[54,60,64,69],r:38,t:4,f:7,q:'D'}};
+const SEC_A=[['Cmaj9'],['A7_13'],['Dm9'],['G13'],['Em7'],['A7b9'],['Dm9','G13'],['C69','G7s5']];
+const SEC_A3=SEC_A.slice(0,7).concat([['C69']]);                       // A'' resolves home
+const SEC_B=[['Fmaj9'],['Fsdim7'],['C_G'],['A7_13'],['D9'],['D9'],['G13'],['G7s5']];
+const SEC_I=[['C69'],['Dm9','G7s5']], SEC_T=[['C69'],['G7s5']];
+const S0=SW, S1=1+SW, S2=2+SW, S3=3+SW;                  // swung "and" positions, in beats
+// lead lines: [bar, beat, midi, length in beats, grace-slide?]; swung eighths, chord tones on strong beats,
+// pentatonic/bebop-major runs, chromatic approaches, Eb->E blue-note slides; rests leave room for piano answers
+const MEL_A=[[0,S0,76,.3,1],[0,1,79,.3],[0,S1,81,.3],[0,2,79,.3],[0,S2,76,.3],[0,3,74,.3],[0,S3,72,.6],
+ [1,1,73,.3],[1,S1,76,.3],[1,2,78,.45],[1,S2,79,.3],[1,3,76,.6],
+ [3,S0,74,.3],[3,1,77,.3],[3,S1,76,.3],[3,2,74,.3],[3,S2,71,.3],[3,3,76,.8],
+ [4,0,79,.3],[4,S0,78,.3],[4,1,76,.3],[4,S1,74,.3],[4,2,71,.3],[4,S2,74,.3],[4,3,79,.6],
+ [5,S0,76,.3],[5,1,79,.3],[5,S1,82,.3],[5,2,81,.45],[5,S2,79,.3],[5,3,76,.6],
+ [6,0,77,.3],[6,S0,76,.3],[6,1,74,.3],[6,S1,72,.3],[6,2,71,.3],[6,S2,74,.3],[6,3,77,.3],[6,S3,76,.6],
+ [7,0,76,.8,1]];
+const MEL_A2=[[0,0,72,.3],[0,S0,74,.3],[0,1,76,.3,1],[0,S1,79,.3],[0,2,81,.3],[0,S2,84,.3],[0,3,81,.3],[0,S3,79,.3],
+ [1,0,78,.3],[1,S0,79,.3],[1,1,81,.3],[1,S1,79,.3],[1,2,76,.3],[1,S2,73,.3],[1,3,76,.3],[1,S3,79,.45],
+ [2,S0,81,.3],[2,1,77,.3],[2,S1,76,.3],[2,2,74,.45],
+ [3,S2,71,.3],[3,3,74,.3],[3,S3,76,.3,1],
+ [4,0,79,.3],[4,S0,81,.3],[4,1,83,.3],[4,S1,81,.3],[4,2,79,.3],[4,S2,76,.3],[4,3,74,.3],[4,S3,73,.3],
+ [5,0,76,.3],[5,S0,79,.3],[5,1,82,.3],[5,S1,81,.3],[5,2,79,.45],[5,3,76,.6],
+ [6,0,77,.3],[6,S0,81,.3],[6,1,84,.3],[6,S1,81,.3],[6,2,83,.3],[6,S2,79,.3],[6,3,77,.3],[6,S3,76,.3],
+ [7,0,79,.3],[7,S0,76,.3],[7,1,72,.8]];
+const MEL_A3=MEL_A.filter(e=>e[0]<7).concat([[7,0,76,.3,1],[7,S0,79,.3],[7,1,81,.3],[7,S1,79,.3],[7,2,84,1.4]]);
+const MEL_B=[[0,S0,72,.3],[0,1,76,.3],[0,S1,77,.3],[0,2,81,.6],[0,3,79,.3],
+ [1,0,81,.3],[1,S0,78,.3],[1,1,75,.3],[1,S1,72,.3],[1,2,81,.6],
+ [2,0,79,.45],[2,1,76,.3],[2,S1,72,.3],[2,2,76,.6],
+ [3,S0,78,.3],[3,1,79,.3],[3,S1,81,.3],[3,2,73,.45],[3,3,76,.45],
+ [4,0,78,.3],[4,S0,81,.3],[4,1,84,.3],[4,S1,81,.3],[4,2,78,.45],
+ [5,S0,76,.3],[5,1,74,.3],[5,S1,72,.3],[5,2,69,.3],[5,S2,72,.3],[5,3,74,.45],
+ [6,0,76,.6],[6,1,77,.3],[6,S1,76,.3],[6,2,74,.3],[6,S2,71,.3],[6,3,74,.6],
+ [7,0,75,.45],[7,1,77,.3],[7,S1,74,.3],[7,2,71,.6]];
+// piano answers in the lead's rests (call and response)
+const RESP={A:{2:[[S0,69],[1,72],[S1,74],[2,77]]},A2:{3:[[S0,71],[1,74],[S1,77],[2,76]]},A3:{2:[[S0,69],[1,72],[S1,74],[2,77]]}};
+// horn stabs at phrase ends: {section:{bar:[[beat, chord index in bar]]}}
+const HORN={A:{3:[[S2,0]],7:[[S1,1],[3,1]]},A2:{3:[[S2,0]],7:[[S1,1],[3,1]]},B:{3:[[S2,0]],7:[[S1,0],[3,0]]},A3:{3:[[S2,0]],7:[[S1,0],[3,0]]},T:{0:[[S1,0],[3,0]],1:[[0,0]]}};
+// piano comping: Charleston (1, and-of-2) mixed with off-beat anticipations; short, bouncy stabs
+const COMP=[[[0,.4],[S1,.3]],[[0,.35],[S1,.3],[S3,.3]],[[S0,.3],[2,.35],[S3,.3]],[[0,.4],[S1,.3],[3,.3]]];
+const COMP2=[[[0,0,.4],[1,S1,.35],[1,3,.3]],[[0,0,.35],[1,2,.35],[1,S3,.3]]];   // [chord, beat, len] for two-chord bars
+function section(n){
+  if(n<INTRO) return {s:'I',k:-1,i:n,ch:SEC_I[n]};
+  const x=(n-INTRO)%LOOP; if(x>=32) return {s:'T',k:4,i:x-32,ch:SEC_T[x-32]};
+  const k=x>>3, i=x%8; return {s:['A','A2','B','A3'][k],k,i,ch:[SEC_A,SEC_A,SEC_B,SEC_A3][k][i]}; }
+
+function makeBand(ctx,out){
+  const live=new Set(), count={}, log=[], shared=[];
+  const mk=n=>{shared.push(n);return n;}, cnt=k=>{count[k]=(count[k]||0)+1;};
+  const run=(src,t0,t1,nodes)=>{live.add(src);src.onended=()=>live.delete(src);src.start(t0);src.stop(t1);log.push([t0,t1,nodes]);};
+  // electric piano bus with a little tremolo
+  const epBus=mk(ctx.createGain()); epBus.gain.value=.85; epBus.connect(out);
+  const trem=mk(ctx.createOscillator()); trem.frequency.value=5; const tremD=mk(ctx.createGain()); tremD.gain.value=.1;
+  trem.connect(tremD); tremD.connect(epBus.gain); trem.start();
+  const epWave=ctx.createPeriodicWave(new Float32Array([0,0,0,0,0]),new Float32Array([0,1,.2,0,.05]));
+  // lead bus: lowpass ~4k, vibrato, a little delay
+  const leadLP=mk(ctx.createBiquadFilter()); leadLP.type='lowpass'; leadLP.frequency.value=4000; leadLP.connect(out);
+  const dly=mk(ctx.createDelay(1)); dly.delayTime.value=.3; const fb=mk(ctx.createGain()); fb.gain.value=.25;
+  const wet=mk(ctx.createGain()); wet.gain.value=.25; leadLP.connect(dly); dly.connect(fb); fb.connect(dly); dly.connect(wet); wet.connect(out);
+  const vib=mk(ctx.createOscillator()); vib.frequency.value=5.5; const vibD=mk(ctx.createGain()); vibD.gain.value=7; vib.connect(vibD); vib.start();
+  // bass and drum filters
+  const bassLP=mk(ctx.createBiquadFilter()); bassLP.type='lowpass'; bassLP.frequency.value=1200; bassLP.connect(out);
+  const rideHP=mk(ctx.createBiquadFilter()); rideHP.type='highpass'; rideHP.frequency.value=5000; rideHP.connect(out);
+  const hatHP=mk(ctx.createBiquadFilter()); hatHP.type='highpass'; hatHP.frequency.value=7000; hatHP.connect(out);
+  const snBP=mk(ctx.createBiquadFilter()); snBP.type='bandpass'; snBP.frequency.value=1900; snBP.Q.value=.7; snBP.connect(out);
+  const rimBP=mk(ctx.createBiquadFilter()); rimBP.type='bandpass'; rimBP.frequency.value=3200; rimBP.Q.value=2; rimBP.connect(out);
+  const nb=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate), nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+
+  const env=(g,t,a,pk,len)=>{g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+len);};
+  function stab(t,notes,len,vel,k){ // short piano stab: N oscillators share one envelope
+    const g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vel,t+.004);
+    g.gain.exponentialRampToValueAtTime(vel*.3,t+len); g.gain.exponentialRampToValueAtTime(.0001,t+len+.12); g.connect(epBus);
+    notes.forEach((m,q)=>{const o=ctx.createOscillator(); o.setPeriodicWave(epWave); o.frequency.value=mf(m); o.connect(g);
+      run(o,t+q*.004,t+len+.15,q?1:2);}); cnt(k);
+  }
+  function horn(t,notes,len,vel){ // brass-like stab: 2 detuned saws per note, fast filter envelope 1.5k -> 4k
+    const f=ctx.createBiquadFilter(), g=ctx.createGain(); f.type='lowpass'; f.Q.value=1.5;
+    f.frequency.setValueAtTime(1500,t); f.frequency.linearRampToValueAtTime(4000,t+.035); f.frequency.exponentialRampToValueAtTime(1500,t+len);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vel,t+.018); g.gain.setValueAtTime(vel*.85,t+len*.6); g.gain.exponentialRampToValueAtTime(.0001,t+len+.06);
+    f.connect(g); g.connect(out);
+    notes.forEach((m,q)=>[-9,9].forEach((d,z)=>{const o=ctx.createOscillator(); o.type='sawtooth'; o.frequency.value=mf(m); o.detune.value=d; o.connect(f);
+      run(o,t,t+len+.08,(q||z)?1:3);})); cnt('horn');
+  }
+  function bass(t,m,len,vel){ // plucky walking bass
+    const o=ctx.createOscillator(), g=ctx.createGain(); o.type='triangle'; o.frequency.value=mf(m);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vel,t+.005); g.gain.exponentialRampToValueAtTime(vel*.3,t+.22); g.gain.exponentialRampToValueAtTime(.0001,t+len);
+    o.connect(g); g.connect(bassLP); run(o,t,t+len+.02,2); cnt('bass'); }
+  function lead(t,m,len,vel,slide){ // square lead with an attack "blip" and optional Eb->E style grace slide
+    const o=ctx.createOscillator(), g=ctx.createGain(); o.type='square'; vibD.connect(o.detune);
+    if(slide){o.frequency.setValueAtTime(mf(m-1),t); o.frequency.linearRampToValueAtTime(mf(m),t+.07);} else o.frequency.value=mf(m);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vel*1.5,t+.008); g.gain.exponentialRampToValueAtTime(vel,t+.05);
+    g.gain.setValueAtTime(vel,t+Math.max(.06,len-.04)); g.gain.exponentialRampToValueAtTime(.0001,t+len+.08);
+    o.connect(g); g.connect(leadLP); run(o,t,t+len+.1,2); cnt('lead'); }
+  function kick(t,vel){ const o=ctx.createOscillator(), g=ctx.createGain(); o.frequency.setValueAtTime(100,t); o.frequency.exponentialRampToValueAtTime(45,t+.1);
+    env(g,t,.003,vel,.25); o.connect(g); g.connect(out); run(o,t,t+.28,2); cnt('kick'); }
+  function noise(t,len,vel,dest,k){ const s=ctx.createBufferSource(), g=ctx.createGain(); s.buffer=nb; env(g,t,.002,vel,len);
+    s.connect(g); g.connect(dest); live.add(s); s.onended=()=>live.delete(s); s.start(t,Math.random()*.8); s.stop(t+len+.02); log.push([t,t+len+.02,2]); cnt(k); }
+  function ride(t,vel){ noise(t,.3,vel,rideHP,'ride');           // wash + bell partial
+    const o=ctx.createOscillator(), g=ctx.createGain(); o.frequency.value=3200; env(g,t,.002,vel*.22,.12); o.connect(g); g.connect(out); run(o,t,t+.14,2); }
+  function tom(t,f){ const o=ctx.createOscillator(), g=ctx.createGain(); o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*.62,t+.18);
+    env(g,t,.003,.28,.25); o.connect(g); g.connect(out); run(o,t,t+.28,2); cnt('tom'); }
+  const snare=(t,v,k='snare')=>noise(t,.12,v,snBP,k), chick=t=>noise(t,.035,.07,hatHP,'chick'), rim=t=>noise(t,.05,.22,rimBP,'rim');
+
+  function events(n){ // every note in bar n: {p: beat position, k: instrument, m: pitch/id, f: schedule(t)}
+    const S=section(n), E=[], chs=S.ch.map(c=>CH[c]), two=chs.length===2, nxt=CH[section(n+1).ch[0]];
+    const add=(p,k,m,f)=>E.push({p,k,m,f}), id=c=>c.v.join('.');
+    // piano comping
+    const cv=S.s==='B'?.036:.05;
+    if(S.s==='T') HORN.T[S.i].forEach(([p,j])=>add(p,'ep',id(chs[j]),t=>stab(t,chs[j].v,.35*BEAT,.06,'ep')));
+    else if(two) COMP2[(S.i+S.k+2)%2].forEach(([j,p,l])=>add(p,'ep',id(chs[j]),t=>stab(t,chs[j].v,l*BEAT,cv,'ep')));
+    else COMP[(S.i+S.k+4)%4].forEach(([p,l])=>add(p,'ep',id(chs[0]),t=>stab(t,chs[0].v,l*BEAT,cv,'ep')));
+    if(S.s==='I'){ // intro: piano, plus a brushed-snare pickup fill into A in bar 2
+      if(S.i===1) [[2,.05],[S2,.06],[3,.07],[3+1/3,.08],[3+2/3,.1]].forEach(([p,v])=>add(p,'brush',p,t=>snare(t,v,'brush')));
+      return E; }
+    // horn stabs at phrase ends and on the shout tag
+    ((HORN[S.s]||{})[S.i]||[]).forEach(([p,j])=>{const c=chs[Math.min(j,chs.length-1)]; add(p,'horn',id(c),t=>horn(t,c.v.slice(1),(S.s==='T'?.45:.32)*BEAT,.045));});
+    // walking bass: quarter notes, mostly upward, chromatic approach into each new chord, occasional octave skips
+    const r=chs[0].r, c0=chs[0];
+    if(S.s==='T'){ if(S.i===0){add(S1,'bass',r,t=>bass(t,r,.4*BEAT,.26));add(3,'bass',r,t=>bass(t,r,.4*BEAT,.26));}
+                   else {add(0,'bass',r,t=>bass(t,r,.5*BEAT,.26)); add(3,'bass',nxt.r-1,t=>bass(t,nxt.r-1,.9*BEAT,.22));} }
+    else {
+      const app=nxt.r+(S.i%4===3?1:-1);
+      const line=two?[r,r+c0.t,chs[1].r,app]:[[r,r+c0.t,r+c0.f,app],[r,r+12,r+c0.f,app],[r,r+2,r+c0.t,app]][S.i%3];
+      line.forEach((m,b)=>add(b,'bass',m,t=>bass(t,m,.95*BEAT,.24)));
+    }
+    // drums
+    const fill=S.i===7||(S.s==='T'&&S.i===1);
+    if(S.s==='T'){
+      if(S.i===0){ add(S1,'kick',1,t=>kick(t,.35)); add(S1,'snare',1,t=>snare(t,.14)); add(3,'kick',1,t=>kick(t,.35)); add(3,'snare',1,t=>snare(t,.14)); add(0,'ride',0,t=>ride(t,.06)); add(2,'ride',0,t=>ride(t,.05)); }
+      else { add(0,'kick',1,t=>kick(t,.35)); add(0,'ride',0,t=>ride(t,.06));
+        [[1,'snare',.09],[1+1/3,'snare',.1],[1+2/3,'snare',.12],[2,'tom',210],[2+1/3,'tom',210],[2+2/3,'tom',160],[3,'tom',160],[3+1/3,'tom',120],[3+2/3,'snare',.15]]
+          .forEach(([p,k,v])=>add(p,k,p,k==='tom'?t=>tom(t,v):t=>snare(t,v))); }
+      return addLead(S,E,add);
+    }
+    [0,1,2,3].forEach(b=>{ if(fill&&b>=2) return; add(b,'kick',b,t=>kick(t,b?.11:.3)); });
+    [[0,.06],[1,.05],[S1,.035],[2,.06],[3,.05],[S3,.035]].forEach(([p,v])=>{ if(fill&&p>=2) return; add(p,'ride',p,t=>ride(t,v)); });
+    [1,3].forEach(b=>{ if(fill&&b>=2) return; add(b,'chick',b,chick); });
+    if(n%2&&!fill) add(3,'rim',3,rim);
+    (n%2?[S0,S2]:[S2]).forEach(p=>{ if(fill&&p>=2) return; add(p,'ghost',p,t=>snare(t,.03,'ghost')); });
+    if(fill){ add(2,'kick',2,t=>kick(t,.25));
+      [[2,'snare',.1],[S2,'snare',.12],[3,'tom',200],[3+1/3,'tom',150],[3+2/3,'snare',.14]].forEach(([p,k,v])=>add(p,k,p,k==='tom'?t=>tom(t,v):t=>snare(t,v))); }
+    return addLead(S,E,add);
+  }
+  function addLead(S,E,add){
+    const mel={A:MEL_A,A2:MEL_A2,A3:MEL_A3,B:MEL_B}[S.s];
+    if(mel) mel.filter(e=>e[0]===S.i).forEach(([,p,m,l,sl])=>S.s==='B'
+      ? add(p,'eplead',m,t=>stab(t,[m],l*BEAT,.08,'eplead'))
+      : add(p,'lead',m,t=>lead(t,m,l*BEAT,.05,sl)));
+    ((RESP[S.s]||{})[S.i]||[]).forEach(([p,m])=>add(p,'resp',m,t=>stab(t,[m],.3*BEAT,.06,'resp')));
+    return E;
+  }
+  function stopAll(t){ live.forEach(s=>{try{s.stop(t)}catch(e){}}); }
+  function dispose(){ shared.forEach(nd=>{try{nd.stop&&nd.stop()}catch(e){} try{nd.disconnect()}catch(e){}}); }
+  return {events,count,log,shared,live,stopAll,dispose};
+}
+
+let ac=null, master=null, mlp=null, band=null, playing=false, schedT=null, everStarted=false;
+function startMusic(){
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended') ac.resume();
+    master=ac.createGain(); master.gain.value=MASTER;
+    mlp=ac.createBiquadFilter(); mlp.type='lowpass'; mlp.frequency.value=5000; master.connect(mlp); mlp.connect(ac.destination);
+    band=makeBand(ac,master);
+    let n=everStarted?INTRO:0, b=0, tb=ac.currentTime+.1, ev=band.events(n); everStarted=true;   // restart = bar 1 of A
+    const b0=band;
+    schedT=setInterval(()=>{ // lookahead: schedule every beat that starts within the next 0.2s
+      if(band!==b0) return;
+      while(tb+b*BEAT<ac.currentTime+.2){
+        ev.forEach(e=>{if(Math.floor(e.p)===b) e.f(tb+e.p*BEAT);});
+        if(++b===4){b=0;tb+=BAR;n++;if(n>=INTRO+LOOP)n=INTRO;ev=band.events(n);}   // after the tag go back to A, never the intro
+      }},50);
+    playing=true; $('#snd').textContent='Sound on';
+  }catch(e){playing=false; $('#snd').textContent='No sound';}
+}
+function stopMusic(){
+  clearInterval(schedT); playing=false; $('#snd').textContent='Sound off';
+  if(master&&ac){const t=ac.currentTime, m=master, l=mlp, bd=band; m.gain.setTargetAtTime(0,t,.04); bd.stopAll(t+.25);
+    setTimeout(()=>{try{m.disconnect();l.disconnect();bd.dispose();}catch(e){}},320);}
+  band=null;
+}
+$('#snd').addEventListener('click',e=>{e.stopPropagation(); playing?stopMusic():startMusic();});
+$('#go').addEventListener('click',()=>{$('#start').classList.add('hidden');const fr=$('#frame');fr.classList.remove('on');void fr.offsetWidth;fr.classList.add('on');startMusic();setTimeout(fitNames,1700);});
+$('#start .cl').addEventListener('click',e=>e.stopPropagation());
+
+/* ---- auto-update: every 2 minutes read Classic's ../build.json (read-only, no-store). When its v is one this page has
+   not handled yet, read ./data.json (written by retro/build.py with the page) and swap the data in at the next screen
+   change: no reload, the music keeps playing. A data.json that fails or is malformed changes nothing and is tried
+   again at the next poll. Only when the template itself changed (data.json tv differs from this page's TV) the page
+   reloads at the next screen change; that reload skips the start screen (no turn-on, sound off: browsers do not let
+   a page start audio without a tap) so an unattended screen keeps running. A manual reload shows the start screen. ---- */
+let VS=null;
+const okData=d=>d&&typeof d==='object'&&typeof d.tv==='string'&&typeof d.v==='string'&&Number.isInteger(d.G)&&
+  Array.isArray(d.stand)&&d.stand.length>1&&Array.isArray(d.res)&&d.alm&&d.alm.hi&&d.alm.lo&&d.champs&&d.sh&&
+  (d.mus===null||Array.isArray(d.mus))&&d.stand.every(x=>x&&typeof x.t==='string'&&(x.t in d.sh));
+function chk(){ const nc={cache:'no-store'};
+  fetch('../build.json?'+Date.now(),nc).then(r=>r.json()).then(b=>{
+    if(!b||!b.v||b.v===VS) return;
+    return fetch('./data.json?'+Date.now(),nc).then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(d=>{
+      if(!okData(d)) return;                    // keep the current data; VS unchanged, so the next poll tries again
+      if(d.tv!==TV) stale=true;                 // new template: reload at the next screen change
+      else if(d.v!==(pend||D).v) pend=d;        // new data: swap at the next screen change
+      VS=b.v; }); }).catch(()=>{}); }
+chk(); setInterval(chk,120000);
+try{ if(sessionStorage.getItem('dc-resume')){ sessionStorage.removeItem('dc-resume'); $('#start').classList.add('hidden'); fitNames(); } }catch(e){}
+</script>
+</body>
+</html>

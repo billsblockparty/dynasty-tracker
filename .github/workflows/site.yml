@@ -107,6 +107,10 @@ jobs:
             mkdir -p archive/2025 && cp .season/2025/site/index.html archive/2025/index.html
           fi
           mkdir -p site/2025 && cp archive/2025/index.html site/2025/index.html
+      - name: Retro edition
+        # separate page at /retro/ (retro/build.py reads pipeline/, writes only site/retro/); never fatal to Classic
+        continue-on-error: true
+        run: python3 retro/build.py
       - name: Live-game probe (temporary)
         if: steps.mode.outputs.mode == 'live'
         continue-on-error: true
