@@ -184,6 +184,8 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
   tracking .06em -> 0, ink + shadow centred (rule 11) · in Classic's 38px cell the Martian Mono figure left 1.6px to
   the frame and its shadow reached the frame line.
 - 2026-11-10 · FK / FL flex chips: no shadow (chips are T0, rule 2).
+- 2026-11-10 · Header wordmark: option C, the stepped title, replaces Classic's script art in the copy (Nicklaus's pick of
+  three) · the script clashed with the look and its opaque black counters showed on the purple ground.
 
 ## Mechanism ("always-current clone")
 
@@ -194,19 +196,20 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
   `site/retro/tracker/` again, so the tracker is published without the loop. Theme build fails: only
   `site/retro/tracker/` is removed; the loop page and Classic are untouched.
 - Reads (never writes): `site/index.html`, `site/p/*`, `site/build.json`, `retro/theme.css`, `retro/theme.js`,
-  `retro/fonts/`. Writes `site/retro/tracker/` only: `index.html`, `p/` (byte-for-byte copies of the chunks),
+  `retro/wordmark.svg`, `retro/fonts/`. Writes `site/retro/tracker/` only: `index.html`, `p/` (byte-for-byte copies of the chunks),
   `fonts/`, `build.json` (copy). Atomic: built in a temp folder beside the target, then renamed. Any missing input or
   marker: message on stderr, exit 1, and `site/retro/tracker/` does not exist.
 - This relaxes hard rule 2 above for this one script: `theme_build.py` reads `site/` (read-only). It edits nothing
   under `pipeline/` and nothing of Classic's.
-- **The 7 patches** (the only differences from Classic's `index.html`; each is checked and the build fails if one does
+- **The 8 patches** (the only differences from Classic's `index.html`; each is checked and the build fails if one does
   not apply): (1) `class="retro"` on `<html>`; (2) Classic's Google Fonts link replaced by the self-hosted Martian
   Mono face (`<head>`); (3) the reveal script's four `document.fonts.load()` calls ask for Martian Mono; (4) one
   `noindex` robots meta (Classic already has it); (5) past-season buttons point at Classic's pages (`../../2025/`);
-  (6) title gets " · Retro"; (7) `<style id="retro-theme">` + `<script id="retro-theme-js">` as the last things in
+  (6) title gets " · Retro"; (8) the header wordmark: `The <img class="lgs">` (Classic's script art) is replaced by visually hidden text "The League"
+  (`.wm-tx`, the h1's accessible name) + the inline `retro/wordmark.svg` (`aria-hidden`), see "Wordmark"; (7) `<style id="retro-theme">` + `<script id="retro-theme-js">` as the last things in
   `<body>`, after every `<style>` of the page including the ones `lazy.py` moves out of the chunks (the build checks
   that the theme is the last `<style>` and that no chunk carries one). After any change to Classic's page shell
-  (head, reveal script, year buttons, style order) run the script and check that all seven still apply.
+  (head, reveal script, year buttons, style order) run the script and check that all eight still apply.
 - Verified in the copy: chunks load from its own `p/`, `#hash` deep links and the hash kept on tab change, the refresh
   pill polls its own `build.json`, live scores poll Sleeper as in Classic. Nothing is requested from Classic or from
   Google.
@@ -317,6 +320,46 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     column and moves every name and logo beside them).
     Every other framed element on Matchups is listed, not fixed, under Known issues.
 
+## Wordmark (header title, 2026-11-10)
+
+Option C, "stepped 90s title" (Nicklaus's pick of three): `retro/wordmark.svg`, put into the copy by patch 8. Classic keeps
+its script art; past-season pages are Classic's.
+
+- **Letterforms:** the theme's own drawn alphabet (T H E L A G U only), not Martian Mono and not a font: squared forms with
+  rounded corners, flat-topped A, short-spur G, built from rectangles and arcs so every counter stays open under the
+  outline and the steps (Martian Mono's A has a pinhole counter and the face is not condensed). No bitmap, no opaque black
+  fill areas. Pair gaps, cap = 100: L-E 8, E-A 10, flat-sided pairs 12, T-H 6.
+- **Lockup:** OFFICIAL stays the label above (`.eyebrow`, unchanged). THE (yellow, half the cap height) and LEAGUE (white)
+  share one baseline. Units inside the svg: 1 = 1 CSS px at the 360P layout (viewBox 272.1 x 81.2).
+- **Layers, bottom to top:** LEAGUE step 2 `--peri` at (5, 5); LEAGUE step 1 `--orange` at (2.5, 2.5); THE step `--orange`
+  at (2, 2); black outline (fill + 2.5 stroke: 1.25 outside the letter, the same weight on the step copies); fills
+  `--white` (LEAGUE) and `--yellow` (THE). Each layer is a copy of one path (`<use>`), so no text-stroke or paint-order
+  is involved and both engines draw the same thing. Tokens: `--white --yellow --orange --peri --black`, nothing new.
+  Contrast on `--purple`: white 13.0:1, yellow 12.25:1, orange 4.62:1, periwinkle 5.12:1.
+- **Box rule:** the svg keeps Classic's class `.lgs`, so Classic's own rules size it: 1.4em / 1.65em (from 430px) / 1.85em
+  (from 1100px) of the 58px h1 = 81.2 / 95.7 / 107.3px (1.38em of 50px = 69px at 380px and under); the width follows the
+  viewBox. The header's rows therefore stay exactly where Classic's art put them. If Classic changes those heights or
+  breakpoints, re-check the wordmark (and `--wmy` below). LEAGUE cap height 58 / 68.4 / 76.6px, lockup width
+  272.1 / 320.7 / 359.6px. The svg is never wider than 278px at the 81.2px row, which keeps it inside the title column
+  down to a plain 430px viewport.
+- **Position:** outermost ink (the outline) on the content left edge; the white fill starts 1.25px in. Down: `--wmy` (a
+  translate inside the svg, in svg units: 5.55 / 4.58 from 430px / 3.97 from 1100px) puts the ink's centre halfway
+  between OFFICIAL's baseline and the cap top of the chart's values, 5.4px under the row's centre. Ink including the
+  steps stays inside the row: 2.0px spare at the bottom at 360P, 3.3 to 3.5px at 402P / 440P, 4.9px on desktop. If a
+  change leaves under 1px, move `--wmy`, do not shrink the lockup.
+- **Accessible name:** the h1 holds the text "The League" in `.wm-tx` (visually hidden); the svg is `aria-hidden`.
+- **Smallest counter opening** (ground visible between outline / steps, from screenshots): 3.9px at 360P (the small H of
+  THE; its step is 2px, not 2.5px, for that reason), 4.7px at 402P / 440P, 5.0px on desktop.
+- **Small sizes:** fine at half size; at about a third (row 32px) the small THE goes muddy (its counters fall to about
+  1.3px). For compact uses (favicon, loop header, share image) use a stacked or THE-less variant, not this lockup scaled.
+- **`retro/wordmark_gen.py` is a development tool** (not run by the build or the workflow; the build reads the committed
+  svg): `python3 retro/wordmark_gen.py C > retro/wordmark.svg`. It holds the letter construction and all three options.
+- **Options A and B are kept**, as patches against e4f7966, outside the repo (`/home/claude/retro-build/shots-theme/wordmark/`
+  `wordmark-A.patch`, `wordmark-B.patch`, with comparison sheets), and as `wordmark_gen.py A` / `B` for the svg alone
+  (their CSS blocks are in the patches only). A = broadcast title (one line, yellow, black outline and hard shadow).
+  B = badge (plate in `--badge-hi` to `--badge-lo`, white 2px border, periwinkle hairline, hard shadow): suits a compact
+  mark such as a favicon or the loop page's corner badge.
+
 ## Known issues
 
 - **Rule 11 is met by the lineup score cells only.** Other framed elements on Matchups whose ink (with shadow) comes
@@ -353,7 +396,6 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 - **Past-season buttons** open Classic's (unthemed) pages, and those pages' 2026 button returns to Classic.
 - **Short pages:** the ground reaches its orange end under free-standing text (e.g. Stats' Glossary label). Fix with
   that tab.
-- **Header title art** ("League") is Classic's bitmap.
 - A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps
   them (`DT_CHUNKS`).
 

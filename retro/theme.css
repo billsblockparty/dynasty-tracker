@@ -225,3 +225,20 @@ html.retro .cr.lu .cv .fs.pj small{text-indent:calc(-.009em - 1px + var(--fxg,0p
 html.retro .ddm,html.retro .ddm *{text-shadow:none;-webkit-text-stroke:0}
 /* flex-slot chips in the lineups (FK / FL, 10.5px in an 18 x 15px ring): light ink, but a chip: T0 like the rank chips (rule 2) */
 html.retro .flg{text-shadow:none}
+
+/* --- header wordmark, option C (STEPPED TITLE: white LEAGUE with a black outline and two hard steps (orange, then periwinkle), small yellow THE on the same baseline) ---
+   retro/wordmark.svg (written by retro/wordmark_gen.py C; own letter construction, no font, no bitmap) replaces Classic's script art
+   in the copy (theme_build.py, patch 8). It keeps the class .lgs, so Classic's height rules give it the same box height as the art
+   (1.4em / 1.65em / 1.85em of the 58px h1) and the header's rows do not move; width follows the viewBox (272.16 : 81.2).
+   Units inside the svg: 1 = 1 CSS px at the 360P layout. --wmy puts the ink's centre halfway between OFFICIAL's baseline and the
+   cap top of the chart's values (5.4px under the row's centre at every layout), in svg units per row height. */
+html.retro header h1 .wm{margin-left:0;aspect-ratio:272.16/81.2;overflow:hidden}
+html.retro header h1 .wm-tx{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html.retro .wm-m{transform:translateY(var(--wmy,5.55px))}
+@media(min-width:430px){html.retro .wm-m{--wmy:4.58px}}
+@media(min-width:1100px){html.retro .wm-m{--wmy:3.97px}}
+html.retro .wm-k{fill:var(--black);stroke:var(--black);stroke-width:2.5px;stroke-linejoin:miter}
+html.retro .wm-s1{fill:var(--orange);stroke:var(--orange);stroke-width:2.5px;stroke-linejoin:miter}
+html.retro .wm-s2{fill:var(--peri);stroke:var(--peri);stroke-width:2.5px;stroke-linejoin:miter}
+html.retro .wm-f{fill:var(--white)}
+html.retro .wm-f2{fill:var(--yellow)}

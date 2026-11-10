@@ -108,6 +108,16 @@ def build(tmp):
     t = re.search(r'<title>(.*?)</title>', s, re.S)
     need(t is not None, 'no <title>')
     s = s.replace(t.group(0), f'<title>{t.group(1).strip()} · Retro</title>', 1)
+    # 8. header wordmark: Classic's bitmap script art ("League") is replaced by the theme's own vector lockup (retro/wordmark.svg,
+    #    THE + LEAGUE drawn as paths). The h1 keeps its accessible name as visually hidden text; the svg keeps the class .lgs so
+    #    Classic's height rules size it and the header rows stay where they are. Classic's page is not touched.
+    wm_p = os.path.join(HERE, 'wordmark.svg')
+    need(os.path.isfile(wm_p), 'missing retro/wordmark.svg')
+    wm = open(wm_p, encoding='utf-8').read().strip()
+    need(wm.startswith('<svg ') and wm.endswith('</svg>') and '<script' not in wm and 'class="lgs wm ' in wm, 'retro/wordmark.svg: not the expected inline svg')
+    h1 = re.findall(r'<h1 style="white-space:nowrap">The <img class="lgs"[^>]*></h1>', s)
+    need(len(h1) == 1, f'header title with the League art: expected 1, found {len(h1)}')
+    s = s.replace(h1[0], '<h1 style="white-space:nowrap"><span class="wm-tx">The League</span>' + wm + '</h1>', 1)
     # 7. the theme, last in the document: after every <style> of the page, including the chunk styles lazy.py moves
     #    to just after the last pane (the chunks themselves carry no <style>: checked below)
     need(s.count('</body>') == 1, '</body>: expected 1')
