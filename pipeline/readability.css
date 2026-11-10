@@ -1390,3 +1390,14 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
 .board .r .nm .sgt{display:block;flex:none;font-size:13px;line-height:1;text-box:trim-both cap alphabetic;margin-left:calc(16px - 1.364px)}
 .dtt td.dtm span.dtn{display:block;gap:0}
 .dtt td.dtm .dtn .sgt{font-size:.997em;line-height:0;margin-left:calc(8px - var(--sgr,0em) / .997)}
+
+/* 2026-11-10 MEDIAN TABLE FIT (desktop standings table, both sites). The Median record's second line set the W-L column at 104.5px
+   (H2H 30-32px) and pushed the table 43-70px past the content column on BBP (sideways scroll at 1100-1109, 1120-1149, 1240-1243, 956L).
+   Now values only, "8-0 · 7-1" (H2H then Top-N, the order of the card's Breakdown; full wording in the title), in the small display
+   style of the Paper Trail NFL slot (Barlow 600 11px, .04em, tabular; was Plex 500 10.5px, under the 11px floor); the trailing
+   letter-spacing is taken off so its last digit ends where the record above ends. Cell padding 4 -> 3px at 1100-1239px (every column,
+   H2H and Median alike), and the sim column header "Proj finish" -> "Finish" (new_tail.js; it sits under 20K SIMULATIONS, and the
+   header alone held the column 21-28px wider than its tile): together the room 15px figures need from 1120px once records and
+   all-play reach "10-3" / "100-17". */
+.dtt td.dwl small.wlb{font:600 11px/1 var(--display);letter-spacing:.04em;margin-right:-.04em;font-variant-numeric:tabular-nums}
+@media (min-width:1100px) and (max-width:1239px){.dtt td,.dtt th{padding-left:3px!important;padding-right:3px!important}}
