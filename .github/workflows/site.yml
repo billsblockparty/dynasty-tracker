@@ -111,6 +111,11 @@ jobs:
         # separate page at /retro/ (retro/build.py reads pipeline/, writes only site/retro/); never fatal to Classic
         continue-on-error: true
         run: python3 retro/build.py
+      - name: Retro tracker theme
+        # themed copy of Classic's built page at /retro/tracker/ (retro/theme_build.py reads site/, writes only site/retro/tracker/);
+        # must run after "Retro edition" (that step replaces the whole site/retro/ folder); never fatal to Classic or to the loop
+        continue-on-error: true
+        run: python3 retro/theme_build.py
       - name: Live-game probe (temporary)
         if: steps.mode.outputs.mode == 'live'
         continue-on-error: true

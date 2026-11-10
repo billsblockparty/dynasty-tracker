@@ -1,0 +1,190 @@
+/* retro/theme.css: the DynastyCast look for the themed tracker copy (site/retro/tracker/).
+   Injected last in the document by retro/theme_build.py; every rule is scoped to html.retro.
+   Rules of this sandbox: retro/RETRO.md, "Tracker theme". Classic's DESIGN.md look rules do not apply here.
+   PART 1 = token overrides (Classic's custom properties re-pointed at the Retro palette).
+   PART 2 = type. PART 3 = page ground and overlays. PART 4 = component rules (only where a token is not enough). */
+
+/* ================= PART 1: tokens ================= */
+html.retro:root{
+  /* Retro palette, same names and values as retro/template.html */
+  --purple:#332370; --orange:#e28144; --blue:#354e84;
+  --yellow:#ffff6f; --peri:#8b9df8; --white:#fff; --black:#000;
+  --badge-hi:#5f6def; --badge-lo:#2040fa;
+  --glow:rgba(255,255,255,.25);
+  --card:linear-gradient(180deg,#8da4e8 0 12.5%,#7b8eef 0 25%,#6a7af0 0 37.5%,#5f6def 0 50%,#4d5ff5 0 62.5%,#3a50f7 0 75%,#2040fa 0 87.5%,#00f 0);
+  /* derived for the tracker (new tokens; each is a mix of two palette colours, value checked in Python) */
+  --blue-2:#2a3e6a;      /* --blue 80% + black: darker row, 1.29:1 under --blue */
+  --blue-3:#202f4f;      /* --blue 60% + black: row divider, 1.17:1 under the grained --blue-2 (1.37:1 under the plain colour) */
+  --peri-lt:#b9c4fb;     /* --peri 60% + white: dim text on the blue rows (4.80:1 on --blue; --peri itself is 3.21:1) */
+  --loss-lt:#ffb1b1;     /* template --loss 70% + white: 4.73:1 on --blue (--loss itself is 3.72:1) */
+  --badge:linear-gradient(to bottom,#4d5ff5,#2040fa);  /* steps 5 and 7 of --card: white text >= 4.92:1 at every point */
+  /*__GRAIN__*/
+
+  /* Classic's tokens */
+  --display:"Martian Mono",ui-monospace,monospace;
+  --body:"Martian Mono",ui-monospace,monospace;
+  --pg:var(--purple);
+  --frame:var(--black);
+  --deck:var(--blue-2);
+  --deck-2:var(--blue-2);
+  --row-lt:var(--blue);
+  --row-alt:var(--blue);
+  --row-divider:var(--blue-3);
+  --line:var(--blue-3);
+  --line-strong:var(--white);
+  --chalk:var(--white);
+  --label:var(--yellow);
+  --steel:var(--peri-lt);
+  --text-dim:var(--peri-lt);
+  --ink:var(--black);
+  --accent:var(--orange);
+  --sky:var(--peri);
+  --win:#7dffa0;
+  --win-bg:rgba(125,255,160,.16);
+  --loss:var(--loss-lt);
+  --loss-bg:rgba(255,143,143,.2);
+  --neutral-bar:var(--peri);
+  --tier-bye:var(--yellow);
+  --tier-po:var(--peri-lt);
+  --tier-ch:var(--blue-3);
+  --faab:var(--white);
+  --faab-ink:var(--black);
+  --sh-hard:2px 2px 0 0 var(--black);
+  --sh-1:1px 1px 0 0 var(--black);
+  --r-panel:2px;
+  --chart-po-line:var(--peri);
+  --chart-po-fill:var(--blue-2);
+  --chart-po-val:var(--peri-lt);
+  --chart-nfl-bye:var(--peri);
+  --via-ink:var(--yellow);
+  --proj-fill:rgba(255,255,255,.06);
+  --sched-cell:rgba(255,255,255,.06);
+}
+
+/* ================= PART 2: type ================= */
+/* The face is declared by theme_build.py in <head>: condensed width only (font-stretch:75%) and size-adjust:87.5%,
+   so the family IS the condensed face at Classic's cap height, in layout and in the fitters' canvas measurements. */
+html.retro body{font-stretch:75%;-webkit-font-smoothing:antialiased;word-spacing:-.22em;
+  /* treatment T1 (default, every text): hard 1px shadow, no outline */
+  text-shadow:1px 1px 0 var(--black)}
+html.retro body,html.retro body *{letter-spacing:-.05em!important}
+/* treatment T2 (display text, 18px and up): black outline under the fill + 2px hard shadow */
+html.retro header h1,html.retro .clock b,html.retro .board .r .tn,html.retro .board .r .rr b,html.retro nav.tabs label{
+  -webkit-text-stroke:2px var(--black);paint-order:stroke fill;text-shadow:2px 2px 0 var(--black)}
+html.retro .board .r .tn *{-webkit-text-stroke:0;text-shadow:1px 1px 0 var(--black)}
+/* treatment T0 (dark text on a light tile): nothing */
+html.retro .board .r .nm .fab b,html.retro .wkc i.done .wrk,html.retro #upd,html.retro #upd *{-webkit-text-stroke:0;text-shadow:none}
+
+/* ================= PART 3: ground and grain ================= */
+html.retro,html.retro body{background:var(--purple)}
+/* purple held for the first 1100px (all text that sits straight on the ground is in that zone), then to orange.
+   Grain is PRINTED ON the surfaces (ground and team rows) as a background layer: black specks, alpha 0-16%, so it can
+   only darken. No overlay layers: WebKit does not apply mix-blend-mode to a fixed layer over this page (it falls back
+   to plain alpha: white tiles measured 200-230 instead of 255 in WebKitGTK), so the loop's desaturation / drift / grain
+   overlays are not used here. No filter anywhere. */
+html.retro body{background:var(--grain),linear-gradient(to bottom,var(--purple) 0,var(--purple) 1100px,var(--orange) 100%);
+  background-size:96px 96px,100% 100%;background-repeat:repeat,no-repeat;min-height:100vh}
+html.retro #list>.tcard>.r{background-image:var(--grain)!important;background-size:96px 96px}
+
+/* ================= PART 4: components ================= */
+/* --- selected / unselected controls: selected = the badge (gradient, white inner ring), unselected = flat blue --- */
+html.retro nav.tabs label,html.retro .yrs .yb b{background:var(--blue-2);color:var(--yellow);border-radius:4px}
+html.retro .yrs .yb.na b{color:var(--peri-lt)}
+html.retro #grp-gd:checked~.tnav nav.tabs label[for="grp-gd"],html.retro #grp-lab:checked~.tnav nav.tabs label[for="grp-lab"],
+html.retro #grp-fo:checked~.tnav nav.tabs label[for="grp-fo"],html.retro .yrs .yb.on b{
+  background:var(--badge);color:var(--white);box-shadow:inset 0 0 0 2px var(--white),var(--sh-hard)!important}
+html.retro .yrs .yb b{box-shadow:var(--sh-hard);text-shadow:1px 1px 0 var(--black)}
+html.retro .yrs .yb.on small{color:var(--white)}
+html.retro .pseg,html.retro .tg,html.retro .tnav .lbc.tsub{background:var(--blue-3)!important;border-radius:4px}
+html.retro .tnav .tsub label,html.retro .tg button,html.retro .pseg label{border-radius:2px!important}
+html.retro .tnav .tsub label[aria-selected="true"],html.retro .tg button[aria-pressed="true"],
+html.retro #dn-lean:checked~.dens label[for="dn-lean"],html.retro #dn-full:checked~.dens label[for="dn-full"]{
+  background:var(--badge)!important;color:var(--white)!important;box-shadow:inset 0 0 0 2px var(--white)!important}
+html.retro header h1{color:var(--white)}
+html.retro .tgl,html.retro .dens>span,html.retro .eyebrow,html.retro .clock span{color:var(--yellow)}
+
+/* --- header chart --- */
+/* weekly league totals: at 360P Classic's four-digit values sit 0.25px apart (Martian Mono: 0.61px overlap); 11.5px and
+   tighter tracking below 440 CSS px leaves 2.5px or more */
+@media(max-width:440px){html.retro .wkc .wv{font-size:11.5px!important;letter-spacing:-.09em!important}}
+html.retro .wkc i.done .wrk{color:var(--black)}
+html.retro .wkc .wb i.fut{box-shadow:inset 0 0 0 1px var(--peri)}
+
+/* --- standings board: blue panel, hard black shadow, inner glow drawn above the rows --- */
+html.retro #list.board{position:relative;box-shadow:4px 4px 0 0 var(--black)!important}
+html.retro #list.board::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro .av,html.retro .pav.av,html.retro .board .r>.rk .rav{box-shadow:0 0 0 2px var(--white),2px 2px 0 2px var(--black)!important}
+/* FAAB tile: white ticket, black figures (padding as Classic) */
+html.retro .board .r .nm .fab b{background:var(--faab)!important;color:var(--faab-ink)!important;border-radius:3px}
+/* rank chips beside figures: dark tile, tier colour as the digit; a 1px ring only where Classic has one (gold, worst) */
+html.retro .ch,html.retro .rkb{background:rgba(0,0,0,.45)!important;color:var(--peri-lt)!important;box-shadow:none!important;border-radius:2px!important;text-shadow:none}
+html.retro .ch,html.retro .ch *,html.retro .rkb,html.retro .sk,html.retro .sk *,html.retro .board .r .nm .fab b{letter-spacing:0!important}
+html.retro .ch.g,html.retro .rkb.g{color:var(--win)!important}
+html.retro .ch.b,html.retro .rkb.b{color:var(--loss)!important}
+html.retro .ch.b.last,html.retro .rkb.last{box-shadow:inset 0 0 0 1px var(--loss)!important}
+html.retro .ch.gold,html.retro .rkb.gold{color:var(--yellow)!important;box-shadow:inset 0 0 0 1px var(--yellow)!important}
+html.retro .board .r .dpc .sof.gold,html.retro .sof.gold{color:var(--yellow)!important}
+/* streak tile: solid result colour, black figures, 1px hard shadow (no ring: the fitter's digit-to-frame gap stays whole) */
+html.retro .sk{border-radius:2px!important;text-shadow:none;box-shadow:1px 1px 0 0 var(--black)}
+html.retro .sk.w{background:var(--win)!important;color:var(--black)!important}
+html.retro .sk.l{background:var(--loss)!important;color:var(--black)!important}
+/* empty rank dots: periwinkle ring (3.21:1 on the lighter row; Classic's black ring would be 2.57:1 here). :not(#_) lifts the rule over
+   Classic's body-wide border-colour rule */
+html.retro .seg10 i:not(.on):not(#_){background:var(--blue-3)!important;border-color:var(--peri)!important}
+html.retro .seg10:not(.g):not(.b) i.on{background:var(--peri-lt)!important}
+html.retro .seg10.gold:not(.g):not(.b) i.on{background:var(--win)!important}
+
+/* season chart (SVG): Classic's literal gold / red chip colours, matched by their attribute values */
+html.retro .szn rect[fill^="rgba(244,196,81"]{fill:rgba(0,0,0,.45);stroke:var(--yellow)}
+html.retro .szn text[fill="#f4c451"]{fill:var(--yellow)}
+html.retro .szn rect[stroke^="rgba(255,93,115"]{stroke:var(--loss)}
+html.retro .szn rect[rx="3"]{fill:rgba(0,0,0,.45);opacity:1}
+html.retro .szn rect[fill="var(--win-bg)"]{stroke:var(--win);stroke-width:1}
+html.retro .szn rect[stroke-dasharray]{stroke:var(--peri)}
+/* chasing tier: Classic dims its figures to 85% (3.95:1 for the xW text on the lighter row); full strength here */
+html.retro .out .st .v,html.retro .out .st .pf{opacity:1}
+/* position labels: Classic's position colours lightened until they reach 4.6:1 on --blue (QB 3.06, WR 4.22, TE 4.26 before) */
+html.retro .board .dpc.p-qb{--pc:#fbb2c9}
+html.retro .board .dpc.p-wr{--pc:#76cff6}
+html.retro .board .dpc.p-te{--pc:#fcb674}
+
+/* --- rank tiles, option B (default): drawn in CSS. Option A (Classic's art, untouched) = class rk-art on <html> --- */
+html.retro:not(.rk-art) .board .r>.rk .rkn{position:relative}
+html.retro:not(.rk-art) .rkn>.rni,html.retro:not(.rk-art) td.dsd>.rni{visibility:hidden}
+html.retro:not(.rk-art) .rkn::before,html.retro:not(.rk-art) td.dsd::before{
+  position:absolute;left:50%;top:50%;width:var(--rtw,42px);height:var(--rth,44px);margin:calc(var(--rth,44px)/-2) 0 0 calc(var(--rtw,42px)/-2);box-sizing:border-box;
+  display:block;text-align:center;white-space:nowrap;overflow:visible;
+  background:var(--badge);border:var(--rtb,2px) solid var(--white);border-radius:4px;box-shadow:2px 2px 0 0 var(--black);
+  color:var(--white);font:800 var(--rtf,25px)/1 var(--display);letter-spacing:0!important;font-variant-numeric:tabular-nums;
+  /* the line is trimmed to the cap band (.7 of the font size), so its place does not depend on how an engine rounds ascent and
+     descent. Default = geometric centre of the digit's ink (--dx / --dy per seed, below); on phones theme.js replaces both with
+     values on the device-pixel grid (--rk-pt, --rk-ti). */
+  text-box:trim-both cap alphabetic;
+  padding:var(--rk-pt,calc((var(--rth,44px) - 2*var(--rtb,2px) - .7*var(--rtf,25px))/2 + var(--dy,0)*var(--rtf,25px))) 0 0;
+  text-indent:var(--rk-ti,calc(-2*var(--dx,0)*var(--rtf,25px)));
+  -webkit-text-stroke:2px var(--black);paint-order:stroke fill;text-shadow:2px 2px 0 var(--black)}
+@supports not (text-box:trim-both cap alphabetic){html.retro:not(.rk-art) .rkn::before,html.retro:not(.rk-art) td.dsd::before{display:flex;align-items:center;justify-content:center;padding:0}}
+html.retro:not(.rk-art) .r.tier-bye .rkn::before,html.retro:not(.rk-art) tr.bye td.dsd::before{color:var(--yellow)}
+html.retro:not(.rk-art) .r.tier-out .rkn::before,html.retro:not(.rk-art) tr.out td.dsd::before{background:var(--blue-3);border-color:var(--peri);color:var(--peri-lt)}
+html.retro:not(.rk-art) td.dsd{position:relative;--rtw:26px;--rth:24px;--rtf:13px;--rtb:1px}
+html.retro:not(.rk-art) td.dsd::before{border-width:1px;border-radius:2px;box-shadow:1px 1px 0 0 var(--black);-webkit-text-stroke:0;text-shadow:1px 1px 0 var(--black)}
+/* one rule per seed: the digit, and where its INK sits against its advance box, in em of the tile's font size (from the
+   font's outlines at wdth 75 / wght 800, retro/fonts, read with fontTools; x .875 for size-adjust):
+   --dx = (left bearing - right bearing) / 2, positive = ink right of centre ("1" .0175 = .44px at 25px, "10" .55px);
+   --dy = ink centre above the cap band's centre (round tops overshoot by .02em: "2", "9"), negative = below ("5", "6"). */
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="1"]){--dx:0.0175;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="1"])::before{content:"1"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="2"]){--dx:0;--dy:0.0087} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="2"])::before{content:"2"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="3"]){--dx:0;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="3"])::before{content:"3"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="4"]){--dx:0.007;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="4"])::before{content:"4"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="5"]){--dx:-0.0018;--dy:-0.0088} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="5"])::before{content:"5"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="6"]){--dx:0;--dy:-0.0088} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="6"])::before{content:"6"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="7"]){--dx:0;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="7"])::before{content:"7"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="8"]){--dx:0;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="8"])::before{content:"8"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="9"]){--dx:0;--dy:0.0087} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="9"])::before{content:"9"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="10"]){--dx:0.0219;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="10"])::before{content:"10"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="11"]){--dx:0.0175;--dy:0} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="11"])::before{content:"11"}
+html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="12"]){--dx:0.0109;--dy:0.0087} html.retro:not(.rk-art) :is(.rkn,td.dsd):has(>img[alt="12"])::before{content:"12"}
+
+/* --- refresh pill --- */
+html.retro #upd{background:var(--white);color:var(--black);border-radius:4px;box-shadow:inset 0 0 0 2px var(--black),4px 4px 0 0 var(--black)}
+html.retro #upd button{background:var(--badge);color:var(--white);border-radius:2px;text-shadow:1px 1px 0 var(--black)}
