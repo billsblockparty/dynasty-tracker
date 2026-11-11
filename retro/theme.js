@@ -97,6 +97,22 @@
   run(document);
   if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
 })();
+/* 5. Compare > Schedule > Week by week: the right-hand seed chip (pass 2, 2026-11-11). Classic bug, present in Classic too: its tile
+      fitter (ref() in new_tail.js) finds no text before that chip, so it takes the cell before it, "Wk 10", as the figure the chip
+      stands beside (the label holds a digit), shrinks the chip to that label's cap height (14 x 10px, 8.75px digit) and moves it about
+      10px up, onto the row's divider; the left-hand chip has no cell before it and is left alone (20 x 17px). The fitter's styles are
+      inline and !important, so CSS cannot undo them. What this does: puts an empty comment node in front of the chip (ref() then finds
+      "something that is not a figure" and skips the chip; a comment changes no selector and no layout) and removes what the fitter
+      already wrote. Text and layout are never read. Remove once Classic's fitter skips these chips. Placed before item 4, so the chip
+      is back to its own size when item 4 measures its glyphs. */
+(function(){
+  var SEL='.pane-cm .csr>span:last-child>.ch:first-child';
+  function fix(t){var p=t.previousSibling;if(p&&p.nodeType===8)return;t.parentNode.insertBefore(document.createComment(''),t);
+    t.removeAttribute('style');t.removeAttribute('data-oh');t.removeAttribute('data-of');var c=t.querySelector('.ct');if(c)c.removeAttribute('style')}
+  function run(root){if(!root.querySelectorAll)return;var l=root.querySelectorAll(SEL),i;for(i=0;i<l.length;i++)fix(l[i])}
+  run(document);
+  if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&a[j].firstChild)run(a[j])}}).observe(document.body,{childList:true,subtree:true});
+})();
 /* 4. Ink centring of the chips and segments on Matchups and Playoffs, and of the Paper Trail > Picks tile digits (theme.css PART 5,
       "chips"; RETRO.md rule 11: left and right gaps
       between ink and frame equal within 0.5px).
@@ -115,7 +131,8 @@
   var LIST=[['.cnm .gp .gha.ht',700,0],['.cr.lu .flg',700,0],['.cnm b .inj',700,0],['.mby',400,0],['.mcr em .hrt',700,1],['.mpk .stk',500,0],['.g4 .gsd',600,0],
     ['.hres',700,0],['.g4 .g4vs',700,1],['.slg .ss',700,1],['.pseg label',600,0],['.msw label',600,0],['.dd summary .ddk',700,0],['.mop .mt',700,0],['.dxl>u',700,0],['.stc b',700,1],['.stc i',400,0],['.stc em',700,0],
     ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],
-    ['.pane-pt .ptxn b',700,0],['.pane-pt .ptn b',700,0],['.pane-pt .ptn span',700,0]];   // Paper Trail > Picks tile digits (see theme.css)
+    ['.pane-pt .ptxn b',700,0],['.pane-pt .ptn b',700,0],['.pane-pt .ptn span',700,0],
+    ['.cmx .nfl',700,0],['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
   var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
   function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
   function adv(w,fs){var k=w+' '+fs;if(P[k]!==undefined)return P[k];var e=document.createElement('span');e.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap;font:'+w+' '+fs+'px/1 "Martian Mono"';

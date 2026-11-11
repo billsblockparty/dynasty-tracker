@@ -155,10 +155,10 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 |---|---|---|
 | Standings, phones (360P / 402P / 440P; Dumb, Nerd, H2H, Median) | `LIVE` 2026-11-09 | - |
 | Standings, desktop (>= 1100px) | NOT STARTED (token overrides and the CSS rank tiles only) | small |
-| Leaderboards, Players, The Wire, Compare | NOT STARTED | small each (token-driven tables and pills) |
+| Leaderboards, Players, The Wire, Compare, phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every stat, position, filter, Position / Team, Pts / per game, the eight Compare sections, menus, Glossary) | `LIVE` 2026-11-11 ("Pass 2" below) | - |
 | Matchups, phones and desktop (360P / 402P / 440P / 1100 / 1440 / 1920; every week, Lineup / Optimal, Position / Slate, Lean / Detailed, Colors, FINAL / LIVE / PROJ, week menu) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
-| Rosters, Players, Compare | NOT STARTED; they already get the position palette, the badge segments and menus, the solid home / road and injury tiles and the chip ink centring from Game Day | small each (row surfaces, age flags, past-bye text, matrices) |
+| Rosters | NOT STARTED; it already gets the position palette, the badge segments and menus, the solid home / road and injury tiles and the chip ink centring from Game Day, and the bye-week colours from pass 2 | small (row surfaces, age flags) |
 | Stats, Team Hub, Drafts list | NOT STARTED | medium each (matrices and bars, SVG charts, pick tiles) |
 | Paper Trail | NOT STARTED, except the Picks tile digits (2026-11-11: TIMES TRADED, projected and drafted pick numbers are ink-centred) | medium (rows, sheets incl. the two-column trade rows, VIA column; see Known issues for what its fitters assume) |
 | Drafts desktop board | NOT STARTED | medium (position cells: the palette is there, cells and banners are not) |
@@ -206,6 +206,26 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
   Classic's `tileSnap` places the digit by `BC7`, Barlow Condensed's outlines.
 - 2026-11-11 · Selected segments, team switch and menu rows are the badge everywhere those components occur (not only Game Day)
   · they are one component; rule 4.
+
+## Decisions (2026-11-11, pass 2: Leaderboards, Players, The Wire, Compare)
+
+- 2026-11-11 · Leaderboards, Players, The Wire and Compare themed, phones and desktop (section "Pass 2") · the four tabs built from
+  token-driven tables and pills.
+- 2026-11-11 · Players and The Wire stand on a `--blue-2` plate (Playoffs' recipe) · Classic has no panel there and title, pills,
+  search and column heads stood on the ground.
+- 2026-11-11 · Pills (`.lbc`, `.wpb`) are `--blue-3` wells with a 4px corner; selected = the badge; a position pill carries its
+  `--pos-*` colour as the label and, selected, as the fill with black ink · Classic's black 999px pills used `--ink` as a fill; the
+  round pill is not part of this look. K / DEF labels are 5.59 / 4.66:1 on `--blue-3` (3.43 / 2.86:1 on `--blue`).
+- 2026-11-11 · Bye weeks: past = `--peri-lt`, this week = white, upcoming = yellow (Classic's token) · Classic's past bye is
+  `#4b5262`, 1.34:1 on the row. The rule is not scoped to one tab (same component on Rosters: 39 -> 15 under the limit there).
+- 2026-11-11 · Compare: A = `--peri`, B = `--orange` (as the Playoffs builder keys); the Players section's position heads are
+  position chips, not coloured text · K / DEF as text on the panel are 4.43 / 3.69:1.
+- 2026-11-11 · Compare section pills between 760 and 1099px: 11px, tracking 0, 3px between pills (Classic 12.5px, .05em, 7px)
+  · eight 57.4px pills on a landscape phone: "POSITIONS" ran past the pill's edge; now 3.3px each side.
+- 2026-11-11 · Compare position chips between two figures are 17px tall (Classic 15px), rows unchanged · "QB" had 1.85px under
+  the tail of "Q".
+- 2026-11-11 · theme.js item 5: Compare > Schedule right-hand seed chips are taken away from Classic's tile fitter · a Classic bug
+  (below, "Pass 2") that CSS cannot undo.
 
 ## Mechanism ("always-current clone")
 
@@ -332,7 +352,9 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     the first (table of Martian Mono's bearings for ASCII at four weights, from the font files), which theme.css uses as a
     `text-indent`; text only, no layout reads; the same item copies the "Week rank" digit into `data-tx` (CSS cannot copy a
     text node into `content`). In an engine that rounds glyph advances to whole pixels (WebKitGTK; found by one probe) it
-    also reads each element's font size (style, not layout) and adds the rounding as `--iw`.
+    also reads each element's font size (style, not layout) and adds the rounding as `--iw`; (5) Compare > Schedule (2026-11-11): an
+    empty comment node in front of each right-hand seed chip and the fitter's inline styles removed, so Classic's tile fitter
+    leaves the chip alone (Classic bug, see "Pass 2"; no text or layout reads; remove when Classic's `ref()` skips these chips).
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -494,6 +516,59 @@ behind short columns because the panel spans them; nothing on these tabs stands 
 sticky points band (its compact state uses 10 / 10.5px labels, Classic's), sizes under 11px that are Classic's own
 (units in stat lines 9 to 10px, Detailed stats labels 9 to 10px, card "Final" 10.5px).
 
+## Pass 2: Leaderboards, Players, The Wire, Compare (2026-11-11)
+
+theme.css PART 6, theme.js item 5 and five more entries in item 4's list. Phones and desktop. Scoped to the four panes
+(`.lbx`, `.plx`, `.wrx`, `.cmx` and `.pane-*`); the one rule that is not scoped is the bye-week colour (`.by.past`, `.by.now`).
+
+**Surfaces.** Leaderboards `.lbx` and Compare `.cmx` keep Classic's panel (`--blue-2`, black frame, hard shadow) and gain the inner
+glow. Players `.plx` and The Wire `.wrx` have no panel in Classic: each is a `--blue-2` plate drawn with spread shadows (12px of
+plate, 2px black frame, 2px hard shadow, the glow), so no box moves. The Glossary switch and text get the 8px plate on all four.
+The Wire's table `.wrt` is a `--blue` panel on the plate: head strip `--blue-3`, rows `--blue` / `--blue-2` alternating over the
+1px `--blue-3` divider (rule 1), counted over the rows the position filter leaves visible (`:nth-child(even of :not([hidden]))`).
+Players rows and Compare's player rows are the lineup row of Game Day (`--blue-2`, black 1px frame), unchanged.
+
+**Pills and controls.** `.lbc label` (Leaderboards stats, Compare sections, Players positions) and `.wpb` (The Wire filter):
+`--blue-3`, 4px corner, `--peri-lt` label (7.81:1). Selected = the badge through `--chalk: var(--seg-on); --ink: var(--white)` on
+`.lbc` (the Game Day segment mechanism; no list of radio ids). Position pills: label in `--pos-*` on `--blue-3` (QB 7.79, RB 7.72,
+WR 7.61, TE 7.64, K 5.59, DEF 4.66:1); selected = the `--pos-*` fill with black ink (7.36 to 12.31:1). The Wire's ALL (yellow
+label) and FLX (white) select to the badge. Search field `.wq`: `--blue-3`, 4px corner. Classic's hard shadow on the Players pill
+strip (`.lbc.roc.plc`, an L-shaped black line here) is off. Segments (`.pseg`), dropdowns and menus arrive from Game Day.
+
+**Literal Classic colours overridden** (everything else arrives through the tokens):
+
+| Classic | Where | Here |
+|---|---|---|
+| `var(--ink)` used as a FILL | pills `.lbc label` | `--blue-3` |
+| `#f7739c` `#3ddcc1` `#5ec6f4` `#fca95c` `#c491ff` `#c98a72` (rule per pill; inline `--pc` on The Wire) and their 82% mixes | Players pills, The Wire pills and position tiles `.wpt` | `--pos-*`; tile ink black (Classic `#0b0e14`), 1px black edge line as the lineup tiles |
+| `#4b5262`; `--sky` | bye week past; this week | `--peri-lt` (6.19:1 on the row); white |
+| Classic team colours with light inks (LAC 2.94:1, JAX 3.46:1) | Players, Colors: Team tiles | the Game Day recipe: 75% team colour + black, the four dark-ink teams plain |
+| `--accent` (orange, 3.74:1) | The Wire sort arrow | `--yellow` |
+| `--ca:#7fa6ff` / `--cb:#f59a52`, and the same two swapped by one rule with 45 id pairs | Compare keys A / B, chart lines and dots, legend | `--peri` / `--orange`; the swapped panels through `@container style(--ca:#f59a52)` (engines without style queries keep Classic's two literals on those panels) |
+| `#626b7c` / `#9aa3b5`, `#262c38`, `#0f1218` | Compare weekly chart: axis text, grid lines, dot outline | `--peri-lt`, `--blue-3`, black |
+| `#7d8597` | Compare player rows, the lower figure `.cv` | `--peri-lt`; the higher one white |
+| `#c9a15a` | next meeting "Week N" | `--yellow` |
+| `#ff5d73` | IR mark `.cir` | `--loss` |
+| `rgba(127,166,255,.1)` + `--sky` ring and digit; `rgba(63,214,155,.15)` | acquired pick chip `.pk.via`; FAAB chip | `--blue-3`, `--peri` ring, `--peri-lt` digit; `rgba(125,255,160,.16)` |
+| `color-mix(--pc 55%, transparent)` line, `--pc` text | Compare Players, position head `.cgh` | `--pc` line; the head is a `--pos-*` chip with black ink |
+| NFL team colours (text chips, no logo in this pane: KC 3.27:1) | Compare team chips `.nfl` | 25% black over the team colour for light-ink teams, the four dark-ink teams plain |
+
+**Chips (rule 11).** Compare's team chips, pick chips and position heads and The Wire's position tiles are T0 with tracking 0
+(their inner `.ct` too: the body-wide tracking rule reaches it) and are ink-centred by `--ix` (theme.js item 4). "QB" chips in
+Compare sit 1px higher and the chips between two figures are 17px tall (Classic 15px; row heights measured unchanged). Compare's
+section pills are centred on ink + shadow: `--ix` + Classic's .05em tracking after the last letter - the 1px shadow.
+
+**Classic bug found: Compare > Schedule > Week by week, right-hand seed chip** (in Classic too, every width). `ref()` in
+new_tail.js finds no text before that chip and takes the cell before it, "Wk 10", as its figure (the label holds a digit); the
+tile fitter then sizes the chip to that label's cap height (14 x 10px with an 8.75px digit) and moves it about 10px up, onto the
+row's divider. The left-hand chip has no cell before it and keeps 20 x 17px. Here: theme.js item 5 (rule 10). To report to the
+Classic builder.
+
+**Not changed on purpose.** Row heights and grids, Classic's fitters, the horizontal scroll strip of the Leaderboards pills on
+phones (Classic's: "EFF" and later pills are reached by scrolling), sizes under 11px that are
+Classic's own (Compare chart axis: 10 svg units, 14.5px on a 440P screen), the Leaderboards rows (dividers only, no alternating
+shade: the rows do not run edge to edge).
+
 ## Known issues
 
 
@@ -510,10 +585,10 @@ sticky points band (its compact state uses 10 / 10.5px labels, Classic's), sizes
   0.33px at 3x. WebKitGTK rounds glyph advances to whole pixels (Safari does not); `theme.js` measures the advance
   once and compensates.
 - **Not themed yet, contrast.** The dark-ink audit also lists text under 4.5:1 (3:1 large) on the tabs that are NOT
-  STARTED; per tab, worst state at 440P (2026-11-11): Players 109 (past bye weeks `.by.past` #4b5262 on `--blue-2`
-  1.34:1, age flags), Stats 91 (matrix cells 4.3 to 4.4:1), Team Hub 53, Standings 44 (only with the Glossary open: the
-  legend sits on the orange end of the ground, see "Short pages"), Rosters 39, Compare 29, Paper Trail 27, The Wire 4,
-  Drafts 0, Leaderboards 0. Matchups 0, Playoffs 0.
+  STARTED; per tab, worst state at 440P (2026-11-11, after pass 2): Stats 91 (matrix cells 4.3 to 4.4:1), Team Hub 73,
+  Standings 44 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"), Paper
+  Trail 27, Rosters 15 (39 before the bye-week colours of pass 2), Drafts 0 (42 at 1440: the desktop board). Matchups,
+  Playoffs, Leaderboards, Players, The Wire, Compare 0.
 - **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
   values: the mug-to-count and label-to-mug gaps are off by a fraction of a pixel here. `BC7` (Paper Trail digit
   outlines) is Barlow Condensed 700. **Fixed for the Picks tile digits (2026-11-11):** Classic's horizontal offsets are
@@ -561,6 +636,12 @@ sticky points band (its compact state uses 10 / 10.5px labels, Classic's), sizes
   limits, with sticky elements unstuck and elements under an open menu left out; score cells line by line; clip / wrap /
   ellipsis / sideways scroll and text under 11px against Classic; box comparison against Classic for rows, cells,
   tiles and cards (intended differences: the 44px cells); 360P, 402P, 440P, 1440, 1920, Chromium and WebKitGTK.
+- **Pass 2 (Leaderboards, Players, The Wire, Compare), 2026-11-11:** same audits, states in `darkink2.py` / `gapf2.py` / `ovf2.py`
+  (every stat, position and filter, Position / Team, Pts / per game, the eight Compare sections, a reversed team pair, menu open,
+  Glossary). Chromium at 360P, 402P, 440P, 874L, 956L, 1440; WebKitGTK at the 402P / 440P layouts and 1440. Result: dark-ink 0
+  (all twelve tabs at 440P and 1440), contrast 0, frame gaps 0, clip / ellipsis / extra lines / sideways scroll / text smaller
+  than Classic's 0; Standings (360P / 402P / 440P / 1440), Matchups and Playoffs (440P / 1440) boxes identical to the build before
+  the pass; tile check 0.
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).

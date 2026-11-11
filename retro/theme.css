@@ -463,3 +463,94 @@ html.retro .pane-pt .ptpj b{text-indent:calc(var(--ix,0em) - .05em - 1px + var(-
 /* comparison card, team names: Classic's 21px Barlow Condensed holds "Nuts in the Face" on one line in the 150px column of the
    360P layout and in the desktop side column; Martian Mono is a third wider, so the name is 17px there and wraps only where Classic's does */
 @media(max-width:440px),(min-width:1100px){html.retro .mcard .mus>b{font-size:17px}}
+
+/* ================= PART 6: THE LAB / FRONT OFFICE, pass 2 (Leaderboards, Players, The Wire, Compare; phones and desktop; 2026-11-11) =================
+   RETRO.md, "Pass 2". Scoped to the four panes; nothing here reaches Standings, Matchups or Playoffs. */
+/* --- surfaces. Players and The Wire have no panel in Classic (title, pills, search and column heads stand on the page): the section
+   is a --blue-2 plate drawn with spread shadows, as Playoffs' .pox (12px of plate, 2px black frame, 2px hard shadow, the glow), so
+   no box moves. Leaderboards and Compare keep Classic's panel and gain the glow. Glossary switch and text: the 8px plate. --- */
+html.retro :is(.plx,.wrx,.lbx,.cmx){position:relative}
+html.retro :is(.plx,.wrx){background:var(--blue-2);box-shadow:0 0 0 12px var(--blue-2),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
+html.retro :is(.plx,.wrx)::after{content:"";position:absolute;inset:-12px;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro :is(.lbx,.cmx)::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro :is(.pane-lb,.pane-pl,.pane-wr,.pane-cm) :is(.glw,.key){background:var(--blue-2);box-shadow:0 0 0 8px var(--blue-2),0 0 0 10px var(--black),2px 2px 0 10px var(--black)}
+
+/* --- pills (.lbc: Leaderboards stats, Compare sections, Players positions; .wpb: The Wire filter). Classic: black (--ink as a fill),
+   999px, selected = --chalk. Here: a --blue-3 well with a 4px corner, --peri-lt label; selected = the badge (rule 4) through the
+   two tokens, as the segments. Position pills: the label in its --pos-* colour (5.6:1 or more on --blue-3), selected = the position
+   fill with black ink, as the position tiles. --- */
+html.retro :is(.pane-lb,.pane-pl,.pane-cm) .lbc{--chalk:var(--seg-on);--ink:var(--white)}
+html.retro :is(.pane-lb,.pane-pl,.pane-cm) .lbc label{background:var(--blue-3);color:var(--peri-lt);border-radius:4px}
+html.retro .plx .lbc.plc{box-shadow:none!important}
+html.retro .plx .plc label[for="pl-qb"],html.retro .wrx :is(.wpb,.wrr)[data-p="QB"]{--pc:var(--pos-qb)!important}
+html.retro .plx .plc label[for="pl-rb"],html.retro .wrx :is(.wpb,.wrr)[data-p="RB"]{--pc:var(--pos-rb)!important}
+html.retro .plx .plc label[for="pl-wr"],html.retro .wrx :is(.wpb,.wrr)[data-p="WR"]{--pc:var(--pos-wr)!important}
+html.retro .plx .plc label[for="pl-te"],html.retro .wrx :is(.wpb,.wrr)[data-p="TE"]{--pc:var(--pos-te)!important}
+html.retro .plx .plc label[for="pl-k"],html.retro .wrx :is(.wpb,.wrr)[data-p="K"]{--pc:var(--pos-k)!important}
+html.retro .plx .plc label[for="pl-def"],html.retro .wrx :is(.wpb,.wrr)[data-p="DEF"]{--pc:var(--pos-def)!important}
+html.retro .wrx .wrr .wpt{--pc:inherit!important}
+html.retro .plx .plc label:not(#_){color:var(--pc)}
+html.retro .plx input:checked~.plc label:not(#_):not(#_){color:var(--pc)}
+html.retro #pl-qb:checked~.plc label[for="pl-qb"],html.retro #pl-rb:checked~.plc label[for="pl-rb"],html.retro #pl-wr:checked~.plc label[for="pl-wr"],
+html.retro #pl-te:checked~.plc label[for="pl-te"],html.retro #pl-k:checked~.plc label[for="pl-k"],html.retro #pl-def:checked~.plc label[for="pl-def"]{
+  background:var(--pc);color:var(--black)!important;text-shadow:none}
+html.retro .wpb{background:var(--blue-3);border-radius:4px}
+html.retro .wpb:not([style]){color:var(--yellow)}
+html.retro .wpb.wflx{color:var(--white)}
+html.retro .wpb.on{background:var(--pc);color:var(--black);text-shadow:none}
+html.retro .wpb.on:not([style]){background:var(--badge);color:var(--white);text-shadow:1px 1px 0 var(--black);box-shadow:inset 0 0 0 2px var(--white),var(--sh-hard)!important}
+html.retro .wq{background:var(--blue-3);border-radius:4px}
+
+/* --- The Wire: table = a --blue panel on the plate, head strip --blue-3, rows alternate --blue / --blue-2 over the 1px --blue-3
+   divider (rule 1; counted over the rows the filter leaves visible), position tile = the --pos-* fill with black ink --- */
+html.retro .wrt{background:var(--blue)}
+html.retro .wrhd{background:var(--blue-3)}
+html.retro .wrl>.wrr:nth-child(even of :not([hidden])){background:var(--blue-2)}
+html.retro .wrr .wpt{color:var(--black);box-shadow:inset -1px 0 0 var(--black)}
+html.retro .wsb.on i{color:var(--yellow)}
+html.retro .wrr .wpt :is(b,span){letter-spacing:0!important;text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+
+/* --- Players: bye weeks (Classic: past #4b5262 = 1.34:1 here, this week --sky 4.15:1) and team-colour tiles (Game Day recipe) --- */
+html.retro .by.past:not(#_),html.retro .by.past :is(b,u):not(#_){color:var(--peri-lt)}
+html.retro .by.now:not(#_),html.retro .by.now :is(b,u):not(#_){color:var(--white)}
+html.retro #plc-t:checked~.plb .pq[class*=" t-"]{background:color-mix(in srgb,var(--pc) 75%,#000)}
+html.retro #plc-t:checked~.plb .pq:is(.t-CIN,.t-DEN,.t-NO,.t-PIT){background:var(--pc)}
+
+/* --- Compare --- */
+html.retro .cmx{--ca:var(--peri);--cb:var(--orange)}
+/* Classic swaps the two literals on the pair panels whose teams are in reverse order (one rule with 45 id pairs); a style query
+   sees the literal and puts the tokens back, swapped. Engines without style queries keep Classic's two literals on those panels. */
+@container style(--ca:#f59a52){html.retro .cmx [class*="cp-"]>*{--ca:var(--orange);--cb:var(--peri)}}
+html.retro .cmx .cch text{fill:var(--peri-lt)}
+html.retro .cmx .cch line{stroke:var(--blue-3)}
+html.retro .cmx .cch circle{stroke:var(--black)}
+html.retro .cmx .cr .cv{color:var(--peri-lt)}
+html.retro .cmx .cr.wa .cv.a,html.retro .cmx .cr.wb .cv.b{color:var(--white)}
+html.retro .cmx .mtg.nx .mts{color:var(--yellow)}
+html.retro .cmx .cir{background-color:var(--loss)}
+html.retro .cmx .pk{border-radius:2px;text-shadow:none;letter-spacing:0!important}
+html.retro .cmx .pk.via{background:var(--blue-3);color:var(--peri-lt);box-shadow:inset 0 0 0 1px var(--peri)}
+html.retro .cmx .pk.faab{background:rgba(125,255,160,.16)}
+/* position heads of the Players section: K / DEF as text are 4.43 / 3.69:1 on the panel, so the head is the position chip */
+html.retro .cmx .cgh>em{background:var(--pc);color:var(--black);border-radius:2px;text-shadow:none;letter-spacing:0!important;padding:1px 8px;margin:0 2px}
+html.retro .cmx .cgh{border-bottom-color:var(--pc)!important}
+/* NFL team chips (text chips here, no logo): light inks on Classic's team colour reach 4.5:1 only on 75% colour + black */
+html.retro .cmx .nfl{text-shadow:none;border-radius:2px;letter-spacing:0!important}
+html.retro .cmx .nfl:not(.n-CIN,.n-DEN,.n-NO,.n-PIT){background-image:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.25))}
+/* chips of the pane (rule 11): T0, tracking 0, ink centred across by --ix (theme.js item 4) */
+html.retro .cmx :is(.nfl,.pk,.cgh>em){text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+/* "QB" chips: the tail of "Q" reaches .19em under the baseline (1.85px to the edge of a 15px chip); the line sits 1px higher
+   (2.65px above the capitals, 2.85px under the tail) */
+html.retro .cmx .pp.sm.p-qb .ct{position:relative;top:-1px}
+/* Compare section pills, 760 to 1099px (landscape phones: eight pills across a 530px column, 57.4px each, tracking .05em): Classic's
+   12.5px runs "POSITIONS" past the pill's edge in Martian Mono; 11px with tracking 0 and a 3px gap between pills (Classic 7px:
+   60.9px each) leaves 3.4px or more. Only the pills move (up to 3.5px sideways). */
+@media(min-width:760px) and (max-width:1099px){html.retro .cmx .lbc.csub label:not(#_){font-size:11px!important;letter-spacing:0!important}
+  html.retro .cmx .lbc.csub:not(#_){gap:3px!important}
+  html.retro .cmx .lbc.csub label{--it:0em}}
+/* section pills, ink + shadow centred (rule 11): --ix (theme.js item 4), + Classic's .05em tracking after the last letter (--it), - the 1px shadow */
+html.retro .cmx .lbc.csub label{text-indent:calc(var(--ix,0em) + var(--it,.05em) - 1px + var(--iw,0px))}
+html.retro .cmx :is(.nfl,.pk) .ct{letter-spacing:0!important}
+/* position chips between two figures: 17px tall (Classic 15px; the row does not grow), so "QB" keeps 2px under the tail of "Q" in
+   an engine that puts text on whole pixels too */
+html.retro .cmx .mcr em .pp.sm{height:17px}
