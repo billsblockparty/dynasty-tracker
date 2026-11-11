@@ -88,7 +88,7 @@
     for(i=0;i<ups.length;i++){var c=ups[i].querySelectorAll('.cr.lu .cv .fs'),five=false;for(j=0;j<c.length&&!five;j++)five=fig(c[j]).length>4;
       if(ups[i].classList.contains('fs5')!==five)ups[i].classList.toggle('fs5',five)}}
   // one layout read, once: the advance this engine gives a glyph at the four sizes used in the cells (see theme.css, --fxd ...)
-  function probe(){var S=[['--fxd','700 14.5px'],['--fxe','700 11.5px'],['--fxf','700 10px'],['--fxg','600 11px']],d=document.createElement('div'),sp=[],w,i;
+  function probe(){var S=[['--fxd','700 14.5px'],['--fxe','700 11.5px'],['--fxf','700 10px'],['--fxg','600 11px'],['--fxh','700 18px'],['--fxi','700 14px']],d=document.createElement('div'),sp=[],w,i;
     d.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap';
     for(i=0;i<S.length;i++){var e=document.createElement('span');e.style.cssText='display:block;width:max-content;font:'+S[i][1]+'/1 "Martian Mono"';e.style.setProperty('letter-spacing','0','important');e.textContent='0000000000';d.appendChild(e);sp.push(e)}
     document.body.appendChild(d);w=sp.map(function(e){return e.getBoundingClientRect().width/10});d.remove();
@@ -96,4 +96,38 @@
   if(document.fonts&&document.fonts.load)Promise.all([document.fonts.load('700 14.5px "Martian Mono"'),document.fonts.load('600 11px "Martian Mono"')]).then(probe,function(){});
   run(document);
   if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
+})();
+/* 4. Ink centring of the chips and segments on Matchups and Playoffs (theme.css PART 5,
+      "chips"; RETRO.md rule 11: left and right gaps
+      between ink and frame equal within 0.5px).
+      Why a script: a chip's text is centred by its advance box, and CSS cannot see which glyphs the text starts and ends with. Martian
+      Mono's side bearings differ a lot ("L" .108em on its left, "K" .019em on its right at 11px bold: "FK" sits 0.5px right of centre,
+      "@" 0.05px left), and Classic's own offsets were tuned for Barlow Condensed.
+      What it does: per element in LIST, --ix = (right bearing of the last glyph - left bearing of the first) in em; theme.css turns it
+      into a text-indent (which shifts a centred line by half of it). Bearings: table B below, Martian Mono wdth 75 at wght 400 / 500 /
+      600 / 700, thousandths of an em, from retro/fonts with fontTools (x .875 for size-adjust). It reads text only, never layout. One
+      exception: an engine that rounds glyph advances to whole pixels (WebKitGTK; Safari and Chromium do not) is detected by ONE probe,
+      and only there each element's font size is read (style, not layout) and the rounding is added as --iw.
+      When: at load, and for nodes added later (tabs built on demand, live scores). It holds no element between runs. */
+(function(){
+  var K=.875,C="!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u00b7\u2013\u2022\u2212",B={400:[221,221,139,139,42,42,80,54,35,35,64,32,240,240,200,140,140,200,57,57,60,60,213,211,60,60,221,221,105,105,55,55,100,60,80,80,75,75,54,46,78,76,75,75,87,87,74,74,75,75,221,221,213,211,100,100,90,90,100,100,88,92,44,48,45,45,105,55,76,54,80,55,120,80,140,60,65,65,80,80,80,80,70,90,115,49,160,60,60,60,74,74,55,55,110,42,55,55,98,32,80,54,50,50,74,74,45,45,20,20,46,46,36,36,90,90,240,140,105,105,140,240,94,94,60,60,138,138,70,106,92,62,91,68,62,92,88,74,114,16,64,98,100,90,125,75,75,144,136,46,110,90,67,63,100,90,74,74,92,62,62,92,84,56,96,84,76,76,90,100,60,60,24,24,60,60,60,60,108,108,170,110,253,253,110,170,80,80,221,221,65,65,125,125,60,60],500:[212,212,124,124,37,37,71,51,32,32,57,26,231,231,191,131,131,191,48,48,51,51,203,200,51,51,211,211,99,99,47,47,93,53,72,72,67,67,48,38,68,68,66,66,82,82,66,66,66,66,211,211,203,200,91,91,90,90,91,91,83,85,40,46,39,39,95,47,67,47,71,47,109,73,126,55,58,56,71,71,71,71,61,81,105,40,149,55,53,53,66,66,47,47,96,36,47,47,85,26,71,51,44,44,65,65,39,39,18,18,41,41,30,30,83,83,231,131,99,99,131,231,83,83,51,51,128,129,61,96,84,55,84,62,55,84,80,68,104,8,58,89,91,82,117,65,66,138,123,39,102,80,58,54,91,82,67,67,84,55,55,84,78,49,89,77,70,68,82,91,53,53,22,22,51,51,53,53,100,100,161,101,247,247,101,161,80,80,211,211,56,56,114,114,51,51],600:[203,203,106,106,32,32,62,47,28,28,48,20,222,222,181,121,121,181,38,38,41,41,192,187,41,41,199,199,92,92,38,38,85,45,63,63,58,58,40,28,58,58,56,56,76,76,56,56,56,56,199,199,192,187,81,81,90,90,81,81,78,77,35,43,32,32,83,38,58,39,61,38,96,65,111,50,50,45,61,61,61,61,51,71,93,31,136,50,45,45,58,58,38,38,81,30,38,38,71,20,62,47,36,36,55,55,32,32,16,16,35,35,23,23,75,75,221,121,92,92,121,221,70,70,41,41,117,118,52,86,76,46,75,55,46,76,72,61,93,-2,52,79,81,72,108,53,57,131,109,31,93,68,48,44,81,72,59,59,76,46,46,76,71,41,81,68,63,58,72,81,45,45,20,20,41,41,46,45,90,90,151,91,240,240,91,151,80,80,199,199,46,46,101,101,41,41],700:[194,194,88,88,27,27,52,44,24,24,40,14,212,212,170,110,110,170,29,29,30,30,180,175,30,30,188,188,85,85,29,29,78,38,54,54,49,49,33,19,47,49,46,46,70,70,47,47,46,46,188,188,180,175,70,70,90,90,70,70,73,70,31,41,25,25,72,29,48,32,50,29,83,58,95,45,42,34,50,50,50,50,40,60,82,22,123,45,38,38,49,49,29,29,65,24,29,29,56,14,52,44,29,29,44,44,25,25,14,14,29,29,17,17,68,68,210,110,85,85,110,210,57,57,30,30,106,108,42,75,67,38,66,49,38,67,63,54,81,-11,46,68,70,63,99,42,48,125,94,24,84,57,38,34,70,63,52,52,67,38,38,67,65,34,74,60,57,49,63,70,38,38,18,18,30,30,38,37,81,81,140,80,233,233,80,140,80,80,188,188,35,35,88,88,30,30]};
+  // [selector, weight the bearings are taken at, text is shown in capitals, also copy the text to data-tx ("Week rank" figure, see theme.css)]
+  var LIST=[['.cnm .gp .gha.ht',700,0],['.cr.lu .flg',700,0],['.cnm b .inj',700,0],['.mby',400,0],['.mcr em .hrt',700,1],['.mpk .stk',500,0],['.g4 .gsd',600,0],
+    ['.hres',700,0],['.g4 .g4vs',700,1],['.slg .ss',700,1],['.pseg label',600,0],['.msw label',600,0],['.dd summary .ddk',700,0],['.mop .mt',700,0],['.dxl>u',700,0],['.stc b',700,1],['.stc i',400,0],['.stc em',700,0],
+    ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],];
+  var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
+  function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
+  function adv(w,fs){var k=w+' '+fs;if(P[k]!==undefined)return P[k];var e=document.createElement('span');e.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap;font:'+w+' '+fs+'px/1 "Martian Mono"';
+    e.style.setProperty('letter-spacing','0','important');e.textContent='0000000000';document.body.appendChild(e);var d=e.getBoundingClientRect().width/10-.525*fs;e.remove();return P[k]=Math.abs(d)>=.02&&Math.abs(d)<1?d:0}
+  function put(e,k,v){if(e.style.getPropertyValue(k)!==v){if(v)e.style.setProperty(k,v);else e.style.removeProperty(k)}}
+  function run(root){
+    if(!root.querySelectorAll)return;var i,j,l,e,t,W=[];
+    for(i=0;i<LIST.length;i++){l=root.querySelectorAll(LIST[i][0]);if(root.matches&&root.matches(LIST[i][0]))l=[root].concat([].slice.call(l));
+      for(j=0;j<l.length;j++){e=l[j];t=(e.textContent||'').trim();if(LIST[i][2])t=t.toUpperCase();if(LIST[i][3]&&e.getAttribute('data-tx')!==t)e.setAttribute('data-tx',t);W.push([e,ix(t,LIST[i][1]),LIST[i][1]])}}
+    if(RND)for(i=0;i<W.length;i++)W[i][3]=parseFloat(getComputedStyle(W[i][0]).fontSize)||0;     // reads (style only), all before any write
+    if(RND)for(i=0;i<W.length;i++)W[i][3]=W[i][3]?adv(W[i][2],W[i][3]):0;
+    for(i=0;i<W.length;i++){put(W[i][0],'--ix',W[i][1]);if(RND)put(W[i][0],'--iw',W[i][3]?W[i][3].toFixed(3)+'px':'')}}
+  run(document);
+  if(document.fonts&&document.fonts.load)document.fonts.load('700 14.5px "Martian Mono"').then(function(){RND=adv(700,14.5)!==0;if(RND)run(document)},function(){});
+  if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0)&&(a[j].matches(SEL)||a[j].querySelector(SEL)))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
 })();

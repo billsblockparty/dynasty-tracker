@@ -156,10 +156,12 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 | Standings, phones (360P / 402P / 440P; Dumb, Nerd, H2H, Median) | `LIVE` 2026-11-09 | - |
 | Standings, desktop (>= 1100px) | NOT STARTED (token overrides and the CSS rank tiles only) | small |
 | Leaderboards, Players, The Wire, Compare | NOT STARTED | small each (token-driven tables and pills) |
-| Stats, Rosters, Team Hub, Playoffs, Drafts list | NOT STARTED | medium each (pastel pills with dark text, matrices and bars, SVG charts, bracket and schedule cells) |
-| Matchups | NOT STARTED, except the lineup score cells (rule 11, 2026-11-10; also in Playoffs lineups) | large (cards fall to black, win-probability bars, live states) |
-| Paper Trail | NOT STARTED | large (`BC7` digit outlines and `tileSnap` are Barlow-specific) |
-| Drafts desktop board | NOT STARTED | large (pastel position cells) |
+| Matchups, phones and desktop (360P / 402P / 440P / 1100 / 1440 / 1920; every week, Lineup / Optimal, Position / Slate, Lean / Detailed, Colors, FINAL / LIVE / PROJ, week menu) | `LIVE` 2026-11-11 ("Game Day" below) | - |
+| Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
+| Rosters, Players, Compare | NOT STARTED; they already get the position palette, the badge segments and menus, the solid home / road and injury tiles and the chip ink centring from Game Day | small each (row surfaces, age flags, past-bye text, matrices) |
+| Stats, Team Hub, Drafts list | NOT STARTED | medium each (matrices and bars, SVG charts, pick tiles) |
+| Paper Trail | NOT STARTED | medium (rows, sheets, VIA column; see Known issues for what its fitters assume) |
+| Drafts desktop board | NOT STARTED | medium (position cells: the palette is there, cells and banners are not) |
 
 A tab that is NOT STARTED shows whatever the token overrides make of it.
 
@@ -186,6 +188,21 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
 - 2026-11-10 · FK / FL flex chips: no shadow (chips are T0, rule 2).
 - 2026-11-10 · Header wordmark: option C, the stepped title, replaces Classic's script art in the copy (Nicklaus's pick of
   three) · the script clashed with the look and its opaque black counters showed on the purple ground.
+
+## Decisions (2026-11-11, Game Day pass)
+
+- 2026-11-11 · Matchups and Playoffs themed, phones and desktop (section "Game Day") · the two tabs that share the lineup.
+- 2026-11-11 · Position palette = six tokens `--pos-*`, tiles filled with them, black ink, no shadow · one colour set for the
+  Standings position labels, lineup tiles, position pills and (later) Drafts; dark tiles with coloured ink were the alternative
+  (weaker at 14px, and K / DEF as text on blue are only 3.4 / 2.9:1).
+- 2026-11-11 · Lineup score cells 44px wide with an 18px figure (was 38px / 14.5px since 2026-11-10; Classic 38px / 18.375px)
+  · Nicklaus wants the figures large; the 6px per side comes out of the name columns and no name gains an abbreviation or a line.
+- 2026-11-11 · Home / road tiles and injury tags are solid colour with black ink, no ring · a ringed 17px tile leaves the 10.7px
+  "@" under 2px top and bottom in every engine.
+- 2026-11-11 · "Week rank N" is a figure, not a tile · rule 5 (tile no taller than the 8px capitals beside it) and rule 11 (2px
+  above and below the digit) cannot both hold for a digit worth reading.
+- 2026-11-11 · Selected segments, team switch and menu rows are the badge everywhere those components occur (not only Game Day)
+  · they are one component; rule 4.
 
 ## Mechanism ("always-current clone")
 
@@ -245,6 +262,9 @@ New for the tracker (each a mix of two palette colours):
 | `--badge` | `linear-gradient(#4d5ff5,#2040fa)` (steps 5 and 7 of `--card`) | selected controls, rank tiles (white text ≥ 4.92:1) |
 | `--grain` | generated PNG, black specks alpha 0-16% | printed on the ground and the team rows |
 
+| `--pos-qb` `--pos-rb` `--pos-wr` `--pos-te` `--pos-k` `--pos-def` | `#fbb2c9` `#3ddcc1` `#76cff6` `#fcb674` `#c491ff` `#c98a72` | position palette (Game Day): tile and pill fills with black ink; QB / RB / WR / TE also as label text on the blue rows |
+| `--seg-on` | the badge gradient inset 2px on white, as one `background` value | stands in for Classic's `--chalk` inside segmented controls and menus (Game Day, "Segments") |
+
 Classic's tokens are re-pointed in `html.retro:root` (38 overrides): `--pg` purple, `--frame` black, `--deck`
 `--blue-2`, `--row-lt` `--blue`, `--row-divider` / `--line` `--blue-3`, `--chalk` white, `--label` yellow,
 `--text-dim` / `--steel` `--peri-lt`, `--ink` black, `--win` `#7dffa0`, `--loss` `--loss-lt`, `--tier-bye` yellow,
@@ -270,7 +290,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
      that are not themed yet and components added later; light inks on the blue and purple surfaces (L >= .60) keep
      it. Engines without relative colours (before Safari 18 / Chrome 131) skip the declaration and show no T1 shadow.
    - *Layer 2, by name.* Light ink on a LIGHT surface cannot be seen by the formula: those surfaces switch the shadow
-     off themselves (block "dark-ink rule, layer 2" at the end of theme.css; today the dropdown menus `.ddm`).
+     off themselves (block "dark-ink rule, layer 2" in theme.css; none today: the dropdown menus `.ddm` were the one case
+     until they became blue panels, 2026-11-11).
    - The outline (T2) is never a default: it is set on the named roles above only, all of which the theme colours
      white or yellow. Do not add a fixed `text-shadow: ... var(--black)` to a selector whose ink Classic decides.
    - Check: `darkink` audit under "Checks before shipping" = 0.
@@ -303,22 +324,25 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     tile's text or where it meets the device-pixel grid). It wraps Classic's `tnFit` (runs after it and once more two
     frames later) and never rewrites a Classic fitter; (3) rule 11 for the lineup score cells (CSS cannot see which
     glyphs a figure starts and ends with, or how many it has): sets `--fx` per cell and `fs5` per lineup from the
-    text alone, no layout reads, at load and for nodes added later (`MutationObserver`).
+    text alone, no layout reads, at load and for nodes added later (`MutationObserver`); (4) rule 11 for chips and
+    segments (2026-11-11): per element of a selector list, `--ix` = right bearing of the last glyph minus left bearing of
+    the first (table of Martian Mono's bearings for ASCII at four weights, from the font files), which theme.css uses as a
+    `text-indent`; text only, no layout reads; the same item copies the "Week rank" digit into `data-tx` (CSS cannot copy a
+    text node into `content`). In an engine that rounds glyph advances to whole pixels (WebKitGTK; found by one probe) it
+    also reads each element's font size (style, not layout) and adds the rounding as `--iw`.
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
     screenshots (text switched off and on, the difference is the ink), not from layout boxes.
-    Done for the **lineup score cells** (Matchups and Playoffs lineups, `.cr.lu .cv .fs`: delta, points figure,
-    FINAL / LIVE / PROJ). The cell is Classic's (38px, 36px inside its frame lines) and Martian Mono is monospaced
-    (the decimal point takes a full .525em), so the figure is 14.5px instead of Classic's 18.375px: the widest
-    four-character figure is 27.7px of ink + 1px of shadow. A lineup that holds a five-character figure ("100.0",
-    "-10.4") shows every figure at 11.5px (`fs5`): one size per lineup, never per cell. The label's tracking is 0.
-    Ink centring by `text-indent` (half of it moves the line): figure from the first and last glyph's bearings
-    (theme.js), delta and label by constants per state. Not chosen: tighter tracking (at -.05em the bearings of "00"
-    already leave 0.01px, and keeping 18.375px would need -.16em; the face has no narrower width than 75 and no
-    proportional figures) and wider cells (44px instead of 38px would keep 18.375px, but takes 6px from each name
-    column and moves every name and logo beside them).
-    Every other framed element on Matchups is listed, not fixed, under Known issues.
+    Met on Matchups and Playoffs by every framed element (2026-11-11; how, per component, under "Game Day"). The general
+    recipe: (a) chips are T0 (no shadow, tracking 0) so nothing but glyph ink is inside the frame; (b) across, `--ix`
+    (rule 10, item 4) as a `text-indent`: a centred line moves by half of it, a shrink-to-fit box grows by it on one side,
+    both equalise the two gaps; text that keeps the running tracking and the 1px shadow subtracts `.05em` and `1px`;
+    (c) down, a cap-trimmed line (`text-box: trim-both cap alphabetic`) and a padding worked out from the glyphs' own
+    heights; where the tile cannot give 2px (the "@" in a ringed 17px tile) the ring goes, not the type size.
+    Multi-line cells (score cells, slate tiles, position tiles) are centred line by line.
+12. **No synthetic italic (2026-11-11).** Martian Mono has no italic face; where Classic sets Barlow Condensed italic
+    (seed chips of the Playoffs card) the theme sets `font-style:normal`.
 
 ## Wordmark (header title, 2026-11-10)
 
@@ -360,29 +384,133 @@ its script art; past-season pages are Classic's.
   B = badge (plate in `--badge-hi` to `--badge-lo`, white 2px border, periwinkle hairline, hard shadow): suits a compact
   mark such as a favicon or the loop page's corner badge.
 
+## Game Day: Matchups and Playoffs (2026-11-11)
+
+theme.css PART 5, theme.js item 4. Phones and desktop. Everything is scoped to `html.retro`; Classic and the chunks are
+untouched.
+
+**Surfaces.** Matchups keeps Classic's panel `.mux` (`--deck` = `--blue-2`, black frame, hard shadow) and gains the
+board's inner glow. Playoffs has no panel in Classic (it sits on the page): here `.pox` is a `--blue-2` plate drawn with
+spread shadows (12px of plate, 2px black frame, 2px hard shadow, the glow), so no box moves and no text sits on the
+ground. The Glossary switch and its text (`.glw`, `.key`), which stand on the orange end of the ground, get the same
+kind of plate (8px) on these two tabs. Cards on a panel are `--blue` (lighter, raised): matchup cards `.g4`, the
+comparison card `.mcard`, bracket games `.pbm` / `.pbyt`. Wells are `--blue-3`: toggle tracks, the team switch, the
+dropdown button, the points band `.ltot.lsb` (periwinkle 1px ring), slate day tiles `.stc`, the "vs" badge.
+The bench strip and Classic's `--pg` strips stay purple.
+
+**Literal Classic colours overridden** (everything else arrives through the tokens):
+
+| Classic | Where | Here |
+|---|---|---|
+| `var(--ink)` used as a FILL (black after the token override) | `.g4`, `.mcard`, `.msw`, `.dd summary`, `.g4vs`, `.ltot.lsb`, `.stc` | `--blue` / `--blue-3` as above |
+| `#1c212b`, border `#3a4254`, blurred shadow | dropdown menu `.ddm` | `--blue-2`, periwinkle 1px ring, 4px hard shadow; rows yellow, their small labels white; selected row = the badge |
+| `color-mix(--pc 82%, #0b0e14)`, ink `#0f1218`, edge `rgba(0,0,0,.25)` | position tiles `.pq` | `--pos-*` plain, black ink, 1px black edge line |
+| `#8f98ab` / `#6b7385` / `#7d8597` | projected figures `.cv:not(.act)` | `--peri-lt` (5.20:1 on the projection cell) |
+| `rgba(63,214,155,.16)` + `.38` lines, `#7fdcb6` | FINAL cell, beat projection | `rgba(125,255,160,.16)`, `--win` lines and delta (5.61:1), white figure and label |
+| `rgba(255,93,115,.15)` + `.38` lines, `#ff8a9a` | FINAL cell, fell short | `rgba(255,143,143,.14)`, `--loss` lines and delta (4.94:1) |
+| `rgba(232,193,90,.14)` + `.45` lines, `#efd38a` | LIVE cell | `rgba(255,255,111,.16)`, `--yellow` lines and label |
+| `rgba(63,214,155,.14)` / `#7fdcb6` / ring | home tiles `.gha.ht.h`, `.hrt-h`, `.hab-h` | solid `--win`, black ink (16.7:1), no ring |
+| `rgba(150,160,255,.13)` / `#b9c1ff` / ring | road tiles `.gha.ht.r`, `.hrt-r`, `.hab-r` | solid `--peri`, black ink (8.3:1), no ring |
+| `rgba(244,196,81,.24)` / `#f4c451`; `rgba(255,93,115,.22)` / `#ff8a98` | injury tags Q; D / O / IR | solid `--yellow` / `--loss`, black ink |
+| `rgba(255,93,115,.22)` / `#ff8a98`; `rgba(238,240,244,.10)` / `#c3cad8` | FL / FK chips | dark chip (45% black), `--loss` / `--peri-lt` ink and 1px ring |
+| `#e8c15a`, `rgba(232,193,90,.14)`, `rgba(63,214,155,.12)`, `rgba(255,93,115,.12)`, `#ff8a9a` | card seed chips `.gsd` | the Standings rank chip: 45% black, `--yellow` (1px ring) / `--win` / `--loss` / `--peri-lt` digit |
+| `rgba(63,214,155,.12)`, `rgba(255,93,115,.12)` | card streak tiles `.stk` | solid `--win` / `--loss`, black figures (the Standings streak tile) |
+| `#ff8a9a` | losing win %, bar | `--loss`; bar track `--blue-3` with a black frame |
+| `--win-bg` / `--loss-bg` tints | result tiles `.mres`, WON / LOST `.hres` | solid `--win` / `--loss`, black ink |
+| `#cf9a2c` | HI tag `.mt.hi` | `--yellow`, black ink |
+| `rgba(127,166,255,.45 / .6)`, `#3a4254` | "N on bye" pill, upcoming-week marker | `--peri` ring, `--peri-lt` text; `--blue-3` ring for later weeks |
+| `#5fd3a5` `#e8c15a` `#9aa3b5` `#7fa6ff`, their tints, `#a9c3ff` `#efd38a` | slate view: heading colour `--sc`, state chips `.ss`, day tiles | `--win` (final), `--yellow` (live), `--white` (upcoming), `--peri-lt` (bye); chips 45% black |
+| `#5fd3a5` / `#f08a98` | slate deltas `.dlt` | `--win` / `--loss` |
+| `#f7739c` `#3ddcc1` `#5ec6f4` `#c491ff` `#c98a72` + tints | Detailed stats category chips `.dxl>u` | `--pos-*` ink on a 45% black chip |
+| `#6fc9a4` `#d4af6a` `#e0838f` | schedule: points allowed `.pag` | `--win` / `--yellow` / `--loss` |
+| `rgba(238,240,244,.11)`, `rgba(63,214,155,.16)`, `rgba(255,93,115,.18)`, `#7fdcb6` `#ff9aa8` + rings | schedule rank chips `.psk2`, key chips | 45% black, `--peri-lt` / `--win` / `--loss` digit, no ring |
+| `opacity:.28` on the other week's column | schedule `.psg.psy` | full strength (it was 1.9:1): the darker cell and `--peri-lt` figures tell it apart |
+| `--line-strong` / `--chalk` overridden by Classic's body-wide frame colour | bracket connectors `.pbc` | `--peri`; the projected path `--white` (as its legend swatch) |
+| (none: `--ca` / `--cb` are undefined on Playoffs in Classic) | builder keys A / B `.ddk` | `--peri` / `--orange` tiles, black ink |
+| `rgba(127,166,255,.5)` | BN tag of the Optimal view | `--peri` ring, `--peri-lt` |
+
+**Segments (rule 4).** Classic paints every selected segment, team-switch side and menu row with
+`background:var(--chalk);color:var(--ink)` through one rule per radio id. Inside `.pseg`, `.msw` and `.ddm` the theme
+re-points the two tokens (`--chalk: var(--seg-on); --ink: var(--white)`), so the selected state is the badge with its
+white 2px ring on every tab that uses these components, with no list of ids. Selected matchup card: white 2px inner
+ring (the six `input[id$="-N"]:checked ~ .mpk label[for$="-N"]` pairs); selected bracket game: Classic's own ring.
+
+**Position tiles.** Fill `--pos-*`, black ink (opacity 1), no shadow, tracking 0, each line ink-centred, the stack centred in
+the 33px beside the 1px edge line.
+
+| Position | Fill | Black ink on it | As label text on `--blue` |
+|---|---|---|---|
+| QB | `#fbb2c9` | 12.31:1 | 4.78:1 |
+| RB | `#3ddcc1` | 12.21:1 | 4.74:1 |
+| WR | `#76cff6` | 12.03:1 | 4.67:1 |
+| TE | `#fcb674` | 12.08:1 | 4.69:1 |
+| K | `#c491ff` | 8.84:1 | 3.43:1 (not used as text on blue; on a 45% black chip 6.0:1 or more) |
+| DEF | `#c98a72` | 7.36:1 | 2.86:1 (same) |
+
+**Colors: Team.** Classic's team colours and inks. Classic's own fill (82% team colour + `#0b0e14`) leaves DEN 3.43:1,
+LAC 3.93:1, JAX 4.34:1, KC 4.41:1. Here: light-ink teams 75% team colour + black (worst LAC 4.65:1, NE 5.08:1); the
+four dark-ink teams (CIN, DEN, NO, PIT) the plain colour (worst DEN 4.75:1). The shadow follows the ink (rule 2,
+layer 1). Tiles of dark teams are close to the row (NYJ 1.03:1 against `--blue-2`); the black edge line and the ink
+carry them, as in Classic. Also applied to Rosters' team mode.
+
+**NFL logos.** Checked against `--blue-2`: Classic's art already carries light keylines (it was drawn for a dark page).
+For 30 of 32 logos at least 86% of the outline pixels stand off the row by 1.5:1 or more; LAR's outline is navy but 73%
+of its area (the horn) stands off, PIT's ring 64% with 93% of the area. No keyline, disc or filter added.
+
+**Score cells (rule 11).** 44px columns (Classic 38px), figure 18px (Classic 18.375px), a lineup with a five-character
+figure 14px (`.fs5`), delta 11px (Classic 10px), label 11px.
+
+| | A: 38px cell (2026-11-10) | B: 44px cell (shipped) |
+|---|---|---|
+| figure / five-character lineup / delta | 14.5px / 11.5px / 10px | 18px / 14px / 11px |
+| "88.8": ink + shadow, each side | 28.7px, 3.6px | 35.4px, 3.3px |
+| names at 440P, 402P, 1100 to 1920 | as Classic | as Classic (no size, text or line changes) |
+| names at 360P (Classic 13.75 to 15.75px) | 15.5 to 15.75px | 13.75 to 15.75px: most lineups 15.25px, one of nine checked 13.75px |
+| new abbreviations / second lines | 0 | 0 |
+
+Names and logos keep their outer edges; only the two cells and the name columns' inner edges move (6px each).
+Other tabs' `.cr.lu` rows keep Classic's 38px cell with the 14.5 / 11.5px figures.
+
+**Chips and tiles (rule 11).** vs / @ tiles: solid, 17px, one cap-trimmed line; "@" (10.7px tall) sits .125em and "vs"
+.06em above the cap centre so each is ink-centred. Injury tags: one baseline for Q / O / D / IR placed for the tail of
+"Q". FK / FL: 11px, 3.65px / 4.4px paddings. "N on bye": centred on the ink of "b" and "y", pill height as Classic.
+HOME / ROAD in the card: Classic's 0.58px side difference taken out through `--ic`. Schedule chips and tiles (sized in
+`cqw`) and the schedule's three week columns are rounded to whole pixels. "Week rank N": Classic's chip keeps its box (the fitter's inline `!important`
+styles cannot be overridden) but loses fill and ring; its digit is made transparent and the rank is drawn by `::after`
+from `data-tx` at the label's 11.5px, on the label's cap band (Classic's fitter leaves the chip 4.43px above it, in
+Classic too: the label is a flex item, where a baseline marker is not on the baseline).
+
+**Comparison card names.** 17px at the 360P layout and in the desktop side column (Classic 21px Barlow Condensed):
+"Nuts in the Face" wrapped to two lines there and holds one in Classic. 21px elsewhere.
+
+**Desktop.** Three columns as Classic inside the one panel (cards, lineup, comparison + results); cards and comparison
+card share one top edge, the lineup's heading sits on its own line below it as in Classic; the ground shows no orange
+behind short columns because the panel spans them; nothing on these tabs stands on the ground.
+
+**Not changed on purpose.** Row heights, the centre line, slot-group dividers, the bench strip, Classic's fitters, the
+sticky points band (its compact state uses 10 / 10.5px labels, Classic's), sizes under 11px that are Classic's own
+(units in stat lines 9 to 10px, Detailed stats labels 9 to 10px, card "Final" 10.5px).
+
 ## Known issues
 
-- **Rule 11 is met by the lineup score cells only.** Other framed elements on Matchups whose ink (with shadow) comes
-  within 2px of the frame, measured 2026-11-10 (440P and 1920; to do with that tab): road "@" tiles `.gha.ht.r` (23 in a final week, 14 in a projected one: 0.5 to 1.3px above the glyph, 1.2 to 2.0px
-  below), home "vs" tiles `.gha.ht.h` (1 of 12: 1.96px above), FK / FL chips `.flg` (7: 1.0 to 1.7px above),
-  matchup-card rank chips `.hrk .ch` (2: 0.4 to 1.6px above and below), injury tags `.inj` Q / O (2: 1.5px above),
-  "N on bye" chips `.mby` (3: 0.8 to 1.5px below), card streak tiles `.gb .stk` at 1920 only (up to 4 of 10 read 0px
-  to the right or below: check when theming), the open week menu's own row `.ddm label` (0px left). All of these are
-  top / bottom except the last two; left and right are >= 2.3px everywhere else. Position tiles `.pq`, the toggles and
-  the score cells have every gap >= 2px.
+
+- **Rule 11, limits (Game Day).** (1) Rank chips that Classic's tile fitter sizes (`.ch` with inline styles) follow
+  Classic's 1.75 to 3.5px window; on these two tabs the only one under 2px was "Week rank", now a figure. (2) A tile at a
+  fractional position can show 1 device pixel more on one side (0.33px at 3x); 9 of 64 schedule chips and tiles read 0.67px
+  in WebKitGTK at 440P before their `cqw` sizes and the week columns were rounded to whole pixels; 1 of 45 rank chips ("20")
+  still does (402P and 1440: none). (3) Headless Chromium places text on
+  whole CSS px: its "@" tiles read 1.6 to 4.3px above and 2.3 to 4.3px below depending on the row. (4) Engines without
+  `text-box` (before Safari 18.2 / Chrome 133) keep Classic's paddings for vs / @, injury tags, FK / FL and "N on bye".
 - **Score cells, limits.** A figure of six characters or more would not keep 3px (none can occur: a player's points).
   On engines where `theme.js` does not run the figure uses a mean bearing (up to 0.65px off centre). The cell's own
   position on the device-pixel grid is not corrected (as rule 7 does for the FAAB and rank tiles): up to 1 device pixel,
   0.33px at 3x. WebKitGTK rounds glyph advances to whole pixels (Safari does not); `theme.js` measures the advance
   once and compensates.
 - **Not themed yet, contrast.** The dark-ink audit also lists text under 4.5:1 (3:1 large) on the tabs that are NOT
-  STARTED: per tab, worst state at 440P: Players 123 (past bye
-  weeks `.by.past` #4b5262 on `--blue-2` 1.34:1, age flags, team-colour position tiles), Stats 91 (matrix cells
-  4.3 to 4.4:1), Playoffs 75 (schedule view chips and times 1.9 to 2.4:1, projected figures 3.08:1), Matchups 58
-  (projected figures `.fs.pj` #8f98ab 3.08:1, delta 4.11:1, REC label 4.12:1, FL chip 3.81:1), Team Hub 53, Standings
-  45 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"), Rosters 43,
-  Compare 41, Paper Trail 27, The Wire 4, Drafts 0, Leaderboards 0. Light ink on a light surface: the dropdown menus
-  `.ddm` (white panel; `--peri-lt` rank figures 1.7:1 and the yellow selected name 1.06:1), Compare and Playoffs.
+  STARTED; per tab, worst state at 440P (2026-11-11): Players 109 (past bye weeks `.by.past` #4b5262 on `--blue-2`
+  1.34:1, age flags), Stats 91 (matrix cells 4.3 to 4.4:1), Team Hub 53, Standings 44 (only with the Glossary open: the
+  legend sits on the orange end of the ground, see "Short pages"), Rosters 39, Compare 29, Paper Trail 27, The Wire 4,
+  Drafts 0, Leaderboards 0. Matchups 0, Playoffs 0.
 - **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
   values: the mug-to-count and label-to-mug gaps are off by a fraction of a pixel here. `BC7` (Paper Trail digit
   outlines) is Barlow Condensed 700: Paper Trail's TIMES TRADED tiles will be wrong until that tab is themed.
@@ -394,8 +522,8 @@ its script art; past-season pages are Classic's.
 - **Phones' page scale 0.85:** rule 7's grid is 1 / devicePixelRatio CSS px (the engine's own snapping grid); the
   scale is applied to the raster afterwards. Not measurable in the sandbox; real iPhone Safari is checked by Nicklaus.
 - **Past-season buttons** open Classic's (unthemed) pages, and those pages' 2026 button returns to Classic.
-- **Short pages:** the ground reaches its orange end under free-standing text (e.g. Stats' Glossary label). Fix with
-  that tab.
+- **Short pages:** the ground reaches its orange end under free-standing text (e.g. Stats' Glossary label). Fixed on
+  Matchups and Playoffs by a plate behind the Glossary switch and text; the other tabs with their own pass.
 - A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps
   them (`DT_CHUNKS`).
 
@@ -415,6 +543,12 @@ its script art; past-season pages are Classic's.
   "88.8", "100.0", "-1.2", "+11.8", "−11.8") at 360P, 402P, 440P, 1440, 1920, Chromium and WebKitGTK (3x phones, 2x
   desktop): ink including shadow = the pixels that change when text is switched off, edges weighted by coverage.
   Left and right >= 3px and within 0.5px of each other, top and bottom >= 2px. Boxes outside the cells: none moved.
+- **Game Day (Matchups, Playoffs), 2026-11-11:** dark-ink audit and contrast 0 over the states listed in `darkink` (every
+  week type, Lineup / Optimal, Slate, Detailed, Colors, a simulated LIVE lineup, week / team menus open, bracket games,
+  builder, schedule, Glossary); frame gaps for EVERY framed element holding text (not only the score cells), same
+  limits, with sticky elements unstuck and elements under an open menu left out; score cells line by line; clip / wrap /
+  ellipsis / sideways scroll and text under 11px against Classic; box comparison against Classic for rows, cells,
+  tiles and cards (intended differences: the 44px cells); 360P, 402P, 440P, 1440, 1920, Chromium and WebKitGTK.
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).

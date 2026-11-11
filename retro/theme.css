@@ -222,7 +222,7 @@ html.retro .cr.lu .cv .fs.pj small{text-indent:calc(-.009em - 1px + var(--fxg,0p
    10 / 11px. 0 in Safari and Chromium; WebKitGTK rounds advances to whole px (14.5px: 7.61 -> 8), which moves the last glyph's ink. */
 
 /* --- dark-ink rule, layer 2: light surfaces that can hold LIGHT ink (the ink formula in PART 2 cannot see the surface) --- */
-html.retro .ddm,html.retro .ddm *{text-shadow:none;-webkit-text-stroke:0}
+/* (none today: the dropdown menus .ddm were Classic's light panels until 2026-11-11; they are blue panels now, PART 5) */
 /* flex-slot chips in the lineups (FK / FL, 10.5px in an 18 x 15px ring): light ink, but a chip: T0 like the rank chips (rule 2) */
 html.retro .flg{text-shadow:none}
 
@@ -242,3 +242,212 @@ html.retro .wm-s1{fill:var(--orange);stroke:var(--orange);stroke-width:2.5px;str
 html.retro .wm-s2{fill:var(--peri);stroke:var(--peri);stroke-width:2.5px;stroke-linejoin:miter}
 html.retro .wm-f{fill:var(--white)}
 html.retro .wm-f2{fill:var(--yellow)}
+
+/* ================= PART 5: GAME DAY (Matchups and Playoffs, phones and desktop; 2026-11-10) =================
+   RETRO.md, "Game Day". Every literal Classic colour overridden here is listed there. */
+html.retro:root{
+  /* position palette (new tokens: ONE set for the position labels on the Standings cards, the lineup tiles and the position pills;
+     Classic's position hues, QB / WR / TE lightened as on the Standings cards). Tile ink is black: 7.4:1 to 12.3:1. */
+  --pos-qb:#fbb2c9;--pos-rb:#3ddcc1;--pos-wr:#76cff6;--pos-te:#fcb674;--pos-k:#c491ff;--pos-def:#c98a72;
+  /* segment fill: the badge with its white 2px inner ring as ONE background value, so it can stand in for Classic's --chalk
+     wherever Classic paints a selected segment with background:var(--chalk);color:var(--ink) */
+  --seg-on:linear-gradient(to bottom,#4d5ff5,#2040fa) 2px 2px/calc(100% - 4px) calc(100% - 4px) no-repeat,var(--white);
+}
+html.retro .p-qb{--pc:var(--pos-qb)} html.retro .p-rb{--pc:var(--pos-rb)} html.retro .p-wr{--pc:var(--pos-wr)}
+html.retro .p-te{--pc:var(--pos-te)} html.retro .p-k{--pc:var(--pos-k)} html.retro .p-def{--pc:var(--pos-def)}
+
+/* --- segmented controls, team switch, dropdown menus: selected = the badge (rule 4). Classic selects with
+   background:var(--chalk);color:var(--ink) through one rule per radio id; the two tokens are re-pointed inside the control --- */
+html.retro :is(.pseg,.msw,.ddm):not(.pane-st *){--chalk:var(--seg-on);--ink:var(--white)}   /* not Standings: its two switches are themed by name in PART 4 and stay as shipped */
+html.retro .msw{background:var(--blue-3)!important;border-radius:4px!important}
+html.retro .msw label,html.retro .pseg label{border-radius:2px!important}
+html.retro .pseg label,html.retro .msw label{color:var(--peri-lt)}
+/* dropdown button and menu */
+html.retro .dd summary{background:var(--blue-3);border-radius:4px;box-shadow:var(--sh-hard);color:var(--white)}
+html.retro .dd summary .sv{color:var(--yellow)}
+html.retro .dd summary svg{color:var(--yellow)}
+html.retro .ddm{background:var(--blue-2);border-radius:4px!important;box-shadow:inset 0 0 0 1px var(--peri),4px 4px 0 0 var(--black)!important;padding:5px}
+html.retro .ddm label{border-radius:2px;color:var(--yellow)}
+html.retro .ddm label i{color:var(--white)}   /* white, not the dim tone: 4.92:1 on the selected row's badge (--peri-lt 3.4:1) */
+
+/* --- panels --- */
+html.retro .mux,html.retro .pox{position:relative}
+html.retro .mux::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+
+/* --- matchup cards (.g4): lighter blue plate on the panel, hard shadow; selected = white 2px inner ring --- */
+html.retro .mpk label.g4{background:var(--blue)!important;border-radius:4px}
+html.retro input[id$="-0"]:checked~.mpk label[for$="-0"],html.retro input[id$="-1"]:checked~.mpk label[for$="-1"],
+html.retro input[id$="-2"]:checked~.mpk label[for$="-2"],html.retro input[id$="-3"]:checked~.mpk label[for$="-3"],
+html.retro input[id$="-4"]:checked~.mpk label[for$="-4"],html.retro input[id$="-5"]:checked~.mpk label[for$="-5"]{
+  box-shadow:inset 0 0 0 2px var(--white),var(--sh-hard)}
+html.retro .g4 .g4vs{background:var(--blue-3);box-shadow:none;border-radius:2px;color:var(--peri-lt)}
+html.retro .g4 .gn{text-shadow:1px 1px 0 var(--black)}
+html.retro .g4 .g4p.l,html.retro .pbwp.l{color:var(--loss)}
+html.retro .g4b:not(#z){background:var(--blue-3)!important;border-color:var(--black)!important}
+html.retro .g4 .g4b i.l{background:var(--loss)}
+html.retro .g4 .g4b i{opacity:1!important}
+/* seed chips on the cards: the Standings rank chip (dark tile, tier colour digit, ring only on gold) */
+html.retro .g4 .gsd{background:rgba(0,0,0,.45);color:var(--peri-lt);border-radius:2px;text-shadow:none;letter-spacing:0!important}
+html.retro .g4 .gsd.gold{color:var(--yellow);box-shadow:inset 0 0 0 1px var(--yellow)}
+html.retro .g4 .gsd.g{color:var(--win)} html.retro .g4 .gsd.b{color:var(--loss)}
+/* streak tile: solid result colour, black figures (as the Standings streak tile) */
+html.retro .mpk .stk{border-radius:2px;text-shadow:none;box-shadow:1px 1px 0 0 var(--black);letter-spacing:0!important}
+html.retro .mpk .stk.w{background:var(--win);color:var(--black)}
+html.retro .mpk .stk.l{background:var(--loss);color:var(--black)}
+
+/* --- comparison card (.mcard), results / remaining lists --- */
+html.retro .mcard{background:var(--blue)!important;border-radius:4px!important}
+html.retro .mcard .mus>b{text-shadow:1px 1px 0 var(--black)}
+html.retro .hrt{border-radius:2px;text-shadow:none}
+/* home / road tiles: solid, black ink, no ring (a ringed 17px tile leaves the 10.7px "@" under 2px) */
+html.retro .hrt.hrt-h,html.retro .cnm .gp .gha.ht.h,html.retro .cr.lu .cn .hab.hab-h{background:var(--win);color:var(--black);box-shadow:none}
+html.retro .hrt.hrt-r,html.retro .cnm .gp .gha.ht.r,html.retro .cr.lu .cn .hab.hab-r{background:var(--peri);color:var(--black);box-shadow:none}
+html.retro .hres{border-radius:2px;text-shadow:none}
+html.retro .hres.w,html.retro .mres.w{background:var(--win);color:var(--black)}
+html.retro .hres.l,html.retro .mres.l{background:var(--loss);color:var(--black)}
+html.retro .mres{border-radius:2px;text-shadow:none}
+html.retro .mres.w,html.retro .mres.l{box-shadow:1px 1px 0 0 var(--black)}
+html.retro .mres.u{box-shadow:inset 0 0 0 1px var(--blue-3)}
+html.retro .mrow.now .mres.u{box-shadow:inset 0 0 0 1px var(--peri)}
+html.retro .mrow.now .mwk,html.retro .mby{color:var(--peri-lt)}
+html.retro .mby{box-shadow:inset 0 0 0 1px var(--peri);border-radius:2px;text-shadow:none}
+html.retro .mt.hi{background:var(--yellow);color:var(--black);border-radius:2px}
+html.retro .pp{border-radius:2px!important}
+
+/* --- lineup: points band, rows, position tiles, tags, score cells --- */
+html.retro .mcr.ltot.lsb{background:var(--blue-3);border-radius:4px;box-shadow:inset 0 0 0 1px var(--peri),var(--sh-hard)!important}
+html.retro .mcr.ltot.lsb>span.up .lt-v{text-shadow:2px 2px 0 var(--black)}
+html.retro .cr .cn>.pq,html.retro .rr2>.pq{background:var(--pc);color:var(--black)}
+html.retro .cr .cn.a>.pq,html.retro .rr2>.pq{box-shadow:inset -1px 0 0 var(--black)}
+html.retro .cr .cn.b>.pq{box-shadow:inset 1px 0 0 var(--black)}
+html.retro .pq .pqi>span,html.retro .pq .pqi>b{color:var(--black);opacity:1!important}
+/* Colors: Team. Classic's team inks on Classic's team colours; the fill is darkened until every light ink reaches 4.5:1
+   (75% team colour + black: worst LAC 4.65:1); the four teams with a dark ink keep the plain colour (worst DEN 4.75:1) */
+html.retro #lc-t:checked~.mwx .pq[class*=" t-"],html.retro #rc-t:checked~.rop .pq[class*=" t-"]{background:color-mix(in srgb,var(--pc) 75%,#000)}
+html.retro #lc-t:checked~.mwx .pq:is(.t-CIN,.t-DEN,.t-NO,.t-PIT),html.retro #rc-t:checked~.rop .pq:is(.t-CIN,.t-DEN,.t-NO,.t-PIT){background:var(--pc)}
+html.retro .inj,html.retro .cr.lu .flg{border-radius:2px!important;text-shadow:none}
+html.retro .inj.i-Q{background:var(--yellow)!important;color:var(--black)!important;box-shadow:none}
+html.retro .inj.i-D,html.retro .inj.i-O,html.retro .inj.i-IR,html.retro .inj.i-FL{background:var(--loss)!important;color:var(--black)!important;box-shadow:none}
+html.retro .cr.lu .flg{background:rgba(0,0,0,.45)!important;color:var(--loss)!important;box-shadow:inset 0 0 0 1px var(--loss)}
+html.retro .cr.lu .flg.fk{color:var(--peri-lt)!important;box-shadow:inset 0 0 0 1px var(--peri)}
+html.retro .cnm .gp .gha.ht{border-radius:2px;text-shadow:none}
+/* score cells */
+html.retro .cr.lu .cv:not(.act){color:var(--peri-lt)}
+html.retro .cr.lu.wa .cv.a:not(.act),html.retro .cr.lu.wb .cv.b:not(.act){color:var(--yellow)}
+html.retro .cv .fs.up .fdf{color:var(--win)} html.retro .cv .fs.dn .fdf{color:var(--loss)}
+html.retro .cr.lu .cv .fs small{opacity:1!important;color:var(--peri-lt)}
+html.retro .cr.lu .cv .fs.up{background:rgba(125,255,160,.16);box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win)!important}
+html.retro .cr.lu .cv .fs.dn{background:rgba(255,143,143,.14);box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss)!important}
+html.retro .cr.lu:has(.sln) .cv .fs.up{box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win),inset 0 -1px 0 var(--win)!important;border-radius:0!important}
+html.retro .cr.lu:has(.sln) .cv .fs.dn{box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss),inset 0 -1px 0 var(--loss)!important;border-radius:0!important}
+html.retro .cr.lu .cv .fs.lv{background:rgba(255,255,111,.16);box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow)}
+html.retro .cr.lu:has(.sln) .cv .fs.lv{box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow),inset 0 -1px 0 var(--yellow)!important;border-radius:0!important}
+html.retro .cr.lu .cv .fs.lv small{color:var(--yellow)}
+html.retro .cr.lu:has(.sln) .cn>.pq{border-radius:0!important}
+/* detailed stats: category chips in the position palette */
+html.retro .dx-pass>u{color:var(--pos-qb)!important;background:rgba(0,0,0,.45)}
+html.retro .dx-rush>u{color:var(--pos-rb)!important;background:rgba(0,0,0,.45)}
+html.retro .dx-rec>u{color:var(--pos-wr)!important;background:rgba(0,0,0,.45)}
+html.retro .dx-xp>u,html.retro .dx-fg>u{color:var(--pos-k)!important;background:rgba(0,0,0,.45)}
+html.retro .dx-def>u,html.retro .dx-allow>u{color:var(--pos-def)!important;background:rgba(0,0,0,.45)}
+html.retro .dx-pts>u,html.retro .dx-fum>u{background:rgba(0,0,0,.45)}
+html.retro .dxl>u{border-radius:2px;text-shadow:none}
+
+/* --- Playoffs --- */
+html.retro .pox{background:var(--blue-2);box-shadow:0 0 0 12px var(--blue-2),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
+html.retro .pox::after{content:"";position:absolute;inset:-12px;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro .pbm,html.retro .pby .pbyt{background:var(--blue);border-radius:4px!important}
+html.retro .pbc:not(#_){border-color:var(--peri)!important}
+html.retro .pbc.on:not(#_){border-color:var(--white)!important}
+html.retro .pbm .pbd{background:var(--blue-3)}
+html.retro .cr.lu .cv.act .fs small{color:var(--white)}
+html.retro .dlt.up{color:var(--win)} html.retro .dlt.dn{color:var(--loss)}
+html.retro .slx{--sc:var(--white)} html.retro .slx.sx-final{--sc:var(--win)} html.retro .slx.sx-live{--sc:var(--yellow)} html.retro .slx.sx-bye{--sc:var(--peri-lt)}
+html.retro .hrd{opacity:1!important}
+html.retro .pag.ay{color:var(--win)} html.retro .pag.ap{color:var(--yellow)} html.retro .pag.ao{color:var(--loss)}
+html.retro .pox{--ca:var(--peri);--cb:var(--orange)}
+html.retro .ddk{border-radius:2px;color:var(--black)}
+/* schedule grid: Classic fades the other week's column to 28% (1.9:1 here); full strength, told apart by the darker cell and dim figures */
+html.retro .psg.psy>*{opacity:1}
+html.retro .psg.psy .psa{color:var(--peri-lt)}
+html.retro .psg{box-shadow:inset 2px 0 0 var(--blue-3)}
+html.retro .psg .psv .psk2:not(#_),html.retro .pskey .ch:not(#_){background:rgba(0,0,0,.45);box-shadow:none;border-radius:2px!important;text-shadow:none}
+html.retro .psg .psv .psk2:not(.g):not(.b){color:var(--peri-lt)}
+/* schedule: the three week columns (1fr each in Classic: 105.11px at 440P) and the chips and vs / @ tiles in them (sized in cqw:
+   24.86 x 21.19px) are whole pixels, so every tile meets the pixel grid the same way; the player column takes the remainder */
+@supports (width:round(1.5px,1px)){html.retro .pane-po .cr.lu.psr{grid-template-columns:minmax(0,1fr) repeat(3,round(down,calc((100% - 12px)/4.3),1px))!important}
+  html.retro .cr.lu .psg.cnm .gp .gha.ht,html.retro .psg .psv .psk2{width:round(clamp(20px,27cqw,30px),1px)!important;height:round(clamp(17px,23cqw,25px),1px)!important}
+  html.retro .cr.lu .psg.cnm .gp .gha.ht{--gh:round(clamp(17px,23cqw,25px),1px)}}
+html.retro .psg .psv .psk2.g,html.retro .pskey .ch.g{color:var(--win)}
+html.retro .psg .psv .psk2.b,html.retro .pskey .ch.b{color:var(--loss)}
+/* Glossary switch: free-standing on the ground at the foot of the page, where the ground is orange (yellow label 3.2:1): its own plate,
+   drawn with spread shadows so nothing moves */
+html.retro :is(.pane-mu,.pane-po) :is(.glw,.key){background:var(--blue-2);box-shadow:0 0 0 8px var(--blue-2),0 0 0 10px var(--black),2px 2px 0 10px var(--black)}
+html.retro .cr.lu .cv .fs.lv small{color:var(--yellow)}
+/* slate view: day tiles and state chips */
+html.retro .stc{background:var(--blue-3);border-radius:2px;box-shadow:inset 0 0 0 1px var(--peri),var(--sh-1)}
+html.retro .stc.final{box-shadow:inset 0 0 0 1px var(--win),var(--sh-1)}
+html.retro .stc.live{box-shadow:inset 0 0 0 1px var(--yellow),var(--sh-1)}
+html.retro .stc.bye{opacity:1;box-shadow:inset 0 0 0 1px var(--blue-2)}
+html.retro .stc.bye b,html.retro .stc.bye em{color:var(--peri-lt)}
+html.retro .ss:not(#_){background:rgba(0,0,0,.45);color:var(--peri-lt);border-radius:2px;text-shadow:none}
+html.retro .ss.final:not(#_){color:var(--win)} html.retro .ss.live:not(#_){color:var(--yellow)}
+html.retro .cn.swp .cnm b::after{color:var(--peri-lt);border-color:var(--peri)!important;border-radius:2px;text-shadow:none}
+
+/* --- Game Day score cells: 44px columns (Classic 38px), figure 18px (Classic 18.375px) ---
+   Decision 2026-11-10 (RETRO.md rule 11): in Classic's 38px cell the largest figure that keeps 3px to the frame is 14.5px. Widening the
+   two centre columns by 6px each (taken from the name columns; names and logos keep their outer edges) holds an 18px figure:
+   "88.8" = 34.4px of ink + 1px shadow in 42px between the frame lines = 3.3px each side. A lineup with a five-character figure shows
+   every figure at 14px (.fs5; "100.0" 33.4px + 1px = 3.8px each side; 14.5px left 3.2px, and 2.4px where an engine rounds glyph
+   advances up to whole pixels, WebKitGTK). The delta is 11px (Classic 10px).
+   Matchups and Playoffs lineups only; other tabs' .cr.lu rows keep Classic's 38px cell and the 14.5 / 11.5px figures above. */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr){grid-template-columns:minmax(0,1fr) 44px 44px minmax(0,1fr)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu .cv .fs{font-size:18px!important;text-indent:calc(var(--fx,-.004em) - .05em - 1px + var(--fxh,0px))}
+html.retro :is(.pane-mu,.pane-po) .fs5 .cr.lu .cv .fs{font-size:14px!important;text-indent:calc(var(--fx,-.004em) - .05em - 1px + var(--fxi,0px))}
+html.retro :is(.pane-mu,.pane-po) .cr.lu .cv .fs .fdf{font-size:11px;height:11px;text-indent:calc(var(--fy,.0125em) - .05em - 1px + var(--fxg,0px))}
+
+/* --- chips (rule 11): T0 (no shadow, tracking 0); ink centred across by --ix from theme.js (item 4: CSS cannot see the glyphs);
+   down by a cap-trimmed line and a padding worked out from the glyphs' own heights (Martian Mono, em x .875):
+   capitals 0 to .70em, "@" and "Q" reach .18 / .19em under the baseline, "b" .74em, "y" -.19em. --ic = what Classic's unequal side
+   paddings add. --- */
+html.retro :is(.cnm .gp .gha.ht,.cr.lu .flg,.cnm b .inj,.mby,.mcr em .hrt,.mpk .stk,.g4 .gsd,.hres,.g4 .g4vs,.slg .ss,.dd summary .ddk,.mop .mt,.dxl>u,
+  .mres,.pp.sm,.pq .pqi>span,.pq .pqi>b,.ch:not([data-oh])){
+  letter-spacing:0!important;text-shadow:none;text-indent:calc(var(--ix,0em) + var(--ic,0px) + var(--iw,0px))}
+/* segments keep the running-text tracking (-.05em, after the last glyph too) and the 1px shadow (to the right) */
+html.retro :is(.pseg label,.msw label,.stc b,.stc i,.stc em):not(.pane-st *){text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
+html.retro .mcr em .hrt{--ic:-.58px}
+/* position tiles: the 1px edge line is a frame on one side, so the stack is centred in the 33px beside it */
+html.retro .cr .cn.a>.pq,html.retro .rr2>.pq{padding-right:1px}
+html.retro .cr .cn.b>.pq{padding-left:1px}
+@supports (text-box:trim-both cap alphabetic){
+  /* vs / @ : "@" (1.02em tall) and "vs" share one ink centre, .081em under the cap centre */
+  html.retro .cnm .gp .gha.ht{display:inline-block;text-align:center;line-height:1;text-box:trim-both cap alphabetic;--gh:17px;height:var(--gh);
+    padding:calc((var(--gh) - .7em)/2 - var(--gv,.06em)) 0 0!important}
+  html.retro .cnm .gp .gha.ht.r{--gv:.125em}
+  html.retro .cr.lu .psg.cnm .gp .gha.ht{--gh:clamp(17px,23cqw,25px)}
+  /* injury tags: one baseline for Q / O / D / IR, placed so that "Q" (tail .19em under the baseline) is centred: 2.3px to the ring */
+  html.retro .cr.lu .cnm b .inj{display:inline-block;line-height:1;text-box:trim-both cap alphabetic;height:1.435em;padding:.277em .3em 0!important}
+  /* FK / FL: 11px (Classic 10.5 / 10px), 3px to the ring each side */
+  html.retro .cr.lu .flg{font-size:11px!important;line-height:1;text-box:trim-both cap alphabetic;padding:3.65px 4.4px!important}
+  html.retro .cr.lu .flgs .flg{padding:3.65px 3.9px!important}
+  /* "N on bye": centred on the ink of "b" and "y" (2.8px to the ring); the pill keeps Classic's 18.8px */
+  html.retro .mby{display:inline-block;line-height:1;text-box:trim-both cap alphabetic;padding:4.3px 8px 6.1px}
+}
+/* "Week rank N": Classic's fitter sizes this chip beside the 11.5px label and gives it a 7.25px digit: 0.4 to 2px to the frame, under
+   rule 11 at any digit size worth reading. No tile here: the rank is a figure in the label's own size (11.5px), centred on the chip's
+   box, in the tier colour. The fitter's inline !important styles pin the digit's own size, so the figure is drawn by ::after from
+   data-tx (set by theme.js item 4: CSS cannot copy a text node into content) and Classic's digit is hidden.
+   .385em: Classic's fitter leaves this chip 4.43px above the label's cap centre (in Classic too, every width: the label is a flex
+   item, where a baseline marker does not sit on the baseline); the figure is put back on the label's cap band */
+html.retro .hrk .ch:not(#_){background:none!important;box-shadow:none!important;position:relative}
+html.retro .hrk .ch .ct{-webkit-text-fill-color:transparent!important}   /* not visibility:hidden: Classic's fitter must still measure it */
+html.retro .hrk .ch::after{content:attr(data-tx);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 11.5px/1 var(--display);
+  letter-spacing:0!important;white-space:nowrap;text-indent:calc(var(--ix,0em) - 1px);text-shadow:1px 1px 0 var(--black)}
+@supports (text-box:trim-both cap alphabetic){html.retro .hrk .ch::after{display:block;inset:auto 0;top:calc(50% + .385em);height:.7em;margin-top:-.35em;text-align:center;text-box:trim-both cap alphabetic}}
+/* no synthetic italic: Martian Mono has no italic face (Classic sets the seed chips of the Playoffs card in Barlow Condensed italic) */
+html.retro .ch,html.retro .ch .ct{font-style:normal}
+html.retro :is(.mres,.pp.sm,.ch:not([data-oh])) .ct{letter-spacing:0!important}
+html.retro .lus-o .mcr.ltot:not(.lsb):not(#_){box-shadow:none!important}
+/* comparison card, team names: Classic's 21px Barlow Condensed holds "Nuts in the Face" on one line in the 150px column of the
+   360P layout and in the desktop side column; Martian Mono is a third wider, so the name is 17px there and wraps only where Classic's does */
+@media(max-width:440px),(min-width:1100px){html.retro .mcard .mus>b{font-size:17px}}
