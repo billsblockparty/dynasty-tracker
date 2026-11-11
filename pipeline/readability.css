@@ -1026,7 +1026,7 @@ body{background:var(--pg)}
 .dvb i.up{border-radius:0 3px 3px 0!important;box-shadow:inset 0 0 0 1px rgba(10,60,40,.55)!important}
 .dvb i.dn{border-radius:3px 0 0 3px!important;box-shadow:inset 0 0 0 1px rgba(90,15,25,.55)!important}
 /* BBP: logos in the Stats tab carry half the standings shadow depth (1px offset, softer blur) */
-.pane-sx .av,.pane-sx .pav.av{box-shadow:0 0 0 1px var(--line-strong),1px 1px 0 .5px rgba(0,0,0,.4),1px 1px 3px .5px rgba(0,0,0,.25)!important}
+.pane-sx .av,.pane-sx .pav.av,.pane-th .sosm .pav.av{box-shadow:0 0 0 1px var(--line-strong),1px 1px 0 .5px rgba(0,0,0,.4),1px 1px 3px .5px rgba(0,0,0,.25)!important}
 /* 2026-11-03: panel frames darker than the page (as on the YILM site), not lighter: 2px in --frame */
 .board,.cmx,.lbx,.mux,.posx,.rox,.sxc,.dfr,.dfo,.dfg,.dtp,.tch,.trc,.tqhero,.tqhr,.tqk,.wpb,.wq,.wrt,.thk{border:2px solid var(--frame)!important}
 /* Stats tables: alternating row shade runs edge to edge of the panel (no inset, no rounded ends) */
@@ -1401,3 +1401,22 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
    all-play reach "10-3" / "100-17". */
 .dtt td.dwl small.wlb{font:600 11px/1 var(--display);letter-spacing:.04em;margin-right:-.04em;font-variant-numeric:tabular-nums}
 @media (min-width:1100px) and (max-width:1239px){.dtt td,.dtt th{padding-left:3px!important;padding-right:3px!important}}
+
+/* 2026-11-10 SHOTGUN TALLY, larger mug + dot (Nicklaus: the mug was the size of the FAAB text and the two read as one run; this
+   replaces "mug never taller than the count"). Cards: mug 14px tall in a 13 x 14px box (1.54x the count's 9.1px cap; art 12.6px wide,
+   kept at the left of the box), centred on the count's cap centre; its negative top/bottom margins leave the old .7em box on the
+   baseline in the flow, so no line or row changes. A 3px round dot (--text-dim) sits between the FAAB label and the mug at their
+   cap centre, 8px of ink each side (label's trailing letter-spacing + B bearing = 1.364px taken off); it is part of the tally, so
+   teams with none show no dot. Count still 4px of ink after the mug. Desktop table: mug by the same ratio (1.077em in a 1em box),
+   centred on the name's cap centre, 8px of ink after the name; no dot there (no label to separate from). */
+.sgt .sgi{height:1.077em;width:1em;margin:-.1885em calc(4px - var(--sgl,0em) - .031em) -.1885em 0}
+.board .r .nm .sgt{position:relative;padding-left:11px;margin-left:calc(8px - 1.364px)}
+.board .r .nm .sgt::before{content:"";position:absolute;left:0;top:calc(50% - 1.5px);width:3px;height:3px;border-radius:50%;background:var(--text-dim)}
+.board .r .nm .sgt .sgi{height:var(--sgh,14px);width:var(--sgw,13px);margin:calc((.7em - var(--sgh,14px))/2) calc(4px - var(--sgl,0em) - (var(--sgw,13px) - .9*var(--sgh,14px))) calc((.7em - var(--sgh,14px))/2) 0}
+
+/* 2026-11-10 GP HEADER (Points by position, Per start; YILM shows games played, BBP has no GP). The header tile group is a
+   20px box with the pill centred on it, so the pill (--ppw wide) overhangs it by (--ppw - 20px)/2 each side; GP used to
+   start 3px after the 20px box, i.e. behind the pill's right end. Now the header GP and every row's number share one
+   14px centred box that starts 4px of ink after the pill; GP's baseline is level with the pill label's (.48px). */
+.pt-start .pcr .pgp{display:block!important;width:14px;margin-left:calc((var(--ppw,30px) - 20px)/2 + 4px - 1.5px);text-align:center}
+.pt-start .pch .pgp{text-indent:.1em;transform:translateY(calc(-50% - .48px))}

@@ -64,7 +64,7 @@ function season(t){
 // Icon = inline SVG on the count's baseline (fill currentColor = --text-dim). Tried and measured (2026-11-08): a background image (WebKit and
 // Chromium draw the tile at whole CSS px: 7.1 / 8.0px instead of 7.7) and a JS grid snap (WebKit: count off the FAAB label by a device px);
 // the plain SVG is the closest in WebKit (icon-to-digit 0-1 device px, count level with FAAB).
-const SGI='<svg class="sgi" viewBox="0 0 9 10" aria-hidden="true" focusable="false"><path d="M0 2H6.4V9.2A.8 .8 0 0 1 5.6 10H.8A.8 .8 0 0 1 0 9.2Z"/><circle cx="1.3" cy="1.9" r="1.3"/><circle cx="3.2" cy="1.4" r="1.4"/><circle cx="5.1" cy="1.9" r="1.3"/><path d="M6.2 3.4H7.05A1.3 1.3 0 0 1 8.35 4.7V5.9A1.3 1.3 0 0 1 7.05 7.2H6.2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+const SGI='<svg class="sgi" viewBox="0 0 9 10" preserveAspectRatio="xMinYMid meet" aria-hidden="true" focusable="false"><path d="M0 2H6.4V9.2A.8 .8 0 0 1 5.6 10H.8A.8 .8 0 0 1 0 9.2Z"/><circle cx="1.3" cy="1.9" r="1.3"/><circle cx="3.2" cy="1.4" r="1.4"/><circle cx="5.1" cy="1.9" r="1.3"/><path d="M6.2 3.4H7.05A1.3 1.3 0 0 1 8.35 4.7V5.9A1.3 1.3 0 0 1 7.05 7.2H6.2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
 // Gaps are set to the ink: SGD = left side bearing of Barlow Condensed 700's tabular digits, SGR = right side bearing of the
 // IBM Plex Sans 600 letter a desktop name ends with (em, read from the font files), so icon-to-count and name-to-icon are measured glyph to glyph.
 const SGD=[.045,.067,.046,.044,.019,.053,.052,.045,.05,.039];
@@ -498,4 +498,13 @@ function luFit(){LUR.length=0;
   window.__luReport=LUR.slice()}
 window.luFit=luFit;
 if(!FL())luFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(luFit);addEventListener('resize',()=>requestAnimationFrame(luFit));document.addEventListener('change',()=>requestAnimationFrame(luFit));document.addEventListener('panebuilt',()=>requestAnimationFrame(luFit));
+// Remaining schedule (Stats matrix and Team Hub, 2026-11-10): the opponents' points-for rank chips are sized by the rank-tile
+// sizer at 16px (digits ink-centred, 3.5px from the frame, one width for one or two digits) where they sit beside the picture with
+// the average under them. In the one-line desktop cell (Stats, >=1100px) the chip sits beside the average, so its height is that
+// figure's cap height (Barlow Condensed .7em), like the Standings stat-line tiles.
+(function(){function sosFit(){if(!window.inkBatch)return;const c=[...document.querySelectorAll('.sosm .sox .ch')].filter(t=>t.offsetParent);if(!c.length)return;
+  const one=innerWidth>=1100,H=new Map();c.forEach(t=>{let h=16;if(one&&t.closest('.sos1:not(.tqgrid)')){const a=t.parentNode.querySelector('.soa');if(a)h=Math.round(parseFloat(getComputedStyle(a).fontSize)*70)/100}H.set(t,h)});
+  inkBatch(c.map(t=>[t,H.get(t)]))}
+let q=0;function sch(){if(q)return;q=requestAnimationFrame(()=>{q=0;sosFit()})}
+if(!FL())sosFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(sosFit);addEventListener('resize',sch);document.addEventListener('change',sch);document.addEventListener('panebuilt',sch);window.sosFit=sosFit})();
 </script>
