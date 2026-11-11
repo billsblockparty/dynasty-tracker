@@ -132,6 +132,7 @@
     ['.hres',700,0],['.g4 .g4vs',700,1],['.slg .ss',700,1],['.pseg label',600,0],['.msw label',600,0],['.dd summary .ddk',700,0],['.mop .mt',700,0],['.dxl>u',700,0],['.stc b',700,1],['.stc i',400,0],['.stc em',700,0],
     ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],
     ['.pane-pt .ptxn b',700,0],['.pane-pt .ptn b',700,0],['.pane-pt .ptn span',700,0],
+    ['.pane-pt .pthx i',700,1],['.pane-pt .pthv',700,1],['.pane-pt .ptvc',600,1],['.pane-df .dfn b',700,0],['.pane-df .dfn span',700,0],['.pane-df .dftl',700,0],['.pts .pz',700,0],['.pane-df .dfvia',600,1],['.rox .rat',700,1],['.rox .txc',700,1],
     ['.cmx .nfl',700,0],['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
   var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
   function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
@@ -145,6 +146,38 @@
     if(RND)for(i=0;i<W.length;i++)W[i][3]=parseFloat(getComputedStyle(W[i][0]).fontSize)||0;     // reads (style only), all before any write
     if(RND)for(i=0;i<W.length;i++)W[i][3]=W[i][3]?adv(W[i][2],W[i][3]):0;
     for(i=0;i<W.length;i++){put(W[i][0],'--ix',W[i][1]);if(RND)put(W[i][0],'--iw',W[i][3]?W[i][3].toFixed(3)+'px':'')}}
+  /* 6. Paper Trail > Picks: the TIMES TRADED tile width, the TIMES TRADED and VIA column widths and the NFL slot's right edge, by
+        Martian Mono's glyph ink (pass 3, 2026-11-11). Classic's ptxFit / tileSnap (paper_build.py) take the tile width from BC7, Barlow
+        Condensed's digit outlines (widest digit ink + 16px), and the other widths and the slot's edge from a canvas, which reports
+        glyph ink in Chromium and the advance box in WebKitGTK. Their numbers are written inline on .ptv-k (--ptcw, --ptca, --ptva),
+        where CSS cannot replace them, and the fitters are private. What this does, after every run of Classic's fitter (seen as a
+        change of .ptv-k's style attribute; before the next paint): the three widths again, same definitions, from the bearing table
+        B above and the text; each tile's left edge back on Classic's unit grid for the new width (one layout read); and --nx, which theme.css
+        adds to the slot as a translate: the theme's word spacing (-.22em per space: the canvas measures "PK 3" without it, so
+        Classic leaves the slot 2.4px short of the column's edge) plus, only where the canvas reports the advance box (one
+        measureText), the right bearing of the slot's last glyph, less the advance rounding of an engine that lays text out on whole
+        pixels (WebKitGTK: the canvas does not round). Vertical placement and the digits' own centring (--ix) are untouched. It rewrites no Classic function. */
+  var PTO=window.WeakSet?new WeakSet():null,CV=null;
+  function cbox(){if(!CV)CV=document.createElement('canvas').getContext('2d');CV.font='700 100px "Martian Mono"';var m=CV.measureText('1');return !(m.actualBoundingBoxLeft<-1)}   // "1" has 6.8px of room on its left at 100px: reported as ink (-6.8) or not (0)
+  function inkw(e,w){var t=(e.textContent||'').trim().toUpperCase(),a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1));if(!t||a<0||b<0)return 0;
+    var cs=getComputedStyle(e),fs=parseFloat(cs.fontSize)||0,ls=parseFloat(cs.letterSpacing)||0;return (t.length-1)*(.525*fs+(RND?adv(w,fs):0)+ls)+.525*fs-(B[w][2*a]+B[w][2*b+1])*K*fs/1000}   // first glyph's ink start to last glyph's ink end
+  function pt(V){
+    if(!V.offsetParent)return false;var P=[].filter.call(V.querySelectorAll('.ptp'),function(p){return p.offsetParent});if(!P.length)return false;
+    function q(s){var o=[];P.forEach(function(p){[].push.apply(o,p.querySelectorAll(s))});return o}
+    var cnt=q('.ptxn'),hx=q('.pthx i'),vh=q('.pthv'),cv=q('.ptvc'),sl=q('.ptns'),z=(cnt[0]||hx[0]||V).currentCSSZoom||1,u=1/((window.visualViewport&&visualViewport.scale)||1),tw=0,ch=false,box=sl.length?cbox():false;
+    cnt.forEach(function(t){var b=t.querySelector('b');if(b)tw=Math.max(tw,inkw(b,700))});
+    var Wd=Math.round((tw+16)*z/u)*u/z,ca=Wd,va=38;hx.forEach(function(h){ca=Math.max(ca,inkw(h,700))});cv.forEach(function(c){va=Math.max(va,inkw(c,600))});vh.forEach(function(h){va=Math.max(va,inkw(h,700))});
+    function up(v){return (Math.ceil(v*100)/100)+'px'}
+    [['--ptcw',cnt.length?Wd.toFixed(4)+'px':up(16)],['--ptca',up(ca)],['--ptva',up(va)]].forEach(function(x){if(V.style.getPropertyValue(x[0])!==x[1]){V.style.setProperty(x[0],x[1]);ch=true}});
+    var NX=sl.map(function(n){var it=n.querySelectorAll('i:not(.ptbl)'),l=it[it.length-1],t=l?(l.textContent||'').trim().toUpperCase():'',b=C.indexOf(t.charAt(t.length-1));if(!t||b<0)return '';
+      var cs=getComputedStyle(l),fs=parseFloat(cs.fontSize)||0,ws=parseFloat(cs.wordSpacing)||0,sp=t.slice(0,-1).split(' ').length-1,x=-sp*ws-(RND?(t.length-1)*adv(600,fs):0)+(box?B[600][2*b+1]*K*fs/1000:0);return Math.abs(x)<.005?'':x.toFixed(3)+'px'});
+    sl.forEach(function(n,i){put(n,'--nx',NX[i])});
+    if(ch&&cnt.length){cnt.forEach(function(t){t.style.left=''});var L=cnt.map(function(t){return t.getBoundingClientRect().left}),sx=window.scrollX||0;
+      cnt.forEach(function(t,i){t.style.left=((Math.round((L[i]+sx)/u)*u-sx-L[i])/z).toFixed(4)+'px'})}
+    return ch}
+  function hook(root){var V=root.matches&&root.matches('.pane-pt .ptv-k')?root:root.querySelector('.pane-pt .ptv-k');if(!V||!PTO||!window.MutationObserver)return;
+    if(!PTO.has(V)){PTO.add(V);var o=new MutationObserver(function(){pt(V);o.takeRecords()});o.observe(V,{attributes:true,attributeFilter:['style']})}pt(V)}
+  var run0=run;run=function(root){run0(root);if(root.querySelector)hook(root)};
   run(document);
   if(document.fonts&&document.fonts.load)document.fonts.load('700 14.5px "Martian Mono"').then(function(){RND=adv(700,14.5)!==0;if(RND)run(document)},function(){});
   if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0)&&(a[j].matches(SEL)||a[j].querySelector(SEL)))run(a[j])}}).observe(document.body,{childList:true,subtree:true});

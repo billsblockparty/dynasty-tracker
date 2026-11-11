@@ -554,3 +554,123 @@ html.retro .cmx :is(.nfl,.pk) .ct{letter-spacing:0!important}
 /* position chips between two figures: 17px tall (Classic 15px; the row does not grow), so "QB" keeps 2px under the tail of "Q" in
    an engine that puts text on whole pixels too */
 html.retro .cmx .mcr em .pp.sm{height:17px}
+
+/* ================= PART 7: FRONT OFFICE, pass 3 (Rosters, Drafts list and board, Paper Trail lists and sheet; phones and desktop; 2026-11-11) =================
+   RETRO.md, "Pass 3". Scoped to the three panes (.rox, .dfs, .ptx) and the Paper Trail sheet (.pts). */
+/* --- surfaces. None of the three sections has a panel in Classic (titles, year buttons, switches and group heads stand on the
+   page): each is a --blue-2 plate drawn with spread shadows, the recipe of Playoffs / Players / The Wire (12px of plate, 2px black
+   frame, 2px hard shadow, the glow), so no box moves. .rox carries a 2px frame of its own in Classic: it becomes plate. --- */
+html.retro :is(.rox,.dfs,.ptx):not(#_){position:relative;background:var(--blue-2)!important}
+html.retro :is(.dfs,.ptx){box-shadow:0 0 0 12px var(--blue-2),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
+html.retro .rox:not(#_){border-color:var(--blue-2)!important;box-shadow:0 0 0 10px var(--blue-2),0 0 0 12px var(--black),2px 2px 0 12px var(--black)!important}
+html.retro :is(.rox,.dfs,.ptx)::after{content:"";position:absolute;inset:-12px;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro :is(.pane-ro,.pane-df,.pane-pt) :is(.glw,.key){background:var(--blue-2);box-shadow:0 0 0 8px var(--blue-2),0 0 0 10px var(--black),2px 2px 0 10px var(--black)}
+
+/* --- controls on the plates: year buttons (Drafts, Paper Trail) and the Picks / Players switch. Unselected = a raised --blue
+   button (yellow label 7.69:1); selected = the badge through the two tokens, as the segments (rule 4; Classic: --chalk fill with
+   --ink text, one rule per radio id). --- */
+html.retro :is(.dfyb,.ptyb,.ptsw){--chalk:var(--seg-on);--ink:var(--white)}
+html.retro :is(.dfyb,.ptyb) .yb b,html.retro .ptsw .ptb{background:var(--blue);border-radius:4px}
+html.retro .ptsw .ptb.on{background:var(--seg-on)}
+
+/* --- position colours: Classic writes its own literals inline (--pc on the row / tile / cell); QB, WR and TE differ from the
+   palette (RB, K and DEF are the same values). Tiles: the --pos-* fill, black ink, tracking 0, the 1px black edge line of the
+   lineup tiles. --- */
+html.retro :is(.pane-df,.pane-pt,.pts) [style*="--pc:#f7739c"]{--pc:var(--pos-qb)!important}
+html.retro :is(.pane-df,.pane-pt,.pts) [style*="--pc:#5ec6f4"]{--pc:var(--pos-wr)!important}
+html.retro :is(.pane-df,.pane-pt,.pts) [style*="--pc:#fca95c"]{--pc:var(--pos-te)!important}
+html.retro .dfn,html.retro .ptn:not(.ptn0){color:var(--black);box-shadow:inset -1px 0 0 var(--black)}
+html.retro .dfn :is(b,span){letter-spacing:0!important;text-indent:calc(var(--ix,0em) + var(--iw,0px))}   /* Paper Trail's .ptn digits: block "Paper Trail > Picks" above (pass 1) */
+
+/* ---------- Rosters ---------- */
+/* team picker: cells are raised --blue buttons on the --blue-3 grid lines; selected = the badge (Classic: --ink as a fill). The
+   pictures of the other teams are dimmed by opacity alone (Classic adds grayscale: no filter here, rule 8). */
+html.retro .rox .rofb label{background:var(--blue)!important}
+html.retro .rox .rofb .rfi{filter:none;opacity:.5}
+html.retro .rox .rofb label:hover .rfi{opacity:1}
+html.retro .rox :is(#ro-0:checked~.rofb label[for="ro-0"],#ro-1:checked~.rofb label[for="ro-1"],#ro-2:checked~.rofb label[for="ro-2"],#ro-3:checked~.rofb label[for="ro-3"],
+  #ro-4:checked~.rofb label[for="ro-4"],#ro-5:checked~.rofb label[for="ro-5"],#ro-6:checked~.rofb label[for="ro-6"],#ro-7:checked~.rofb label[for="ro-7"],
+  #ro-8:checked~.rofb label[for="ro-8"],#ro-9:checked~.rofb label[for="ro-9"],#ro-10:checked~.rofb label[for="ro-10"],#ro-11:checked~.rofb label[for="ro-11"]){
+  background:var(--badge)!important;box-shadow:inset 0 0 0 2px var(--white)}
+html.retro .rox :is(#ro-0:checked~.rofb label[for="ro-0"],#ro-1:checked~.rofb label[for="ro-1"],#ro-2:checked~.rofb label[for="ro-2"],#ro-3:checked~.rofb label[for="ro-3"],
+  #ro-4:checked~.rofb label[for="ro-4"],#ro-5:checked~.rofb label[for="ro-5"],#ro-6:checked~.rofb label[for="ro-6"],#ro-7:checked~.rofb label[for="ro-7"],
+  #ro-8:checked~.rofb label[for="ro-8"],#ro-9:checked~.rofb label[for="ro-9"],#ro-10:checked~.rofb label[for="ro-10"],#ro-11:checked~.rofb label[for="ro-11"]) .rfi{opacity:1}
+/* group heads: a --blue-3 head strip (as The Wire's and the round heads below): K and DEF as label text are 4.43 / 3.69:1 on the
+   plate, 5.59 / 4.66:1 on the strip. Same height as Classic's head (3 + 24 + 2 + 1px line); the label and the total move 8px in. */
+html.retro .rox .rgh{background:var(--blue-3);padding:3px 8px 2px;border-bottom-color:var(--pc)}
+html.retro .rox .rgh.p-tx{--pc:var(--peri-lt)}
+html.retro .rox .rgh.p-ir{--pc:var(--loss)}
+html.retro .rox .ga b.ay:not(#_){color:var(--win)!important}
+html.retro .rox .ga b.ap:not(#_){color:var(--yellow)!important}
+html.retro .rox .ga b.ao:not(#_){color:var(--loss)!important}
+/* team assessment: a raised --blue card on the plate; its two kinds of inner box (Classic: --ink as a fill) are --blue-3 wells */
+html.retro .rox .ras{background:var(--blue)}
+html.retro .rox :is(.ral,.rak span){background:var(--blue-3);border-radius:4px}
+html.retro .rox .rat{border-radius:2px}
+html.retro .rox .rat.tc{color:var(--win)}
+html.retro .rox .rat.tp{color:var(--peri-lt)}
+html.retro .rox .rat.tb{color:var(--yellow)}
+html.retro .rox .ralh b{border-radius:2px;box-shadow:none;text-shadow:none;letter-spacing:0!important}
+html.retro .rox .ralh b.up{background:var(--win);color:var(--black)}
+html.retro .rox .ralh b.dn{background:var(--loss);color:var(--black)}
+html.retro .rox .rag.up h4{color:var(--win)}
+html.retro .rox .rag.dn h4{color:var(--loss)}
+html.retro .rox .rag.up li::before{background:var(--win)}
+html.retro .rox .rag.dn li::before{background:var(--loss)}
+
+/* ---------- Drafts ---------- */
+/* list (below 1100px): Original order = a raised --blue card; each round = a --blue panel with a --blue-3 head strip, rows
+   alternating over the divider as Classic's tokens give them */
+html.retro .dfs :is(.dfo,.dfg){background:var(--blue)}
+html.retro .dfs .dfrh{background:var(--blue-3)}
+html.retro:root{--via-bg:var(--blue-3);--via-line:var(--yellow);--via-bar:var(--white);--via-bar-line:var(--black);--via-bar-ink:var(--black);--via-bar-strong:var(--black)}
+/* VIA box (list from 760px): a T0 chip (no shadow, tracking 0); 1px more under the capitals (17px tall, Classic 16px; the row does not grow) */
+html.retro .dfs .dfvia{border-radius:2px;text-shadow:none;padding:3px calc(6px - var(--ix,0em)/2) 3px calc(6px + var(--ix,0em)/2)}   /* --ix: "V" of VIA to the name's last letter, shared between the two side paddings */
+html.retro .dfs .dfvia,html.retro .dfs .dfvia i{letter-spacing:0!important}
+/* board (from 1100px): cells = the --pos-* fill with black ink at full strength (Classic dims four of its lines to 70-82%: "QB"
+   in the strip was 3.83:1), 2px corner, 1px black frame; a traded pick's banner = the white ticket with black ink (the TIMES
+   TRADED tile's colours); an empty cell = a --blue-3 well */
+html.retro .dfs .dfc{border-radius:2px;color:var(--black);box-shadow:inset 0 0 0 1px var(--black)}
+html.retro .dfs .dfc0{background:var(--blue-3);box-shadow:inset 0 0 0 1px var(--black)}
+html.retro .dfs :is(.dfcn small,.dfcr,.dfcs>span,.dfct i){opacity:1}
+
+/* ---------- Paper Trail ---------- */
+html.retro .ptx .pthd{background:var(--blue-3)}
+html.retro :is(.ptx,.pts) .pav.av:not(#_),html.retro .ptv-k :is(.ptl1,.ptvl) .pav.av:not(#_){box-shadow:0 0 0 1px var(--white),1px 1px 0 1px var(--black)!important}
+/* sheet: the season strip is a --blue-3 head strip (Classic: the page colour), the close button a 4px-corner button */
+html.retro .pts .ptsy{background:var(--blue-3)}
+html.retro .pts .ptsx{border-radius:4px}
+/* Picks, right-hand columns (rule 11 and "by glyph ink"). Classic centres the TIMES / TRADED and VIA heads and the coach names
+   under the VIA pictures with a canvas measurement (an inline transform): glyph ink in Chromium, the advance box in WebKitGTK.
+   Here the transform is off and each line is centred by its own first and last glyph (--ix, theme.js item 4; - .05em for the
+   tracking after the last letter, - 1px for the shadow), the same in every engine. Column and tile widths and the NFL slot's right
+   edge: theme.js item 6 (--nx = the theme's word spacing, which Classic's canvas does not know, + the last glyph's right bearing
+   where the canvas gave Classic the advance box). */
+html.retro .ptv-k :is(.pthx i,.pthv,.ptvc){transform:none!important;text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
+html.retro .ptv-k .ptns{translate:var(--nx,0px) 0}
+/* --- chips and tiles of the three tabs, rule 11 (ink + shadow >= 3px from the frame left and right, the two gaps equal within
+   0.5px, >= 2px above and below); --ix from theme.js item 4 --- */
+/* pick tile (Drafts list): two centred lines beside the 1px edge line (centred in the 45px left of it) */
+html.retro .dfn{padding-right:1px}
+/* points tile: light figure with the 1px shadow */
+html.retro .dfs .dftl{text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
+/* position pill in the sheet's header: dark ink, tracking 0 */
+html.retro .pts .pz{color:var(--black)!important;border-radius:2px;letter-spacing:0!important;text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+/* Rosters, outlook tag (Contender ...): the ring stays, the label is centred on ink + shadow; same 23px height on a cap-trimmed line */
+html.retro .rox .rat{text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
+@supports (text-box:trim-both cap alphabetic){html.retro .rox .rat{text-box:trim-both cap alphabetic;line-height:1;padding:7.125px 9px}}
+/* Rosters, Taxi tag of the points order (Classic: 10.5px in a 15px ring of #3a4254, 1.6px under the ring): a T0 chip as FK / FL,
+   45% black, no ring, tracking 0 */
+html.retro .rox .txc{background:rgba(0,0,0,.45);color:var(--peri-lt);box-shadow:none;border-radius:2px;text-shadow:none;letter-spacing:0!important;text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+@supports (text-box:trim-both cap alphabetic){html.retro .rox .txc{text-box:trim-both cap alphabetic;line-height:1}}
+/* drafted pick tile (Paper Trail): as the Drafts tile, its two lines are centred in the 51px left of the edge line */
+html.retro .ptn:not(.ptn0){padding-right:1px}
+/* --- fit (nothing clipped, no line more than Classic) --- */
+/* Drafts, Original order between 760 and 1099px (ten 42.8px slots, 8px apart): "Anderson" is 45.6px in Martian Mono and Classic's
+   name box clips; here the name may run 1.4px into the gap on each side */
+html.retro .dfs .dfoi b{overflow:visible}
+/* Drafts board between 1100 and 1239px (93px cells at 1124): the fitter stops at 11px and then wraps at a space; "England Patriots"
+   is 83.6px in a 79px column there (Classic: one line at 12.5px). Tracking -.085em holds it on one line (77.4px) */
+@media(min-width:1100px) and (max-width:1239px){html.retro .dfs .dfcn b:not(#_){letter-spacing:-.085em!important}}
+/* Glossary: a bold term stays on one line (running text is wider here and broke "No QBs" in two at 360P) */
+html.retro :is(.pane-ro,.pane-df,.pane-pt) .key b{white-space:nowrap}

@@ -158,10 +158,8 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 | Leaderboards, Players, The Wire, Compare, phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every stat, position, filter, Position / Team, Pts / per game, the eight Compare sections, menus, Glossary) | `LIVE` 2026-11-11 ("Pass 2" below) | - |
 | Matchups, phones and desktop (360P / 402P / 440P / 1100 / 1440 / 1920; every week, Lineup / Optimal, Position / Slate, Lean / Detailed, Colors, FINAL / LIVE / PROJ, week menu) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
-| Rosters | NOT STARTED; it already gets the position palette, the badge segments and menus, the solid home / road and injury tiles and the chip ink centring from Game Day, and the bye-week colours from pass 2 | small (row surfaces, age flags) |
-| Stats, Team Hub, Drafts list | NOT STARTED | medium each (matrices and bars, SVG charts, pick tiles) |
-| Paper Trail | NOT STARTED, except the Picks tile digits (2026-11-11: TIMES TRADED, projected and drafted pick numbers are ink-centred) | medium (rows, sheets incl. the two-column trade rows, VIA column; see Known issues for what its fitters assume) |
-| Drafts desktop board | NOT STARTED | medium (position cells: the palette is there, cells and banners are not) |
+| Rosters, Drafts (list below 1100px and the board from 1100px) and Paper Trail (Picks, Players, the sheet with its two-column trade rows), phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every team, year, order, sort and colour mode, Glossary) | `LIVE` 2026-11-11 ("Pass 3" below) | - |
+| Stats, Team Hub | NOT STARTED | medium each (matrices and bars, SVG charts) |
 
 A tab that is NOT STARTED shows whatever the token overrides make of it.
 
@@ -226,6 +224,26 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
   the tail of "Q".
 - 2026-11-11 · theme.js item 5: Compare > Schedule right-hand seed chips are taken away from Classic's tile fitter · a Classic bug
   (below, "Pass 2") that CSS cannot undo.
+
+## Decisions (2026-11-11, pass 3: Rosters, Drafts, Paper Trail)
+
+- 2026-11-11 · Rosters, Drafts (list and desktop board) and Paper Trail (Picks, Players, sheet) themed, phones and desktop (section
+  "Pass 3") · the rest of Front Office.
+- 2026-11-11 · The three sections stand on a `--blue-2` plate (the Players / The Wire recipe) · Classic has no panel there: titles,
+  year buttons, the Picks / Players switch and Rosters' group heads stood on the ground.
+- 2026-11-11 · Head strips are `--blue-3` everywhere: Rosters' position-group heads, the round heads of Drafts and Paper Trail, the
+  sheet's season strip (as The Wire's column heads) · K and DEF as label text are 4.43 / 3.69:1 on the plate and 5.59 / 4.66:1 on the
+  strip; Classic's season strip is the page colour, which reads as "ground" here.
+- 2026-11-11 · Year buttons and the Picks / Players switch: unselected = a raised `--blue` button, selected = the badge (rule 4)
+  · they were Classic's white button with black text.
+- 2026-11-11 · Rosters team picker: selected = the badge; the other teams' pictures are dimmed by opacity alone · Classic uses
+  `--ink` as the selected fill and `filter:grayscale(1)` on the pictures (rule 8: no filter).
+- 2026-11-11 · A traded pick's banner on the Drafts board is the white ticket with black ink (the colours of the TIMES TRADED tile
+  and the FAAB tile); the VIA box of the list is a `--blue-3` chip with a yellow ring · one motif for "this changed hands"; Classic's
+  gold literals have no token here. Yellow was the alternative (louder: 25 of 40 cells carry a banner in 2026).
+- 2026-11-11 · Board cells: black ink at full strength · Classic dims four of the cell's lines to 70-82% ("QB" in the strip 3.83:1).
+- 2026-11-11 · theme.js item 6: Paper Trail's tile width, column widths and NFL slot edge by Martian Mono's glyph ink · Classic's
+  values are written inline by private fitters (below, "Pass 3").
 
 ## Mechanism ("always-current clone")
 
@@ -354,7 +372,10 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     text node into `content`). In an engine that rounds glyph advances to whole pixels (WebKitGTK; found by one probe) it
     also reads each element's font size (style, not layout) and adds the rounding as `--iw`; (5) Compare > Schedule (2026-11-11): an
     empty comment node in front of each right-hand seed chip and the fitter's inline styles removed, so Classic's tile fitter
-    leaves the chip alone (Classic bug, see "Pass 2"; no text or layout reads; remove when Classic's `ref()` skips these chips).
+    leaves the chip alone (Classic bug, see "Pass 2"; no text or layout reads; remove when Classic's `ref()` skips these chips); (6) Paper Trail > Picks
+    (2026-11-11): after every run of Classic's fitter (a change of `.ptv-k`'s style attribute) the tile width `--ptcw`, the column
+    widths `--ptca` / `--ptva` and the NFL slot's edge `--nx` are set again from the bearing table (CSS cannot replace a custom
+    property written inline on the same element; one layout read for the tiles' left edges; see "Pass 3").
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -569,6 +590,79 @@ phones (Classic's: "EFF" and later pills are reached by scrolling), sizes under 
 Classic's own (Compare chart axis: 10 svg units, 14.5px on a 440P screen), the Leaderboards rows (dividers only, no alternating
 shade: the rows do not run edge to edge).
 
+## Pass 3: Rosters, Drafts, Paper Trail (2026-11-11)
+
+theme.css PART 7, theme.js item 6 and ten more entries in item 4's list. Phones and desktop. Scoped to the three sections (`.rox`,
+`.dfs`, `.ptx`), their panes and the Paper Trail sheet (`.pts`).
+
+**Surfaces.** Each section is a `--blue-2` plate drawn with spread shadows (12px of plate, 2px black frame, 2px hard shadow, the
+glow), so no box moves; `.rox` has a 2px frame of its own in Classic, which becomes part of the plate. On the plate: raised cards
+are `--blue` (Rosters' team picker cells and Team assessment, Drafts' Original order and the desktop board panel), round panels
+keep Classic's alternating rows (`--blue` / `--blue-2` over the 1px `--blue-3` divider) under a `--blue-3` head strip, wells are
+`--blue-3` (the two inner boxes of Team assessment, an empty board cell, points tiles, the search field). Rosters' player rows are
+the lineup row of Game Day (`--blue-2`, black 1px frame), as on Players. The sheet is Classic's full-screen `--deck` panel
+(`--blue-2`); its season strip is `--blue-3`. The Glossary switch and text get the 8px plate on the three panes.
+
+**Controls.** Year buttons (`.dfyb`, `.ptyb`) and the Picks / Players switch (`.ptsw`): `--blue`, 4px corner, yellow label
+(7.69:1); selected = the badge through `--chalk: var(--seg-on); --ink: var(--white)` (the segment mechanism, no list of radio ids).
+Team picker `.rofb`: `--blue` cells on `--blue-3` grid lines, selected cell = `--badge` with the white 2px inner ring (twelve
+`#ro-N` pairs listed, as Classic lists them), other pictures at 50% opacity, no filter.
+
+**Position colours.** Drafts and Paper Trail write Classic's literals inline (`--pc:#f7739c` ...); attribute selectors re-point the
+three that differ from the palette (QB, WR, TE). Pick tiles (`.dfn`, `.ptn`), the sheet's position pill (`.pz`) and the board cells
+(`.dfc`) are the `--pos-*` fill with black ink; tiles carry the lineup tile's 1px black edge line and their lines are centred in
+the space left of it.
+
+**Literal Classic colours overridden** (everything else arrives through the tokens):
+
+| Classic | Where | Here |
+|---|---|---|
+| `var(--ink)` used as a FILL | team picker selected cell, Team assessment boxes `.ral` / `.rak span` | the badge; `--blue-3` wells |
+| `filter:grayscale(1); opacity:.55` | team picker, other teams' pictures | `opacity:.5`, no filter |
+| `#6fc9a4` `#d4af6a` `#e0838f` | average age in the group heads `.ga b` | `--win` / `--yellow` / `--loss` |
+| `#9aa3b5`, `#ff5d73` | Taxi squad and Injured reserve heads (`--pc`) | `--peri-lt`, `--loss` (IR was 4.47:1 on the strip) |
+| `#3fd69b` `#d4af6a`, `--sky` | outlook tag `.rat` | `--win` / `--yellow` / `--peri-lt` (`--sky` was 4.15:1) |
+| `rgba(63,214,155,.16)` + ring, `rgba(255,93,115,.15)` + ring | week result tile `.ralh b` | solid `--win` / `--loss`, black ink (the result tiles of Game Day) |
+| `#3fd69b` / `#ff7d8e` | Strengths / Concerns heads and bullets | `--win` / `--loss` ("Concerns" was 4.30:1) |
+| `#3a4254` ring | Taxi tag `.txc` | 45% black chip, `--peri-lt`, no ring (a T0 chip as FK / FL) |
+| `#0b0e14`, `#0f1218` | pick tile, pill and board cell ink | black |
+| `rgba(0,0,0,.12)` ring, `opacity` .70 to .82 on four lines | board cells | 1px black frame, full strength |
+| `rgba(238,240,244,.035)` | empty board cell `.dfc0` | `--blue-3` |
+| `--via-bar` `#e6cf96` and its three literals | traded-pick banner `.dfct` | white, black line and ink |
+| `--via-bg` / `--via-line` gold tints | VIA box of the list `.dfvia` (from 760px) | `--blue-3`, `--yellow` ring |
+| `rgba(0,0,0,.4)` + a blurred `rgba(0,0,0,.25)` shadow | Paper Trail pictures | white 1px ring, black 1px hard shadow (ring ink still 38px wide) |
+| `--pg` as a strip fill | sheet season strip `.ptsy` | `--blue-3` |
+
+**Paper Trail > Picks by glyph ink** (the item left by pass 1). Classic's `ptxFit` / `tileSnap` take the TIMES TRADED tile's width
+from `BC7` (Barlow Condensed's digit outlines), the TIMES TRADED and VIA column widths, the centring of the two heads and of the
+coach names, and the NFL slot's right edge from a canvas; the canvas reports glyph ink in Chromium and the advance box in
+WebKitGTK, and knows nothing of the theme's word spacing. Here:
+- *Heads and coach names* (CSS): Classic's inline transform is off; each line is centred by its first and last glyph (`--ix`,
+  item 4) less the tracking after the last letter and the 1px shadow, the same in every engine.
+- *Tile width, column widths* (theme.js item 6): `--ptcw` = widest count's Martian digit ink + 16px on Classic's unit grid
+  (2026: "3" = 7.37px, tile 23.5px on a 440P screen, 8.1 to 8.2px each side; Classic's 22.3px left 7.5 to 7.6px); `--ptca` =
+  max(tile, TIMES / TRADED ink: 34.19px, Classic's canvas gave 34.41px); `--ptva` = max(38px, widest coach ink, VIA ink). The tiles'
+  left edges go back on the unit grid for the new width. Vertical placement and the digits' centring (`--ix`, pass 1) are untouched.
+- *NFL slot* (`--nx`, a `translate` beside Classic's transform): + the word spacing the canvas did not see (the body's -.22em
+  = 3.08px per space: Classic left "PK 3" 2.4px short of the name column's edge), + the last glyph's right bearing where the
+  canvas gave the advance box, - the advance rounding of an engine that lays text out on whole pixels.
+- Measured from screenshots (`ptm3.py`), {ptm}.
+
+**Chips and tiles (rule 11).** Pick tiles: tracking 0, each line centred by `--ix`. Points tile `.dftl`, outlook tag `.rat`:
+`--ix` - .05em - 1px (light ink with the shadow); the outlook tag keeps its 23px height on a cap-trimmed line (7.125px above and
+below). Taxi tag and position pill: T0, tracking 0, `--ix`. VIA box of the Drafts list (from 760px): a T0 chip, 17px tall (Classic 16px, rows
+unchanged at 50px), `--ix` from the "V" of VIA to the name's last letter shared between its two side paddings (with the shadow
+it had 0.8px under the capitals).
+
+**Fit.** Original order between 760 and 1099px: "Anderson" (45.6px) may run 1.4px into the 8px gap on each side (Classic's name
+box clips at 42.8px). Board between 1100 and 1239px: last names at tracking -.085em, so the fitter keeps "England Patriots" on
+one line (11.5px; Classic 12.5px on one line, the theme's default tracking wrapped it). Glossary: a bold term does not break.
+
+**Not changed on purpose.** Row heights and grids, Classic's fitters (`nameFit`, `holdFit`, `slotFit`, `trFit`, the board's name
+fitter), the trade rows' text forms (a pick shows its full form where that fits: "2026 R2 (Reverse Apache Master)" on a 440P
+screen), the plate standing flush under the navigation band and against the Glossary plate (as Players), the 3px black divider
+before the GM column, sizes under 11px that are Classic's own (the Taxi tag, 10.5px).
+
 ## Known issues
 
 
@@ -585,10 +679,10 @@ shade: the rows do not run edge to edge).
   0.33px at 3x. WebKitGTK rounds glyph advances to whole pixels (Safari does not); `theme.js` measures the advance
   once and compensates.
 - **Not themed yet, contrast.** The dark-ink audit also lists text under 4.5:1 (3:1 large) on the tabs that are NOT
-  STARTED; per tab, worst state at 440P (2026-11-11, after pass 2): Stats 91 (matrix cells 4.3 to 4.4:1), Team Hub 73,
-  Standings 44 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"), Paper
-  Trail 27, Rosters 15 (39 before the bye-week colours of pass 2), Drafts 0 (42 at 1440: the desktop board). Matchups,
-  Playoffs, Leaderboards, Players, The Wire, Compare 0.
+  STARTED; per tab, worst state at 440P (2026-11-11, after pass 3): Stats 91 (matrix cells 4.3 to 4.4:1), Team Hub 73, Standings 44 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"). Rosters, Drafts, Paper Trail, Matchups, Playoffs,
+  Leaderboards, Players, The Wire, Compare 0.
+- **Plates meet.** The section plate ends 2px into the Glossary plate's frame and stands flush under the navigation band (Players
+  and The Wire since pass 2, the three tabs of pass 3 alike): Classic leaves 16px / 24px there and the plates need 16px / 26px.
 - **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
   values: the mug-to-count and label-to-mug gaps are off by a fraction of a pixel here. `BC7` (Paper Trail digit
   outlines) is Barlow Condensed 700. **Fixed for the Picks tile digits (2026-11-11):** Classic's horizontal offsets are
@@ -596,11 +690,11 @@ shade: the rows do not run edge to edge).
   440P and 402P layouts, counts 1 / 2 / 3 / 4 and injected 10 / 12 / 47: left and right gaps within 0.07px (before: "1" 5.09px
   apart, "2" 1.36px, "3" 1.69px), top and bottom within 0.28px; projected pick numbers within 0.07px including their shadow
   (before up to 2.1px), drafted pick tiles 0.11px (before up to 1.6px). Tile sizes and positions are Classic's.
-  **Left for the Paper Trail pass:** the tile's width (`--ptcw` = widest Barlow digit ink + 16px, so Martian digits have 7.7 to
-  8.4px each side instead of 8px) and the TIMES TRADED column width come from `BC7`; `tInk` (canvas) still centres the
-  TIMES / TRADED and VIA headers, the coach names and the NFL slot's right edge, which is right where the canvas reports glyph
-  ink (Chromium) and by advance box where it does not (WebKitGTK; Safari unverified); the vertical placement relies on the
-  digits' flat height being .70em, which holds for Martian Mono with `size-adjust`.
+  **Done in pass 3 (2026-11-11):** the tile width, the two column widths, the heads, the coach names and the NFL slot's edge
+  follow Martian Mono's glyph ink ("Pass 3"). Left: `slotFit`'s 12px test and `nameFit` still measure through Classic's canvas
+  (a slot is judged up to 3px wider than it is, so a slot can be dropped a little early; none of the 2026 picks' slots is at
+  360P / 402P / 440P today), and the
+  vertical placement relies on the digits' flat height being .70em, which holds for Martian Mono with `size-adjust`.
 - **Streak tile in WebKitGTK:** "L" streaks sit up to 1.6px right of centre (Classic there: 0.6px); "W" streaks are
   fine. Cause: Classic's tile fitter centres by canvas ink, and WebKitGTK's canvas reports the advance box, not the
   ink (CLAUDE.md, Gotchas). Chromium: ≤ 0.5px. Safari unverified.
@@ -642,6 +736,10 @@ shade: the rows do not run edge to edge).
   (all twelve tabs at 440P and 1440), contrast 0, frame gaps 0, clip / ellipsis / extra lines / sideways scroll / text smaller
   than Classic's 0; Standings (360P / 402P / 440P / 1440), Matchups and Playoffs (440P / 1440) boxes identical to the build before
   the pass; tile check 0.
+- **Pass 3 (Rosters, Drafts, Paper Trail), 2026-11-11:** same audits, states in `darkink3.py` / `gapf3.py` / `ovf3.py` (every
+  team, colour mode, order and sort; every draft year, list and board; Picks of every year, Players, a pick sheet with trade
+  steps, a drafted pick's sheet, a player sheet; Glossary) and `ptm3.py` (Paper Trail ink). Chromium at 360P, 402P, 440P, 874L,
+  956L, 1440; WebKitGTK at the 402P / 440P layouts and 1440. Result: dark-ink 0 (all twelve tabs at 440P and 1440 in Chromium, 123 states each; the three tabs at every other width and in WebKitGTK), contrast 0, frame gaps 0 (the VIA box at the 874L layout was fixed late and re-run in both engines), clip / ellipsis / extra lines / sideways scroll / text smaller than Classic's 0; the seven shipped tabs' boxes identical to the build before the pass (76 states: Standings 360P / 402P / 440P / 1440, the other six at 440P / 1440); tile check 0 (36 runs).
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).
