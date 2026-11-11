@@ -160,7 +160,7 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 | Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Rosters, Players, Compare | NOT STARTED; they already get the position palette, the badge segments and menus, the solid home / road and injury tiles and the chip ink centring from Game Day | small each (row surfaces, age flags, past-bye text, matrices) |
 | Stats, Team Hub, Drafts list | NOT STARTED | medium each (matrices and bars, SVG charts, pick tiles) |
-| Paper Trail | NOT STARTED | medium (rows, sheets, VIA column; see Known issues for what its fitters assume) |
+| Paper Trail | NOT STARTED, except the Picks tile digits (2026-11-11: TIMES TRADED, projected and drafted pick numbers are ink-centred) | medium (rows, sheets incl. the two-column trade rows, VIA column; see Known issues for what its fitters assume) |
 | Drafts desktop board | NOT STARTED | medium (position cells: the palette is there, cells and banners are not) |
 
 A tab that is NOT STARTED shows whatever the token overrides make of it.
@@ -201,6 +201,9 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
   "@" under 2px top and bottom in every engine.
 - 2026-11-11 · "Week rank N" is a figure, not a tile · rule 5 (tile no taller than the 8px capitals beside it) and rule 11 (2px
   above and below the digit) cannot both hold for a digit worth reading.
+- 2026-11-11 · Paper Trail > Picks: tile digits centred by Martian Mono's own glyph ink (theme.css block "Paper Trail > Picks",
+  theme.js item 4) · Nicklaus, iPhone: TIMES TRADED "1" sat right of centre (measured 10.4px / 5.3px in a 23px tile; "2" 8.5 / 7.2).
+  Classic's `tileSnap` places the digit by `BC7`, Barlow Condensed's outlines.
 - 2026-11-11 · Selected segments, team switch and menu rows are the badge everywhere those components occur (not only Game Day)
   · they are one component; rule 4.
 
@@ -513,7 +516,16 @@ sticky points band (its compact state uses 10 / 10.5px labels, Classic's), sizes
   Drafts 0, Leaderboards 0. Matchups 0, Playoffs 0.
 - **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
   values: the mug-to-count and label-to-mug gaps are off by a fraction of a pixel here. `BC7` (Paper Trail digit
-  outlines) is Barlow Condensed 700: Paper Trail's TIMES TRADED tiles will be wrong until that tab is themed.
+  outlines) is Barlow Condensed 700. **Fixed for the Picks tile digits (2026-11-11):** Classic's horizontal offsets are
+  switched off (`.ptxn b` inline `left`, `.ptpj b` inline transform) and the digits are centred by `--ix`; WebKitGTK at 3x,
+  440P and 402P layouts, counts 1 / 2 / 3 / 4 and injected 10 / 12 / 47: left and right gaps within 0.07px (before: "1" 5.09px
+  apart, "2" 1.36px, "3" 1.69px), top and bottom within 0.28px; projected pick numbers within 0.07px including their shadow
+  (before up to 2.1px), drafted pick tiles 0.11px (before up to 1.6px). Tile sizes and positions are Classic's.
+  **Left for the Paper Trail pass:** the tile's width (`--ptcw` = widest Barlow digit ink + 16px, so Martian digits have 7.7 to
+  8.4px each side instead of 8px) and the TIMES TRADED column width come from `BC7`; `tInk` (canvas) still centres the
+  TIMES / TRADED and VIA headers, the coach names and the NFL slot's right edge, which is right where the canvas reports glyph
+  ink (Chromium) and by advance box where it does not (WebKitGTK; Safari unverified); the vertical placement relies on the
+  digits' flat height being .70em, which holds for Martian Mono with `size-adjust`.
 - **Streak tile in WebKitGTK:** "L" streaks sit up to 1.6px right of centre (Classic there: 0.6px); "W" streaks are
   fine. Cause: Classic's tile fitter centres by canvas ink, and WebKitGTK's canvas reports the advance box, not the
   ink (CLAUDE.md, Gotchas). Chromium: ≤ 0.5px. Safari unverified.

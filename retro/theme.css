@@ -448,6 +448,18 @@ html.retro .hrk .ch::after{content:attr(data-tx);position:absolute;inset:0;displ
 html.retro .ch,html.retro .ch .ct{font-style:normal}
 html.retro :is(.mres,.pp.sm,.ch:not([data-oh])) .ct{letter-spacing:0!important}
 html.retro .lus-o .mcr.ltot:not(.lsb):not(#_){box-shadow:none!important}
+
+/* ================= Paper Trail > Picks: tile digits (2026-11-10; the rest of the tab is NOT themed yet) =================
+   Classic centres these digits for Barlow Condensed: TIMES TRADED by its BC7 outline table (tileSnap sets an inline left on the
+   <b>), the projected pick number by a canvas measurement (pjFit, inline transform), the drafted pick tile by its advance box.
+   In Martian Mono the "1" then sits 2.5px right of centre in its tile (10.4px / 5.3px), "2" 0.7px, "1.01" up to 1px.
+   Here: Classic's horizontal offsets are switched off and each digit run is centred by its own glyph ink (--ix, theme.js item 4,
+   text only): a centred shrink-to-fit box moves by half its text-indent. Vertical placement stays Classic's (the digits' flat
+   height is .70em in both faces). Tile widths, heights and positions are Classic's, untouched. */
+html.retro .pane-pt .ptxn b{left:0!important}
+html.retro .pane-pt .ptpj b{transform:none!important}
+html.retro .pane-pt :is(.ptxn b,.ptn b,.ptn span){text-indent:calc(var(--ix,0em) - .05em + var(--iw,0px))}
+html.retro .pane-pt .ptpj b{text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}   /* light figure with the 1px shadow (rule 11: ink + shadow centred) */
 /* comparison card, team names: Classic's 21px Barlow Condensed holds "Nuts in the Face" on one line in the 150px column of the
    360P layout and in the desktop side column; Martian Mono is a third wider, so the name is 17px there and wraps only where Classic's does */
 @media(max-width:440px),(min-width:1100px){html.retro .mcard .mus>b{font-size:17px}}

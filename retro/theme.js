@@ -97,7 +97,7 @@
   run(document);
   if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
 })();
-/* 4. Ink centring of the chips and segments on Matchups and Playoffs (theme.css PART 5,
+/* 4. Ink centring of the chips and segments on Matchups and Playoffs, and of the Paper Trail > Picks tile digits (theme.css PART 5,
       "chips"; RETRO.md rule 11: left and right gaps
       between ink and frame equal within 0.5px).
       Why a script: a chip's text is centred by its advance box, and CSS cannot see which glyphs the text starts and ends with. Martian
@@ -114,7 +114,8 @@
   // [selector, weight the bearings are taken at, text is shown in capitals, also copy the text to data-tx ("Week rank" figure, see theme.css)]
   var LIST=[['.cnm .gp .gha.ht',700,0],['.cr.lu .flg',700,0],['.cnm b .inj',700,0],['.mby',400,0],['.mcr em .hrt',700,1],['.mpk .stk',500,0],['.g4 .gsd',600,0],
     ['.hres',700,0],['.g4 .g4vs',700,1],['.slg .ss',700,1],['.pseg label',600,0],['.msw label',600,0],['.dd summary .ddk',700,0],['.mop .mt',700,0],['.dxl>u',700,0],['.stc b',700,1],['.stc i',400,0],['.stc em',700,0],
-    ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],];
+    ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],
+    ['.pane-pt .ptxn b',700,0],['.pane-pt .ptn b',700,0],['.pane-pt .ptn span',700,0]];   // Paper Trail > Picks tile digits (see theme.css)
   var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
   function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
   function adv(w,fs){var k=w+' '+fs;if(P[k]!==undefined)return P[k];var e=document.createElement('span');e.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap;font:'+w+' '+fs+'px/1 "Martian Mono"';
