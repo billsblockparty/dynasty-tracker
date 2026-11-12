@@ -4,7 +4,17 @@
       box and is cut (it is fitted again only on the next resize). CSS cannot re-run a fitter; this calls Classic's own
       window.__fitAll(). Remove once Classic re-fits by itself. */
 (function(){
-  function refit(){requestAnimationFrame(function(){requestAnimationFrame(function(){if(window.__fitAll)window.__fitAll()})})}
+  /* Desktop (pass 5, 2026-11-12): __fitAll() runs every resize handler, and one of them draws the table and the cards again a moment
+     later (debounced), after the fitters have run. In WebKitGTK about one press in three then left the new table's rank chips
+     unsized, and one in ten the cards' streak tiles (Classic alone: 0 of 20 presses; it never calls __fitAll() without a real
+     resize). After the redraw has settled (350ms, again at 900ms and 2s): a streak tile still unsized -> Classic's own
+     window.rrFit(); a table chip still unsized -> Classic's own window.tileFit(). Neither draws anything again. The checks are
+     selector matches, no layout read; desktop widths only, and only where Classic's fitter can size a tile at all (text-box trim). */
+  var TB=window.CSS&&CSS.supports&&CSS.supports('text-box','trim-both cap alphabetic');
+  function chips(){if(!TB||innerWidth<1100)return;
+    if(window.rrFit&&document.querySelector('.board .r .sk:not([style*="padding"])'))window.rrFit();
+    if(window.tileFit&&document.querySelector('.dtt td .ch:not([style*="padding"])'))window.tileFit()}
+  function refit(){requestAnimationFrame(function(){requestAnimationFrame(function(){if(window.__fitAll)window.__fitAll();setTimeout(chips,350);setTimeout(chips,900);setTimeout(chips,2000)})})}
   document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#bh,#bm');if(t)refit()},true);
 })();
 /* 2. Ink centring of the FAAB tile ("$" + digits) and of the CSS rank tile's digit, on the device-pixel grid.
@@ -136,7 +146,9 @@
     ['.cmx .nfl',700,0],['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1],
     // pass 4 (Stats, Team Hub): chips and tiles of the two panes; a fifth field = also write the character count as --nc (theme.css PART 8, "rank chips")
     [':is(.pane-sx,.thx2) :is(.ch,.tqt)',600,0,0,1],[':is(.pane-sx,.thx2) .hx-t',700,1],['.pane-sx .txft',700,0],['.pane-sx .dch2 .dwk',700,1],['.pane-sx .gmv:is(.cl,.bo)',700,0],['.thx2 .tqid .stk',700,0],
-    [':is(.pane-sx,.thx2) :is(.bnt,.bop) em',700,0],['.pane-sx .hx-all',700,1],[':is(.pane-sx,.thx2) .pz',700,0],[':is(.pane-sx,.thx2) .wl',700,0],['.pane-sx .pkc',700,0],['.pane-sx .dtag',700,1],['.pane-sx .txw',700,1],['.pane-sx .pp:not(.sm)',700,0],[':is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx)',600,0]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
+    [':is(.pane-sx,.thx2) :is(.bnt,.bop) em',700,0],['.pane-sx .hx-all',700,1],[':is(.pane-sx,.thx2) .pz',700,0],[':is(.pane-sx,.thx2) .wl',700,0],['.pane-sx .pkc',700,0],['.pane-sx .dtag',700,1],['.pane-sx .txw',700,1],['.pane-sx .pp:not(.sm)',700,0],[':is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx)',600,0],
+    // pass 5 (Standings on desktop): the fitter-sized rank chips and the cards' streak tile (--nc for the drawn tile, theme.css PART 9), the table's streak and Proj finish tiles
+    ['.pane-st .ch',600,0,0,1],['.dtt .dsk',700,0],['.board .r .sk',700,0,0,1],['.dtt .rkb',600,0]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
   var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
   function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
   function adv(w,fs){var k=w+' '+fs;if(P[k]!==undefined)return P[k];var e=document.createElement('span');e.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap;font:'+w+' '+fs+'px/1 "Martian Mono"';

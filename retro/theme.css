@@ -934,3 +934,65 @@ html.retro .thx2 .tqdp{grid-template-columns:repeat(6,round(down,calc((100% - 30
    is Trying" and "Bill's Block Party" on a 360P screen and "Reverse Apache Master" on a 402P screen, which Classic shows whole.
    Tracking -.09em there (the Drafts board's remedy): the names Classic shows whole are whole again */
 @media(max-width:480px){html.retro .pane-sx .txm>span{letter-spacing:-.09em!important}}
+
+/* ================= PART 9: STANDINGS on desktop (>= 1100px) and the Standings Glossary, pass 5 (2026-11-11) =================
+   Everything but the Glossary plate is inside @media(min-width:1100px): the phone layouts (360P / 402P / 440P / 874L) keep the
+   rules of PART 4 untouched. 956L lays out at 1124 CSS px and is a desktop layout. */
+/* --- Glossary: the switch and the text stood on the orange end of the ground (yellow label 3.2:1, text 2.0 to 4.3:1). The 8px plate
+   of the other eleven tabs, drawn with spread shadows, so no box moves --- */
+html.retro .pane-st :is(.glw,.key){background:var(--blue-2);box-shadow:0 0 0 8px var(--blue-2),0 0 0 10px var(--black),2px 2px 0 10px var(--black)}
+/* its Hide / Show switch: selected = the badge (rule 4), as on the other eleven tabs (PART 5 leaves Standings' segments out because
+   the two switches above the board are themed by name; this third one kept Classic's white segment with black text) */
+html.retro .pane-st .pseg.glc{--chalk:var(--seg-on);--ink:var(--white)}
+/* a bold term does not break, as on the other tabs ("W / L chip" broke after the slash on a 402P screen and at 1100px; Classic holds it on one line) */
+html.retro .pane-st .key b{white-space:nowrap}
+@media(min-width:1100px){
+/* --- desktop table (.dtp): the board's panel (4px hard shadow, inner glow above the rows), head strip --blue-3 (as The Wire's and
+   the round heads), row dividers --blue-3 (rule 1; Classic's body-wide rule makes every border the frame colour). The 4px rule before
+   the simulation columns stays the frame colour: black is 1.9 to 2.6:1 against the rows, the ground's purple 1.2 to 1.5:1 --- */
+html.retro .dtp{box-shadow:4px 4px 0 0 var(--black)!important}
+html.retro .dtp::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro .dtp .dtt thead th{background:var(--blue-3)}
+html.retro .dtp .dtt tbody tr.dtr td:not(#_){border-bottom-color:var(--blue-3)!important}
+/* simulation odds: Classic's literal gold (#1, #e8c15a) is the palette's yellow, as the bye column beside it (Classic: two golds);
+   playoffs stays white (Classic's own choice) */
+html.retro .dtt td.c1{color:var(--yellow)}
+/* streak tile: the solid result tile of the cards (.sk): black ink, no ring, 1px hard shadow; T0, ink centred by --ix (theme.js item 4).
+   Classic's 16% tint carried the loss ink at 3.68:1 */
+html.retro .dtt .dsk{border-radius:2px;box-shadow:1px 1px 0 0 var(--black);letter-spacing:0!important;text-shadow:none;text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+html.retro .dtt .dsk.w{background:var(--win);color:var(--black)}
+html.retro .dtt .dsk.l{background:var(--loss);color:var(--black)}
+/* --- one-team-per-row cards: the divider before the Nerd column is a divider (--blue-3), not Classic's --line-strong (white here) --- */
+html.retro #list.board>.tcard>.r.r::after{border-left-color:var(--blue-3)}
+/* --- rank chips the fitter sizes (table cells, stat lines), rule 11. The recipe of PART 8: rank 1 = solid yellow, last = solid
+   --loss, black ink, no ring; the tile is drawn round the digit by .ct::before (centred on the glyph ink through --nc / --ix,
+   theme.js item 4) and is larger than Classic's fitted box: 1px on each side (--ce) and 1.5px above and below (--cv). The fitter leaves 1.75px
+   above and below the digit and 2.25px beside "10" in these 10 to 11px chips, and splits an odd half pixel unevenly (1.5px / 2.5px paddings):
+   with 1px the nearer edge measured 1.5 to 1.8px in WebKitGTK. Rule 11 wins over rule 5 here by 1.5px, as in PART 8. The chip's layout box is Classic's; nothing moves. --- */
+html.retro .pane-st .ch.gold[style*="padding"]:not(#_){color:var(--black)!important}
+html.retro .pane-st .ch.last[style*="padding"]:not(#_){color:var(--black)!important}
+html.retro .pane-st .ch[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0;--ce:1px;--cv:1.5px;overflow:visible!important}   /* Classic clips the table's chips (overflow:hidden): the drawn tile is larger than the chip */
+html.retro .pane-st .ch[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--cv,0px));bottom:calc(-1*var(--cv,0px));width:calc(100% + 2*var(--ce,0px));
+  margin-left:calc((var(--nc,1)*.525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
+  /* an engine that rounds glyph advances to whole pixels (--rnd) rounds the ZOOMED advance: --cz is the row's zoom (1.1 in the cards, 1 in the table) */
+  margin-left:calc(((var(--nc,1) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em*var(--cz,1),1px)/var(--cz,1) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
+  background:rgba(0,0,0,.45);border-radius:2px}
+html.retro #list.board>.tcard>.r{--cz:1.1}
+/* --- streak tile of the cards (.sk, sized by Classic's fitter): the same recipe. Classic centres "W2" / "L5" by a canvas measurement
+   (the advance box in WebKitGTK: 5 of 10 tiles had 2px between their left and right gaps); the tile is drawn round the glyph ink,
+   .5px taller above and below (the fitter's uneven half pixel left 1.5px above one tile) --- */
+html.retro .board .r .sk[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0;--cv:.5px;overflow:visible!important}
+html.retro .board .r .sk[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--cv,0px));bottom:calc(-1*var(--cv,0px));width:100%;
+  margin-left:calc((var(--nc,2)*.525em - 100%)/2 - var(--ix,0em)/2);
+  margin-left:calc(((var(--nc,2) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em*var(--cz,1),1px)/var(--cz,1) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2);
+  border-radius:2px;box-shadow:1px 1px 0 0 var(--black)}
+html.retro .board .r .sk.w[style*="padding"] .ct::before{background:var(--win)}
+html.retro .board .r .sk.l[style*="padding"] .ct::before{background:var(--loss)}
+/* --- table: the Proj finish tile's figure centred by its glyph ink (--ix); the last column keeps 9px to the panel's frame between
+   1100 and 1239px (Classic: 3px there, so the Playoffs figures and their shadow stood 2px from the frame; DESIGN.md §8 lists the
+   outer columns as open for Classic). The 6px come out of the TEAM column --- */
+html.retro .dtt .rkb{text-indent:calc(var(--ix,0em) + var(--iw,0px));letter-spacing:0!important}
+html.retro .dtp .dtt tr:not(.dtl,.dtb)>:is(th,td):last-child:not(#_):not(.dsim){padding-right:9px!important}
+html.retro .pane-st .ch.gold[style*="padding"] .ct::before{background:var(--yellow)}
+html.retro .pane-st .ch.last[style*="padding"] .ct::before{background:var(--loss)}
+}

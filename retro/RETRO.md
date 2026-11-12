@@ -8,7 +8,8 @@ updates). BBP only; not ported to YILM.
 
 ## Isolation (hard rules)
 
-1. All Retro code lives in `retro/`: `build.py`, `template.html`, this file.
+1. All Retro code lives in `retro/`: `build.py`, `template.html`, this file (and, for the tracker theme below, `theme_build.py`,
+   `theme.css`, `theme.js`, `wordmark.svg`, `wordmark_gen.py`, the `favicon*` files, `fonts/`; `qa/` holds development audits only).
 2. `retro/build.py` only reads `pipeline/` (as text / JSON; it never imports or runs a pipeline script) and only
    writes `site/retro/`. It shares no CSS, JS or fitting code with Classic.
 3. Nothing under `pipeline/` and nothing in Classic's HTML/CSS/JS is edited for Retro. Classic has no link to Retro.
@@ -119,7 +120,28 @@ updates). BBP only; not ported to YILM.
 No `filter` on any container. iOS Safari re-rasterises a filtered ancestor at low resolution after each animation,
 so everything inside goes blurry. Soft focus therefore comes from the text halo, and the wash from the
 saturation-blend overlay. The only `filter` on the page is the `drop-shadow` on the ODL badge (`.mk`), which holds
-nothing but its own two lines of text. Keep it that way.
+nothing but its own drawn mark (one small inline svg since 2026-11-12; two lines of text before). Keep it that way.
+
+## ODL badge and favicon (2026-11-12)
+
+- **Badge** (`.mk` in the header): the plate is unchanged CSS (gradient `--badge-hi` to `--badge-lo`, white 2px border, periwinkle
+  hairline, hard shadow, the same box: 67.36 x 53.06px at 402 wide, 139.67 x 110px at 1280 x 800). Its two lines are no longer
+  Martian Mono text: they are drawn in the tracker wordmark's letterforms (option C, the stepped title; `wordmark_gen.py`), as one
+  inline svg (`.mk-g`, viewBox 127 x 100 = the plate, out of flow so the plate keeps its box). ODL: cap 46, white, black outline
+  (1.6 outside), two hard steps (`--orange` at 3 / 3, `--peri` at 6 / 6). DYNASTY: cap 19, `--yellow`, the outline only: at 8 to
+  10px a step would close its counters. Tokens only (`--white --yellow --orange --peri --black`), no new token.
+- **New letters** in `wordmark_gen.py` `letters()`: O and D (the U's bowl closed; D keeps a flat left side), S (two half bowls with
+  the G's arm ends), N (two stems and a straight diagonal, square corners as T H E L), Y (a half-height U on a centred stem).
+  `wordmark.svg` itself is unchanged (`wordmark_gen.py C` still reproduces it byte for byte).
+- **Favicon:** the square plate with ODL alone (white, black outline, one orange step; slimmer stems so the counters stay open at
+  32px). `retro/favicon.svg` (64 x 64, literal token values: a favicon cannot read the page's custom properties), `favicon-32.png`,
+  `favicon-180.png` (apple-touch-icon: opaque, on `--purple`). The loop page had no icon before; Classic has none. At 16px the
+  three letters are a block of texture, not readable letters (see "Known issues / cleanup").
+- **Single source:** `python3 retro/wordmark_gen.py apply` writes `retro/favicon.html` (three self-contained `<link>` tags, data URIs)
+  and the marked blocks of `template.html` (`<!--ICON-->`, `<!--MK-->`, `/*MK-CSS*/`) from the committed files. The builds read the
+  committed results only: `build.py` is unchanged (the links and the svg are part of the template, so `tv` changes with them);
+  `theme_build.py` reads `favicon.html` (patch 9). After changing a letter or the icon: `wordmark_gen.py icon > retro/favicon.svg`,
+  `python3 retro/qa/icons_png.py`, `wordmark_gen.py apply`, rebuild, `retro/qa/loop.py badge`.
 
 ## Auto-update (no reload)
 
@@ -153,15 +175,15 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 
 | Tab | Status | Effort left |
 |---|---|---|
-| Standings, phones (360P / 402P / 440P; Dumb, Nerd, H2H, Median) | `LIVE` 2026-11-09 | - |
-| Standings, desktop (>= 1100px) | NOT STARTED (token overrides and the CSS rank tiles only) | small |
+| Standings, phones (360P / 402P / 440P / 874L; Dumb, Nerd, H2H, Median) | `LIVE` 2026-11-09; Glossary 2026-11-12 | - |
+| Standings, desktop (>= 1100px, incl. 956L: the table, the one-team-per-row cards with the Nerd column, Glossary; 1100 / 1240 / 1440 / 1920) | `LIVE` 2026-11-12 ("Pass 5" below) | - |
 | Leaderboards, Players, The Wire, Compare, phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every stat, position, filter, Position / Team, Pts / per game, the eight Compare sections, menus, Glossary) | `LIVE` 2026-11-11 ("Pass 2" below) | - |
 | Matchups, phones and desktop (360P / 402P / 440P / 1100 / 1440 / 1920; every week, Lineup / Optimal, Position / Slate, Lean / Detailed, Colors, FINAL / LIVE / PROJ, week menu) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Rosters, Drafts (list below 1100px and the board from 1100px) and Paper Trail (Picks, Players, the sheet with its two-column trade rows), phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every team, year, order, sort and colour mode, Glossary) | `LIVE` 2026-11-11 ("Pass 3" below) | - |
 | Stats (all 17 sections, every toggle, Glossary) and Team Hub (every team, Data and Trends, every week, Glossary), phones and desktop (360P / 402P / 440P / 874L / 956L / 1440) | `LIVE` 2026-11-11 ("Pass 4" below) | - |
 
-All twelve tabs are themed. Left: Standings on desktop and the Standings Glossary (pass 5).
+**All twelve tabs are themed, phones and desktop (2026-11-12).** What is still open is listed under "Known issues / cleanup".
 
 ## Decisions (Nicklaus, 2026-11-09)
 
@@ -270,6 +292,28 @@ All twelve tabs are themed. Left: Standings on desktop and the Standings Glossar
 - 2026-11-11 · Team Hub hero: the seed tile is the Standings rank tile (rule 6), not Classic's numeral art.
 - 2026-11-11 · Corners 4px on cards and wells, 2px on tiles (Classic 5 to 12px).
 
+## Decisions (2026-11-12, pass 5: Standings on desktop, Glossary, ODL badge and favicon)
+
+- 2026-11-12 · Standings on desktop themed (section "Pass 5") · the last layout that only had the token overrides.
+- 2026-11-12 · Desktop Standings rank chips (table cells and stat lines): rank 1 = solid yellow, last = solid `--loss`, black ink, no
+  ring; the tile is drawn round the digit, 1px wider on each side and 1.5px taller above and below than Classic's fitted chip · the
+  recipe of pass 4; Classic's fitter leaves 1.75px above and below the digit and 2.25px beside "10" in a 10 to 11px chip, and a 1px
+  ring inside that is under rule 11. **The phone layouts keep the ringed chip of 2026-11-09** (not in this pass's scope; see cleanup).
+- 2026-11-12 · Table streak tile = the cards' solid result tile (black ink, 1px hard shadow) · Classic's 16% tint carried the loss
+  ink at 3.68:1.
+- 2026-11-12 · Table head = a `--blue-3` strip; row dividers `--blue-3`; the 4px rule before the simulation columns stays the frame
+  colour (black) · rule 1; black is 1.9 to 2.6:1 against the rows, the ground's purple (Classic's stated intent: "the page colour")
+  would be 1.2 to 1.5:1.
+- 2026-11-12 · #1 odds are `--yellow` (Classic's literal gold), as the bye column; playoffs odds stay white (Classic's choice).
+- 2026-11-12 · Table, 1100 to 1239px: the last column keeps 9px to the panel's frame (Classic 3px); the 6px come out of TEAM · the
+  Playoffs figures with their shadow stood 2px from the frame.
+- 2026-11-12 · Standings Glossary: the 8px plate of the other tabs behind the switch and the text, at every width; its Hide / Show
+  switch selects to the badge · the label was 3.2:1 and the text 2.0 to 4.3:1 on the orange end of the ground; the switch was the one
+  segment left with Classic's white selected state.
+- 2026-11-12 · ODL badge and favicon drawn in the wordmark's letterforms (section "ODL badge and favicon"); the favicon is one more
+  checked patch of `theme_build.py` (patch 9) · Nicklaus's request.
+- 2026-11-12 · The audits live in `retro/qa/` (README there) · they were outside the repo.
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -279,20 +323,22 @@ All twelve tabs are themed. Left: Standings on desktop and the Standings Glossar
   `site/retro/tracker/` again, so the tracker is published without the loop. Theme build fails: only
   `site/retro/tracker/` is removed; the loop page and Classic are untouched.
 - Reads (never writes): `site/index.html`, `site/p/*`, `site/build.json`, `retro/theme.css`, `retro/theme.js`,
-  `retro/wordmark.svg`, `retro/fonts/`. Writes `site/retro/tracker/` only: `index.html`, `p/` (byte-for-byte copies of the chunks),
+  `retro/wordmark.svg`, `retro/favicon.html`, `retro/fonts/`. Writes `site/retro/tracker/` only: `index.html`, `p/` (byte-for-byte copies of the chunks),
   `fonts/`, `build.json` (copy). Atomic: built in a temp folder beside the target, then renamed. Any missing input or
   marker: message on stderr, exit 1, and `site/retro/tracker/` does not exist.
 - This relaxes hard rule 2 above for this one script: `theme_build.py` reads `site/` (read-only). It edits nothing
   under `pipeline/` and nothing of Classic's.
-- **The 8 patches** (the only differences from Classic's `index.html`; each is checked and the build fails if one does
+- **The 9 patches** (the only differences from Classic's `index.html`; each is checked and the build fails if one does
   not apply): (1) `class="retro"` on `<html>`; (2) Classic's Google Fonts link replaced by the self-hosted Martian
   Mono face (`<head>`); (3) the reveal script's four `document.fonts.load()` calls ask for Martian Mono; (4) one
   `noindex` robots meta (Classic already has it); (5) past-season buttons point at Classic's pages (`../../2025/`);
   (6) title gets " · Retro"; (8) the header wordmark: `The <img class="lgs">` (Classic's script art) is replaced by visually hidden text "The League"
   (`.wm-tx`, the h1's accessible name) + the inline `retro/wordmark.svg` (`aria-hidden`), see "Wordmark"; (7) `<style id="retro-theme">` + `<script id="retro-theme-js">` as the last things in
   `<body>`, after every `<style>` of the page including the ones `lazy.py` moves out of the chunks (the build checks
-  that the theme is the last `<style>` and that no chunk carries one). After any change to Classic's page shell
-  (head, reveal script, year buttons, style order) run the script and check that all eight still apply.
+  that the theme is the last `<style>` and that no chunk carries one); (9) the favicon (2026-11-12): the three self-contained
+  `<link>` tags of `retro/favicon.html` after the charset meta; any icon link of Classic's is dropped first and the build checks
+  that exactly three remain. After any change to Classic's page shell
+  (head, reveal script, year buttons, style order) run the script and check that all nine still apply.
 - Verified in the copy: chunks load from its own `p/`, `#hash` deep links and the hash kept on tab change, the refresh
   pill polls its own `build.json`, live scores poll Sleeper as in Classic. Nothing is requested from Classic or from
   Google.
@@ -403,7 +449,10 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     widths `--ptca` / `--ptva` and the NFL slot's edge `--nx` are set again from the bearing table (CSS cannot replace a custom
     property written inline on the same element; one layout read for the tiles' left edges; see "Pass 3"). Pass 4 added no item: item 4's
     list gained the chips of Stats and Team Hub, and for rank chips it also writes the character count as `--nc` (text only); where it finds that the engine rounds glyph
-    advances it sets `--rnd:1` on `<html>` once (theme.css PART 8 uses it inside `round()`).
+    advances it sets `--rnd:1` on `<html>` once (theme.css PART 8 uses it inside `round()`). Pass 5 added no item: item 4's list gained
+    four entries (Standings' fitter-sized rank chips and the cards' streak tile with `--nc`, the table's streak and Proj finish tiles), and
+    item 1 gained a late check on desktop: 350ms, 900ms and 2s after an H2H / Median press, a streak tile or a table rank chip that is
+    still unsized gets Classic's own `window.rrFit()` / `window.tileFit()` (selector matches, no layout read; see "Pass 5").
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -674,7 +723,11 @@ WebKitGTK, and knows nothing of the theme's word spacing. Here:
 - *NFL slot* (`--nx`, a `translate` beside Classic's transform): + the word spacing the canvas did not see (the body's -.22em
   = 3.08px per space: Classic left "PK 3" 2.4px short of the name column's edge), + the last glyph's right bearing where the
   canvas gave the advance box, - the advance rounding of an engine that lays text out on whole pixels.
-- Measured from screenshots (`ptm3.py`), {ptm}.
+- Measured from screenshots (`ptm3.py`; WebKitGTK at 3x, the 440P layout, the default year and 2026; re-measured 2026-11-12): TIMES TRADED
+  tiles (24px wide, counts 1 / 2 / 3) left and right gaps within 0.07px of each other, top and bottom within 0.28px, 8.24px or more
+  beside the digit; projected and drafted pick tiles within 0.11px left / right; TIMES / TRADED heads within 0.49px of the tile column's
+  centre, the VIA head 0.11px and the coach names within 0.16px of the picture's centre; the NFL slot's ink ends 0.81 to 1.14px inside
+  the name column's edge.
 
 **Chips and tiles (rule 11).** Pick tiles: tracking 0, each line centred by `--ix`. Points tile `.dftl`, outlook tag `.rat`:
 `--ix` - .05em - 1px (light ink with the shadow); the outlook tag keeps its 23px height on a cap-trimmed line (7.125px above and
@@ -755,52 +808,140 @@ ellipsis (Classic's by design), the horizontal scroll strip of the section pills
 svg units), "BYE" / "PLAYOFFS" zone labels crossing a line in the Standings chart (Classic's layout), the plate standing flush under
 the navigation band and against the Glossary plate (as Players).
 
-## Known issues
+## Pass 5: Standings on desktop, Standings Glossary (2026-11-12)
 
+theme.css PART 9, four more entries in theme.js item 4's list and a late check in item 1 (no new item). Everything except the Glossary
+plate, its switch and the no-break rule for bold terms is inside `@media(min-width:1100px)`: the phone layouts keep PART 4. 956L lays
+out at 1124 CSS px and is a desktop layout.
 
-- **Rule 11, limits (Game Day).** (1) Rank chips that Classic's tile fitter sizes (`.ch` with inline styles) follow
-  Classic's 1.75 to 3.5px window; on these two tabs the only one under 2px was "Week rank", now a figure. (2) A tile at a
-  fractional position can show 1 device pixel more on one side (0.33px at 3x); 9 of 64 schedule chips and tiles read 0.67px
-  in WebKitGTK at 440P before their `cqw` sizes and the week columns were rounded to whole pixels; 1 of 45 rank chips ("20")
-  still does (402P and 1440: none). (3) Headless Chromium places text on
-  whole CSS px: its "@" tiles read 1.6 to 4.3px above and 2.3 to 4.3px below depending on the row. (4) Engines without
-  `text-box` (before Safari 18.2 / Chrome 133) keep Classic's paddings for vs / @, injury tags, FK / FL and "N on bye".
-- **Score cells, limits.** A figure of six characters or more would not keep 3px (none can occur: a player's points).
-  On engines where `theme.js` does not run the figure uses a mean bearing (up to 0.65px off centre). The cell's own
-  position on the device-pixel grid is not corrected (as rule 7 does for the FAAB and rank tiles): up to 1 device pixel,
-  0.33px at 3x. WebKitGTK rounds glyph advances to whole pixels (Safari does not); `theme.js` measures the advance
-  once and compensates.
-- **Contrast left.** The dark-ink audit also lists text under 4.5:1 (3:1 large); per tab, worst state at 440P (2026-11-11, after
-  pass 4): Standings 44 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"; pass 5).
-  The other eleven tabs 0.
-- **Fitter-sized rank chips in headless Chromium (pass 4).** Headless Chromium with the phones' 0.85 page scale places text on whole CSS px: 106 of 624 fitter-sized rank chips (six widths) read 0.55 to 0.82px between their left and right gaps (limit 0.5px; 2 of 104 at 1440, where there is no page scale). Their gaps are never under the minimum (3.89px beside, 2.15px above / below). WebKitGTK: 0 of 312.
-- **Rule 11 in WebKitGTK, left after pass 4 (4 elements).** Elements that start on a fraction of a pixel, where the engine snaps the glyphs and the tile separately: three pick-round chips in Stats > Trades at the 402P layout ("2nd" / "3rd": 0.67 to 1.00px between the two side gaps) and one dropped-points rank chip in Team Hub at the 440P layout (0.67px). All gaps are above the minimum.
-- **Plates meet.** The section plate ends 2px into the Glossary plate's frame and stands flush under the navigation band (Players
-  and The Wire since pass 2, the three tabs of pass 3 alike): Classic leaves 16px / 24px there and the plates need 16px / 26px.
-- **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
-  values: the mug-to-count and label-to-mug gaps are off by a fraction of a pixel here. `BC7` (Paper Trail digit
-  outlines) is Barlow Condensed 700. **Fixed for the Picks tile digits (2026-11-11):** Classic's horizontal offsets are
-  switched off (`.ptxn b` inline `left`, `.ptpj b` inline transform) and the digits are centred by `--ix`; WebKitGTK at 3x,
-  440P and 402P layouts, counts 1 / 2 / 3 / 4 and injected 10 / 12 / 47: left and right gaps within 0.07px (before: "1" 5.09px
-  apart, "2" 1.36px, "3" 1.69px), top and bottom within 0.28px; projected pick numbers within 0.07px including their shadow
-  (before up to 2.1px), drafted pick tiles 0.11px (before up to 1.6px). Tile sizes and positions are Classic's.
-  **Done in pass 3 (2026-11-11):** the tile width, the two column widths, the heads, the coach names and the NFL slot's edge
-  follow Martian Mono's glyph ink ("Pass 3"). Left: `slotFit`'s 12px test and `nameFit` still measure through Classic's canvas
-  (a slot is judged up to 3px wider than it is, so a slot can be dropped a little early; none of the 2026 picks' slots is at
-  360P / 402P / 440P today), and the
-  vertical placement relies on the digits' flat height being .70em, which holds for Martian Mono with `size-adjust`.
-- **Streak tile in WebKitGTK:** "L" streaks sit up to 1.6px right of centre (Classic there: 0.6px); "W" streaks are
-  fine. Cause: Classic's tile fitter centres by canvas ink, and WebKitGTK's canvas reports the advance box, not the
-  ink (CLAUDE.md, Gotchas). Chromium: ≤ 0.5px. Safari unverified.
-- **Headless Chromium** places text on whole CSS px, so its FAAB and rank-tile gaps differ by up to 0.8px and 1.5px
-  (rule 7 is met in WebKit only). Same limit as DESIGN.md §8 notes for Classic's tiles.
-- **Phones' page scale 0.85:** rule 7's grid is 1 / devicePixelRatio CSS px (the engine's own snapping grid); the
-  scale is applied to the raster afterwards. Not measurable in the sandbox; real iPhone Safari is checked by Nicklaus.
-- **Past-season buttons** open Classic's (unthemed) pages, and those pages' 2026 button returns to Classic.
-- **Short pages:** the ground reaches its orange end under free-standing text (e.g. Stats' Glossary label). Fixed on
-  Matchups and Playoffs by a plate behind the Glossary switch and text; the other tabs with their own pass.
-- A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps
-  them (`DT_CHUNKS`).
+**What changed against the Standings shipped 2026-11-09** (desktop had the token overrides and the CSS rank tiles only):
+
+| Component | Before (tokens only) | Now |
+|---|---|---|
+| Table panel `.dtp` | 2px hard shadow, no glow | the board's panel: 4px hard shadow, inner glow above the rows |
+| Table head (group row "20k simulations" + column heads) | the panel colour (`--blue-2`) | `--blue-3` strip (as The Wire's column heads and the round heads) |
+| Row dividers | black 2px (Classic's body-wide frame colour) | `--blue-3` 2px (rule 1); the 4px rule before the simulation columns stays black |
+| #1 odds `td.c1` | Classic's literal `#e8c15a` | `--yellow` |
+| Streak tile `.dsk` | 16% tint, `--win` / `--loss-lt` text (loss 3.68:1), 4px corner | solid `--win` / `--loss`, black ink, 2px corner, 1px hard shadow, ink centred by `--ix` |
+| Proj finish tile `.rkb` | centred by its advance box | centred by its glyph ink (`--ix`) |
+| Rank chips in the table and in the cards' stat lines | 45% black chip; gold and worst with a 1px ring; Classic's fitted box (1.75px above / below the digit, 2.25px beside "10") | tile drawn round the digit by `.ct::before`, 1px wider each side, 1.5px taller above and below; rank 1 solid yellow, last solid `--loss`, black ink, no ring |
+| Cards' streak tile `.sk` | Classic's fitted tile, centred by the fitter's canvas (2px between the side gaps on 5 of 10 tiles in WebKitGTK) | drawn round the glyph ink (`.ct::before`), .5px taller above and below |
+| Divider before the Nerd column (`.r::after`) | `--line-strong` (white here) | `--blue-3` |
+| Last column, 1100 to 1239px | 3px to the panel's frame (ink + shadow 2px) | 9px (7.5px measured); TEAM gives up the 6px |
+| Glossary (every width) | switch and text on the orange end of the ground; selected segment white with black text | 8px `--blue-2` plate (12 / 10px outside the boxes, as the other tabs); selected = the badge; a bold term does not break |
+| After H2H / Median on desktop | theme.js item 1's `__fitAll()` makes Classic draw the table and cards again after its fitters ran: in WebKitGTK about 1 press in 3 left the table's rank chips unsized and 1 in 10 the cards' streak tiles (Classic alone: 0 of 20) | late check in theme.js item 1 (Classic's own `rrFit()` / `tileFit()`, only when a tile is unsized): 0 of 40 presses |
+
+**Not changed on purpose.** Cutoff strips (`--pg` purple with the tier-coloured rule), the Median second line (`--peri-lt`, 11px), the
+shotgun tally, column widths other than TEAM and the last column at 1100 to 1239px, `simGap()`'s 16px rule, row heights, the season
+chart (its SVG chips keep their rings, as on phones), the grain (cards only; the table's rows are plain, as every other table), the
+desktop rank tiles' centring (CSS default, see cleanup), Classic's fitters.
+
+**Fitter-sized digits are nominally smaller than Classic's.** Classic's tile fitter sizes a chip's digit from the digits' ink height
+on a canvas. Martian Mono's digits are taller in the em than Barlow Condensed's (.733em against about .70em with `size-adjust`), so
+the same tile gets a 10px digit where Classic has 10.25px (8.75px in both at 1100px in the table). The ink is the same height; the
+overflow audit counts these 24 text nodes per desktop state as "smaller than Classic's" (144 over the 54 state x width pairs). The
+phone layouts have the same chips and the same 0.25px.
+
+**Measured (2026-11-12).** WebKitGTK at 2x, 1440 and 1100: 280 fitter-sized chips, left and right gaps within 0.46px of each other,
+3.55px or more beside the digit, 2.0px or more above and below (smallest reading 1.99px). Headless Chromium at 956L / 1100 / 1240 / 1440 / 1920, 850 chips: 3.19px or more
+beside, 2.64px or more above and below; 132 read 0.55 to 0.92px between their side gaps (the engine's whole-pixel text placement,
+see cleanup). Rank tiles (table 26 x 24px, cards 42 x 44px zoomed 1.1): ink including outline and shadow 4.2px or more from the
+border beside, 4.5px or more above and below (120 tiles, both engines).
+
+## Known issues / cleanup (consolidated 2026-11-12, passes 1 to 5)
+
+Open items, most visible first. Each names where it was found.
+
+**A. Standings**
+
+1. **Phone and desktop Standings differ in the rank chips (pass 5).** Desktop: drawn tile, solid gold / worst, rule 11 met. Phones
+   (360P / 402P / 440P / 874L): Classic's fitted chip with the 1px ring on gold and worst, as shipped 2026-11-09, before rule 11
+   existed. The phone chips have the same fitter geometry the desktop had (1.75px above / below, 2.25px beside "10", less 1px under a
+   ring) and have never been run through the frame-gap audit. Moving the phones to the desktop recipe is a colour-and-tile change with
+   no box moving; it needs its own pass and Nicklaus's iPhone check.
+2. **Desktop rank tiles are centred by CSS only (pass 5).** theme.js item 2 (rule 7, the device-pixel snap) runs below 1100px. On
+   desktop `rkm5.py` reads the digit about 0.5 to 1px above the tile's centre in both engines (the reading is good to about 0.5px:
+   the outline's and shadow's share of the ink is estimated). Gaps are far above rule 11's minimums.
+3. **Streak tile on phones in WebKitGTK (2026-11-09):** "L" streaks sit up to 1.6px right of centre (Classic there: 0.6px). Fixed on
+   desktop in pass 5 (drawn tile); the phone tile is still Classic's. Safari unverified.
+4. **Shotgun tally (2026-11-09):** `SGD` / `SGR` are Barlow Condensed / IBM Plex Sans bearings; the mug-to-count and label-to-mug gaps
+   are off by a fraction of a pixel in Martian Mono.
+5. **Season chart chips (SVG)** keep rings and 3px corners on every layout; not measured against rule 11.
+6. **Rank chips' digits 10px against Classic's 10.25px nominal** (same ink height; "Pass 5").
+
+**B. Rule 11 limits on the other tabs**
+
+7. **Four elements in WebKitGTK (pass 4):** three pick-round chips in Stats > Trades at the 402P layout ("2nd" / "3rd": 0.67 to 1.00px
+   between the side gaps) and one dropped-points rank chip in Team Hub at the 440P layout (0.67px): they start on a fraction of a pixel
+   and the engine snaps glyphs and tile separately. All gaps above the minimum.
+8. **One of 45 rank chips ("20") in the Playoffs schedule at 440P (Game Day)** reads 0.67px in WebKitGTK.
+9. **Fitter-sized rank chips outside the drawn-tile recipe (Game Day):** chips Classic's fitter sizes on Matchups / Playoffs follow
+   Classic's 1.75 to 3.5px window. The one under 2px ("Week rank") became a figure.
+10. **Score cells:** a figure of six characters or more would not keep 3px (cannot occur); without `theme.js` the figure uses a mean
+    bearing (up to 0.65px off centre); the cell's own position on the device-pixel grid is not corrected (up to 0.33px at 3x).
+11. **Engines without `text-box`** (before Safari 18.2 / Chrome 133) keep Classic's paddings for vs / @, injury tags, FK / FL and
+    "N on bye"; engines without relative colours (before Safari 18 / Chrome 131) show no T1 shadow; engines without style queries keep
+    Classic's two literals on Compare's swapped panels.
+12. **Paper Trail:** `slotFit`'s 12px test and `nameFit` still measure through Classic's canvas (a slot is judged up to 3px wider than
+    it is; none of the 2026 picks is affected at 360P / 402P / 440P); vertical placement relies on the digits' flat height being
+    .70em (holds with `size-adjust`).
+13. **Original order names between 760 and 1099px (pass 3):** "Anderson" may run 1.4px into the 8px gap on each side.
+
+**C. Layout and surfaces**
+
+14. **Plates meet (passes 2 to 5).** The section plate ends 2px into the Glossary plate's frame and stands flush under the navigation
+    band on Players, The Wire, Rosters, Drafts, Paper Trail, Team Hub (Classic leaves 16px / 24px; the plates need 16px / 26px). The
+    Glossary switch's plate and the text's plate overlap by 4px on every tab (one shared frame line). Standings is clear of the board
+    (10px).
+15. **Short pages / orange ground:** every tab's Glossary now stands on a plate; any free-standing text added later below the first
+    1100px would again sit on the orange end (2.8:1 against white).
+16. **Past-season buttons** open Classic's (unthemed) pages, and those pages' 2026 button returns to Classic.
+17. **No link** from Classic or from the loop to the themed tracker yet (by decision; the loop has a CLASSIC link only).
+18. **Favicon at 16px (pass 5):** ODL is not readable at 16px (stems under 1px); from 32px it is. A single-letter variant would be the
+    alternative. Desktop Safari's pinned-tab `mask-icon` is not provided.
+
+**D. Measurement and engines (not page defects)**
+
+19. **Headless Chromium** places text on whole CSS px. With the phones' 0.85 page scale its FAAB and rank-tile gaps differ by up to
+    0.8 / 1.5px (rule 7 is met in WebKit only); "@" tiles read 1.6 to 4.3px above and 2.3 to 4.3px below by row; 106 of 624
+    fitter-sized chips on Stats / Team Hub and 132 of 850 on desktop Standings read 0.55 to 0.92px between their side gaps; one gold
+    dropped-points chip on desktop Standings reads 1.0px. Minimum gaps hold in every case. WebKitGTK: 0.
+20. **WebKitGTK rounds glyph advances to whole pixels** (Safari does not); `theme.js` measures the advance once and compensates
+    (`--rnd`, `--iw`, `--fx*`).
+21. **Phones' page scale 0.85:** rule 7's grid is 1 / devicePixelRatio CSS px; the scale is applied to the raster afterwards. Not
+    measurable in the sandbox. Real iPhone Safari is checked by Nicklaus.
+22. One Consistency chip at 1440 could not be read by `chipm.py` (a neighbour's tile inside its crop; pass 4). `chipm5.py` switches off
+    only the chips' own digits for that reason.
+
+**E. Classic bugs found here, to report to the Classic builder (worked round in the copy)**
+
+23. Pressing H2H / Median does not re-run `s2Fit` (2026-11-09; theme.js item 1; DESIGN.md §8).
+24. Compare > Schedule > Week by week: `ref()` takes "Wk 10" as the right-hand seed chip's figure (pass 2; theme.js item 5).
+25. "Week rank" chip sits 4.43px above its label's cap band (the label is a flex item; Game Day).
+26. Desktop table outer columns 3 to 9px from the panel edge (DESIGN.md §8; the copy sets the last column to 9px at 1100 to 1239px).
+
+**F. Code cleanup**
+
+27. theme.js item 1 can go when Classic re-fits after H2H / Median by itself; item 5 when `ref()` skips those chips. The late check
+    added in pass 5 exists because `__fitAll()` makes Classic draw the desktop table and cards again: it goes with item 1. It runs on
+    desktop only; the same late redraw can happen on the phone layouts (streak tile then at Classic's unfitted size until the next
+    press or resize; seen in WebKitGTK only, not checked on phones).
+28. The drawn-tile recipe exists three times in theme.css (PART 8 for Stats / Team Hub, PART 9 for Standings chips and for the streak
+    tile) with the same `margin-left` formula: one shared rule set would do, and the phone Standings chips (item 1) would join it.
+29. `dtPanels` and Classic rules for `tr.dtb` are unused; PART 4's ringed `.ch.gold` / `.ch.last` rules remain for the phone layouts and
+    the tabs that keep the ring.
+30. `retro/favicon.html` and the marked blocks of `template.html` are generated copies (`wordmark_gen.py apply`): after editing the
+    generator, run it, or the two pages' icons drift apart.
+31. A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps them (`DT_CHUNKS`).
+32. Wordmark options A and B are kept outside the repo only (`shots-theme/wordmark/` patches).
+
+**G. Requests parked by Nicklaus on 2026-11-11 (screenshots taken before pass 1 shipped; recheck each against the shipped passes first)**
+
+33. Matchups vs / @ tiles: "@" showed a dark upper frame shadow, "vs" none (both are solid tiles without a ring since Game Day).
+34. Matchups: the BENCH band reads as part of the last slate; separate it clearly.
+35. Standings last-5 / rank dots: empty dots too prominent; the filled part must dominate.
+36. Slate header (day + time) in a framed tile for visibility.
+37. Slate view: panel background missing behind slate headers and running-total lines.
 
 ## Checks before shipping a change to the theme
 
@@ -838,6 +979,11 @@ the navigation band and against the Glossary plate (as Players).
   Per start / Per week / Total, Player sim / Team average, a selected Every-week cell, Glossary; Team Hub: five teams opened one after
   another, Data and Trends, two weeks, Glossary) and `chipm.py` (rank chips whose tile is a pseudo-element, which the frame audit
   cannot see). Chromium at 360P, 402P, 440P, 874L, 956L, 1440; WebKitGTK at the 402P / 440P layouts and 1440. Result: dark-ink 0 (all twelve tabs at 440P and 1440 in Chromium, 131 states each; the two tabs at every other width and in WebKitGTK, 31 states each); contrast 0 on both tabs at every width in both engines (Standings 44, Glossary only: pass 5); frame gaps, Chromium 0 at all six widths (26 states, 1,265 to 1,460 framed elements a width); WebKitGTK 1,440: 0, 402P layout: 3, 440P layout: 1 (the four elements under Known issues); fitter-sized rank chips: WebKitGTK 0 of 312, Chromium 106 of 624 on the left / right balance only (Known issues); clip / new ellipsis / extra lines / sideways scroll / text smaller than Classic's 0 (186 state x width pairs; the Trades side headers found on 360P and 402P screens were fixed and re-run); the ten shipped tabs' boxes identical to the build before the pass (90 states: Standings 360P / 402P / 440P / 1440, the other nine at 440P / 1440); tile check 0 (36 runs); Classic byte-identical (53 files outside `site/retro/`); 8 patches apply.
+
+- **Pass 5 (Standings on desktop, Glossary), 2026-11-12:** audits in `retro/qa/` (README there): `darkink.py`, `gapf5.py`, `chipm5.py`,
+  `rkm5.py`, `ovf5.py`, `boxes.py`, `tilechk_r.py`, `loop.py`. Standings states: Dumb / Nerd x H2H / Median, Glossary open in Dumb and
+  Nerd, the refresh pill. Chromium at 360P, 402P, 440P, 874L, 956L, 1100, 1240, 1440, 1920; WebKitGTK at the 402P / 440P layouts,
+  1100 and 1440. Result: dark-ink 0 and contrast 0 on all twelve tabs (Chromium at 440P and 1440, 133 states each) and on Standings at every other width (Chromium 9 widths, 63 states; WebKitGTK 3 widths, 21 states), Glossary open included (was 44 at 440P, 46 at 1440). Frame gaps on desktop Standings: WebKitGTK 0 at 1440 and 1100 (5 states; the two Median states at 1440 were read again with a 4.5s settle: the late re-fit moved the page during the first capture), 0 of 170 drawn chips at 1440 (0 of 280 with 1100), 0 of 20 rank tiles; Chromium at 956L / 1100 / 1240 / 1440 / 1920: no gap under the minimums (850 chips, 100 rank tiles, every framed element), left / right balance over 0.5px on 132 of 850 chips (0.55 to 0.92px) and on one gold dropped-points chip (1.0px, 3 Nerd states a width): the engine's whole-pixel text placement (Known issues, D 19). Clip / new ellipsis / extra lines / sideways scroll 0 (54 state x width pairs; "W / L chip" in the Glossary, found on a 402P screen and at 1100px, was fixed and re-run); text nominally smaller than Classic's: the fitter-sized chip digits only ("Pass 5"). Boxes identical to a copy built from the commit before the pass: the eleven other tabs at 440P / 1440 (84 states) and Standings at 360P / 402P / 440P / 874L (16 states), the phone Standings dumps repeated after each late fix. Tile check 0 (48 runs: 12 widths, H2H / Median, Dumb / Nerd). Classic byte-identical (52 files outside `site/retro/`); 9 patches apply. Loop page: six screens at 402 x 874 and 1280 x 800, no page errors, no sideways scroll, badge box unchanged, `data.json` swapped with 0 navigations.
 
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`

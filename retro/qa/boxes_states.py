@@ -1,0 +1,3 @@
+ROOT={'standings':'.pane-st','matchups':'.pane-mu','playoffs':'.pane-po'}
+ST={'matchups':[('now',[]),('now-detailed',['ld-d']),('now-optimal',['ld-l','lo-o']),('now-slate',['lo-a','lv-s']),('now-team',['lv-p','lc-t']),('now-game3',['lc-p','mu-2']),('w9',['mu-0','mw-9']),('w9-detailed',['ld-d']),('w9-game3',['ld-l','hw9-2']),('w9-slate',['lv-s']),('w8',['lv-p','mw-8']),('w5-menu',['mw-5','@wdd'])],
+    'playoffs':[('bracket',[]),('final',['bk-fin']),('sf1',['bk-sf1']),('final-slate',['blv-s']),('final-optimal',['blv-p','blo-o']),('builder',['blo-a','pv-c']),('builder-wk15',['pw-15']),('builder-menu',['@dd-a']),('schedule',['pv-s']),('schedule-team5',['ps-4'])]}

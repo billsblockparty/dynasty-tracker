@@ -3,7 +3,8 @@
 
     python3 retro/theme_build.py            (after Classic has built site/, and after retro/build.py)
 
-Reads (never writes): site/index.html, site/p/*, site/build.json, retro/theme.css, retro/theme.js (optional), retro/fonts/.
+Reads (never writes): site/index.html, site/p/*, site/build.json, retro/theme.css, retro/theme.js (optional), retro/wordmark.svg,
+retro/favicon.html, retro/fonts/.
 Writes: site/retro/tracker/ only (index.html, p/, fonts/, build.json), atomically: everything is assembled in a temp directory
 next to the target and moved into place at the end. Any missing input or any marker that is not found exactly as
 expected: message on stderr, exit 1, and site/retro/tracker/ does not exist (a stale one is removed).
@@ -118,6 +119,17 @@ def build(tmp):
     h1 = re.findall(r'<h1 style="white-space:nowrap">The <img class="lgs"[^>]*></h1>', s)
     need(len(h1) == 1, f'header title with the League art: expected 1, found {len(h1)}')
     s = s.replace(h1[0], '<h1 style="white-space:nowrap"><span class="wm-tx">The League</span>' + wm + '</h1>', 1)
+    # 9. favicon (pass 5): the ODL mark in the wordmark's letterforms, the same three self-contained <link> tags as the loop page
+    #    (retro/favicon.html, written by "wordmark_gen.py apply" from favicon.svg / favicon-32.png / favicon-180.png). Classic has
+    #    no icon; if it gains one, its links are dropped from the copy so exactly the theme's three remain.
+    ic_p = os.path.join(HERE, 'favicon.html')
+    need(os.path.isfile(ic_p), 'missing retro/favicon.html')
+    ic = open(ic_p, encoding='utf-8').read().strip()
+    ICON = r'<link\b[^>]*\brel="(?:shortcut icon|icon|apple-touch-icon|mask-icon)"[^>]*>'
+    need(len(re.findall(ICON, ic)) == 3 and re.sub(ICON, '', ic).strip() == '' and 'http' not in ic, 'retro/favicon.html: expected exactly three self-contained icon links')
+    s = re.sub(ICON + r'\n?', '', s)
+    s = once(s, '<meta charset="utf-8">', '<meta charset="utf-8">\n' + ic, 'charset meta (favicon)')
+    need(len(re.findall(ICON, s)) == 3, 'favicon: expected exactly three icon links in the copy')
     # 7. the theme, last in the document: after every <style> of the page, including the chunk styles lazy.py moves
     #    to just after the last pane (the chunks themselves carry no <style>: checked below)
     need(s.count('</body>') == 1, '</body>: expected 1')
