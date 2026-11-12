@@ -102,46 +102,69 @@ def optC(H=58,h=.5,o=1.25,d=2.5,dt=2,wg=.36,dy=0,fill='white',p=None,two=True):
 
 SLIM=dict(S=14,B=12.5,R=14,ri=5)
 
-# ---- pass 5: the loop page's ODL badge and the favicon, in the same letterforms and the stepped title style (option C) ----
+# ---- pass 5 / cleanup job 1: the loop page's badge and the favicon (TL since 2026-11-12), in the stepped title style (option C) ----
 GO=[12,10]                 # ODL pair gaps: O-D between a round and a flat side, D-L before the L's stem
 GD=[12,12,12,12,8,8]       # DYNASTY; S-T and T-Y tighter (the T's overhang)
 TOK={'white':'#fff','yellow':'#ffff6f','orange':'#e28144','peri':'#8b9df8','black':'#000','badge-hi':'#5f6def','badge-lo':'#2040fa'}   # the loop's tokens (template.html :root), for files that cannot read them
-def badge(VW=127,VH=100,H=46,h2=19,o=1.6,d=3,gap=10,p=None):
-    """the loop header's badge: ODL (white, black outline, orange then periwinkle step) over DYNASTY (yellow, black outline, no step:
-    at 8 to 10px the steps would close its counters). Drawn for the .mk box (aspect 466 / 367); the plate itself stays CSS.
-    Units: 100 = the plate's height. Returns (svg, css, metrics)."""
-    G=letters(**(p or SLIM))
-    _,w1=word(G,'ODL',GO,H);_,w2=word(G,'DYNASTY',GD,h2)
-    inkh=H+2*d+gap+h2;y=(VH-inkh)/2+o*.25;x1=(VW-(w1+2*d))/2;x2=(VW-w2)/2
-    a,_=word(G,'ODL',GO,H,x1,y);b,_=word(G,'DYNASTY',GD,h2,x2,y+H+2*d+gap)
-    defs='<path id="mk-a" d="%s"/><path id="mk-b" d="%s"/>'%(a,b)
+def badge(VW=127,VH=100,k=5/3):
+    """the loop header's badge (TL since 2026-11-12, cleanup job 1; was ODL over DYNASTY): TL alone, the favicon's composition (icon():
+    grid letters, cap 36 of a 60 plate, stroke 6, outline 2, steps 2 / 4) scaled by k so the cap is 60 of the plate's 100, centred on the
+    plate. T yellow (as THE), L white (as LEAGUE), black outline, orange then periwinkle step; T's steps reach L's outline. Drawn for
+    the .mk box (aspect 466 / 367); the plate itself stays CSS. Units: 100 = the plate's height. Returns (svg, css, metrics).
+    The O D S N Y letters of letters() and the pair gaps GO / GD (the ODL / DYNASTY badge of pass 5) are no longer used by anything."""
+    H,S,tw,lw,g,o,d=36*k,6*k,18*k,12*k,6*k,2*k,2*k
+    inkw=tw+g+lw+2*o+2*d;x=(VW-inkw)/2+o;y=(VH-(H+2*o+2*d))/2+o
+    P=lambda pts:'M'+'L'.join('%s %s'%(n(a),n(b)) for a,b in pts)+'Z';c=x+(tw-S)/2;lx=x+tw+g
+    t=P([(x,y),(x+tw,y),(x+tw,y+S),(c+S,y+S),(c+S,y+H),(c,y+H),(c,y+S),(x,y+S)]);l=P([(lx,y),(lx+S,y),(lx+S,y+H-S),(lx+lw,y+H-S),(lx+lw,y+H),(lx,y+H)])
+    defs='<path id="mk-a" d="%s"/><path id="mk-t" d="%s"/><path id="mk-l" d="%s"/>'%(t+l,t,l)
     body=('<use href="#mk-a" class="mk-s2" transform="translate(%s %s)"/><use href="#mk-a" class="mk-s1" transform="translate(%s %s)"/>'%(n(2*d),n(2*d),n(d),n(d))
-          +'<use href="#mk-a" class="mk-k"/><use href="#mk-b" class="mk-k mk-k2"/><use href="#mk-a" class="mk-f"/><use href="#mk-b" class="mk-f2"/>')
-    css=('.mk-k{fill:var(--black);stroke:var(--black);stroke-width:%s;stroke-linejoin:miter}.mk-k2{stroke-width:%s}'
+          +'<use href="#mk-a" class="mk-k"/><use href="#mk-t" class="mk-f2"/><use href="#mk-l" class="mk-f"/>')
+    css=('.mk-k{fill:var(--black);stroke:var(--black);stroke-width:%s;stroke-linejoin:miter}'
          '.mk-s1{fill:var(--orange);stroke:var(--orange);stroke-width:%s;stroke-linejoin:miter}.mk-s2{fill:var(--peri);stroke:var(--peri);stroke-width:%s;stroke-linejoin:miter}'
-         '.mk-f{fill:var(--white)}.mk-f2{fill:var(--yellow)}'%(n(2*o),n(2*o*.8),n(2*o),n(2*o)))
+         '.mk-f{fill:var(--white)}.mk-f2{fill:var(--yellow)}'%(n(2*o),n(2*o),n(2*o)))
     return ('<svg class="mk-g" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %s %s" aria-hidden="true" focusable="false"><defs>%s</defs>%s</svg>'%(n(VW),n(VH),defs,body),css,
-            dict(w1=w1,w2=w2,y=y,x1=x1,x2=x2))
-def icon(V=64,H=24,o=1.2,d=2.2,bw=3,r=9,sh=4,p=None):
-    """favicon: the badge plate (gradient, white border, hard shadow) with ODL alone, white with the black outline and the orange step.
-    Self-contained (literal token values, no classes): a favicon cannot read the page's custom properties."""
-    G=letters(**(p or dict(S=14,B=13,R=15,ri=4)));P=V-sh   # slimmer stems than the title's: at 32px the counters must stay open beside the step
-    _,w=word(G,'ODL',GO,H);x=(P-(w+d))/2;y=(P-(H+d))/2
-    a,_=word(G,'ODL',GO,H,x,y);T=TOK
-    return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %s %s"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%s"/><stop offset="1" stop-color="%s"/></linearGradient><path id="a" d="%s"/></defs>'
-            %(n(V),n(V),T['badge-hi'],T['badge-lo'],a)
-            +'<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="%s"/>'%(n(sh),n(sh),n(P),n(P),n(r),T['black'])
+            dict(x=x,y=y,H=H))
+def _plate(V,sh,bw,r,T=TOK):
+    """the badge plate of the icons: hard shadow, white border, gradient fill (the loop's --badge-hi / --badge-lo)"""
+    P=V-sh
+    return ('<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="%s"/>'%(n(sh),n(sh),n(P),n(P),n(r),T['black'])
             +'<rect width="%s" height="%s" rx="%s" fill="%s"/>'%(n(P),n(P),n(r),T['white'])
-            +'<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="url(#g)"/>'%(n(bw),n(bw),n(P-2*bw),n(P-2*bw),n(r-bw))
-            +'<use href="#a" transform="translate(%s %s)" fill="%s" stroke="%s" stroke-width="%s"/>'%(n(d),n(d),T['orange'],T['orange'],n(2*o))
-            +'<use href="#a" fill="%s" stroke="%s" stroke-width="%s"/><use href="#a" fill="%s"/></svg>'%(T['black'],T['black'],n(2*o),T['white']))
+            +'<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="url(#g)"/>'%(n(bw),n(bw),n(P-2*bw),n(P-2*bw),n(r-bw)))
+def _tl(x,y,H,S,tw,lw,gap):
+    """T and L of the icons on a whole-unit grid (square corners, as the wordmark's T and L): cap height H, stroke S, T tw wide, L lw wide"""
+    c=x+(tw-S)//2;lx=x+tw+gap;P=lambda pts:'M'+'L'.join('%s %s'%(n(a),n(b)) for a,b in pts)+'Z'
+    return (P([(x,y),(x+tw,y),(x+tw,y+S),(c+S,y+S),(c+S,y+H),(c,y+H),(c,y+S),(x,y+S)]),
+            P([(lx,y),(lx+S,y),(lx+S,y+H-S),(lx+lw,y+H-S),(lx+lw,y+H),(lx,y+H)]))
+_GRAD='<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%s"/><stop offset="1" stop-color="%s"/></linearGradient>'%(TOK['badge-hi'],TOK['badge-lo'])
+def icon(V=64,o=2,d=2):
+    """favicon, 32px and up (2026-11-12, cleanup job 1): TL on the badge plate. T yellow (as THE), L white (as LEAGUE), the stepped
+    title's treatment: black outline (o), orange step at d / d, periwinkle step at 2d / 2d. T's steps touch L's outline, as in the
+    wordmark. viewBox 64 = 2 units per pixel at 32px: stems 3px, total ink 2.5px from the plate's inner frame all round.
+    Self-contained (literal token values, no classes): a favicon cannot read the page's custom properties."""
+    t,l=_tl(10,10,36,6,18,12,6);T=TOK;u='<use href="#a" %sfill="%s" stroke="%s" stroke-width="%s" stroke-linejoin="miter"/>'
+    return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %s %s"><defs>%s<path id="a" d="%s"/></defs>'%(n(V),n(V),_GRAD,t+l)+_plate(V,4,3,9)
+            +u%('transform="translate(%s %s)" '%(n(2*d),n(2*d)),T['peri'],T['peri'],n(2*o))+u%('transform="translate(%s %s)" '%(n(d),n(d)),T['orange'],T['orange'],n(2*o))
+            +u%('',T['black'],T['black'],n(2*o))+'<path d="%s" fill="%s"/><path d="%s" fill="%s"/></svg>'%(t,T['yellow'],l,T['white']))
+def icon16():
+    """favicon at 16px, hand-hinted on the pixel grid (viewBox 16 = 1 unit per pixel): plain letters, 2px strokes, no outline and no
+    steps (at 16px they close the letters: the ODL icon was a block of texture there). T 6 x 9, L 4 x 9, 1px apart; ink to the
+    plate's inner frame 1 / 1 / 2 / 2px (left / right / top / bottom)."""
+    t,l=_tl(2,3,9,2,6,4,1);T=TOK
+    return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><defs>%s</defs>'%_GRAD+_plate(16,1,1,2)
+            +'<g shape-rendering="crispEdges"><path d="%s" fill="%s"/><path d="%s" fill="%s"/></g></svg>'%(t,T['yellow'],l,T['white']))
+def icon180():
+    """apple-touch-icon source: the 32px artwork on the ground's purple, 14px margin (opaque: iOS fills transparency with black)"""
+    a=icon();i=a.index('>')+1
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect width="180" height="180" fill="#332370"/><g transform="translate(14 14) scale(2.375)">'+a[i:-6]+'</g></svg>'
 FINAL={'A':lambda:optA(),'B':lambda:optB(),'C':lambda:optC(p=SLIM)}
 def icon_links(here):
-    """the three <link> tags, self-contained (data URIs) from the committed files: favicon.svg, favicon-32.png, favicon-180.png"""
+    """the three <link> tags, self-contained (data URIs) from the committed files: favicon-16.png (hand-hinted), favicon-32.png,
+    favicon-180.png. PNG only, each with its size: a browser tab at 1x takes the 16px drawing and at 2x the 32px one. An svg icon link
+    (any size) is left out on purpose: a browser that prefers it would scale the 32px artwork down to 16px, the unreadable case."""
     import base64,os
     b=lambda f:base64.b64encode(open(os.path.join(here,f),'rb').read()).decode()
-    return ('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s">\n<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,%s">\n'
-            '<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,%s">'%(b('favicon.svg'),b('favicon-32.png'),b('favicon-180.png')))
+    return ('<link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64,%s">\n<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,%s">\n'
+            '<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,%s">'%(b('favicon-16.png'),b('favicon-32.png'),b('favicon-180.png')))
 def apply(here):
     """development only: writes retro/favicon.html (read by theme_build.py, patch 9) and the two marked blocks of template.html"""
     import os,re
@@ -153,11 +176,11 @@ def apply(here):
     open(os.path.join(here,'template.html'),'w',encoding='utf-8').write(t)
 if __name__=='__main__':
     # python3 retro/wordmark_gen.py A|B|C > retro/wordmark.svg   (development only; the build reads the committed svg)
-    #                       badge | icon -> the svg on stdout (the committed copies are in template.html and retro/favicon.svg; see RETRO.md, "ODL badge and favicon")
+    #                       badge | icon | icon16 | icon180 -> the svg on stdout (the committed copies are in template.html, retro/favicon.svg and retro/favicon-16.svg; see RETRO.md, "TL badge and favicon")
     #                       apply -> writes favicon.html and the marked blocks of template.html from the committed favicon files and badge()
     if sys.argv[1]=='apply':
         import os;apply(os.path.dirname(os.path.abspath(__file__)))
     elif sys.argv[1]=='badge':sys.stdout.write(badge()[0]+'\n')
     elif sys.argv[1]=='badge-css':sys.stdout.write(badge()[1]+'\n')
-    elif sys.argv[1]=='icon':sys.stdout.write(icon()+'\n')
+    elif sys.argv[1] in('icon','icon16','icon180'):sys.stdout.write({'icon':icon,'icon16':icon16,'icon180':icon180}[sys.argv[1]]()+'\n')
     else:sys.stdout.write(FINAL[sys.argv[1]]()[0]+'\n')

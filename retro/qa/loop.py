@@ -1,6 +1,6 @@
 # loop.py : the loop page ("DynastyCast", site/retro/index.html) checks. Serve a folder holding build.json + retro/{index.html,data.json}.
 #   loop.py shots <base url of that folder> <out prefix> [WxH ...]   the six screens, captured after the wipe (default 402x874 and 1280x800)
-#   loop.py badge <base url> <out.png>                              the ODL badge at 8x (402 wide) + its box and the favicon links
+#   loop.py badge <base url> <out.png>                              the TL badge at 8x (402 wide) + its box and the favicon links
 #   loop.py swap  <base url> <folder on disk>                       data.json swapped in place: new scores appear with no navigation; files restored
 import sys,json,copy,os,io
 sys.path.insert(0,__import__('os').path.dirname(__import__('os').path.abspath(__file__)));import mmfont

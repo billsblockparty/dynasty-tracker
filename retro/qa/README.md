@@ -36,8 +36,8 @@ layout widths (`518 473 1440`). One WebKitGTK run at a time; run them one after 
 | `ovf.py` `ovf2.py` `ovf3.py` `ovf4.py` `ovf5.py` | Against Classic, same states: new clipped text, new ellipsis, more lines, sideways scroll, text smaller than Classic's (same tab split as `gapf`) | `ovf5.py 360P 402P 440P 874L 956L 1100 1240 1440 1920` |
 | `boxes.py` (+ `boxes_states.py`) | Every element's box in a tab's states: `dump` writes json, `cmp a.json b.json [-v]` lists what moved or changed size. Proof that a pass moved nothing elsewhere | `boxes.py dump $U 440P matchups out/bx-new --pane`; `boxes.py cmp out/bx-base-matchups-440P.json out/bx-new-matchups-440P.json` |
 | `tilechk_r.py` | `tools/tilechk.py`'s own check against the copy over http (`r`) or Classic (`c`) | `tilechk_r.py r 360P 402P 440P 874L 956L 402 440 360 1440` |
-| `loop.py` | The loop page: `shots` (six screens after the wipe, no sideways scroll, no page errors), `badge` (8x crop, box, icon links), `swap` (new `data.json` shown with 0 navigations) | `loop.py shots http://127.0.0.1:8834/lsrv out/loop` |
-| `icons_png.py` | Not an audit: renders `retro/favicon-32.png` / `favicon-180.png` from `retro/favicon.svg` (then `python3 retro/wordmark_gen.py apply`) | `icons_png.py` |
+| `loop.py` | The loop page: `shots` (six screens after the wipe, no sideways scroll, no page errors), `badge` (8x crop of the TL badge, box, icon links), `swap` (new `data.json` shown with 0 navigations) | `loop.py shots http://127.0.0.1:8834/lsrv out/loop` |
+| `icons_png.py` | Not an audit: renders `retro/favicon-16.png` (from `favicon-16.svg`), `favicon-32.png` (from `favicon.svg`) and `favicon-180.png` (then `python3 retro/wordmark_gen.py apply`) | `icons_png.py` |
 | `h.py` `eng.py` `mmfont.py` | Harness: fonts, the two engines behind one interface, the text-on / text-off ink scan | imported |
 
 `$U` = `http://127.0.0.1:8830/retro/tracker/index.html`.

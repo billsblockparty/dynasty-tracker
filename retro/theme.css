@@ -996,3 +996,37 @@ html.retro .dtp .dtt tr:not(.dtl,.dtb)>:is(th,td):last-child:not(#_):not(.dsim){
 html.retro .pane-st .ch.gold[style*="padding"] .ct::before{background:var(--yellow)}
 html.retro .pane-st .ch.last[style*="padding"] .ct::before{background:var(--loss)}
 }
+
+/* ================= PART 10: cleanup job 1 (2026-11-12): Nicklaus's parked requests 34 to 36 (RETRO.md, "Decisions (2026-11-12, cleanup job 1)") ================= */
+/* --- 35. Empty rank dots recede: the dark socket of a bar track (--blue-3 core, the frame's black ring that every filled dot carries),
+   not a periwinkle ring. The dots are a 10-step meter beside the rank chip, which states the rank as a digit: the empty steps are not a
+   sole cue and need no 3:1. Lifts over PART 4's rule by source order (same specificity). --- */
+html.retro .seg10 i:not(.on):not(#_){background:var(--blue-3)!important;border-color:var(--black)!important}
+/* --- 34. Bench band (Matchups and the Playoffs lineups): its own section head. 18px of panel above it (Classic's own .lbh margin, which
+   its later margin shorthand resets to 0), a --blue-3 head strip (pass 3: head strips are --blue-3; the page colour reads as "ground" here)
+   closed by the frame's black line above and below, label in the label colour. The strip keeps Classic's 33.5px; the rows keep theirs. --- */
+html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh)){margin-top:18px;background:var(--blue-3);box-shadow:inset 0 2px 0 var(--black),inset 0 -2px 0 var(--black)}
+html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh)) b{color:var(--yellow)}
+html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh)) i{background:var(--blue)}
+/* --- 36. Slate header: day and time in a framed tile, the slate day tile's recipe (.stc: --blue-3 well, 1px ring in the slate's state
+   colour, 1px hard shadow, 2px corner). Rule 11: 5px of padding beside the 1px ring and --ix (theme.js item 4) across, less the running tracking after the last glyph and the 1px shadow; down, a
+   cap-trimmed line placed so the capitals (.7em = 11.9px) plus the 1px text shadow are centred between the ring lines (3.55px each).
+   The tile is 22px tall on Classic's 17px line: 2.5px of it hang above and below (negative margins), so the header row keeps its
+   24px and no row below moves; the starters count moves right by the tile's two paddings. --- */
+html.retro .slg b{--str:var(--peri);background:var(--blue-3);border-radius:2px;box-shadow:inset 0 0 0 1px var(--str),var(--sh-1);
+  white-space:nowrap;padding:0 6px;text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}   /* the segments' formula (PART 5): running tracking and the 1px shadow */
+html.retro .slx.sx-final .slg b{--str:var(--win)} html.retro .slx.sx-live .slg b{--str:var(--yellow)} html.retro .slx.sx-bye .slg b{--str:var(--blue-2)}
+@supports (text-box:trim-both cap alphabetic){
+  html.retro .slg b{display:inline-block;flex:none;box-sizing:border-box;height:22px;line-height:1;text-box:trim-both cap alphabetic;padding:4.55px 6px 0;margin-block:-2.5px}
+}
+/* --- 33. vs / @ : no tile (Nicklaus, 2026-11-12). The glyph takes the colour its tile had: "vs" --win, "@" --peri-lt (--peri is 3.21:1 on
+   the lighter row), with the T1 shadow. 15px outside the schedule grid (Classic 11.5px): the largest size whose ink plus the 1px shadow
+   stays inside the slot. The slot keeps Classic's 20 x 17px box, so nothing in the row moves. border:0 also takes off the 1px top
+   border that Classic's Standings row rule (.r) puts on the road tile, class "gha ht r": the black cap of the solid "@" tile.
+   Both glyphs' ink (shadow included) is centred on the slot: --gv (PART 5's padding formula) per glyph, set from screenshots, and
+   .9px up: the ink centre then reads within 0.5px of the slot's centre in Chromium and WebKitGTK (figures in RETRO.md, "vs / @ glyphs"). --- */
+html.retro .cnm .gp .gha.ht.h,html.retro .cnm .gp .gha.ht.r{background:none;border:0;cursor:inherit;text-shadow:1px 1px 0 var(--shk);
+  text-indent:calc(var(--ix,0em) - 1px + var(--iw,0px));translate:0 -.9px}
+html.retro .cnm:not(.psg) .gp .gha.ht{font-size:15px}
+html.retro .cnm .gp .gha.ht.h{color:var(--win);--gv:.127em}
+html.retro .cnm .gp .gha.ht.r{color:var(--peri-lt);--gv:.108em}

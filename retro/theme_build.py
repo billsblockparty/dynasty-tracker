@@ -119,8 +119,8 @@ def build(tmp):
     h1 = re.findall(r'<h1 style="white-space:nowrap">The <img class="lgs"[^>]*></h1>', s)
     need(len(h1) == 1, f'header title with the League art: expected 1, found {len(h1)}')
     s = s.replace(h1[0], '<h1 style="white-space:nowrap"><span class="wm-tx">The League</span>' + wm + '</h1>', 1)
-    # 9. favicon (pass 5): the ODL mark in the wordmark's letterforms, the same three self-contained <link> tags as the loop page
-    #    (retro/favicon.html, written by "wordmark_gen.py apply" from favicon.svg / favicon-32.png / favicon-180.png). Classic has
+    # 9. favicon (pass 5; TL since 2026-11-12, cleanup job 1): the TL mark, the same three self-contained <link> tags as the loop page
+    #    (retro/favicon.html, written by "wordmark_gen.py apply" from favicon-16.png / favicon-32.png / favicon-180.png). Classic has
     #    no icon; if it gains one, its links are dropped from the copy so exactly the theme's three remain.
     ic_p = os.path.join(HERE, 'favicon.html')
     need(os.path.isfile(ic_p), 'missing retro/favicon.html')

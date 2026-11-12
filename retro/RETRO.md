@@ -73,7 +73,7 @@ updates). BBP only; not ported to YILM.
 | `--white` / `--black` | `#fff` / `#000` | text fill / outline and hard shadow |
 | `--win` / `--loss` | `#7dffa0` / `#ff8f8f` | spare |
 | `--line` | `#8da4e8` | rule above the lower display line |
-| `--badge-hi` / `--badge-lo` | `#5f6def` / `#2040fa` | ODL badge fill (gradient) |
+| `--badge-hi` / `--badge-lo` | `#5f6def` / `#2040fa` | TL badge and favicon plate fill (gradient) |
 | `--glow` | `rgba(255,255,255,.25)` | panel inner glow |
 | `--drift` | `#222` | luminance drift layer |
 | `--halo` | `rgba(255,255,255,.35)` | soft-focus text glow |
@@ -119,30 +119,46 @@ updates). BBP only; not ported to YILM.
 
 No `filter` on any container. iOS Safari re-rasterises a filtered ancestor at low resolution after each animation,
 so everything inside goes blurry. Soft focus therefore comes from the text halo, and the wash from the
-saturation-blend overlay. The only `filter` on the page is the `drop-shadow` on the ODL badge (`.mk`), which holds
+saturation-blend overlay. The only `filter` on the page is the `drop-shadow` on the TL badge (`.mk`), which holds
 nothing but its own drawn mark (one small inline svg since 2026-11-12; two lines of text before). Keep it that way.
 
-## ODL badge and favicon (2026-11-12)
+## TL badge and favicon (2026-11-12)
 
-- **Badge** (`.mk` in the header): the plate is unchanged CSS (gradient `--badge-hi` to `--badge-lo`, white 2px border, periwinkle
-  hairline, hard shadow, the same box: 67.36 x 53.06px at 402 wide, 139.67 x 110px at 1280 x 800). Its two lines are no longer
-  Martian Mono text: they are drawn in the tracker wordmark's letterforms (option C, the stepped title; `wordmark_gen.py`), as one
-  inline svg (`.mk-g`, viewBox 127 x 100 = the plate, out of flow so the plate keeps its box). ODL: cap 46, white, black outline
-  (1.6 outside), two hard steps (`--orange` at 3 / 3, `--peri` at 6 / 6). DYNASTY: cap 19, `--yellow`, the outline only: at 8 to
-  10px a step would close its counters. Tokens only (`--white --yellow --orange --peri --black`), no new token.
-- **New letters** in `wordmark_gen.py` `letters()`: O and D (the U's bowl closed; D keeps a flat left side), S (two half bowls with
-  the G's arm ends), N (two stems and a straight diagonal, square corners as T H E L), Y (a half-height U on a centred stem).
-  `wordmark.svg` itself is unchanged (`wordmark_gen.py C` still reproduces it byte for byte).
-- **Favicon:** the square plate with ODL alone (white, black outline, one orange step; slimmer stems so the counters stay open at
-  32px). `retro/favicon.svg` (64 x 64, literal token values: a favicon cannot read the page's custom properties), `favicon-32.png`,
-  `favicon-180.png` (apple-touch-icon: opaque, on `--purple`). The loop page had no icon before; Classic has none. At 16px the
-  three letters are a block of texture, not readable letters (see "Known issues / cleanup").
+One mark everywhere (Nicklaus, 2026-11-12): **TL**, T in `--yellow` (as "THE"), L in `--white` (as "LEAGUE"), on the blue plate. It
+replaces the ODL / DYNASTY badge and the ODL favicon of pass 5 (same day, earlier).
+
+- **Badge** (`.mk` in the loop's header): the plate is unchanged CSS (gradient `--badge-hi` to `--badge-lo`, white 2px border,
+  periwinkle hairline, hard shadow, the same box: 67.36 x 53.06px at 402 wide, 139.67 x 110px at 1280 x 800). On it, one inline svg
+  (`.mk-g`, viewBox 127 x 100 = the plate, out of flow so the plate keeps its box; `wordmark_gen.py badge()`): TL alone, no second
+  line. It is the favicon's 32px composition scaled by 5/3: cap 60 of the plate's 100, strokes 10, T 30 wide, L 20 wide, 10 apart,
+  black outline 3.33, `--orange` step at 3.33 / 3.33, `--peri` step at 6.67 / 6.67; T's steps reach L's outline. Total ink 73.3 x 73.3
+  units, centred. Measured from pixels (8x): ink to the plate's inner frame 13.75 / 13.5px left / right and 6.5 / 6.75px top / bottom
+  at 402 wide (ink 35.75 x 35.75px), 29.1 / 28.4px and 14.25 / 14.25px at 1280 x 800 (ink 77.5px). No closed counters; the narrowest
+  opening (between T's periwinkle step and L's outline, under T's bar) is 6.67 units = 3.5px at 402 wide, 7.3px at 1280 x 800. Contrast on the plate's
+  gradient as the favicon's (below). Tokens only (`--white --yellow --orange --peri --black`), no new token.
+- **Letters.** T and L here are the icons' grid letters (`_tl()`: square corners, whole units), not `letters()`. `letters()` still
+  holds O D S N Y (pass 5, for ODL / DYNASTY) and the pair gaps `GO` / `GD`: unused by anything since this change, kept for a later
+  word. `wordmark.svg` itself is unchanged (`wordmark_gen.py C` still reproduces it byte for byte).
+- **Favicon** (cleanup job 1). The same mark on the same plate (gradient `--badge-hi` to `--badge-lo`, white border, hard shadow). Square letters as the wordmark's T and L, on a
+  whole-unit grid. Three drawings from `wordmark_gen.py` (literal token values: a favicon cannot read the page's custom properties):
+  - **16px** (`icon16()` -> `retro/favicon-16.svg` -> `favicon-16.png`): hand-hinted, 1 unit = 1 pixel, `shape-rendering:crispEdges`.
+    Plain letters with 2px strokes, no outline, no steps. T 6 x 9, L 4 x 9, 1px apart; ink to the plate's inner frame 1 / 1 / 2 / 2px
+    (left / right / top / bottom), read from the PNG's pixels.
+  - **32px** (`icon()` -> `retro/favicon.svg`, viewBox 64 -> `favicon-32.png`): the stepped title's treatment: black outline, `--orange`
+    step at 1 / 1px, `--peri` step at 2 / 2px; stems 3px. T's steps touch L's outline, as in the wordmark. Total ink (fill, outline,
+    steps) 2.50px from the plate's inner frame on all four sides (measured on a 16x render).
+  - **180px** (`icon180()` -> `favicon-180.png`, apple-touch-icon): the 32px artwork scaled 2.375 on `--purple`, 14px margin, opaque.
+  - Contrast on the plate's gradient (3:1 required, graphics): white 4.27 (top) to 6.61:1 (bottom), yellow 4.02 to 6.23:1.
+  - **Links: PNG only, three, each with its size** (`sizes="16x16"`, `"32x32"`, apple-touch `"180x180"`), so a tab at 1x takes the
+    hinted 16px drawing and a tab at 2x the 32px one. No svg icon link: a browser that prefers an svg icon at any size would scale the
+    32px artwork down to 16px, the unreadable case this replaces. `favicon.svg` and `favicon-16.svg` stay in the repo as the PNGs'
+    sources. Desktop Safari's pinned-tab `mask-icon` is still not provided.
 - **Single source:** `python3 retro/wordmark_gen.py apply` writes `retro/favicon.html` (three self-contained `<link>` tags, data URIs)
   and the marked blocks of `template.html` (`<!--ICON-->`, `<!--MK-->`, `/*MK-CSS*/`) from the committed files. The builds read the
   committed results only: `build.py` is unchanged (the links and the svg are part of the template, so `tv` changes with them);
-  `theme_build.py` reads `favicon.html` (patch 9). After changing a letter or the icon: `wordmark_gen.py icon > retro/favicon.svg`,
-  `python3 retro/qa/icons_png.py`, `wordmark_gen.py apply`, rebuild, `retro/qa/loop.py badge`.
-
+  `theme_build.py` reads `favicon.html` (patch 9; still exactly three links). After changing a letter or an icon:
+  `wordmark_gen.py icon > retro/favicon.svg`, `wordmark_gen.py icon16 > retro/favicon-16.svg`, `python3 retro/qa/icons_png.py`,
+  `wordmark_gen.py apply`, rebuild, `retro/qa/loop.py badge`.
 ## Auto-update (no reload)
 
 - Every 2 minutes the page fetches `../build.json` (`no-store`). When its `v` is one the page has not handled yet
@@ -310,9 +326,42 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 - 2026-11-12 · Standings Glossary: the 8px plate of the other tabs behind the switch and the text, at every width; its Hide / Show
   switch selects to the badge · the label was 3.2:1 and the text 2.0 to 4.3:1 on the orange end of the ground; the switch was the one
   segment left with Classic's white selected state.
-- 2026-11-12 · ODL badge and favicon drawn in the wordmark's letterforms (section "ODL badge and favicon"); the favicon is one more
+- 2026-11-12 · ODL badge and favicon drawn in the wordmark's letterforms (replaced the same day by TL: section "TL badge and favicon"); the favicon is one more
   checked patch of `theme_build.py` (patch 9) · Nicklaus's request.
 - 2026-11-12 · The audits live in `retro/qa/` (README there) · they were outside the repo.
+
+## Decisions (2026-11-12, cleanup job 1: Nicklaus's parked requests 33 to 37, TL favicon)
+
+- 2026-11-12 · Empty rank dots (`.seg10 i:not(.on)`, Standings on phones and desktop) are dark sockets: `--blue-3` core, black ring (was
+  a `--peri` ring) · Nicklaus: the empty dots were too prominent, the filled part must dominate. The brightest part of an empty dot was
+  its ring, 3.21:1 against the lighter row and 4.15:1 against the darker one, close to a filled `--peri-lt` dot (4.80 / 6.19:1). Now no
+  part of an empty dot is lighter than its row (ring 2.57 / 2.00:1, core 1.63 / 1.26:1, both darker), filled cores are 4.73 to 8.36:1
+  lighter. Reading taken of rule 3: the dots repeat the rank chip's digit beside them, so an empty step is not a sole cue and needs no
+  3:1. The same track logic as pass 4's black bar tracks. A solid `--blue-3` dot without the ring was the quieter alternative (1.26:1
+  on the darker row: close to invisible).
+- 2026-11-12 · Bench band (`.lbh` on Matchups and in the Playoffs lineups): 18px of panel above it (was 0), a `--blue-3` head strip (was
+  the page colour `--pg`, purple) closed by a 2px black line above and below, label `--yellow` (was `--peri-lt`), inner rule `--blue`.
+  Strip height 33.5px and every player row unchanged · Nicklaus: Bench was attached to the last starter (in Slate view: to the last
+  slate) and read as one section with it. Purple inside a panel reads as the ground showing through (pass 3's reason for the `--blue-3`
+  head strips); 18px is Classic's own `.lbh` margin, which Classic's later `margin` shorthand resets to 0.
+- 2026-11-12 · Slate header (`.slg b`, day and time) stands in a framed tile: the slate day tile's recipe (`.stc`: `--blue-3` well, 1px
+  ring in the slate's state colour, 1px hard shadow, 2px corner), 22px tall · Nicklaus: visibility. The tile hangs 2.5px above and below
+  Classic's 17px line, so the header row keeps its 24px and nothing below moves; the starters count moves right by the two paddings.
+- 2026-11-12 · Slate view surfaces (request 37): no change, already met since Game Day · the request came from the Playoffs lineups, which
+  stood on the ground until Game Day gave `.pox` its plate; measured `--blue-2` behind every slate header and total line on both tabs.
+- 2026-11-12 · vs / @ (request 33): the tiles are removed; the glyph takes its tile's colour, "vs" `--win` and "@" `--peri-lt`, 15px
+  (Classic 11.5px), T1 shadow, in Classic's unchanged 20 x 17px slot (Nicklaus's pick of two mocks; option B was 19px with "@" in
+  `--peri` and the T2 outline) · Nicklaus: the "@" tile had a black cap that "vs" did not. Cause: Classic's Standings row rule `.r`
+  also matches the road tile's class `r` and gives it a 1px top border (Known issues, 38); the copy's solid tile made it visible.
+  `--peri` as text is 3.21:1 on the lighter row, `--peri-lt` 4.80 / 6.19:1, `--win` 6.48 / 8.36:1. "@" shares `--peri-lt` with the
+  row's dim labels (PROJ, BYE): it is told apart by its place, weight and size, and from "vs" by colour. **The HOME / ROAD word tags
+  (`.hrt`, comparison card) and the card's home / road tags are unchanged: solid `--win` / `--peri` tiles with black ink.**
+- 2026-11-12 · Favicon = TL (section "TL badge and favicon"): hand-hinted 16px drawing, stepped 32px and 180px; PNG links only · ODL
+  was unreadable at 16px. Nicklaus's decision.
+- 2026-11-12 · Loop badge = TL alone, the favicon's composition on the unchanged plate (Nicklaus's pick of two mocks; option 1 kept
+  the DYNASTY line under a smaller TL) · one mark everywhere; DYNASTY's counters were 1.7px at 402 wide.
+- 2026-11-12 · Phone Standings rank chips go to the solid desktop style (Nicklaus) · cleanup job 2, not touched here.
+- 2026-11-12 · The Team Hub hero seed tile stays the blue CSS-drawn tile and is the retro rank-tile standard (Nicklaus).
 
 ## Mechanism ("always-current clone")
 
@@ -416,7 +465,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    card edge.
 5. **Tiles:** as Classic (never taller than the figure's cap height, digits never touch the frame, ink centred,
    stacked tiles one width and one left edge). Only gold and worst-rank chips carry a 1px ring (as Classic); the
-   streak tile is a solid result colour with black figures; empty rank dots have a periwinkle ring.
+   streak tile is a solid result colour with black figures; empty rank dots are dark sockets (`--blue-3` core, the black ring
+   every filled dot carries; 2026-11-12, was a periwinkle ring).
 6. **Rank tiles:** CSS-drawn (42 x 44px on every row, one left edge, `--badge`, white 2px border, 2px hard shadow,
    Martian Mono 800 25px on a cap-trimmed line). Bye = yellow digit, playoff = white digit, chasing = flat `--blue-3`
    with a periwinkle border and `--peri-lt` digit.
@@ -452,7 +502,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     advances it sets `--rnd:1` on `<html>` once (theme.css PART 8 uses it inside `round()`). Pass 5 added no item: item 4's list gained
     four entries (Standings' fitter-sized rank chips and the cards' streak tile with `--nc`, the table's streak and Proj finish tiles), and
     item 1 gained a late check on desktop: 350ms, 900ms and 2s after an H2H / Median press, a streak tile or a table rank chip that is
-    still unsized gets Classic's own `window.rrFit()` / `window.tileFit()` (selector matches, no layout read; see "Pass 5").
+    still unsized gets Classic's own `window.rrFit()` / `window.tileFit()` (selector matches, no layout read; see "Pass 5"). Cleanup job 1
+    (2026-11-12) added no item: item 4's list gained one entry (`.slg b`, the slate header tile).
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -519,7 +570,7 @@ ground. The Glossary switch and its text (`.glw`, `.key`), which stand on the or
 kind of plate (8px) on these two tabs. Cards on a panel are `--blue` (lighter, raised): matchup cards `.g4`, the
 comparison card `.mcard`, bracket games `.pbm` / `.pbyt`. Wells are `--blue-3`: toggle tracks, the team switch, the
 dropdown button, the points band `.ltot.lsb` (periwinkle 1px ring), slate day tiles `.stc`, the "vs" badge.
-The bench strip and Classic's `--pg` strips stay purple.
+The bench strip is a `--blue-3` head strip since 2026-11-12 (below, "Bench band" and "Slate header"); Classic's other `--pg` strips stay purple.
 
 **Literal Classic colours overridden** (everything else arrives through the tokens):
 
@@ -594,14 +645,35 @@ figure 14px (`.fs5`), delta 11px (Classic 10px), label 11px.
 Names and logos keep their outer edges; only the two cells and the name columns' inner edges move (6px each).
 Other tabs' `.cr.lu` rows keep Classic's 38px cell with the 14.5 / 11.5px figures.
 
-**Chips and tiles (rule 11).** vs / @ tiles: solid, 17px, one cap-trimmed line; "@" (10.7px tall) sits .125em and "vs"
-.06em above the cap centre so each is ink-centred. Injury tags: one baseline for Q / O / D / IR placed for the tail of
+**Chips and tiles (rule 11).** vs / @: no tile since 2026-11-12 (below, "vs / @ glyphs"); until then solid 17px tiles. Injury tags: one baseline for Q / O / D / IR placed for the tail of
 "Q". FK / FL: 11px, 3.65px / 4.4px paddings. "N on bye": centred on the ink of "b" and "y", pill height as Classic.
 HOME / ROAD in the card: Classic's 0.58px side difference taken out through `--ic`. Schedule chips and tiles (sized in
 `cqw`) and the schedule's three week columns are rounded to whole pixels. "Week rank N": Classic's chip keeps its box (the fitter's inline `!important`
 styles cannot be overridden) but loses fill and ring; its digit is made transparent and the rank is drawn by `::after`
 from `data-tx` at the label's 11.5px, on the label's cap band (Classic's fitter leaves the chip 4.43px above it, in
 Classic too: the label is a flex item, where a baseline marker is not on the baseline).
+
+**vs / @ glyphs (2026-11-12).** theme.css PART 10. `.cnm .gp .gha.ht.h` / `.r` on Matchups and Playoffs (week lineups, bracket-game
+lineups, the builder, the schedule grid: the only places the component occurs; `.hab` does not occur in the built pages): no fill, no
+ring, `border:0`, `cursor:inherit`; "vs" `--win`, "@" `--peri-lt`; `text-shadow:1px 1px 0 var(--shk)` (T1); 15px outside the schedule
+grid (the schedule keeps Classic's `cqw` size). The slot is Classic's 20 x 17px inline box (schedule: its whole-pixel `cqw` box), so no
+box in the row moves. Ink including the shadow: "vs" 15.5 x 10.0px, "@" 8.0 to 8.5 x 14.5px. Centred on the slot by `--gv` (.127em
+"vs", .108em "@") and `translate:0 -.9px`. Ink centre against the slot's centre, mean per glyph, side and state (Matchups Week 10 and
+Week 9, Playoffs final; down is +): Chromium at 360P / 402P / 440P / 1440, "vs" -0.45 to -0.08px, "@" -0.20 to +0.23px (single rows
+-0.95 to +0.62px: headless Chromium's whole-pixel text, Known issues 19); WebKitGTK at the 402P / 440P layouts "vs" +0.33px, "@"
++0.50px on every row and both sides, at 1440 "vs" 0.00px, "@" +0.50px (one device pixel at 2x). Across: within 0.3px in both.
+Rule 11 does not apply (no frame). Not changed: the word tags HOME / ROAD (`.hrt`) and the card's home / road tags.
+
+**Bench band (2026-11-12).** theme.css PART 10. `.pane-mu .lbh`, `.pane-po .lbh:not(.psbh)`: `margin-top:18px`, `--blue-3` fill,
+`inset 0 2px 0` and `inset 0 -2px 0` black, label `--yellow` (12.52:1), small text `--peri-lt` (7.81:1), inner rule `--blue`. Height
+33.5px as Classic. Everything under the band is 18px lower than in Classic's page; nothing else moves.
+
+**Slate header (2026-11-12).** theme.css PART 10, theme.js item 4 (`.slg b` in the list). The day and time are a tile: `--blue-3`,
+`inset 0 0 0 1px` ring (`--peri` upcoming, `--win` final, `--yellow` live, `--blue-2` for the bye slate, as `.stc`), `--sh-1`, 2px
+corner, 6px side padding, `height:22px` with `margin-block:-2.5px` (the row keeps 24px), a cap-trimmed line with 4.55px above the
+capitals: capitals (11.9px) plus the 1px text shadow are centred between the ring lines. Text keeps its state colour, the running
+tracking and the 1px shadow; across it uses the segments' `text-indent` formula. Text on the well: white 13.28:1, `--win` 10.55:1,
+`--yellow` 12.52:1, `--peri-lt` 7.81:1. Engines without `text-box` get the fill, ring and side padding on Classic's 17px line.
 
 **Comparison card names.** 17px at the 360P layout and in the desktop side column (Classic 21px Barlow Condensed):
 "Nuts in the Face" wrapped to two lines there and holds one in Classic. 21px elsewhere.
@@ -897,8 +969,8 @@ Open items, most visible first. Each names where it was found.
     1100px would again sit on the orange end (2.8:1 against white).
 16. **Past-season buttons** open Classic's (unthemed) pages, and those pages' 2026 button returns to Classic.
 17. **No link** from Classic or from the loop to the themed tracker yet (by decision; the loop has a CLASSIC link only).
-18. **Favicon at 16px (pass 5):** ODL is not readable at 16px (stems under 1px); from 32px it is. A single-letter variant would be the
-    alternative. Desktop Safari's pinned-tab `mask-icon` is not provided.
+18. **Favicon:** the 16px point is closed (2026-11-12: TL, hand-hinted 16px drawing). Still open: desktop Safari's pinned-tab
+    `mask-icon` is not provided; the pages link PNG icons only, so sizes above 32px (other than the 180px touch icon) scale the 32px PNG.
 
 **D. Measurement and engines (not page defects)**
 
@@ -920,6 +992,12 @@ Open items, most visible first. Each names where it was found.
 25. "Week rank" chip sits 4.43px above its label's cap band (the label is a flex item; Game Day).
 26. Desktop table outer columns 3 to 9px from the panel edge (DESIGN.md §8; the copy sets the last column to 9px at 1100 to 1239px).
 
+38. Classic's Standings row rule `.r{... border-top:1px solid var(--line); padding:12px 0; cursor:pointer; position:relative}` also
+    matches the road tile `<span class="gha ht r">` on Matchups and Playoffs (the tile's own rules reset display and padding, not the
+    border): every "@" tile carries a 1px top border, black through Classic's body-wide border-colour rule, and the pointer cursor.
+    In Classic it hides against the dark tile; on the copy's solid periwinkle tile it was a black cap (request 33). Worked round in
+    the copy since 2026-11-12 (`border:0; cursor:inherit` on the glyph); Classic still has it.
+
 **F. Code cleanup**
 
 27. theme.js item 1 can go when Classic re-fits after H2H / Median by itself; item 5 when `ref()` skips those chips. The late check
@@ -935,13 +1013,15 @@ Open items, most visible first. Each names where it was found.
 31. A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps them (`DT_CHUNKS`).
 32. Wordmark options A and B are kept outside the repo only (`shots-theme/wordmark/` patches).
 
-**G. Requests parked by Nicklaus on 2026-11-11 (screenshots taken before pass 1 shipped; recheck each against the shipped passes first)**
+**G. Requests parked by Nicklaus on 2026-11-11 (rechecked against the build of pass 5 on 2026-11-12, cleanup job 1; all five closed)**
 
-33. Matchups vs / @ tiles: "@" showed a dark upper frame shadow, "vs" none (both are solid tiles without a ring since Game Day).
-34. Matchups: the BENCH band reads as part of the last slate; separate it clearly.
-35. Standings last-5 / rank dots: empty dots too prominent; the filled part must dominate.
-36. Slate header (day + time) in a framed tile for visibility.
-37. Slate view: panel background missing behind slate headers and running-total lines.
+33. Matchups vs / @ tiles: **closed 2026-11-12: tiles removed, coloured glyphs (Nicklaus 2026-11-12).** The old black top band on
+    "@" was the 1px top border of item 38; `border:0` on the glyph takes it off in the copy.
+34. Bench band: **closed 2026-11-12** (gap 0 -> 18px, purple -> `--blue-3` head strip with black lines, label yellow; "Bench band").
+35. Standings rank dots: **closed 2026-11-12** (empty dot's ring `--peri` -> black; "Decisions, cleanup job 1").
+36. Slate header in a framed tile: **closed 2026-11-12** ("Slate header").
+37. Slate view surfaces: **already fixed by Game Day (pass 1)**: the Playoffs lineups gained the `.pox` plate; `--blue-2` measured behind
+    every slate header and total line on Matchups and Playoffs. No change in cleanup job 1.
 
 ## Checks before shipping a change to the theme
 
@@ -985,6 +1065,21 @@ Open items, most visible first. Each names where it was found.
   Nerd, the refresh pill. Chromium at 360P, 402P, 440P, 874L, 956L, 1100, 1240, 1440, 1920; WebKitGTK at the 402P / 440P layouts,
   1100 and 1440. Result: dark-ink 0 and contrast 0 on all twelve tabs (Chromium at 440P and 1440, 133 states each) and on Standings at every other width (Chromium 9 widths, 63 states; WebKitGTK 3 widths, 21 states), Glossary open included (was 44 at 440P, 46 at 1440). Frame gaps on desktop Standings: WebKitGTK 0 at 1440 and 1100 (5 states; the two Median states at 1440 were read again with a 4.5s settle: the late re-fit moved the page during the first capture), 0 of 170 drawn chips at 1440 (0 of 280 with 1100), 0 of 20 rank tiles; Chromium at 956L / 1100 / 1240 / 1440 / 1920: no gap under the minimums (850 chips, 100 rank tiles, every framed element), left / right balance over 0.5px on 132 of 850 chips (0.55 to 0.92px) and on one gold dropped-points chip (1.0px, 3 Nerd states a width): the engine's whole-pixel text placement (Known issues, D 19). Clip / new ellipsis / extra lines / sideways scroll 0 (54 state x width pairs; "W / L chip" in the Glossary, found on a 402P screen and at 1100px, was fixed and re-run); text nominally smaller than Classic's: the fitter-sized chip digits only ("Pass 5"). Boxes identical to a copy built from the commit before the pass: the eleven other tabs at 440P / 1440 (84 states) and Standings at 360P / 402P / 440P / 874L (16 states), the phone Standings dumps repeated after each late fix. Tile check 0 (48 runs: 12 widths, H2H / Median, Dumb / Nerd). Classic byte-identical (52 files outside `site/retro/`); 9 patches apply. Loop page: six screens at 402 x 874 and 1280 x 800, no page errors, no sideways scroll, badge box unchanged, `data.json` swapped with 0 navigations.
 
+- **Cleanup job 1 (requests 33 to 37, TL favicon and badge), 2026-11-12:** audits in `retro/qa/` against a copy built from the commit
+  of pass 5. Chromium: dark-ink 0 and contrast 0 on all twelve tabs at 440P and 1440 (133 states each) and on Standings, Matchups and
+  Playoffs at 402P (42 states); frame gaps (`gapf.py`, Matchups and Playoffs) 0 at 360P, 402P, 440P and 1440; clip / ellipsis / extra
+  lines / sideways scroll 0 on Matchups, Playoffs and Standings at 360P, 402P, 440P, 874L, 956L and 1440, text smaller than Classic's
+  109 and 96 nodes, the same nodes as before the job (none new); tile check 0 (36 runs). WebKitGTK at the 402P / 440P layouts and 1440:
+  dark-ink 0 and contrast 0 on the three tabs (42 states a width); frame gaps (`gapf.py`) 0 at the 402P layout and at 1440, 1 at the 440P layout (the "20" rank chip of the Playoffs schedule, Known issues 8, not touched). The slate header tile (12 a width, Matchups and
+  Playoffs): ink including shadow 3.13 to 4.00px beside (left and right within 0.40px in Chromium at 360P / 402P / 440P, 0.50px at 1440
+  in both engines, 0.33px in WebKitGTK at the phone layouts) and 2.35 to 3.52px above and below (WebKitGTK 3.00 / 3.33px). vs / @
+  glyphs: figures under "vs / @ glyphs". Boxes against the pass 5 build: Standings (360P / 402P / 440P / 874L / 956L / 1440, four
+  states each) and the nine other tabs (440P / 1440) 0 changed; Matchups and Playoffs (the same six widths, 132 states) only what the
+  job is about: everything under the bench band 18px lower and its containers 18px taller, the slate header tile (2.5px higher, 5px
+  taller, 9.3 to 10.3px wider) with the starters count 9.3 to 10.3px to its right, and the vs / @ glyph's own box 0.9px up (its
+  `translate`; the slot's layout box is unchanged). Loop page: six screens at 402 x 874 and 1280 x 800, no errors, no sideways
+  scroll, badge box unchanged, data swap with 0 navigations; the same three icon links on both pages; all 9 patches apply; Classic
+  byte-identical.
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).
