@@ -159,9 +159,9 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 | Matchups, phones and desktop (360P / 402P / 440P / 1100 / 1440 / 1920; every week, Lineup / Optimal, Position / Slate, Lean / Detailed, Colors, FINAL / LIVE / PROJ, week menu) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Rosters, Drafts (list below 1100px and the board from 1100px) and Paper Trail (Picks, Players, the sheet with its two-column trade rows), phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every team, year, order, sort and colour mode, Glossary) | `LIVE` 2026-11-11 ("Pass 3" below) | - |
-| Stats, Team Hub | NOT STARTED | medium each (matrices and bars, SVG charts) |
+| Stats (all 17 sections, every toggle, Glossary) and Team Hub (every team, Data and Trends, every week, Glossary), phones and desktop (360P / 402P / 440P / 874L / 956L / 1440) | `LIVE` 2026-11-11 ("Pass 4" below) | - |
 
-A tab that is NOT STARTED shows whatever the token overrides make of it.
+All twelve tabs are themed. Left: Standings on desktop and the Standings Glossary (pass 5).
 
 ## Decisions (Nicklaus, 2026-11-09)
 
@@ -245,6 +245,31 @@ A tab that is NOT STARTED shows whatever the token overrides make of it.
 - 2026-11-11 · theme.js item 6: Paper Trail's tile width, column widths and NFL slot edge by Martian Mono's glyph ink · Classic's
   values are written inline by private fitters (below, "Pass 3").
 
+## Decisions (2026-11-11, pass 4: Stats, Team Hub)
+
+- 2026-11-11 · Stats and Team Hub themed, phones and desktop (section "Pass 4") · the last two tabs.
+- 2026-11-11 · Better / worse cells are solid: `--win` / `--loss` with black ink, level = a `--blue-3` well, the team's own cell white
+  · Classic's 17 to 20% tints carried 4.3:1 text, and a tint is not 3:1 against its row; the solid result tile is the look's
+  motif already. A dark cell with a coloured ring and digit was the alternative (quieter, but the fill no longer says anything).
+- 2026-11-11 · Heat scale in five fills: `--win`, `--win-2`, the well, `--loss-2`, `--loss` (two new tokens, each `--win` / `--loss`
+  70% + `--blue-3`); best and worst rank carry a black 2px inner ring · every fill is 3.6:1 or more against the panel with black ink
+  at 7.2:1 or more.
+- 2026-11-11 · Bye exposure: 1 = the well with a yellow ring and digit, 2 = solid yellow, 3 or more = solid orange · Classic's three
+  gold / orange tints were 1.9 to 2.2:1 as text on the ground.
+- 2026-11-11 · Rank chips on these two tabs: rank 1 = solid yellow, last = solid `--loss`, black ink, no ring (Standings and the other
+  tabs keep the ringed chip) · Classic's tile fitter leaves 1.75 to 2.75px above and below the digit; a 1px ring inside that is under
+  rule 11's 2px (measured 1.0 to 1.3px in WebKitGTK).
+- 2026-11-11 · Fitter-sized rank chips: the tile is drawn around the digit (`.ct::before`), not the digit centred in the tile · the
+  fitter writes both side paddings inline with `!important` from a canvas that is glyph ink in one engine and the advance box in the
+  other; CSS cannot override them and rule 10 forbids rewriting the fitter.
+- 2026-11-11 · Bar tracks are black, not `--blue-3` · a track is read as a scale: black is 2.0 to 2.6:1 against the rows, `--blue-3`
+  1.3 to 1.6:1.
+- 2026-11-11 · Team Hub stands on a `--blue-2` plate (the Players recipe); its cards are `--blue`, the odds boxes and the Trends chart
+  cards are `--blue-3` wells · on a well the palette's orange is 4.72:1 as a line and as text (2.90:1 on `--blue`), so the three
+  series colours stay palette colours.
+- 2026-11-11 · Team Hub hero: the seed tile is the Standings rank tile (rule 6), not Classic's numeral art.
+- 2026-11-11 · Corners 4px on cards and wells, 2px on tiles (Classic 5 to 12px).
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -305,6 +330,7 @@ New for the tracker (each a mix of two palette colours):
 
 | `--pos-qb` `--pos-rb` `--pos-wr` `--pos-te` `--pos-k` `--pos-def` | `#fbb2c9` `#3ddcc1` `#76cff6` `#fcb674` `#c491ff` `#c98a72` | position palette (Game Day): tile and pill fills with black ink; QB / RB / WR / TE also as label text on the blue rows |
 | `--seg-on` | the badge gradient inset 2px on white, as one `background` value | stands in for Classic's `--chalk` inside segmented controls and menus (Game Day, "Segments") |
+| `--win-2` `--loss-2` | `#61c188` (`--win` 70% + `--blue-3`), `#bc8a94` (`--loss` 70% + `--blue-3`) | second step of the heat scale (pass 4): 4.76 / 3.61:1 on the panel, black ink 9.49 / 7.20:1 |
 
 Classic's tokens are re-pointed in `html.retro:root` (38 overrides): `--pg` purple, `--frame` black, `--deck`
 `--blue-2`, `--row-lt` `--blue`, `--row-divider` / `--line` `--blue-3`, `--chalk` white, `--label` yellow,
@@ -375,7 +401,9 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     leaves the chip alone (Classic bug, see "Pass 2"; no text or layout reads; remove when Classic's `ref()` skips these chips); (6) Paper Trail > Picks
     (2026-11-11): after every run of Classic's fitter (a change of `.ptv-k`'s style attribute) the tile width `--ptcw`, the column
     widths `--ptca` / `--ptva` and the NFL slot's edge `--nx` are set again from the bearing table (CSS cannot replace a custom
-    property written inline on the same element; one layout read for the tiles' left edges; see "Pass 3").
+    property written inline on the same element; one layout read for the tiles' left edges; see "Pass 3"). Pass 4 added no item: item 4's
+    list gained the chips of Stats and Team Hub, and for rank chips it also writes the character count as `--nc` (text only); where it finds that the engine rounds glyph
+    advances it sets `--rnd:1` on `<html>` once (theme.css PART 8 uses it inside `round()`).
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -663,6 +691,70 @@ fitter), the trade rows' text forms (a pick shows its full form where that fits:
 screen), the plate standing flush under the navigation band and against the Glossary plate (as Players), the 3px black divider
 before the GM column, sizes under 11px that are Classic's own (the Taxi tag, 10.5px).
 
+## Pass 4: Stats, Team Hub (2026-11-11)
+
+theme.css PART 8 and fourteen more entries in theme.js item 4's list (no new item). Phones and desktop. Scoped to the two panes
+(`.pane-sx`; `.pane-th` / `.thx2`). Nothing here reaches the ten tabs shipped before.
+
+**Surfaces.** Stats keeps Classic's panels (`.sxc`, `.posx`: `--blue-2`, black frame, hard shadow) and gains the inner glow. Team
+Hub has no panel in Classic (title, picker and every block stood on the ground): `.thx2` is a `--blue-2` plate drawn with spread
+shadows (12px of plate, 2px black frame, 2px hard shadow, the glow), so no box moves. On the panel / plate: raised cards are `--blue`
+(Team Hub's hero, figure cards, home / road card, dropped-points cards, the Trends week card; Stats' lineup-call cards), wells are
+`--blue-3` (the hero's three odds boxes, the Trends chart cards and the frame round the week card, Stats' "Tap a cell" readout and
+Record by lineup lean cards, level matrix cells). Table rows keep Classic's alternating shades (`--blue` / `--blue-2` over the 1px
+`--blue-3` divider); the Trades head strip is `--blue-3` through the token. The Glossary switch and text get the 8px plate.
+
+**Controls.** Section strip `.lbc.sxnav`: the pill of pass 2 (`--blue-3` well, 4px corner, `--peri-lt` label, selected = the badge
+through `--chalk: var(--seg-on); --ink: var(--white)`). Player sim / Team average (`.odsw`): a segment track. Team Hub's picker
+`.tqpk.rofb`: Rosters' recipe (`--blue` cells on `--blue-3` grid lines, selected = `--badge` with the white 2px inner ring, twelve
+`#thx-N` pairs listed as Classic lists them, other pictures at 50% opacity, no filter). Trends week strip `.tqwk`: raised `--blue`
+buttons with a yellow label, selected = the badge; its sticky band is `--blue-2` (Classic: the page colour).
+
+**Matrices, heat, bars** (the requirement: better / worse must stay distinguishable, 3:1 or more against the row).
+
+| Component | Classic | Here | Against the panel `--blue-2` |
+|---|---|---|---|
+| Schedule swap, Every-week cells `.mx` | better 20% green tint + `#7fdcb6`, worse 17% red tint + `#f29aa6` (4.3:1), level `--ink` | `--win` / `--loss`, black ink; level `--blue-3`, white ink; own cell white | 8.36 / 6.10:1; ink 16.7 / 12.2:1 |
+| selected cell `.mx.on` | 2px inner ring `--chalk` | white 2px outline outside the cell | 10.5:1 |
+| Ranks, weekly score rank `.hm` | 30 / 16% green, 12 / 24% red tints; gold / red 1.5px ring on 1 and 10 | r1-2 `--win`, r3 `--win-2`, r4-7 the well, r8 `--loss-2`, r9-10 `--loss`; black 2px inner ring on 1 and 10 | 8.36, 4.76, -, 3.61, 6.10:1 |
+| Bye exposure `.bx` | 12 / 26% gold tints, 30% orange tint | b1 the well + yellow ring and digit, b2 yellow, b3 orange, black ink | ring 9.91, 9.91, 3.74:1 |
+| bar tracks (`.dvb .hbr .hx-bar .tqbar .tqmini`, the rest of `.obar .sbar`) | `--ink`, `--line`, 5% white | black | 2.00:1 (2.57:1 on `--blue`) |
+| bar fills | `#3fd69b` `#ff6b7f` `#e8c15a` `#7fa6ff` `#6fc9a4` `#d4af6a` `#e0838f` `#4a5263`, 70 to 78% opacity on two | `--win`, `--loss`, `--yellow`, `--peri` (odds: #1 seed / bye / playoffs = yellow / `--win` / `--peri`; age: `--win` / yellow / `--loss` / `--peri`; home / road `--win` / `--peri`; form `--yellow` to `--orange`), full strength, black 1px inner line | each 3.21:1 or more on `--blue`, 4.15:1 or more on `--blue-2`; all on a black track |
+| Consistency band `.cbd` | 8% white + 22% white ring | `--blue-3`, `--peri` ring | ring 4.15:1 |
+
+**Literal Classic colours overridden** (everything else arrives through the tokens):
+
+| Classic | Where | Here |
+|---|---|---|
+| `var(--ink)` used as a FILL | section pills, level cells, `.ewb`, `.hx-card`, hero odds boxes, picker's selected cell, week strip | `--blue-3` wells; the badge |
+| `var(--pg)` as a fill | Trends sticky band `.tqsk` | `--blue-2` |
+| `filter:grayscale(1); opacity:.55` | picker, other teams' pictures | `opacity:.5`, no filter |
+| `#e8c15a` `#f4c451`; `#5fd3a5` `#7fdcb6` `#6fc9a4`; `#f08a98` `#ff8a9a` `#e0838f` `#e58f9c`; `#93b4ff` `#a9c3ff` `#b9c1ff` | figures and heads (`.c1 .c2 .c3`, `.up .dn`, `.tqr`, `.hx-d`, age shares, winners' scores) | `--yellow`; `--win`; `--loss`; `--peri-lt` |
+| 14 to 20% tints with tinted text (some with a 35 to 50% ring) | W / L tiles `.wl`, home / road tags `.hx-t`, "cost the win" `.dtag`, "WON" `.txw`, streak `.stk`, close / blowout margins `.gmv` | solid `--win` / `--loss` / `--peri` / yellow, black ink, no ring (the result and home / road tiles of Game Day) |
+| `#e8c15a` `#c9d2e3` `#7a8396` `#7fa6ff` | pick round chips `.pkc` | yellow, white, `--peri-lt`, `--peri`; black ink |
+| `#0f1218` | position pills and heads `.pz`, `.pp` | black |
+| 8% white; gold / green / red tints | opponent rank chips in the bye lists `.bop em`, `.bnt em` | the rank chip (45% black, `--peri-lt` / `--win` / `--loss`; gold with the yellow ring) |
+| `#7fa6ff` `#ff8a3d` `#f4c451` `#ff8a9a` `#6fc9a4` `#e8c15a`, Classic's own position hues, `#8ec5ff`, `#efd38a` | Trends lines, dots, bands, readouts, legends, bye marker, week cursor | `--peri` (text `--peri-lt`), `--orange`, `--yellow`, `--loss`, `--win`, `--yellow`, `--pos-*`, `--peri`, `--yellow` |
+| `rgba(244,196,81,.16)` + ring, `--win-bg` / `--loss-bg`, orange / blue tints | Trends header tiles `.tqt` | the rank chip; rank 1 solid yellow, last solid `--loss`, result W / L solid `--win` / `--loss`; zone chips yellow (bye) / `--peri-lt` (playoffs) |
+| Classic's numeral art | hero seed tile `.tqsd.rnh` | the CSS rank tile (rule 6): 42 x 44px, `--badge`; seeds 1-2 yellow digit, 3-6 white, 7 and lower the flat chasing tile |
+
+**Rank chips the fitter sizes** (`.ch` in Remaining schedule and Consistency, Team Hub's dropped-points chips, `.tqt`). Classic's
+tile fitter writes size, both side paddings and a `translateY` inline with `!important`. Here the chip's own fill is off and
+`.ct::before` paints the tile: `top:0; bottom:0; width:100%` of the chip (so Classic's fitted size), placed from the text's static
+position and moved by `(advance - 100%)/2 - --ix/2`, i.e. centred on the centre of the glyph ink; advance = `--nc` characters of
+`.525em` (+ `--iw` in an engine that rounds advances). The tile can sit a fraction of a pixel off the chip's layout box (the
+fitter's padding difference); nothing else moves. Measured from pixels (`chipm.py`: text on / text off / tiles off): WebKitGTK at the 440P / 402P layouts and 1440, 312 chips: left and right gaps within 0.37px of each other, 3px or more beside (4.2px beside "10"), 2px or more above and below; one Consistency chip at 1440 could not be read (a neighbour's tile inside its crop). Headless Chromium, 624 chips at six widths: 3.89px or more beside, 2.15px or more above and below, the two side gaps within 0.82px (see Known issues).
+
+**Chips and tiles the theme sizes (rule 11).** T0, tracking 0, `--ix`: W / L tiles, home / road tags (padding 0 5px 1px: Classic's
+right padding allowed for its .06em tracking), "All", pick chips, position pills and heads, FAAB tile, "Wk N" and "+N pts lost"
+(shadow off), close / blowout margins, "cost the win", "WON", bye-list rank chips, the unfitted rank chips of Points by position.
+Hero streak tile: a cap-trimmed line with 3px above and below (Classic 1px / 0).
+
+**Not changed on purpose.** Row heights and grids, Classic's fitters (`sosFit`, the tile fitter, `pcnFit`), the Trades side headers'
+ellipsis (Classic's by design), the horizontal scroll strip of the section pills on phones, SVG axis text sizes (Classic's own: 10
+svg units), "BYE" / "PLAYOFFS" zone labels crossing a line in the Standings chart (Classic's layout), the plate standing flush under
+the navigation band and against the Glossary plate (as Players).
+
 ## Known issues
 
 
@@ -678,9 +770,11 @@ before the GM column, sizes under 11px that are Classic's own (the Taxi tag, 10.
   position on the device-pixel grid is not corrected (as rule 7 does for the FAAB and rank tiles): up to 1 device pixel,
   0.33px at 3x. WebKitGTK rounds glyph advances to whole pixels (Safari does not); `theme.js` measures the advance
   once and compensates.
-- **Not themed yet, contrast.** The dark-ink audit also lists text under 4.5:1 (3:1 large) on the tabs that are NOT
-  STARTED; per tab, worst state at 440P (2026-11-11, after pass 3): Stats 91 (matrix cells 4.3 to 4.4:1), Team Hub 73, Standings 44 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"). Rosters, Drafts, Paper Trail, Matchups, Playoffs,
-  Leaderboards, Players, The Wire, Compare 0.
+- **Contrast left.** The dark-ink audit also lists text under 4.5:1 (3:1 large); per tab, worst state at 440P (2026-11-11, after
+  pass 4): Standings 44 (only with the Glossary open: the legend sits on the orange end of the ground, see "Short pages"; pass 5).
+  The other eleven tabs 0.
+- **Fitter-sized rank chips in headless Chromium (pass 4).** Headless Chromium with the phones' 0.85 page scale places text on whole CSS px: 106 of 624 fitter-sized rank chips (six widths) read 0.55 to 0.82px between their left and right gaps (limit 0.5px; 2 of 104 at 1440, where there is no page scale). Their gaps are never under the minimum (3.89px beside, 2.15px above / below). WebKitGTK: 0 of 312.
+- **Rule 11 in WebKitGTK, left after pass 4 (4 elements).** Elements that start on a fraction of a pixel, where the engine snaps the glyphs and the tile separately: three pick-round chips in Stats > Trades at the 402P layout ("2nd" / "3rd": 0.67 to 1.00px between the two side gaps) and one dropped-points rank chip in Team Hub at the 440P layout (0.67px). All gaps are above the minimum.
 - **Plates meet.** The section plate ends 2px into the Glossary plate's frame and stands flush under the navigation band (Players
   and The Wire since pass 2, the three tabs of pass 3 alike): Classic leaves 16px / 24px there and the plates need 16px / 26px.
 - **Hard-coded Classic font metrics.** `SGD` / `SGR` (shotgun tally bearings) are Barlow Condensed / IBM Plex Sans
@@ -740,6 +834,11 @@ before the GM column, sizes under 11px that are Classic's own (the Taxi tag, 10.
   team, colour mode, order and sort; every draft year, list and board; Picks of every year, Players, a pick sheet with trade
   steps, a drafted pick's sheet, a player sheet; Glossary) and `ptm3.py` (Paper Trail ink). Chromium at 360P, 402P, 440P, 874L,
   956L, 1440; WebKitGTK at the 402P / 440P layouts and 1440. Result: dark-ink 0 (all twelve tabs at 440P and 1440 in Chromium, 123 states each; the three tabs at every other width and in WebKitGTK), contrast 0, frame gaps 0 (the VIA box at the 874L layout was fixed late and re-run in both engines), clip / ellipsis / extra lines / sideways scroll / text smaller than Classic's 0; the seven shipped tabs' boxes identical to the build before the pass (76 states: Standings 360P / 402P / 440P / 1440, the other six at 440P / 1440); tile check 0 (36 runs).
+- **Pass 4 (Stats, Team Hub), 2026-11-11:** same audits, states in `darkink4.py` / `gapf4.py` / `ovf4.py` (all 17 Stats sections,
+  Per start / Per week / Total, Player sim / Team average, a selected Every-week cell, Glossary; Team Hub: five teams opened one after
+  another, Data and Trends, two weeks, Glossary) and `chipm.py` (rank chips whose tile is a pseudo-element, which the frame audit
+  cannot see). Chromium at 360P, 402P, 440P, 874L, 956L, 1440; WebKitGTK at the 402P / 440P layouts and 1440. Result: dark-ink 0 (all twelve tabs at 440P and 1440 in Chromium, 131 states each; the two tabs at every other width and in WebKitGTK, 31 states each); contrast 0 on both tabs at every width in both engines (Standings 44, Glossary only: pass 5); frame gaps, Chromium 0 at all six widths (26 states, 1,265 to 1,460 framed elements a width); WebKitGTK 1,440: 0, 402P layout: 3, 440P layout: 1 (the four elements under Known issues); fitter-sized rank chips: WebKitGTK 0 of 312, Chromium 106 of 624 on the left / right balance only (Known issues); clip / new ellipsis / extra lines / sideways scroll / text smaller than Classic's 0 (186 state x width pairs; the Trades side headers found on 360P and 402P screens were fixed and re-run); the ten shipped tabs' boxes identical to the build before the pass (90 states: Standings 360P / 402P / 440P / 1440, the other nine at 440P / 1440); tile check 0 (36 runs); Classic byte-identical (53 files outside `site/retro/`); 8 patches apply.
+
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).

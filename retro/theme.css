@@ -674,3 +674,263 @@ html.retro .dfs .dfoi b{overflow:visible}
 @media(min-width:1100px) and (max-width:1239px){html.retro .dfs .dfcn b:not(#_){letter-spacing:-.085em!important}}
 /* Glossary: a bold term stays on one line (running text is wider here and broke "No QBs" in two at 360P) */
 html.retro :is(.pane-ro,.pane-df,.pane-pt) .key b{white-space:nowrap}
+
+/* ================= PART 8: THE LAB, pass 4 (Stats, every section; Team Hub, Data and Trends; phones and desktop; 2026-11-11) =================
+   RETRO.md, "Pass 4". Scoped to the two panes (.pane-sx, .pane-th / .thx2). Every literal Classic colour overridden here is listed there. */
+html.retro:root{
+  --win-2:#61c188;       /* --win 70% + --blue-3: second step of the heat scale (4.76:1 on the panel, black ink 9.49:1) */
+  --loss-2:#bc8a94;      /* --loss 70% + --blue-3: second step of the heat scale (3.61:1 on the panel, black ink 7.20:1) */
+}
+/* --- surfaces. Stats keeps Classic's panels (.sxc, .posx: --blue-2, black frame, hard shadow) and gains the glow. Team Hub has no
+   panel in Classic (title, picker, every block stand on the page): the section is a --blue-2 plate drawn with spread shadows, as
+   Players (12px of plate, 2px black frame, 2px hard shadow, the glow), so no box moves. Glossary switch and text: the 8px plate. --- */
+html.retro :is(.pane-sx .sxc,.pane-sx .posx,.thx2){position:relative}
+html.retro :is(.pane-sx .sxc,.pane-sx .posx)::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro .thx2{background:var(--blue-2);box-shadow:0 0 0 12px var(--blue-2),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
+html.retro .thx2::after{content:"";position:absolute;inset:-12px;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
+html.retro :is(.pane-sx,.pane-th) :is(.glw,.key){background:var(--blue-2);box-shadow:0 0 0 8px var(--blue-2),0 0 0 10px var(--black),2px 2px 0 10px var(--black)}
+html.retro :is(.pane-sx,.pane-th) .key b{white-space:nowrap}
+
+/* --- controls. Section strip (.lbc.sxnav) = the pills of pass 2 (a --blue-3 well, 4px corner, --peri-lt label, selected = the badge
+   through the two tokens). The Player sim / Team average switch (.odsw) and the Trends week strip (.tqwk) are segments / buttons of
+   the same kind. --- */
+html.retro .pane-sx :is(.lbc,.odsw),html.retro .thx2 .tqwk{--chalk:var(--seg-on);--ink:var(--white)}
+html.retro .pane-sx .lbc label{background:var(--blue-3);color:var(--peri-lt);border-radius:4px}
+html.retro .pane-sx .odsw{background:var(--blue-3);border-radius:4px;box-shadow:none}
+html.retro .pane-sx .odsw label{border-radius:2px;color:var(--peri-lt)}
+html.retro .thx2 .tqsk{background:var(--blue-2)}
+html.retro .thx2 .tqwk{background:none}
+html.retro .thx2 .tqwk label{background:var(--blue);border-radius:4px;border-color:var(--black);color:var(--yellow)}
+/* team picker: Rosters' recipe (pass 3). --blue cells on --blue-3 grid lines, selected = the badge with the white 2px inner ring,
+   the other pictures dimmed by opacity alone (Classic: --ink as the selected fill, filter:grayscale(1)) */
+html.retro .thx2 .tqpk label{background:var(--blue)!important}
+html.retro .thx2 .tqpk .rfi{filter:none;opacity:.5}
+html.retro .thx2 .tqpk label:hover .rfi{opacity:1}
+html.retro .thx2 :is(#thx-0:checked~.tqpk label[for="thx-0"],#thx-1:checked~.tqpk label[for="thx-1"],#thx-2:checked~.tqpk label[for="thx-2"],#thx-3:checked~.tqpk label[for="thx-3"],
+  #thx-4:checked~.tqpk label[for="thx-4"],#thx-5:checked~.tqpk label[for="thx-5"],#thx-6:checked~.tqpk label[for="thx-6"],#thx-7:checked~.tqpk label[for="thx-7"],
+  #thx-8:checked~.tqpk label[for="thx-8"],#thx-9:checked~.tqpk label[for="thx-9"],#thx-10:checked~.tqpk label[for="thx-10"],#thx-11:checked~.tqpk label[for="thx-11"]){
+  background:var(--badge)!important;box-shadow:inset 0 0 0 2px var(--white)}
+html.retro .thx2 :is(#thx-0:checked~.tqpk label[for="thx-0"],#thx-1:checked~.tqpk label[for="thx-1"],#thx-2:checked~.tqpk label[for="thx-2"],#thx-3:checked~.tqpk label[for="thx-3"],
+  #thx-4:checked~.tqpk label[for="thx-4"],#thx-5:checked~.tqpk label[for="thx-5"],#thx-6:checked~.tqpk label[for="thx-6"],#thx-7:checked~.tqpk label[for="thx-7"],
+  #thx-8:checked~.tqpk label[for="thx-8"],#thx-9:checked~.tqpk label[for="thx-9"],#thx-10:checked~.tqpk label[for="thx-10"],#thx-11:checked~.tqpk label[for="thx-11"]) .rfi{opacity:1}
+
+/* --- cards and wells. On a --blue-2 panel a raised card is --blue (Team Hub's hero, figure cards, chart cards; Stats' lineup-call
+   cards), a well is --blue-3 (Classic: --ink as a fill, or a white film). Corners 4px (Classic 7 to 12px). --- */
+html.retro .thx2 :is(.tqhero,.tqk,.tqhr,.trc,.tqdp>div){background:var(--blue)}
+html.retro .thx2 :is(.tqhr,.tch,.trc,.tqdp>div),html.retro .pane-sx :is(.dcl2,.hx-card,.ewb){border-radius:4px!important}
+html.retro .thx2 .tqdp>div{border-color:var(--black)}
+html.retro .thx2 .tqod>div,html.retro .pane-sx :is(.hx-card,.ewb){background:var(--blue-3);border-radius:4px}
+html.retro .pane-sx .ewb{box-shadow:inset 0 0 0 1px var(--peri)}
+html.retro .pane-sx .ewb.on{box-shadow:inset 0 0 0 1px var(--white)}
+html.retro .pane-sx .dcl2{background:var(--blue)}
+html.retro .pane-sx .dch2 :is(.dwk,.dsw){border-radius:2px}
+html.retro .pane-sx .txft{border-radius:4px}
+
+/* --- matrices (Schedule swap, Every-week head to head): better = solid --win, worse = solid --loss, black ink (the result tiles of
+   Game Day); level = a --blue-3 well; the team's own cell = white. Classic: 17 to 20% tints with 4.3:1 text. A selected cell is
+   outlined in white outside its box (a ring inside a solid cell would have to change colour with the fill). --- */
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span:not(.mxn):not(.sox):not(.hav):not(.tqwl){background:var(--blue-3);border-radius:2px;color:var(--white)}
+html.retro :is(.pane-sx,.thx2) .sxm .sxhd>span:not(#_){color:var(--yellow)}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.mx{box-shadow:none}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.mx.up:not(#_){background:var(--win)!important;color:var(--black)!important;box-shadow:none}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.mx.dn:not(#_){background:var(--loss)!important;color:var(--black)!important;box-shadow:none}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.mx.dg:not(#_){background:var(--white)!important;color:var(--black)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.mx.on:not(#_){box-shadow:none;outline:2px solid var(--white);outline-offset:1px}
+html.retro .pane-sx .sxm .sxr>span.ewd:not(#_){background:var(--peri);opacity:1}
+/* heat scale (Ranks, Team Hub weekly score rank): 1-2 --win, 3 --win-2, 4-7 the well, 8 --loss-2, 9-10 --loss; black ink on the
+   five fills; best and worst carry a black 2px inner ring (Classic: gold / red 1.5px) */
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.hm:is(.r1,.r2):not(#_){background:var(--win)!important;color:var(--black)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.hm.r3:not(#_){background:var(--win-2)!important;color:var(--black)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.hm.r8:not(#_){background:var(--loss-2)!important;color:var(--black)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.hm:is(.r9,.r10):not(#_){background:var(--loss)!important;color:var(--black)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.hm:is(.r1,.r10):not(#_){box-shadow:inset 0 0 0 2px var(--black)}
+/* bye exposure: 0 = the well, 1 = the well with a yellow ring and digit, 2 = solid yellow, 3 or more = solid orange (black ink) */
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.bx.b0:not(#_){color:var(--peri-lt)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.bx.b1:not(#_){background:var(--blue-3)!important;color:var(--yellow)!important;box-shadow:inset 0 0 0 1px var(--yellow)}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.bx.b2:not(#_){background:var(--yellow)!important;color:var(--black)!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span.bx.b3:not(#_){background:var(--orange)!important;color:var(--black)!important}
+
+/* --- bars. Tracks are black (the frame colour: 2.0 to 2.6:1 against the rows, a --blue-3 track is 1.3 to 1.6:1); fills are palette
+   colours, each 3:1 or more against its row --- */
+html.retro :is(.pane-sx,.thx2) :is(.tqbar,.tqmini,.hx-bar,.hbr,.dvb){background:var(--black)}
+html.retro :is(.pane-sx,.thx2) :is(.obar,.sbar)::after{background:var(--black);box-shadow:none}
+html.retro :is(.pane-sx,.thx2) .tqbar i{opacity:1}
+html.retro :is(.pane-sx,.thx2) :is(.obar .o1,.olg .o1::before){background:var(--yellow)}
+html.retro :is(.pane-sx,.thx2) :is(.obar .o2,.olg .o2::before){background:var(--win)}
+html.retro :is(.pane-sx,.thx2) :is(.obar .o3,.olg .o3::before){background:var(--peri)}
+html.retro :is(.pane-sx,.thx2) :is(.ybar .y0,.ylg .ay::before){background:var(--win)}
+html.retro :is(.pane-sx,.thx2) :is(.ybar .y1,.ylg .ap::before){background:var(--yellow)}
+html.retro :is(.pane-sx,.thx2) :is(.ybar .y2,.ylg .ao::before){background:var(--loss)}
+html.retro :is(.pane-sx,.thx2) :is(.ybar .y3,.ylg .ad::before){background:var(--peri)}
+html.retro :is(.pane-sx,.thx2) .stt b.ay:not(#_){color:var(--win)}
+html.retro :is(.pane-sx,.thx2) .stt b.ap:not(#_){color:var(--yellow)}
+html.retro :is(.pane-sx,.thx2) .stt b.ao:not(#_){color:var(--loss)}
+html.retro .pane-sx .hbr i.am{background:linear-gradient(90deg,var(--yellow),var(--orange))}
+html.retro :is(.pane-sx,.thx2) .dvb i.up{background:var(--win)}
+html.retro :is(.pane-sx,.thx2) .dvb i.dn{background:var(--loss)}
+html.retro :is(.pane-sx,.thx2) .hx-bh{background:var(--win)}
+html.retro :is(.pane-sx,.thx2) .hx-br{background:var(--peri)}
+html.retro :is(.pane-sx,.thx2) :is(.ybar,.obar,.sbar,.hbr,.dvb,.hx-bar) i:not(#_){box-shadow:inset 0 0 0 1px var(--black)!important}
+html.retro .pane-sx .cbd{background:var(--blue-3);box-shadow:inset 0 0 0 1px var(--peri)}
+
+/* --- figures in Classic's literal greens, reds, golds and blues --- */
+html.retro :is(.pane-sx,.thx2) :is(.sxv.c1,.sxhd .c1,.csn .gold,.tqr.gold):not(#_){color:var(--yellow)}
+html.retro :is(.pane-sx,.thx2) :is(.sxv.c2,.sxhd .c2,.sxv.up,.dln em.up,.hx-d.hx-h,.gtm>span:first-child em,.dch b):not(#_){color:var(--win)!important}
+html.retro :is(.pane-sx,.thx2) :is(.sxv.c3,.sxhd .c3,.hx-d.hx-r):not(#_){color:var(--peri-lt)}
+html.retro :is(.pane-sx,.thx2) :is(.sxv.dn,.dln em.dn,.tqr.b,.tqew b.dn,.thx2 b.dn):not(#_){color:var(--loss)}
+html.retro :is(.pane-sx,.thx2) .dch2 .dsw b:not(#_){color:var(--white)!important}
+
+/* --- tiles and chips: solid colour, black ink, no ring (the result and home / road tiles of Game Day); T0 --- */
+html.retro :is(.pane-sx,.thx2) :is(.wl,.hx-t,.dtag,.pkc,.pz,.gmv.cl,.gmv.bo,.bop em,.bnt em,.hx-all,.tqid .stk){text-shadow:none;letter-spacing:0!important;border-radius:2px}
+html.retro :is(.pane-sx,.thx2) .wl.w,html.retro .thx2 .tqid .stk.w{background:var(--win);color:var(--black)}
+html.retro :is(.pane-sx,.thx2) .wl.l,html.retro .thx2 .tqid .stk.l{background:var(--loss);color:var(--black)}
+html.retro :is(.pane-sx,.thx2) .hx-th{background:var(--win);color:var(--black);box-shadow:none}
+html.retro :is(.pane-sx,.thx2) .hx-tr{background:var(--peri);color:var(--black);box-shadow:none}
+html.retro .pane-sx .hx-all{background:var(--blue-3)}
+html.retro .pane-sx .dtag{background:var(--loss);color:var(--black);box-shadow:none}
+html.retro :is(.pane-sx,.thx2) .pz{color:var(--black)}
+html.retro :is(.pane-sx,.thx2) .pp .ct{color:var(--black)}
+html.retro .pane-sx .pkc{color:var(--black)}
+html.retro .pane-sx .pkc.r1{background:var(--yellow)}
+html.retro .pane-sx .pkc.r2{background:var(--white)}
+html.retro .pane-sx .pkc:is(.r3,.r4){background:var(--peri-lt)}
+html.retro .pane-sx .pkc.fb{background:var(--peri)}
+/* Margins: a close game = the yellow tile, a blowout = the --win tile (Classic: 14% tints) */
+html.retro .pane-sx .gmv.cl:not(#_){background:var(--yellow);color:var(--black)!important}
+html.retro .pane-sx .gmv.bo:not(#_){background:var(--win);color:var(--black)!important}
+/* opponent rank chips in the bye lists: the rank chip (.ch) */
+html.retro :is(.pane-sx,.thx2) :is(.bop em,.bnt em):not(#_){background:rgba(0,0,0,.45);color:var(--peri-lt)}
+html.retro :is(.pane-sx,.thx2) :is(.bop em,.bnt em).gold:not(#_){color:var(--yellow);box-shadow:inset 0 0 0 1px var(--yellow)}
+html.retro :is(.pane-sx,.thx2) :is(.bop em,.bnt em).g:not(#_){color:var(--win)}
+html.retro :is(.pane-sx,.thx2) :is(.bop em,.bnt em).b:not(#_){color:var(--loss)}
+
+/* --- Team Hub > Trends: chart colours (Classic literals b1 #7fa6ff, b2 #ff8a3d, b3 #f4c451, c5 #ff8a9a, c2 #6fc9a4, c3 #e8c15a, its own
+   position hues, the bye marker #8ec5ff) --- */
+html.retro .thx2{--tb1:var(--peri);--tb2:var(--orange);--tb3:var(--yellow)}
+html.retro .thx2 :is(.tline,.tdot).b1{stroke:var(--peri)} html.retro .thx2 .tsel.b1{fill:var(--peri)} html.retro .thx2 .tband.b1{fill:var(--peri);fill-opacity:.34}
+html.retro .thx2 :is(.tline,.tdot).b2{stroke:var(--orange)} html.retro .thx2 .tsel.b2{fill:var(--orange)} html.retro .thx2 .tband.b2{fill:var(--orange);fill-opacity:.42}
+html.retro .thx2 :is(.tline,.tdot).b3{stroke:var(--yellow)} html.retro .thx2 .tsel.b3{fill:var(--yellow)} html.retro .thx2 .tband.b3{fill:var(--yellow);fill-opacity:.55}
+html.retro .thx2 :is(.tline,.tdot).c2{stroke:var(--win)} html.retro .thx2 .tsel.c2{fill:var(--win)}
+html.retro .thx2 :is(.tline,.tdot).c3{stroke:var(--yellow)} html.retro .thx2 .tsel.c3{fill:var(--yellow)}
+html.retro .thx2 :is(.tline,.tdot).c5{stroke:var(--loss)} html.retro .thx2 .tsel.c5{fill:var(--loss)}
+html.retro .thx2 :is(.tline,.tdot):is(.p-qb,.p-rb,.p-wr,.p-te,.p-k,.p-def){stroke:var(--pc)} html.retro .thx2 .tsel:is(.p-qb,.p-rb,.p-wr,.p-te,.p-k,.p-def){fill:var(--pc)}
+html.retro .thx2 .tsel:not(.b1,.b2,.b3,.c1,.c2,.c3,.c5,.p-qb,.p-rb,.p-wr,.p-te,.p-k,.p-def){fill:var(--yellow)}
+html.retro .thx2 .tcur{stroke:var(--yellow)}
+html.retro .thx2 .tarea.pos{fill:var(--win);fill-opacity:.16} html.retro .thx2 .tarea.neg{fill:var(--loss);fill-opacity:.2}
+html.retro .thx2 .tqby{stroke:var(--peri)} html.retro .thx2 .tqbyt{fill:var(--peri-lt);opacity:1} html.retro .thx2 .tqpot{opacity:1}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span).b1{color:var(--peri-lt)} html.retro .thx2 :is(.tlg3,.tchh) .b1 i{background:var(--peri)}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span).b2{color:var(--orange)} html.retro .thx2 :is(.tlg3,.tchh) .b2 i{background:var(--orange)}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span).b3{color:var(--yellow)} html.retro .thx2 :is(.tlg3,.tchh) .b3 i{background:var(--yellow)}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span).c2{color:var(--win)} html.retro .thx2 :is(.tlg3,.tchh) .c2 i{background:var(--win)}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span).c3{color:var(--yellow)} html.retro .thx2 :is(.tlg3,.tchh) .c3 i{background:var(--yellow)}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span).c5{color:var(--loss)} html.retro .thx2 :is(.tlg3,.tchh) .c5 i{background:var(--loss)}
+html.retro .thx2 :is(.trm,.tro,.tlg3,.tchh) :is(b,span):is(.p-qb,.p-rb,.p-wr,.p-te,.p-k,.p-def){color:var(--pc)} html.retro .thx2 :is(.tlg3,.tchh) :is(.p-qb,.p-rb,.p-wr,.p-te,.p-k,.p-def) i{background:var(--pc)}
+
+/* --- Team Hub hero: the seed tile is the Standings rank tile (rule 6, option B; Classic puts its numeral art here). Same mechanism:
+   the art is hidden, the tile is drawn by ::before, the digit and its ink offsets come from the art's alt. Bye seeds 1-2 = yellow
+   digit, 3-6 white, 7 and lower the flat chasing tile. --- */
+html.retro:not(.rk-art) .thx2 .tqsd.rnh{position:relative}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh>.rni{visibility:hidden}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh::before{
+  position:absolute;left:50%;top:50%;width:42px;height:44px;margin:-22px 0 0 -21px;box-sizing:border-box;display:block;text-align:center;white-space:nowrap;overflow:visible;
+  background:var(--badge);border:2px solid var(--white);border-radius:4px;box-shadow:2px 2px 0 0 var(--black);
+  color:var(--white);font:800 25px/1 var(--display);letter-spacing:0!important;font-variant-numeric:tabular-nums;
+  text-box:trim-both cap alphabetic;padding:calc((44px - 4px - 17.5px)/2 + var(--dy,0)*25px) 0 0;text-indent:calc(-2*var(--dx,0)*25px);
+  -webkit-text-stroke:2px var(--black);paint-order:stroke fill;text-shadow:2px 2px 0 var(--black)}
+@supports not (text-box:trim-both cap alphabetic){html.retro:not(.rk-art) .thx2 .tqsd.rnh::before{display:flex;align-items:center;justify-content:center;padding:0}}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img:is([alt="1"],[alt="2"]))::before{color:var(--yellow)}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img:is([alt="7"],[alt="8"],[alt="9"],[alt="10"],[alt="11"],[alt="12"]))::before{background:var(--blue-3);border-color:var(--peri);color:var(--peri-lt)}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="1"]){--dx:0.0175;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="1"])::before{content:"1"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="2"]){--dx:0;--dy:0.0087} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="2"])::before{content:"2"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="3"]){--dx:0;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="3"])::before{content:"3"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="4"]){--dx:0.007;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="4"])::before{content:"4"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="5"]){--dx:-0.0018;--dy:-0.0088} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="5"])::before{content:"5"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="6"]){--dx:0;--dy:-0.0088} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="6"])::before{content:"6"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="7"]){--dx:0;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="7"])::before{content:"7"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="8"]){--dx:0;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="8"])::before{content:"8"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="9"]){--dx:0;--dy:0.0087} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="9"])::before{content:"9"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="10"]){--dx:0.0219;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="10"])::before{content:"10"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="11"]){--dx:0.0175;--dy:0} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="11"])::before{content:"11"}
+html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="12"]){--dx:0.0109;--dy:0.0087} html.retro:not(.rk-art) .thx2 .tqsd.rnh:has(>img[alt="12"])::before{content:"12"}
+/* --- Team Hub > Trends: week card and header tiles. Result = the solid result tile; ranks = the rank chip (.ch): gold with the
+   yellow ring, top third --win, bottom third --loss; standings zone chips yellow (bye) / --peri-lt (playoffs) --- */
+html.retro .thx2 .trd{background:var(--blue-3);border-color:var(--blue-3);border-radius:4px}
+html.retro .thx2 .tqt{background:rgba(0,0,0,.45);color:var(--peri-lt);border-radius:2px;text-shadow:none;letter-spacing:0!important;box-shadow:none}
+html.retro .thx2 .tqt .ct{letter-spacing:0!important}
+html.retro .thx2 .tqt.gold{color:var(--yellow);box-shadow:inset 0 0 0 1px var(--yellow)}
+html.retro .thx2 .tqt.g{color:var(--win)}
+html.retro .thx2 .tqt.b{color:var(--loss)}
+html.retro .thx2 .tqt.last{box-shadow:inset 0 0 0 1px var(--loss)}
+html.retro .thx2 .tqt.w{background:var(--win);color:var(--black)}
+html.retro .thx2 .tqt.l{background:var(--loss);color:var(--black)}
+html.retro .thx2 .tqt.tby{color:var(--yellow)}
+html.retro .thx2 .tqt.tpo{color:var(--peri-lt)}
+/* chart cards are wells (--blue-3): the palette's orange is 4.72:1 there as text and as a line (2.90:1 on --blue); grid lines --blue */
+html.retro .thx2 .tch{background:var(--blue-3)}
+html.retro .thx2 .tch .tgl{stroke:var(--blue)}
+html.retro .thx2 .tch .tdot{fill:var(--blue-3)}
+html.retro .thx2 .tqt .ct{color:inherit!important}
+html.retro :is(.pane-sx,.thx2) .stt b.ao:not(#_){color:var(--loss)!important}
+html.retro :is(.pane-sx,.thx2) .dln em{opacity:1}
+html.retro .pane-sx .txw{background:var(--win);color:var(--black);box-shadow:none;border-radius:2px;text-shadow:none;letter-spacing:0!important}
+
+/* --- rank chips of the two panes (.ch, and Trends' .tqt). Rank 1 = solid yellow, last = solid --loss, black ink, no ring (Standings
+   keeps its ringed chips): Classic's tile fitter leaves 1.75 to 2.75px above and below the digit, and a 1px ring inside that is
+   under rule 11's 2px.
+   Chips the fitter has sized (inline padding): the fitter centres the digit by a canvas measurement, which is glyph ink in Chromium
+   and the advance box in WebKitGTK, and writes the two side paddings inline with !important. Here the TILE is drawn around the
+   digit instead: the chip's own fill is off and .ct::before paints it, as tall and as wide as the chip's fitted box (top / bottom
+   / width 100% of the chip), starting from the text's own start (static position) and moved so that its centre is the centre of
+   the glyph ink: (advance - tile)/2 - --ix/2, advance = --nc characters of .525em (theme.js item 4 writes --nc and --ix from the
+   text; item 4's --iw is not used here: it is read before the fitter sets the chip's final font size). No layout is read and
+   Classic's fitter is not touched. --- */
+html.retro :is(.pane-sx,.thx2) .ch.gold:not(#_){background:var(--yellow)!important;color:var(--black)!important;box-shadow:none!important}
+html.retro :is(.pane-sx,.thx2) .ch.last:not(#_){background:var(--loss)!important;color:var(--black)!important;box-shadow:none!important}
+html.retro .thx2 .tqt:is(.gold,.last):not(#_){box-shadow:none}
+html.retro .thx2 .tqt.gold:not(#_){background:var(--yellow);color:var(--black)}
+html.retro .thx2 .tqt.last:not(#_){background:var(--loss);color:var(--black)}
+html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0}
+html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--ce,0px));bottom:calc(-1*var(--ce,0px));width:calc(100% + 2*var(--ce,0px));
+  margin-left:calc((var(--nc,1)*.525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
+  /* in an engine that rounds glyph advances to whole pixels (--rnd, set once by theme.js item 4) every glyph but the last advances by the rounded value */
+  margin-left:calc(((var(--nc,1) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em,1px) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
+  background:rgba(0,0,0,.45);border-radius:2px}
+/* the two smallest fitted chips are drawn 1px larger on every side (--ce): Consistency's (12px tall beside the 16px figures; the
+   fitter leaves 1.74 to 2.74px above and below a 10.75px digit) and the desktop one-line schedule cell's (10.5px tall, the 15px
+   figure's cap height, 9.25px digit: 1.5 to 2.5px above and below, 2.75px beside "10"). Rule 11's 2px / 3px wins over rule 5's
+   "no taller than the figure's capitals" by that 1px, as for Compare's position chips; the chip's layout box is Classic's. */
+html.retro .pane-sx .csm .ch{--ce:1px}
+@media(min-width:1100px){html.retro .pane-sx .sosm.sos1:not(.tqgrid) .sox .ch{--ce:1px}}
+html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"].gold .ct::before{background:var(--yellow)}
+html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"].last .ct::before{background:var(--loss)}
+html.retro .thx2 .tqt[style*="padding"].w .ct::before{background:var(--win)}
+html.retro .thx2 .tqt[style*="padding"].l .ct::before{background:var(--loss)}
+/* chips and tiles the theme sizes (rule 11): T0, tracking 0, ink centred across by --ix */
+html.retro :is(.pane-sx,.thx2) :is(.ch[data-oh],.hx-t,.gmv.cl,.gmv.bo,.bnt em,.bop em,.pz,.wl),html.retro .pane-sx :is(.txft,.dch2 .dwk,.hx-all,.pkc,.dtag,.txw),html.retro .thx2 .tqid .stk{
+  text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+html.retro :is(.pane-sx,.thx2) .hx-t{padding:0 5px 1px}
+html.retro .pane-sx .dch2 :is(.dwk,.dsw,.dsw *){text-shadow:none;letter-spacing:0!important}
+@supports (text-box:trim-both cap alphabetic){
+  /* streak tile of the hero: cap-trimmed line, 3px above and below the capitals (Classic: 1px / 0 on a full line) */
+  html.retro .thx2 .tqid .stk{display:inline-block;line-height:1;text-box:trim-both cap alphabetic;padding:3px 4px;vertical-align:-2px}
+}
+html.retro .pane-sx .txft{letter-spacing:0!important}
+html.retro .pane-sx .pp:not(.sm){text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+html.retro .pane-sx .pp:not(.sm),html.retro .pane-sx .pp:not(.sm) .ct{letter-spacing:0!important;text-shadow:none}
+/* "QB" heads of Points by position: the tail of "Q" reaches .19em under the baseline; the line sits 1px higher (as Compare's chips) */
+html.retro .pane-sx .pp:not(.sm).p-qb .ct{position:relative;top:-1px}
+/* rank 1 in the bye lists: solid yellow, no ring (as the rank chips of the two panes) */
+html.retro :is(.pane-sx,.thx2) :is(.bop em,.bnt em).gold:not(#_){background:var(--yellow);color:var(--black);box-shadow:none}
+/* could-have game rows at 430px and under: Classic's 54px column holds "10.54" in Barlow Condensed with 8px each side; in Martian
+   Mono the tile ran 4px into the figure beside it. 5px each side: the tile is 52px, 5.3px or more from ink to edge */
+@media(max-width:430px){html.retro .pane-sx .gml.gm2 .gmv{padding-left:5px;padding-right:5px}}
+/* matrix cells: the digit run centred by its glyph ink (the cell is a centring grid: a shrink-to-fit line moves by half its indent) */
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx){text-indent:calc(var(--ix,0em) - var(--is,0px) + var(--iw,0px));letter-spacing:0!important}
+html.retro :is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx):not(.up,.dn,.dg,.r1,.r2,.r3,.r8,.r9,.r10,.b2,.b3){--is:1px}   /* light ink: + its 1px shadow */
+/* dropped-points cards: whole-pixel columns, so the centred rank chip does not start on a fraction of a pixel (its digit and its
+   tile were snapped apart by 1 device pixel in WebKit) */
+html.retro .thx2 .tqdp{grid-template-columns:repeat(6,round(down,calc((100% - 30px)/6),1px))}
+/* Trades, side headers at 480px and under: Classic ellipsises a name that does not fit (by design); Martian Mono also cut "Cheating
+   is Trying" and "Bill's Block Party" on a 360P screen and "Reverse Apache Master" on a 402P screen, which Classic shows whole.
+   Tracking -.09em there (the Drafts board's remedy): the names Classic shows whole are whole again */
+@media(max-width:480px){html.retro .pane-sx .txm>span{letter-spacing:-.09em!important}}

@@ -133,7 +133,10 @@
     ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],
     ['.pane-pt .ptxn b',700,0],['.pane-pt .ptn b',700,0],['.pane-pt .ptn span',700,0],
     ['.pane-pt .pthx i',700,1],['.pane-pt .pthv',700,1],['.pane-pt .ptvc',600,1],['.pane-df .dfn b',700,0],['.pane-df .dfn span',700,0],['.pane-df .dftl',700,0],['.pts .pz',700,0],['.pane-df .dfvia',600,1],['.rox .rat',700,1],['.rox .txc',700,1],
-    ['.cmx .nfl',700,0],['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
+    ['.cmx .nfl',700,0],['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1],
+    // pass 4 (Stats, Team Hub): chips and tiles of the two panes; a fifth field = also write the character count as --nc (theme.css PART 8, "rank chips")
+    [':is(.pane-sx,.thx2) :is(.ch,.tqt)',600,0,0,1],[':is(.pane-sx,.thx2) .hx-t',700,1],['.pane-sx .txft',700,0],['.pane-sx .dch2 .dwk',700,1],['.pane-sx .gmv:is(.cl,.bo)',700,0],['.thx2 .tqid .stk',700,0],
+    [':is(.pane-sx,.thx2) :is(.bnt,.bop) em',700,0],['.pane-sx .hx-all',700,1],[':is(.pane-sx,.thx2) .pz',700,0],[':is(.pane-sx,.thx2) .wl',700,0],['.pane-sx .pkc',700,0],['.pane-sx .dtag',700,1],['.pane-sx .txw',700,1],['.pane-sx .pp:not(.sm)',700,0],[':is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx)',600,0]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
   var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
   function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
   function adv(w,fs){var k=w+' '+fs;if(P[k]!==undefined)return P[k];var e=document.createElement('span');e.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap;font:'+w+' '+fs+'px/1 "Martian Mono"';
@@ -142,7 +145,7 @@
   function run(root){
     if(!root.querySelectorAll)return;var i,j,l,e,t,W=[];
     for(i=0;i<LIST.length;i++){l=root.querySelectorAll(LIST[i][0]);if(root.matches&&root.matches(LIST[i][0]))l=[root].concat([].slice.call(l));
-      for(j=0;j<l.length;j++){e=l[j];t=(e.textContent||'').trim();if(LIST[i][2])t=t.toUpperCase();if(LIST[i][3]&&e.getAttribute('data-tx')!==t)e.setAttribute('data-tx',t);W.push([e,ix(t,LIST[i][1]),LIST[i][1]])}}
+      for(j=0;j<l.length;j++){e=l[j];t=(e.textContent||'').trim();if(LIST[i][2])t=t.toUpperCase();if(LIST[i][3]&&e.getAttribute('data-tx')!==t)e.setAttribute('data-tx',t);if(LIST[i][4])put(e,'--nc',String(t.length));W.push([e,ix(t,LIST[i][1]),LIST[i][1]])}}
     if(RND)for(i=0;i<W.length;i++)W[i][3]=parseFloat(getComputedStyle(W[i][0]).fontSize)||0;     // reads (style only), all before any write
     if(RND)for(i=0;i<W.length;i++)W[i][3]=W[i][3]?adv(W[i][2],W[i][3]):0;
     for(i=0;i<W.length;i++){put(W[i][0],'--ix',W[i][1]);if(RND)put(W[i][0],'--iw',W[i][3]?W[i][3].toFixed(3)+'px':'')}}
@@ -179,6 +182,6 @@
     if(!PTO.has(V)){PTO.add(V);var o=new MutationObserver(function(){pt(V);o.takeRecords()});o.observe(V,{attributes:true,attributeFilter:['style']})}pt(V)}
   var run0=run;run=function(root){run0(root);if(root.querySelector)hook(root)};
   run(document);
-  if(document.fonts&&document.fonts.load)document.fonts.load('700 14.5px "Martian Mono"').then(function(){RND=adv(700,14.5)!==0;if(RND)run(document)},function(){});
+  if(document.fonts&&document.fonts.load)document.fonts.load('700 14.5px "Martian Mono"').then(function(){RND=adv(700,14.5)!==0;if(RND){document.documentElement.style.setProperty('--rnd','1');run(document)}},function(){});
   if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0)&&(a[j].matches(SEL)||a[j].querySelector(SEL)))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
 })();
