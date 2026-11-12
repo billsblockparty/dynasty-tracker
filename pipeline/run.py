@@ -33,12 +33,15 @@ if mode=='weekly':
             sh('node',P+'pull.mjs','live',str(w));sh('python3',P+'score.py',P+'live.json','--no-build')
             sh('node',P+'pull.mjs','weekly',str(w));sh('python3',P+'full_update.py',str(w))
     sh('node',P+'pull.mjs','playoffs');sh('python3',P+'po_write.py')
-    if D<=have and not force:  # mid-week rebuild (e.g. a code push): keep the current week's live scores instead of resetting them
+    if D<=have and not force:  # mid-week rebuild (daily 8:30 AM ET run, a code push): keep the current week's live scores instead of resetting them
+        # current rosters (adds, drops, trades, IR / taxi) into rosters.json and wk<G+1>.json, week G+1 projections (2026-11-12); never fatal
+        if subprocess.run(['node',P+'pull.mjs','midweek',str(have)],cwd=P).returncode==0:subprocess.run(['python3',P+'midweek.py',str(have)],cwd=P)
         if subprocess.run(['node',P+'pull.mjs','live',str(G()+1)],cwd=P).returncode==0:subprocess.run(['python3',P+'score.py',P+'live.json','--no-build'],cwd=P)
     subprocess.run(['node',P+'pull.mjs','faab'],cwd=P)  # FAAB balances (never fatal)
     subprocess.run(['node',P+'pull.mjs','wire',str(G())],cwd=P)  # THE WIRE (never fatal)
     # Paper Trail: Sleeper transactions, drafts and traded picks (MFL is frozen), then the normalised event list; never fatal
     if os.path.exists(P+'history/paper_pull.mjs') and subprocess.run(['node',P+'history/paper_pull.mjs'],cwd=P).returncode==0:subprocess.run(['python3',P+'history/paper_audit.py'],cwd=P,stdout=subprocess.DEVNULL)
+    subprocess.run(['python3',P+'trades.py'],cwd=P)  # Compare / Stats > Trades: new league trades from the Paper Trail pull (never fatal)
     subprocess.run(['node',P+'pull.mjs','top',str(G())],cwd=P)  # Players tab: top players by position (never fatal)
     sh('node',P+'pull.mjs','detail',f'1-{G()+1}')  # full stat lines for the Detailed view (all played weeks + current)
     # current NFL teams (trades/signings since the last completed-week pull) into the current week's files; never fatal

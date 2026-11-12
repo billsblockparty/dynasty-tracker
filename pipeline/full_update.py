@@ -129,33 +129,9 @@ with open(P+'pos/pos.csv','w',encoding='utf-8',newline='') as f:
 SK={'_note':f'Weeks 1-{DONE}, Sleeper matchups. act = points from the 6 RB/WR/TE/FLEX starters; opt = best legal 2 RB + 2 WR + 1 TE + 1 FLEX from the roster; lost = opt - act; hits = weeks with nothing lost; wk = per-week lost'}
 for rid,e in sk.items():SK[season.RN[int(rid)]]={'act':round(e['act'],2),'opt':round(e['opt'],2),'hits':e['hits'],'wk':e['wk']}
 json.dump(SK,open(P+'skill_opt.json','w'))
-# ---------- 4. rosters, ranks, per-game ranks (weeks 1..DONE, league scoring)
-tot={p:round(sum(v for v in a[2][:DONE] if v is not None),2) for p,a in A.items()}
-gp={p:a[3][:DONE].count('1') for p,a in A.items()};ap={p:a[0] for p,a in A.items()}
-K={};PG={}
-pgv=lambda q:tot[q]/gp[q] if gp[q] else 0
-OLDR=L('rosters.json');keys={}
-for k in OLDR:
-    n=k.replace('’',"'").replace(' 👑','').strip();n={'RIPMFL':'Team RIPMFL'}.get(n,n);keys[season.RID[n]]=k
-R={}
-for rid,r in RO.items():
-    pl=[]
-    for pid in r['pl']:
-        p_=pos(pid);pts=tot.get(pid,0.0);g=gp.get(pid,0)
-        same=[q for q in tot if ap[q]==p_]
-        rk=1+sum(1 for q in same if tot[q]>pts+1e-9) if pid in tot else len(same)+1
-        tie=int(sum(1 for q in same if abs(tot[q]-pts)<1e-9)>1) if pid in tot else 0
-        ordn=1+sum(1 for q in same if tot[q]>pts+1e-9 or (abs(tot[q]-pts)<1e-9 and q<pid)) if pid in tot else len(same)+1
-        if pid in tot:K[pid]=[rk,tie,pts]
-        if g:PG[pid]=[1+sum(1 for q in same if gp[q]>=3 and pgv(q)>pgv(pid)+1e-9),g]
-        else:PG[pid]=None
-        tag='IR' if pid in (r['res'] or []) else 'TX' if pid in (r['taxi'] or []) else ''
-        tm=(META.get(pid) or [None,None,None])[2] or (A[pid][1] if pid in A else '')
-        pl.append([pid,nm(pid),p_,tm,pts,ordn,g,tag])
-    R[keys[rid]]=pl
-json.dump(R,open(P+'rosters.json','w'),ensure_ascii=False)
-OK=L('ro_ranks.json');K['_bye']=OK['_bye']
-json.dump(K,open(P+'ro_ranks.json','w'));json.dump(PG,open(P+'ro_pg.json','w'))
+# ---------- 4. rosters, ranks, per-game ranks (weeks 1..DONE, league scoring): roster_files.rosters (shared with midweek.py)
+import roster_files as _RF
+R=_RF.rosters(RO,A,META,nm,pos,DONE,season.RID)
 # ---------- 5. compare extras: bench per week, traded players' weekly points, ages
 for m in M7['M7']:
     t=season.RN[m['rid']];b=round(sum(v for p,v in m['pp'].items() if p not in m['st']),2)
@@ -165,18 +141,6 @@ for pid in X['txw']:
 for pid,v in META.items():
     if v and v[4] and pid not in X['age']:X['age'][pid]=v[4]
 json.dump(X,open(P+'cmp_extra.json','w'),ensure_ascii=False)
-# ---------- 6. current week lineups (wk{NOW}.json) + kickoffs
-INJ={'Questionable','Doubtful','Out','IR','PUP','Sus'}
-home8={h for w_,a_,h in S8 if w_==NOW}
-out={}
-for rid,(mid,st) in m8.items():
-    r=RO[rid]
-    def row(pid):
-        pj=PJ.get(pid,[0,None]);inj=(META.get(pid) or [None]*4)[3]
-        if pid in (r['res'] or []):inj=inj or 'IR'
-        tm=(META.get(pid) or [None,None,None])[2] or ''
-        return [pid,pos(pid),nm(pid),tm,pj[0],0,pj[1],inj if inj in INJ else None]
-    out[str(rid)]={'mid':mid,'pts':0,'st':[row(p) for p in st],'bn':[row(p) for p in r['pl'] if p not in st]}
-json.dump({'done':[],'out':out,'home':sorted(home8),'done_note':'final + vs/@ for completed games too'},open(P+f'wk{NOW}.json','w'))
-KI=L('kick.json');KI[str(NOW)]=K8;json.dump(KI,open(P+'kick.json','w'))
+# ---------- 6. current week lineups (wk{NOW}.json) + kickoffs: roster_files.lineups (shared with midweek.py)
+_RF.lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW)
 print('ok',{season.RN[r]:(wact[r],wmx[r]) for r in wact})

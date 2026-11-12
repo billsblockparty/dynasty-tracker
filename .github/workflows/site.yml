@@ -15,6 +15,11 @@ on:
     # weekly refresh, Tuesday morning after Monday night (06:17 / 11:17 ET), second run as a backstop
     - cron: '17 10 * * 2'
     - cron: '17 15 * * 2'
+    # daily full data refresh at 8:30 AM New York time, all year (weekly mode, commits data; 2026-11-12). Cron is UTC with
+    # no daylight saving: 12:30 UTC = 8:30 EDT, 13:30 UTC = 8:30 EST; the gate job runs only the one that matches the
+    # current New York offset (-0400 / -0500), so exactly one fires each day, even if GitHub starts it late.
+    - cron: '30 12 * * *'
+    - cron: '30 13 * * *'
     # live scores every 10 minutes during game windows (UTC; covers both EDT and EST)
     - cron: '*/10 0-5 * * 5'      # Thursday night
     - cron: '*/10 13-23 * * 0'    # Sunday
@@ -33,12 +38,35 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: site
-  cancel-in-progress: false
-
 jobs:
+  gate:
+    # picks the mode; skipped runs end here and never enter the build's concurrency group, so a skipped daily cron or a
+    # pre-game live run cannot displace a queued run (a new pending run in a group cancels the older pending one)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { sparse-checkout: .github, sparse-checkout-cone-mode: false }
+      - name: Pick mode
+        id: mode
+        run: |
+          s="${{ github.event.schedule }}"; z=$(TZ=America/New_York date +%z); h=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then m="${{ inputs.mode }}";
+          elif [ "${{ github.event_name }}" = "push" ]; then m=weekly; [ -f .github/selftest ] && m=selftest; [ -f .github/live-trigger ] && m=live;
+          elif [ "$s" = "17 10 * * 2" ] || [ "$s" = "17 15 * * 2" ]; then m=weekly;
+          elif [ "$s" = "30 12 * * *" ]; then if [ "$z" = "-0400" ]; then m=weekly; else m=skip; fi;
+          elif [ "$s" = "30 13 * * *" ]; then if [ "$z" = "-0500" ]; then m=weekly; else m=skip; fi;
+          elif [ "$h" = "08" ]; then m=skip;  # live window runs in New York's 8 AM hour (Sunday 13:xx UTC in EST): no game starts before 9:30 AM ET; leaves the hour to the daily run
+          else m=live; fi
+          echo "mode=$m" >> "$GITHUB_OUTPUT"; echo "Mode: $m (schedule '$s', New York $(TZ=America/New_York date '+%F %H:%M %z'))"
   build:
+    needs: gate
+    if: needs.gate.outputs.mode != 'skip'
+    concurrency:
+      group: site
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -65,10 +93,7 @@ jobs:
       - name: Pick mode
         id: mode
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then m="${{ inputs.mode }}";
-          elif [ "${{ github.event_name }}" = "push" ]; then m=weekly; [ -f .github/selftest ] && m=selftest; [ -f .github/live-trigger ] && m=live;
-          elif [ "${{ github.event.schedule }}" = "17 10 * * 2" ] || [ "${{ github.event.schedule }}" = "17 15 * * 2" ]; then m=weekly;
-          else m=live; fi
+          m="${{ needs.gate.outputs.mode }}"
           echo "mode=$m" >> "$GITHUB_OUTPUT"; echo "Mode: $m"
       - name: FantasyPros cache
         uses: actions/cache@v4

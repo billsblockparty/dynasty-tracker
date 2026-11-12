@@ -1,6 +1,7 @@
 // CLI for the Sleeper pulls. Usage:
 //   node pull.mjs state            -> prints {"done":D,"now":N} (last completed week)
 //   node pull.mjs weekly D         -> pull_m7.json pull_pts.json pull8.json pull8a.json
+//   node pull.mjs midweek D        -> pull8.json pull8a.json, pull_m7.json RO/TP (week D matchups and pull_pts.json kept)
 //   node pull.mjs playoffs         -> pull_po.json
 //   node pull.mjs live W           -> live.json (in-week scores for week W)
 //   node pull.mjs faab           -> pull_faab.json (FAAB budget and each roster's balance)
@@ -45,6 +46,15 @@ if (cmd === 'state') {
   const x = await pullWeekly(get, +arg);
   for (const k of ['pull_m7', 'pull_pts', 'pull8', 'pull8a']) out(k + '.json', x[k]);
   console.log('weekly pull ok for week', arg);
+} else if (cmd === 'midweek') {
+  // daily / mid-week weekly run (no newly completed week, 2026-11-12): the same pull as `weekly D`, but only the files
+  // that describe week D+1 and the current rosters are written; pull_pts.json and pull_m7's week-D matchups (completed
+  // week D) are kept as they are, so completed weeks are never rewritten. Applied by midweek.py.
+  const x = await pullWeekly(get, +arg), f = path.join(DIR, 'pull_m7.json');
+  const m7 = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : {};
+  out('pull_m7.json', { M7: m7.M7 || x.pull_m7.M7, RO: x.pull_m7.RO, TP: x.pull_m7.TP });
+  out('pull8.json', x.pull8); out('pull8a.json', x.pull8a);
+  console.log('midweek pull ok for week', +arg + 1, ':', x.pull_m7.RO.reduce((n, r) => n + r.pl.length, 0), 'rostered players');
 } else if (cmd === 'faab') {
   // FAAB balances (standings card): league budget and each roster's amount left
   const { LEAGUE } = await import('./sleeper.mjs');
@@ -86,4 +96,4 @@ if (cmd === 'state') {
   const x = await pullDetail(get, Array.from({ length: (b || a) - a + 1 }, (_, i) => a + i));
   Object.assign(D, x); out('stats_detail.json', D);
   console.log('detail pull ok:', Object.entries(x).map(([w, v]) => `wk${w} ${Object.keys(v).length}`).join(', '));
-} else { console.error('usage: node pull.mjs state|weekly D|playoffs|live W|detail a-b|teams W [full]'); process.exit(2); }
+} else { console.error('usage: node pull.mjs state|weekly D|midweek D|playoffs|live W|detail a-b|teams W [full]'); process.exit(2); }
