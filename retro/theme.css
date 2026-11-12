@@ -889,11 +889,21 @@ html.retro :is(.pane-sx,.thx2) .ch.last:not(#_){background:var(--loss)!important
 html.retro .thx2 .tqt:is(.gold,.last):not(#_){box-shadow:none}
 html.retro .thx2 .tqt.gold:not(#_){background:var(--yellow);color:var(--black)}
 html.retro .thx2 .tqt.last:not(#_){background:var(--loss);color:var(--black)}
-html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0}
-html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--ce,0px));bottom:calc(-1*var(--ce,0px));width:calc(100% + 2*var(--ce,0px));
+/* THE DRAWN TILE, one rule set (cleanup job 2, 2026-11-12; it stood three times: here, and twice in PART 9). Members: the fitted chips of
+   Stats / Team Hub, Standings' fitted rank chips (every layout) and the Standings cards' streak tile (every layout). Per member:
+   --ce = how far the tile reaches past the fitted box on each side (default 0), --cv = the same above and below (default: --ce),
+   --nc / --ix = character count and bearing difference (theme.js item 4), --cz = the zoom of the row the chip stands in (default 1;
+   1.1 in the desktop Standings cards). Fill: 45% black unless a member rule sets its own. */
+html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"]:not(#_):not(#_),
+html.retro .pane-st .ch[style*="padding"]:not(#_):not(#_),
+html.retro .board .r .sk[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0}
+html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"] .ct::before,
+html.retro .pane-st .ch[style*="padding"] .ct::before,
+html.retro .board .r .sk[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--cv,var(--ce,0px)));bottom:calc(-1*var(--cv,var(--ce,0px)));width:calc(100% + 2*var(--ce,0px));
   margin-left:calc((var(--nc,1)*.525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
-  /* in an engine that rounds glyph advances to whole pixels (--rnd, set once by theme.js item 4) every glyph but the last advances by the rounded value */
-  margin-left:calc(((var(--nc,1) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em,1px) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
+  /* in an engine that rounds glyph advances to whole pixels (--rnd, set once by theme.js item 4) every glyph but the last advances by the rounded value;
+     such an engine rounds the ZOOMED advance, hence --cz */
+  margin-left:calc(((var(--nc,1) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em*var(--cz,1),1px)/var(--cz,1) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
   background:rgba(0,0,0,.45);border-radius:2px}
 /* the two smallest fitted chips are drawn 1px larger on every side (--ce): Consistency's (12px tall beside the 16px figures; the
    fitter leaves 1.74 to 2.74px above and below a 10.75px digit) and the desktop one-line schedule cell's (10.5px tall, the 15px
@@ -936,8 +946,9 @@ html.retro .thx2 .tqdp{grid-template-columns:repeat(6,round(down,calc((100% - 30
 @media(max-width:480px){html.retro .pane-sx .txm>span{letter-spacing:-.09em!important}}
 
 /* ================= PART 9: STANDINGS on desktop (>= 1100px) and the Standings Glossary, pass 5 (2026-11-11) =================
-   Everything but the Glossary plate is inside @media(min-width:1100px): the phone layouts (360P / 402P / 440P / 874L) keep the
-   rules of PART 4 untouched. 956L lays out at 1124 CSS px and is a desktop layout. */
+   The table, the Nerd-column divider and the rows' --cz are inside @media(min-width:1100px); 956L lays out at 1124 CSS px and is a
+   desktop layout. Since cleanup job 2 (2026-11-12) the Standings rank chips and the cards' streak tile follow one recipe on every
+   layout (block "Standings, EVERY layout" after the media query); the rest of the phone layouts keeps PART 4. */
 /* --- Glossary: the switch and the text stood on the orange end of the ground (yellow label 3.2:1, text 2.0 to 4.3:1). The 8px plate
    of the other eleven tabs, drawn with spread shadows, so no box moves --- */
 html.retro .pane-st :is(.glw,.key){background:var(--blue-2);box-shadow:0 0 0 8px var(--blue-2),0 0 0 10px var(--black),2px 2px 0 10px var(--black)}
@@ -964,38 +975,64 @@ html.retro .dtt .dsk.w{background:var(--win);color:var(--black)}
 html.retro .dtt .dsk.l{background:var(--loss);color:var(--black)}
 /* --- one-team-per-row cards: the divider before the Nerd column is a divider (--blue-3), not Classic's --line-strong (white here) --- */
 html.retro #list.board>.tcard>.r.r::after{border-left-color:var(--blue-3)}
-/* --- rank chips the fitter sizes (table cells, stat lines), rule 11. The recipe of PART 8: rank 1 = solid yellow, last = solid
-   --loss, black ink, no ring; the tile is drawn round the digit by .ct::before (centred on the glyph ink through --nc / --ix,
-   theme.js item 4) and is larger than Classic's fitted box: 1px on each side (--ce) and 1.5px above and below (--cv). The fitter leaves 1.75px
-   above and below the digit and 2.25px beside "10" in these 10 to 11px chips, and splits an odd half pixel unevenly (1.5px / 2.5px paddings):
-   with 1px the nearer edge measured 1.5 to 1.8px in WebKitGTK. Rule 11 wins over rule 5 here by 1.5px, as in PART 8. The chip's layout box is Classic's; nothing moves. --- */
-html.retro .pane-st .ch.gold[style*="padding"]:not(#_){color:var(--black)!important}
-html.retro .pane-st .ch.last[style*="padding"]:not(#_){color:var(--black)!important}
-html.retro .pane-st .ch[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0;--ce:1px;--cv:1.5px;overflow:visible!important}   /* Classic clips the table's chips (overflow:hidden): the drawn tile is larger than the chip */
-html.retro .pane-st .ch[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--cv,0px));bottom:calc(-1*var(--cv,0px));width:calc(100% + 2*var(--ce,0px));
-  margin-left:calc((var(--nc,1)*.525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
-  /* an engine that rounds glyph advances to whole pixels (--rnd) rounds the ZOOMED advance: --cz is the row's zoom (1.1 in the cards, 1 in the table) */
-  margin-left:calc(((var(--nc,1) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em*var(--cz,1),1px)/var(--cz,1) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2 - var(--ce,0px));
-  background:rgba(0,0,0,.45);border-radius:2px}
+/* --- the cards' rows are zoomed 1.1 on desktop (the drawn tile's --cz, PART 8); below 1100px they are not zoomed (default 1) --- */
 html.retro #list.board>.tcard>.r{--cz:1.1}
-/* --- streak tile of the cards (.sk, sized by Classic's fitter): the same recipe. Classic centres "W2" / "L5" by a canvas measurement
-   (the advance box in WebKitGTK: 5 of 10 tiles had 2px between their left and right gaps); the tile is drawn round the glyph ink,
-   .5px taller above and below (the fitter's uneven half pixel left 1.5px above one tile) --- */
-html.retro .board .r .sk[style*="padding"]:not(#_):not(#_){background:none!important;box-shadow:none!important;position:relative;isolation:isolate;text-indent:0;--cv:.5px;overflow:visible!important}
-html.retro .board .r .sk[style*="padding"] .ct::before{content:"";position:absolute;z-index:-1;top:calc(-1*var(--cv,0px));bottom:calc(-1*var(--cv,0px));width:100%;
-  margin-left:calc((var(--nc,2)*.525em - 100%)/2 - var(--ix,0em)/2);
-  margin-left:calc(((var(--nc,2) - 1)*(.525em + var(--rnd,0)*(round(nearest,.525em*var(--cz,1),1px)/var(--cz,1) - .525em)) + .525em - 100%)/2 - var(--ix,0em)/2);
-  border-radius:2px;box-shadow:1px 1px 0 0 var(--black)}
-html.retro .board .r .sk.w[style*="padding"] .ct::before{background:var(--win)}
-html.retro .board .r .sk.l[style*="padding"] .ct::before{background:var(--loss)}
 /* --- table: the Proj finish tile's figure centred by its glyph ink (--ix); the last column keeps 9px to the panel's frame between
    1100 and 1239px (Classic: 3px there, so the Playoffs figures and their shadow stood 2px from the frame; DESIGN.md §8 lists the
    outer columns as open for Classic). The 6px come out of the TEAM column --- */
 html.retro .dtt .rkb{text-indent:calc(var(--ix,0em) + var(--iw,0px));letter-spacing:0!important}
 html.retro .dtp .dtt tr:not(.dtl,.dtb)>:is(th,td):last-child:not(#_):not(.dsim){padding-right:9px!important}
+}
+/* --- Standings, EVERY layout (cleanup job 2, 2026-11-12; desktop since pass 5): rank chips the fitter sizes (stat lines; on desktop
+   also the table cells and the dropped-points chips) and the cards' streak tile use the drawn tile of PART 8. Rank 1 = solid --yellow,
+   last = solid --loss, black ink, no ring; other ranks keep their digit colour on the 45% black tile. The tile reaches 1px past
+   Classic's fitted box on each side (--ce) and 1.5px above and below (--cv): the fitter leaves 1.75px above and below the digit and 2.25px
+   beside "10" in these 10 to 11px chips and splits an odd half pixel unevenly (1.5px / 2.5px paddings). With 1px the nearer edge measured
+   1.5 to 1.8px in WebKitGTK on desktop and 1.76 to 1.94px in Chromium on the phone layouts. Rule 11 wins over rule 5 by 1.5px. The chip's layout box is Classic's; nothing moves. PART 4's ringed .ch.gold / .ch.last stay for the tabs that keep the ring. --- */
+html.retro .pane-st .ch.gold[style*="padding"]:not(#_){color:var(--black)!important}
+html.retro .pane-st .ch.last[style*="padding"]:not(#_){color:var(--black)!important}
+html.retro .pane-st .ch[style*="padding"]:not(#_):not(#_){--ce:1px;--cv:1.5px;overflow:visible!important}   /* Classic clips the table's chips (overflow:hidden): the drawn tile is larger than the chip */
 html.retro .pane-st .ch.gold[style*="padding"] .ct::before{background:var(--yellow)}
 html.retro .pane-st .ch.last[style*="padding"] .ct::before{background:var(--loss)}
-}
+/* --- streak tile of the cards (.sk, sized by Classic's fitter): the same tile, solid result colour, black ink, 1px hard shadow. Classic
+   centres "W2" / "L5" by a canvas measurement (the advance box in WebKitGTK: 5 of 10 tiles had 2px between their left and right gaps on
+   desktop, "L" streaks up to 1.6px right of centre on phones); the tile is drawn round the glyph ink --- */
+html.retro .board .r .sk[style*="padding"]:not(#_):not(#_){--nc:2;--cv:0px;overflow:visible!important}   /* --nc: the default until theme.js item 4 writes it inline */
+html.retro .board .r .sk[style*="padding"] .ct::before{background:none;box-shadow:1px 1px 0 0 var(--black)}
+html.retro .board .r .sk.w[style*="padding"] .ct::before{background:var(--win)}
+html.retro .board .r .sk.l[style*="padding"] .ct::before{background:var(--loss)}
+/* --- every other rank chip of Standings (no inline padding: Classic's fitter has not sized it), every layout: (a) the Nerd view's
+   dropped-points chips, always: the fitter sizes a chip that stands beside its figure, these stand under it; (b) the week strip's chips
+   (a tapped row), which the fitter leaves out; (c) any stat-line or table chip between a redraw and the fitter's next run (after
+   H2H / Median: up to about 1.7s in WebKitGTK), or for good in an engine without text-box trim. The same colours on the chip's own
+   box (PART 4: 45% black, 2px corner): rank 1 solid --yellow, last solid --loss, black ink, no ring (Nicklaus 2026-11-12: one rank-chip
+   style everywhere on this tab). With the ring the dropped-points chips stood 1.18px (above) and 2.35px (beside) from it in Chromium. --- */
+html.retro .pane-st .ch.gold:not([style*="padding"]):not(#_){background:var(--yellow)!important;color:var(--black)!important;box-shadow:none!important}
+html.retro .pane-st .ch.last:not([style*="padding"]):not(#_){background:var(--loss)!important;color:var(--black)!important;box-shadow:none!important}
+/* the desktop table's Proj finish tile (.rkb): the same two fills, no ring */
+html.retro .pane-st .rkb.gold:not(#_){background:var(--yellow)!important;color:var(--black)!important;box-shadow:none!important}
+html.retro .pane-st .rkb.last:not(#_){background:var(--loss)!important;color:var(--black)!important;box-shadow:none!important}
+/* the dropped-points and week-strip chips: ink centred across by --ix (theme.js item 4), as the theme-sized chips of PART 8. WebKitGTK read
+   "1" and "10" 0.58 and 0.67px right of centre without it (7 of 40 dropped-points chips on phones), 0.19px or less with it. The advance rounding
+   of such an engine is worked out here from the row's zoom (--rnd, --cz: the drawn tile's formula), not taken from --iw, which theme.js
+   reads at the unzoomed size (desktop rows are zoomed 1.1). Their width is fixed: no box moves */
+html.retro .board .r :is(.dpc,.strip) .ch:not([style*="padding"]){text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+@supports (width:round(nearest,1.4px,1px)){html.retro .board .r :is(.dpc,.strip) .ch:not([style*="padding"]){text-indent:calc(var(--ix,0em) + var(--rnd,0)*(round(nearest,.525em*var(--cz,1),1px)/var(--cz,1) - .525em))}}
+/* --- season chart (SVG), RANK and OPP rows: the same single style. Rank 1 = solid --yellow, last = solid --loss, black digit, no ring;
+   ranks 2-3 lose PART 4's green ring and keep their digit, as .ch.g. The chips keep Classic's 19 x 13 boxes. Dark ink: no shadow (rule 2; set by name, the
+   formula of PART 2 reads color, which an SVG fill does not change; on the zoomed desktop rows it resolved to black) --- */
+html.retro .szn rect[rx="3"][fill^="rgba(244,196,81"]{fill:var(--yellow);stroke:none}
+html.retro .szn rect[rx="3"][stroke^="rgba(255,93,115"]{fill:var(--loss);stroke:none}
+html.retro .szn rect[rx="3"]:is([fill^="rgba(244,196,81"],[stroke^="rgba(255,93,115"])+text{fill:var(--black)!important;color:var(--black);text-shadow:none}
+html.retro .szn rect[rx="3"][fill="var(--win-bg)"]{stroke:none}
+/* every chip digit of the chart: T0 (rule 2: chip digits carry no shadow; the 1px shadow stood inside the chip, on its right and
+   lower side) and ink-centred across: text-anchor centres the advance box, so "1" and "10" stood 0.2 to 0.3px right of centre on
+   phones and 0.5 to 0.6px on the zoomed desktop rows; --ix (theme.js item 4) moves the digit by half the bearing difference */
+html.retro .szn rect[rx="3"]+text{text-shadow:none;translate:calc(var(--ix,0em)/2) 0}
+/* desktop (pass 5, unchanged): the streak tile reaches .5px above and below (the fitter's uneven half pixel left 1.5px above one tile
+   there). Below 1100px it keeps Classic's height, the record's cap height (rule 5): 2.46px or more above and below the ink, measured */
+@media(min-width:1100px){html.retro .board .r .sk[style*="padding"]:not(#_):not(#_){--cv:.5px}}
+
 
 /* ================= PART 10: cleanup job 1 (2026-11-12): Nicklaus's parked requests 34 to 36 (RETRO.md, "Decisions (2026-11-12, cleanup job 1)") ================= */
 /* --- 35. Empty rank dots recede: the dark socket of a bar track (--blue-3 core, the frame's black ring that every filled dot carries),

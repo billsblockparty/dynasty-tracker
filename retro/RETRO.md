@@ -191,8 +191,8 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 
 | Tab | Status | Effort left |
 |---|---|---|
-| Standings, phones (360P / 402P / 440P / 874L; Dumb, Nerd, H2H, Median) | `LIVE` 2026-11-09; Glossary 2026-11-12 | - |
-| Standings, desktop (>= 1100px, incl. 956L: the table, the one-team-per-row cards with the Nerd column, Glossary; 1100 / 1240 / 1440 / 1920) | `LIVE` 2026-11-12 ("Pass 5" below) | - |
+| Standings, phones (360P / 402P / 440P / 874L; Dumb, Nerd, H2H, Median) | `LIVE` 2026-11-09; Glossary 2026-11-12; rank chips and streak tile on the one solid recipe 2026-11-12 (cleanup job 2) | - |
+| Standings, desktop (>= 1100px, incl. 956L: the table, the one-team-per-row cards with the Nerd column, Glossary; 1100 / 1240 / 1440 / 1920) | `LIVE` 2026-11-12 ("Pass 5" below); every rank chip on the solid recipe 2026-11-12 (cleanup job 2) | - |
 | Leaderboards, Players, The Wire, Compare, phones and desktop (360P / 402P / 440P / 874L / 956L / 1440; every stat, position, filter, Position / Team, Pts / per game, the eight Compare sections, menus, Glossary) | `LIVE` 2026-11-11 ("Pass 2" below) | - |
 | Matchups, phones and desktop (360P / 402P / 440P / 1100 / 1440 / 1920; every week, Lineup / Optimal, Position / Slate, Lean / Detailed, Colors, FINAL / LIVE / PROJ, week menu) | `LIVE` 2026-11-11 ("Game Day" below) | - |
 | Playoffs, phones and desktop (bracket, game panels, matchup builder, schedule, lineups) | `LIVE` 2026-11-11 ("Game Day" below) | - |
@@ -363,6 +363,26 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 - 2026-11-12 · Phone Standings rank chips go to the solid desktop style (Nicklaus) · cleanup job 2, not touched here.
 - 2026-11-12 · The Team Hub hero seed tile stays the blue CSS-drawn tile and is the retro rank-tile standard (Nicklaus).
 
+## Decisions (2026-11-12, cleanup job 2: one rank-chip style on Standings, phone streak tile)
+
+- 2026-11-12 · **Rank chips are to match everywhere (Nicklaus: "match the chips everywhere ... continuity is important").** The solid
+  recipe is the single rank-chip style: rank 1 = solid `--yellow`, last = solid `--loss`, black ink, no ring; other ranks keep their
+  digit colour on the 45% black tile. Done on Standings in this job, every layout; the other tabs' ringed chips follow in the next job.
+- 2026-11-12 · Phone Standings (below 1100px): the fitter-sized stat-line chips use the drawn tile of desktop (`--ce:1px`, `--cv:1.5px`)
+  · with `--cv:1px` Chromium read 1.76 to 1.94px above or below on 2 to 7 chips a state at all four phone widths (rule 11: 2px).
+- 2026-11-12 · Phone streak tile: drawn round the glyph ink, at Classic's height (`--cv:0`; desktop keeps .5px) · the ink already has
+  2.46px or more above and below, so rule 5 is kept; with .5px the tile stood 0.78px under the Median record at 402P and 440P.
+- 2026-11-12 · Chips Classic's fitter does not size take the same two fills on their own box, every layout: the Nerd view's
+  dropped-points chips (never fitter-sized: they stand under their figure), the week strip's chips (a tapped row), the desktop table's
+  Proj finish tile, and any chip between a redraw and the fitter's next run · with the ring the dropped-points chips stood 1.18px
+  (above) and 2.35px (beside) from it in Chromium; a ring flashing after H2H / Median would have shown the old style.
+- 2026-11-12 · Season chart (SVG) chips: rank 1 and last solid with black digits, ranks 2-3 lose the green ring and keep the green
+  digit; boxes unchanged (19 x 13 units); every chip digit of the chart is T0 (no shadow, rule 2) and ink-centred (`--ix`).
+- 2026-11-12 · The three copies of the drawn-tile recipe are one rule set (theme.css PART 8) · proved neutral: computed geometry and
+  paint of every drawn tile on Stats, Team Hub and desktop Standings identical before and after in both engines.
+- 2026-11-12 · Kept as shipped, no code change (Nicklaus): empty rank dots keep the black ring; the HOME / ROAD word tags stay solid
+  tiles; the favicon links stay PNG-only (no svg link).
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -464,7 +484,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    (level 1) or `--peri-lt` (level 2, toggles) text. Yellow = labels and the bye tier. Never a coloured bar on a
    card edge.
 5. **Tiles:** as Classic (never taller than the figure's cap height, digits never touch the frame, ink centred,
-   stacked tiles one width and one left edge). Only gold and worst-rank chips carry a 1px ring (as Classic); the
+   stacked tiles one width and one left edge). **Rank chips carry no ring (2026-11-12): rank 1 is a solid `--yellow` tile, last a solid
+   `--loss` tile, both with black ink; done on Standings, the other tabs' gold and worst chips still carry Classic's 1px ring until the next job.** The
    streak tile is a solid result colour with black figures; empty rank dots are dark sockets (`--blue-3` core, the black ring
    every filled dot carries; 2026-11-12, was a periwinkle ring).
 6. **Rank tiles:** CSS-drawn (42 x 44px on every row, one left edge, `--badge`, white 2px border, 2px hard shadow,
@@ -503,7 +524,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     four entries (Standings' fitter-sized rank chips and the cards' streak tile with `--nc`, the table's streak and Proj finish tiles), and
     item 1 gained a late check on desktop: 350ms, 900ms and 2s after an H2H / Median press, a streak tile or a table rank chip that is
     still unsized gets Classic's own `window.rrFit()` / `window.tileFit()` (selector matches, no layout read; see "Pass 5"). Cleanup job 1
-    (2026-11-12) added no item: item 4's list gained one entry (`.slg b`, the slate header tile).
+    (2026-11-12) added no item: item 4's list gained one entry (`.slg b`, the slate header tile). Cleanup job 2 (2026-11-12) added no
+    item: item 4's list gained one entry (the season chart's SVG chip digits, `--ix` for a `translate`; text only).
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -920,25 +942,61 @@ beside, 2.64px or more above and below; 132 read 0.55 to 0.92px between their si
 see cleanup). Rank tiles (table 26 x 24px, cards 42 x 44px zoomed 1.1): ink including outline and shadow 4.2px or more from the
 border beside, 4.5px or more above and below (120 tiles, both engines).
 
+## Cleanup job 2: one rank-chip style on Standings (2026-11-12)
+
+theme.css PART 8 (the shared drawn tile) and PART 9 (block "Standings, EVERY layout"); one more entry in theme.js item 4's list.
+
+| Element (Standings) | Before | Now |
+|---|---|---|
+| Fitter-sized stat-line chips, below 1100px | Classic's fitted box, 45% black; gold and worst with a 1px ring | the desktop's drawn tile (`.ct::before`, `--ce:1px`, `--cv:1.5px`): rank 1 solid `--yellow`, last solid `--loss`, black ink, no ring |
+| Streak tile, below 1100px | Classic's fitted tile, centred by the fitter's canvas | drawn round the glyph ink at Classic's height (`--cv:0`; desktop `.5px` unchanged) |
+| Dropped-points chips (never fitter-sized), week-strip chips, any unsized chip; every layout | 45% black box; gold and worst ringed | same box; rank 1 solid `--yellow`, last solid `--loss`, black ink, no ring; dropped-points and week-strip digits ink-centred (`--ix`, advance rounding from `--rnd` / `--cz`) |
+| Proj finish tile of the desktop table (`.rkb`) | gold and worst ringed | the same two fills, no ring |
+| Season chart SVG chips (RANK / OPP) | 45% black; gold, worst and ranks 2-3 ringed; digits with the 1px shadow, centred by their advance box | rank 1 solid `--yellow`, last solid `--loss`, black digits; no ring on any chip; all digits T0 and ink-centred (`translate` by half of `--ix`); boxes unchanged |
+| Drawn-tile recipe | three copies (PART 8, PART 9 x 2) | one rule set (PART 8) |
+
+Contrast, computed: black ink on `--yellow` 19.79:1, on `--loss` 12.18:1, on `--win` 16.68:1; tile against the lighter / darker row:
+`--yellow` 7.69 / 9.91, `--loss` 4.73 / 6.10, `--win` 6.48 / 8.36.
+
+**Measured (2026-11-12; ink to tile edge from pixels, `chipph.py` / `svgm.py`; minimum left / right / above / below, CSS px).**
+Chromium at 360P, 402P, 440P, 874L, 956L, 1100, 1440 (Nerd H2H and Dumb Median, week strips open): fitted chips 3.14 / 3.18 / 2.64 /
+2.65; dropped-points chips 3.65 / 3.94 / 2.63 / 2.65; week-strip chips 4.61 / 4.88 / 3.33 / 3.62; streak tiles 3.78 / 4.04 / 2.46 /
+2.94; Proj finish tiles 6.06 / 6.02 / 4.11 / 4.74; SVG chips rank 1 and last 3.98 or more beside and 2.26 or more above and below
+(smallest chart, 1100px: 14.9 x 10.2px chips). No gap under rule 11's minimums on a solid chip. Left / right balance in Chromium: up
+to about 1px (whole-pixel text placement, Known issues 44). WebKitGTK at the 402P / 440P layouts (3x): fitted chips 3.46 / 3.46 /
+2.99 / 2.98, sides within 0.19px; dropped-points 4.15 / 4.23 / 3.18 / 3.18, within 0.18px (0.67px on 7 of 40 before); week strip
+4.77 / 4.76 / 3.83 / 4.18, within 0.38px; streak 4.22 / 4.04 / 2.87 / 3.67, within 0.25px (1.59px on 5 of 10 before); SVG rank 1 and
+last 5.45 or more beside, 3.00 or more above and below, within 0.22px. WebKitGTK at 1440 (2x): fitted 3.56 / 3.55 / 2.29 / 1.98 (as
+before the job), dropped-points 4.10 / 4.16 / 3.62 / 3.32 within 0.32px, week strip 5.44 / 5.42 / 4.26 / 4.34 (7 of 180 at 0.51 to
+0.63px), Proj finish 6.25 / 6.50 / 4.28 / 5.78 within 0.44px, SVG rank 1 and last within 0.37px. The drawn tile stands 1.57px
+(Chromium) / 2.00px (WebKitGTK) or more from the ink of the line above (Luck line pair at 360P / 402P) and 1.17 / 1.67px from the
+figure on its left.
+
+**Limits found.** (a) Dumb + Median with a week strip open, WebKitGTK at the 402P / 440P layouts: rows that start on a fraction of
+a pixel show the drawn tile snapped apart from its digit: 10 to 12 of 50 fitted chips read 0.51 to 0.76px between their side gaps and
+1 or 2 read 2.90px beside (rule 11: 3px); Nerd + H2H with strips open and Dumb + Median with no strip open: none; the build before
+the job read up to 1.39px on 15 of 50 chips in the same state. (b) Mid-rank SVG chips (untouched boxes) read 1.76 to
+1.93px above or below the digit in Chromium where the chart is smallest: 12 chips at 1100px, 2 at 956L; rank 1 and last hold 2.26px.
+(c) SVG chips were not read in WebKitGTK at 1100px (the run returned nothing); 402P / 440P layouts and 1440 were.
+
 ## Known issues / cleanup (consolidated 2026-11-12, passes 1 to 5)
 
 Open items, most visible first. Each names where it was found.
 
 **A. Standings**
 
-1. **Phone and desktop Standings differ in the rank chips (pass 5).** Desktop: drawn tile, solid gold / worst, rule 11 met. Phones
-   (360P / 402P / 440P / 874L): Classic's fitted chip with the 1px ring on gold and worst, as shipped 2026-11-09, before rule 11
-   existed. The phone chips have the same fitter geometry the desktop had (1.75px above / below, 2.25px beside "10", less 1px under a
-   ring) and have never been run through the frame-gap audit. Moving the phones to the desktop recipe is a colour-and-tile change with
-   no box moving; it needs its own pass and Nicklaus's iPhone check.
+1. **Closed 2026-11-12 (cleanup job 2): one rank-chip style on Standings, every layout.** Fitter-sized chips = the drawn tile; chips
+   the fitter does not size (dropped points, week strip, Proj finish tile, the season chart's SVG chips) = the same two fills on
+   their own box. Figures under "Cleanup job 2". Left: the other tabs' ringed chips (item 41).
 2. **Desktop rank tiles are centred by CSS only (pass 5).** theme.js item 2 (rule 7, the device-pixel snap) runs below 1100px. On
    desktop `rkm5.py` reads the digit about 0.5 to 1px above the tile's centre in both engines (the reading is good to about 0.5px:
    the outline's and shadow's share of the ink is estimated). Gaps are far above rule 11's minimums.
-3. **Streak tile on phones in WebKitGTK (2026-11-09):** "L" streaks sit up to 1.6px right of centre (Classic there: 0.6px). Fixed on
-   desktop in pass 5 (drawn tile); the phone tile is still Classic's. Safari unverified.
+3. **Closed 2026-11-12 (cleanup job 2): phone streak tile drawn round the glyph ink** (WebKitGTK: 1.59px between the side gaps on 5
+   of 10 tiles before, 0.25px or less now). Safari unverified.
 4. **Shotgun tally (2026-11-09):** `SGD` / `SGR` are Barlow Condensed / IBM Plex Sans bearings; the mug-to-count and label-to-mug gaps
    are off by a fraction of a pixel in Martian Mono.
-5. **Season chart chips (SVG)** keep rings and 3px corners on every layout; not measured against rule 11.
+5. **Season chart chips (SVG): solid recipe since 2026-11-12 (cleanup job 2)**, measured against rule 11 ("Cleanup job 2"); they keep
+   Classic's 3px corners (the HTML chips have 2px). One mid-rank chip ("6") reads 0.64px between its side gaps in WebKitGTK at 1440.
 6. **Rank chips' digits 10px against Classic's 10.25px nominal** (same ink height; "Pass 5").
 
 **B. Rule 11 limits on the other tabs**
@@ -1002,16 +1060,32 @@ Open items, most visible first. Each names where it was found.
 
 27. theme.js item 1 can go when Classic re-fits after H2H / Median by itself; item 5 when `ref()` skips those chips. The late check
     added in pass 5 exists because `__fitAll()` makes Classic draw the desktop table and cards again: it goes with item 1. It runs on
-    desktop only; the same late redraw can happen on the phone layouts (streak tile then at Classic's unfitted size until the next
-    press or resize; seen in WebKitGTK only, not checked on phones).
-28. The drawn-tile recipe exists three times in theme.css (PART 8 for Stats / Team Hub, PART 9 for Standings chips and for the streak
-    tile) with the same `margin-left` formula: one shared rule set would do, and the phone Standings chips (item 1) would join it.
-29. `dtPanels` and Classic rules for `tr.dtb` are unused; PART 4's ringed `.ch.gold` / `.ch.last` rules remain for the phone layouts and
-    the tabs that keep the ring.
+    desktop only. Phones, checked 2026-11-12 (cleanup job 2): WebKitGTK, 96 presses at the 402P / 440P layouts, no tile left unsized
+    (0 at 2.6s; unsized for a moment on 80 presses at 0.45s, 27 at 1.1s, 1 at 1.7s; Chromium 0 of 96 at every sample), so the late
+    check was not extended. An unsized chip shows the same fills on Classic's box, so no ring appears in that moment.
+28. **Closed 2026-11-12 (cleanup job 2):** the drawn-tile recipe is one rule set (PART 8; members set `--ce`, `--cv`, `--cz`).
+29. `dtPanels` and Classic rules for `tr.dtb` are unused; PART 4's ringed `.ch.gold` / `.ch.last` rules remain for the tabs that still
+    carry the ring (item 41) and go with them.
 30. `retro/favicon.html` and the marked blocks of `template.html` are generated copies (`wordmark_gen.py apply`): after editing the
     generator, run it, or the two pages' icons drift apart.
 31. A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps them (`DT_CHUNKS`).
 32. Wordmark options A and B are kept outside the repo only (`shots-theme/wordmark/` patches).
+
+**H. Found 2026-11-12 (cleanup job 2), not fixed there**
+
+39. Remaining schedule (Stats) and the Team Hub schedule cells: 0px between the logo's black shadow and the drawn rank tile (logo ring
+    2px + shadow 2px + the tile's 1px reach use up Classic's 5px gap).
+40. The record's dash: the digits' and the dash's outlines overlap (0 to 1px of white between white).
+41. The other eleven tabs' gold and worst rank chips still carry the ring; they move to the solid recipe in the next job.
+42. Classic bug seen through the copy: in Safari's wide layout (>= 1100px) the per-week text of PF / PA / TOT EFF is missing and the
+    dots stand where the full line would end (Classic too; Nicklaus's screenshots 2026-11-12; not reproducible in Chromium).
+43. Classic bug seen through the copy: Team Hub > Trends header tiles overflow their 260px cards at viewport widths 760 to about
+    900px (24.1px past the card in the copy, 103px in Classic).
+44. Standings in headless Chromium only (whole-pixel text placement, as item 19): the Dumb / Nerd switch label reads 1.57px and the
+    H2H button 0.78px between their side gaps at 360P (7.05px or more to the frame; the same before the job; WebKitGTK 0); drawn
+    chips, dropped-points, week-strip and SVG chips read up to about 1px between their side gaps. Minimum gaps hold.
+45. Desktop, WebKitGTK at 1440: two fitted "10" chips read 0.61px between their side gaps and 7 of 180 week-strip chips 0.51 to
+    0.63px (102 of 180 up to 1.11px before the job); the same two fitted chips read 0.61px on the build before the job.
 
 **G. Requests parked by Nicklaus on 2026-11-11 (rechecked against the build of pass 5 on 2026-11-12, cleanup job 1; all five closed)**
 
@@ -1080,6 +1154,19 @@ Open items, most visible first. Each names where it was found.
   `translate`; the slot's layout box is unchanged). Loop page: six screens at 402 x 874 and 1280 x 800, no errors, no sideways
   scroll, badge box unchanged, data swap with 0 navigations; the same three icon links on both pages; all 9 patches apply; Classic
   byte-identical.
+- **Cleanup job 2 (one rank-chip style on Standings), 2026-11-12:** against a copy built from origin/main before the commit (71f68eb).
+  Chromium: `chipph.py` and `svgm.py` at 360P, 402P, 440P, 874L, 956L, 1100, 1440 (figures under "Cleanup job 2"): no gap under the
+  minimums on any solid chip; tile check 0 (36 runs); dark-ink 0 and contrast 0 on Standings at 360P, 402P, 440P, 874L, 956L, 1440 (7
+  states each); clip / ellipsis / extra lines / sideways scroll 0 at the same six widths (36 state x width pairs), text smaller than
+  Classic's: the same nodes as before; boxes on Standings (six widths, 24 states): nothing moved except what the job is about, in the
+  Nerd states: 13 dropped-points digit spans (`.ct`, 0.44px or less narrower, the ink centring) and 36 to 54 SVG chip digits (0.30px
+  or less, the `translate`); the eleven other tabs: full-page captures at 440P and 1440 pixel-identical (22 captures) and boxes
+  identical (84 states); no gold or worst ring left on Standings at 402P, 874L, 1100, 1440 (H2H and Median, strips open). The fold of
+  the drawn-tile recipe: computed geometry and paint of every drawn tile identical before and after on Stats (17 sections), Team Hub
+  (4 teams, Data and Trends) and desktop Standings, Chromium 440P / 1440 and WebKitGTK 440P layout / 1440. WebKitGTK: `chipph.py`
+  at the 402P / 440P layouts and 1440, `svgm.py` at the 402P / 440P layouts and 1440, frame gaps (`gapf5.py`) and dark-ink /
+  contrast on Standings (402P / 440P layouts and 1440, 7 states each): frame gaps 0, dark-ink 0, contrast 0; chips as under "Cleanup job 2" (its limits (a) and (c)). theme.js item 2's inline values (FAAB and seed tiles) identical before and after (phase 1 build). All
+  9 patches apply; Classic identical apart from the build stamp.
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).

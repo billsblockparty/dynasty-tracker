@@ -148,7 +148,9 @@
     [':is(.pane-sx,.thx2) :is(.ch,.tqt)',600,0,0,1],[':is(.pane-sx,.thx2) .hx-t',700,1],['.pane-sx .txft',700,0],['.pane-sx .dch2 .dwk',700,1],['.pane-sx .gmv:is(.cl,.bo)',700,0],['.thx2 .tqid .stk',700,0],
     [':is(.pane-sx,.thx2) :is(.bnt,.bop) em',700,0],['.pane-sx .hx-all',700,1],[':is(.pane-sx,.thx2) .pz',700,0],[':is(.pane-sx,.thx2) .wl',700,0],['.pane-sx .pkc',700,0],['.pane-sx .dtag',700,1],['.pane-sx .txw',700,1],['.pane-sx .pp:not(.sm)',700,0],[':is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx)',600,0],
     // pass 5 (Standings on desktop): the fitter-sized rank chips and the cards' streak tile (--nc for the drawn tile, theme.css PART 9), the table's streak and Proj finish tiles
-    ['.pane-st .ch',600,0,0,1],['.dtt .dsk',700,0],['.board .r .sk',700,0,0,1],['.dtt .rkb',600,0]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
+    ['.pane-st .ch',600,0,0,1],['.dtt .dsk',700,0],['.board .r .sk',700,0,0,1],['.dtt .rkb',600,0],
+    // cleanup job 2 (2026-11-12): the season chart's SVG chip digits (theme.css PART 9 moves each digit by half of --ix: text-anchor centres the advance box, not the ink)
+    ['.szn rect[rx="3"]+text',500,0]];   // pass 2: Compare team chips, pick chips, position heads and section pills, The Wire position tiles   // Paper Trail > Picks tile digits (see theme.css)
   var SEL=LIST.map(function(a){return a[0]}).join(','),RND=null,P={};
   function ix(t,w){var a=C.indexOf(t.charAt(0)),b=C.indexOf(t.charAt(t.length-1)),g=B[w];return a<0||b<0?'':((g[2*b+1]-g[2*a])*K/1000).toFixed(4)+'em'}
   function adv(w,fs){var k=w+' '+fs;if(P[k]!==undefined)return P[k];var e=document.createElement('span');e.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap;font:'+w+' '+fs+'px/1 "Martian Mono"';
