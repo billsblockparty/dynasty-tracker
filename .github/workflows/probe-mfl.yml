@@ -1,4 +1,6 @@
 name: probe-mfl (temporary, read-only data check)
+# pass 2: summarises the artifact of run 43473492608 into the job log (the sandbox cannot download artifacts).
+# To re-pull, run probe/mfl_probe.mjs [mfl|sleeper] (pass 1 did it; see git history of this file).
 on:
   workflow_dispatch:
   push:
@@ -6,16 +8,14 @@ on:
     paths: ['probe/**', '.github/workflows/probe-mfl.yml']
 permissions:
   contents: read
+  actions: read
 concurrency: { group: probe-mfl, cancel-in-progress: false }
 jobs:
-  probe:
+  analyse:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: node probe/mfl_probe.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with: { name: mfl-probe, path: probe/out, retention-days: 7 }
+      - uses: actions/download-artifact@v4
+        with: { name: mfl-probe, path: art, run-id: 43473492608, github-token: '${{ secrets.GITHUB_TOKEN }}' }
+      - run: du -sh art; python3 probe/analyse.py art

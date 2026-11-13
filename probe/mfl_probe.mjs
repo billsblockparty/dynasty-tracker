@@ -8,14 +8,14 @@ fs.mkdirSync(OUT, { recursive: true });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const UA = { 'user-agent': 'dynasty-tracker data check (github.com/billsblockparty/dynasty-tracker)' };
 const LOG = [];
-async function get(name, u, { gap = 1500, tries = 4 } = {}) {
+async function get(name, u, { gap = 1500, tries = 3 } = {}) {
   for (let i = 1; ; i++) {
     const t0 = Date.now(); let r, txt = '', err = null;
-    try { r = await fetch(u, { headers: UA }); txt = await r.text(); } catch (e) { err = String(e); }
+    try { r = await fetch(u, { headers: UA, signal: AbortSignal.timeout(45000) }); txt = await r.text(); } catch (e) { err = String(e); }
     const ms = Date.now() - t0;
     const h = r ? Object.fromEntries([...r.headers].filter(([k]) => /rate|retry|limit|content-type|location|server/i.test(k))) : {};
     const ent = { name, u, final: r?.url, status: r?.status ?? null, bytes: txt.length, ms, try: i, h, err };
-    LOG.push(ent);
+    LOG.push(ent); fs.appendFileSync(path.join(OUT, 'log.ndjson'), JSON.stringify(ent) + '\n'); console.log(ent.status, ent.ms + 'ms', ent.bytes, name);
     await sleep(gap);
     if (r && r.ok) {
       const f = path.join(OUT, name + '.json.gz');
@@ -66,13 +66,15 @@ async function sleeper(y, full) {
   await get(`${p}scores_W1`, `${S}/scores/nfl/regular/${y}/1`, { gap: 250 });
 }
 const t0 = Date.now();
-await mfl(2024, true);
-await mfl(2021, true);
-for (const y of [2020, 2025]) {   // seasons outside 2021-24: do they answer?
-  await get(`mfl/${y}/league`, M(y, 'TYPE=league'));
-  await get(`mfl/${y}/weeklyResults_W1`, M(y, 'TYPE=weeklyResults&W=1'));
+const WHAT = process.argv[2] || 'all';
+if (WHAT === 'all' || WHAT === 'mfl') {
+  await mfl(2024, true);
+  await mfl(2021, true);
+  for (const y of [2020, 2025]) {   // seasons outside 2021-24: do they answer?
+    await get(`mfl/${y}/league`, M(y, 'TYPE=league'));
+    await get(`mfl/${y}/weeklyResults_W1`, M(y, 'TYPE=weeklyResults&W=1'));
+  }
 }
-await sleeper(2024, true);
-await sleeper(2021, true);
-fs.writeFileSync(path.join(OUT, 'log.json'), JSON.stringify({ ran: new Date().toISOString(), secs: (Date.now() - t0) / 1000, log: LOG }, null, 1));
+if (WHAT === 'all' || WHAT === 'sleeper') { await sleeper(2024, true); await sleeper(2021, true); }
+fs.writeFileSync(path.join(OUT, `log_${WHAT}.json`), JSON.stringify({ ran: new Date().toISOString(), secs: (Date.now() - t0) / 1000, log: LOG }, null, 1));
 console.log('requests', LOG.length, 'non-200', LOG.filter(x => x.status !== 200).length, 'secs', (Date.now() - t0) / 1000);
