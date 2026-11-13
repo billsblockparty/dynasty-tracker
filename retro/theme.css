@@ -133,8 +133,10 @@ html.retro .ch,html.retro .rkb{background:rgba(0,0,0,.45)!important;color:var(--
 html.retro .ch,html.retro .ch *,html.retro .rkb,html.retro .sk,html.retro .sk *,html.retro .board .r .nm .fab b{letter-spacing:0!important}
 html.retro .ch.g,html.retro .rkb.g{color:var(--win)!important}
 html.retro .ch.b,html.retro .rkb.b{color:var(--loss)!important}
-html.retro .ch.b.last,html.retro .rkb.last{box-shadow:inset 0 0 0 1px var(--loss)!important}
-html.retro .ch.gold,html.retro .rkb.gold{color:var(--yellow)!important;box-shadow:inset 0 0 0 1px var(--yellow)!important}
+/* Job 3, item 4 (2026-11-12): the one rank-chip style on every tab (was: 1px ring in the chip's colour on the 45% black tile). Rank 1 = solid
+   --yellow, last = solid --loss, black ink, no ring. The scoped copies in PART 8 / PART 9 set the same values. */
+html.retro .ch.last,html.retro .rkb.last{background:var(--loss)!important;color:var(--black)!important;box-shadow:none!important}
+html.retro .ch.gold,html.retro .rkb.gold{background:var(--yellow)!important;color:var(--black)!important;box-shadow:none!important}
 html.retro .board .r .dpc .sof.gold,html.retro .sof.gold{color:var(--yellow)!important}
 /* streak tile: solid result colour, black figures, 1px hard shadow (no ring: the fitter's digit-to-frame gap stays whole) */
 html.retro .sk{border-radius:2px!important;text-shadow:none;box-shadow:1px 1px 0 0 var(--black)}
@@ -288,7 +290,7 @@ html.retro .g4 .g4b i.l{background:var(--loss)}
 html.retro .g4 .g4b i{opacity:1!important}
 /* seed chips on the cards: the Standings rank chip (dark tile, tier colour digit, ring only on gold) */
 html.retro .g4 .gsd{background:rgba(0,0,0,.45);color:var(--peri-lt);border-radius:2px;text-shadow:none;letter-spacing:0!important}
-html.retro .g4 .gsd.gold{color:var(--yellow);box-shadow:inset 0 0 0 1px var(--yellow)}
+html.retro .g4 .gsd.gold{background:var(--yellow);color:var(--black);box-shadow:none}   /* job 3, item 4: seed 1 = the solid chip; Classic marks no worst seed (.gsd has gold / g / b only) */
 html.retro .g4 .gsd.g{color:var(--win)} html.retro .g4 .gsd.b{color:var(--loss)}
 /* streak tile: solid result colour, black figures (as the Standings streak tile) */
 html.retro .mpk .stk{border-radius:2px;text-shadow:none;box-shadow:1px 1px 0 0 var(--black);letter-spacing:0!important}
@@ -440,6 +442,7 @@ html.retro .cr .cn.b>.pq{padding-left:1px}
    .385em: Classic's fitter leaves this chip 4.43px above the label's cap centre (in Classic too, every width: the label is a flex
    item, where a baseline marker does not sit on the baseline); the figure is put back on the label's cap band */
 html.retro .hrk .ch:not(#_){background:none!important;box-shadow:none!important;position:relative}
+html.retro .hrk .ch.gold:not(#_){color:var(--yellow)!important}html.retro .hrk .ch.last:not(#_){color:var(--loss)!important}   /* a figure, not a tile: it keeps its digit colour (job 3, item 4: the base chip rule now sets black ink for the solid tiles) */
 html.retro .hrk .ch .ct{-webkit-text-fill-color:transparent!important}   /* not visibility:hidden: Classic's fitter must still measure it */
 html.retro .hrk .ch::after{content:attr(data-tx);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 11.5px/1 var(--display);
   letter-spacing:0!important;white-space:nowrap;text-indent:calc(var(--ix,0em) - 1px);text-shadow:1px 1px 0 var(--black)}
@@ -1062,8 +1065,40 @@ html.retro .slx.sx-final .slg b{--str:var(--win)} html.retro .slx.sx-live .slg b
    border that Classic's Standings row rule (.r) puts on the road tile, class "gha ht r": the black cap of the solid "@" tile.
    Both glyphs' ink (shadow included) is centred on the slot: --gv (PART 5's padding formula) per glyph, set from screenshots, and
    .9px up: the ink centre then reads within 0.5px of the slot's centre in Chromium and WebKitGTK (figures in RETRO.md, "vs / @ glyphs"). --- */
-html.retro .cnm .gp .gha.ht.h,html.retro .cnm .gp .gha.ht.r{background:none;border:0;cursor:inherit;text-shadow:1px 1px 0 var(--shk);
-  text-indent:calc(var(--ix,0em) - 1px + var(--iw,0px));translate:0 -.9px}
-html.retro .cnm:not(.psg) .gp .gha.ht{font-size:15px}
+html.retro .cnm .gp .gha.ht.h,html.retro .cnm .gp .gha.ht.r{background:none;border:0;cursor:inherit;text-shadow:1px 1px 0 var(--shk);translate:0 .1px}
 html.retro .cnm .gp .gha.ht.h{color:var(--win);--gv:.127em}
 html.retro .cnm .gp .gha.ht.r{color:var(--peri-lt);--gv:.108em}
+/* --- Job 3, item 3 (2026-11-12): the record's dash on the Standings cards, shorter, the record's width unchanged. theme.js item 7 wraps the
+   dash (.rdash) and writes the bearings beside it (--dl, --dr, em). The glyph is switched off but keeps its advance (.475em with the tracking);
+   ::before draws the dash at the glyph's own height (.243em to .3695em above the baseline): white, the 1px outline T2 shows outside a glyph and the
+   2px hard shadow, both black. --dg = the white-to-white distance to each digit (4px): the dash starts --dg after the left digit's ink and is
+   as long as leaves --dg before the right digit's ink, both read at the dash's own height, but never longer than .27em (9.5px at 35.1px, 8px at
+   29.7px; beside a "1" or a "7" it would run to 17px): a capped dash is centred between the two inks. Never under 5.8px. --- */
+html.retro .board .r .rr b .rdash{--dg:4px;-webkit-text-fill-color:transparent;-webkit-text-stroke:0 transparent;text-shadow:none}
+html.retro .board .r .rr b .rdash::before{content:"";display:inline-block;--dn:calc(.475em + (var(--dl,0) + var(--dr,0))*1em - 2*var(--dg));--dw:min(.27em,var(--dn));width:var(--dw);height:.1265em;vertical-align:.243em;
+  margin-left:calc(var(--dg) - var(--dl,0)*1em + (var(--dn) - var(--dw))/2);margin-right:calc(var(--dl,0)*1em - var(--dg) - (var(--dn) + var(--dw))/2);background:var(--white);box-shadow:0 0 0 1px var(--black),2px 2px 0 1px var(--black)}
+/* --- Job 3, item 1 (2026-11-12): "vs" / "at", no slot. The away word reads "at": Classic's text node "@" is set to font-size 0 (it takes no
+   room and paints nothing) and the word is drawn by ::after at the size the glyph had (--gf); title / aria-label are Classic's. The word's
+   box is its own text (two advances of Martian Mono: "vs" and "at" are one width). Lineups: the ink starts .7px right of the name's box
+   (the middle of the capitals' left bearings at the name's weight; a name's own first letter stands .2 to 1.9px in), 5px from the word's
+   ink to the logo's box on "at" (5.09px on "vs", whose ink is .09px narrower: the logos keep one x), then 4px from the logo's box to the
+   dot's ink and 5px from the dot's ink to the kickoff's (4px clear of each 1px shadow). Glyph bearings (em of the own size, x .875):
+   v .033 left, s .0527 right, a .0365 left, t .0431 right, the dot .1934 each side at weight 400. Down: each word's ink is centred on the
+   logo's centre (--gk: how far under the cap centre the baseline formula of PART 5 is moved). Schedule grid: the word starts on the rank
+   chip's left edge and the logo follows 5px after its ink, on a whole pixel (--pg = Classic's column gap); cqw sizes as before. --- */
+html.retro .cnm .gp .gha.ht.h,html.retro .cnm .gp .gha.ht.r{--gf:15px;--gk:.127;width:auto;text-align:left;text-indent:0}
+html.retro .cnm .gp .gha.ht.r{--gk:.063;font-size:0}
+html.retro .cnm .gp .gha.ht.r::after{content:"at";display:block;font-size:var(--gf);line-height:1;letter-spacing:0;white-space:nowrap}
+html.retro .cnm:not(.psg) .gp .gha.ht.h{font-size:var(--gf);margin:0 4.302px 0 .205px}
+html.retro .cnm:not(.psg) .gp .gha.ht.r{margin:0 4.354px 0 .153px}
+html.retro .cnm:not(.psg) .gp .gsep{margin:0 calc(5px - .175em) 0 calc(4px - .1934em)!important}
+@supports (text-box:trim-both cap alphabetic){
+  html.retro .cnm .gp .gha.ht.h,html.retro .cnm .gp .gha.ht.r{padding:calc((var(--gh) - var(--gf)*.7)/2 - var(--gf)*var(--gk)) 0 0!important}
+  html.retro .cnm .gp .gha.ht.r::after{text-box:trim-both cap alphabetic}}
+html.retro .cr.lu .psg.cnm{--pg:7px}
+@media(max-width:380px){html.retro .cr.lu .psg.cnm{--pg:5px}}
+html.retro .cr.lu .psg.cnm .gp .gha.ht.h,html.retro .cr.lu .psg.cnm .gp .gha.ht.r{--gf:clamp(11.5px,14.5cqw,16px);width:auto!important;justify-self:start}
+html.retro .cr.lu .psg.cnm .gp .gha.ht.h{margin-left:calc(var(--gf)*-.033)!important}
+html.retro .cr.lu .psg.cnm .gp .gha.ht.r{font-size:0!important;margin-left:calc(var(--gf)*-.0365)!important}
+@supports (width:round(1.5px,1px)){
+  html.retro .cr.lu .psg.cnm .gp .nfl.opp{margin-left:calc(round(clamp(11.5px,14.5cqw,16px)*.9704 + 5px,1px) - round(clamp(20px,27cqw,30px),1px) - var(--pg))!important}}

@@ -199,3 +199,30 @@
   if(document.fonts&&document.fonts.load)document.fonts.load('700 14.5px "Martian Mono"').then(function(){RND=adv(700,14.5)!==0;if(RND){document.documentElement.style.setProperty('--rnd','1');run(document)}},function(){});
   if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var a=ms[i].addedNodes;for(var j=0;j<a.length;j++)if(a[j].nodeType===1&&(a[j].firstChild||0)&&(a[j].matches(SEL)||a[j].querySelector(SEL)))run(a[j])}}).observe(document.body,{childList:true,subtree:true});
 })();
+/* 7. The record's dash on the Standings cards (job 3, item 3, 2026-11-12): "9-0", "17-1".
+      Why a script: the record is one text node, and CSS cannot address one character of a text node. The digits and the dash each carry
+      the 2px outline (T2), so at the running tracking their outlines met (0 to 1px of white between white).
+      What it does: wraps each "-" of a record in <span class="rdash"> and writes two numbers on it from the text alone: --dl = the room
+      the digit before leaves on its right at the dash's height minus the .05em tracking, --dr = the room the digit after leaves on its left, in em (Martian Mono wght 700 at
+      wdth 75, from retro/fonts with fontTools, x .875 for size-adjust). theme.css hides the glyph (it keeps its advance, so the record's
+      width does not change and Classic's tnFit sees the same box) and draws a shorter dash centred between the two digits' ink.
+      No layout read. When: at load and whenever Classic writes a record again (H2H / Median, sort, live scores): a MutationObserver. */
+(function(){
+  // ink edges of each digit INSIDE THE DASH'S BAND (.21em to .40em above the baseline: the dash's height plus the 1px outlines), raw em:
+  // L = from the glyph's origin to its ink on the left, R = from its ink to the end of the advance on the right. "1" and "7" stand well
+  // inside their box at that height, so the whole-glyph bearings would leave the dash off centre between what the eye sees beside it
+  var K=.875,L={"0":.029,"1":.2433,"2":.1021,"3":.0515,"4":.0332,"5":.0678,"6":.046,"7":.2358,"8":.0491,"9":.0533},
+      R={"0":.029,"1":.1878,"2":.0775,"3":.054,"4":.0193,"5":.0493,"6":.046,"7":.1219,"8":.0491,"9":.0518};
+  function fix(b){
+    if(b.childNodes.length!==1||b.firstChild.nodeType!==3)return;var t=b.firstChild.nodeValue,p=t.split('-'),i;
+    if(p.length<2||!/^\d+(-\d+)+$/.test(t))return;
+    var f=document.createDocumentFragment();
+    for(i=0;i<p.length;i++){f.appendChild(document.createTextNode(p[i]));
+      if(i<p.length-1){var s=document.createElement('span');s.className='rdash';s.textContent='-';
+        s.style.setProperty('--dl',(R[p[i].charAt(p[i].length-1)]*K-.05).toFixed(4));s.style.setProperty('--dr',(L[p[i+1].charAt(0)]*K).toFixed(4));f.appendChild(s)}}
+    b.textContent='';b.appendChild(f)}
+  function run(root){if(!root.querySelectorAll)return;if(root.matches&&root.matches('.board .r .rr b'))fix(root);var l=root.querySelectorAll('.board .r .rr b'),i;for(i=0;i<l.length;i++)fix(l[i])}
+  run(document);
+  if(window.MutationObserver)new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var m=ms[i],a=m.addedNodes,j;
+    for(j=0;j<a.length;j++){if(a[j].nodeType===1)run(a[j]);else if(a[j].nodeType===3&&m.target.matches&&m.target.matches('.board .r .rr b'))fix(m.target)}}}).observe(document.body,{childList:true,subtree:true});
+})();

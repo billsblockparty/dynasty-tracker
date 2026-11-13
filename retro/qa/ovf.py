@@ -35,7 +35,7 @@ with sync_playwright() as p:
                     if x[4]>0 and not (y and y[4]>0):nc.append(x)
                     if x[5] and not (y and y[5]):ne.append(x)
                     if y and x[3]>y[3]:nw.append((x,y[3]))
-                    if x[6]<10.95:small[(x[1],x[6])]+=1
+                    if x[6]<10.95 and not (x[6]==0 and x[1].startswith('span.gha.ht.r')):small[(x[1],x[6])]+=1   # the away glyph's own "@" node is zero-size by design (job 3: the word "at" is drawn by ::after at full size)
                 for y in c['t']:
                     if y[6]<10.95:csmall[(y[1],y[6])]+=1
                 newsmall={k:v for k,v in small.items() if not any(ck[0]==k[0] and ck[1]<=k[1]+.01 for ck in csmall)}

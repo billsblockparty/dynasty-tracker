@@ -383,6 +383,32 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 - 2026-11-12 · Kept as shipped, no code change (Nicklaus): empty rank dots keep the black ring; the HOME / ROAD word tags stay solid
   tiles; the favicon links stay PNG-only (no svg link).
 
+## Decisions (2026-11-12, job 3: vs / at, the record's dash, solid rank chips on every tab)
+
+- 2026-11-12 · **vs / at (Nicklaus: "the @ is too far from the logo ... use at so both words are the same length").** The away word reads
+  "at"; both words are their own text (no 20px slot), one width, one left edge, and the game line is tightened: 5px from the word's ink
+  to the logo's box, 4px from the logo's box to the dot's ink, 5px from the dot's ink to the kickoff's (4px of row clear of each 1px
+  shadow) · the line is 6.58px shorter on every row; Classic's fitter gives the game line its size back at the 360P and 956L layouts.
+- 2026-11-12 · The word's ink stands a fixed .7px from the name's box, so word and logo keep one x on every row (approved as built) ·
+  a name's first letter has its own left bearing (0.2 to 1.9px), so ink on ink at 0px and logos on one x cannot both hold; the
+  residual is -0.44 to +0.59px by row.
+- 2026-11-12 · The right-hand team's line is not mirrored (Classic's order, right-aligned, kickoff outermost); the titles stay
+  Classic's ("Home" / "Road").
+- 2026-11-12 · Each word's glyph ink is centred on the logo's centre (`translate` -.9px -> .1px): "vs" stands 1px lower than it
+  shipped · the shipped glyphs were centred on the 17px slot with the shadow counted, 1px above the logo's centre by glyph ink.
+- 2026-11-12 · Schedule grid: the word starts on the rank chip's left edge, the logo follows 5px after its ink and the star follows
+  the logo (approved; the logo leaves the column of the figure above it, 13px left at 402P).
+- 2026-11-12 · 360P Playoffs lineups: the name line stands 0.62px higher inside the same row (accepted) · Classic's fitter returns the
+  game line from 11.5px to 12.75px there.
+- 2026-11-12 · **The record's dash is shorter; the record's width does not change (Nicklaus).** White to white 4px on each side at
+  the dash's own height, the dash at most .27em long and never under 5.8px · the first mock (space added round the dash) widened the
+  record by 7.6 to 9.6px and cost names their size at 360P and 402P ("Cheating is Trying" took two lines); even 1.5px did.
+- 2026-11-12 · **Solid rank chips on every tab** (the decision of cleanup job 2 carried out): Leaderboards, Compare, the Matchups and
+  Playoffs cards, bracket seeds and opponent chips. A seed chip takes the solid fill for seed 1 only: `.gsd.b.last` stays a plain
+  `--loss` digit (Classic's markup marks the worst seed, its stylesheet does not).
+- 2026-11-12 · Remaining schedule, picture against the rank tile (Known issues 39): NOT in this job's commit. Mocked: the lighter ring
+  on the Stats cells plus a 4px picture-to-chip gap from the 402P layout up; awaiting Nicklaus.
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -485,7 +511,7 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    card edge.
 5. **Tiles:** as Classic (never taller than the figure's cap height, digits never touch the frame, ink centred,
    stacked tiles one width and one left edge). **Rank chips carry no ring (2026-11-12): rank 1 is a solid `--yellow` tile, last a solid
-   `--loss` tile, both with black ink; done on Standings, the other tabs' gold and worst chips still carry Classic's 1px ring until the next job.** The
+   `--loss` tile, both with black ink, on every tab (Standings in cleanup job 2, the other tabs in job 3; a seed chip takes the fill for seed 1 only).** The
    streak tile is a solid result colour with black figures; empty rank dots are dark sockets (`--blue-3` core, the black ring
    every filled dot carries; 2026-11-12, was a periwinkle ring).
 6. **Rank tiles:** CSS-drawn (42 x 44px on every row, one left edge, `--badge`, white 2px border, 2px hard shadow,
@@ -525,7 +551,11 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     item 1 gained a late check on desktop: 350ms, 900ms and 2s after an H2H / Median press, a streak tile or a table rank chip that is
     still unsized gets Classic's own `window.rrFit()` / `window.tileFit()` (selector matches, no layout read; see "Pass 5"). Cleanup job 1
     (2026-11-12) added no item: item 4's list gained one entry (`.slg b`, the slate header tile). Cleanup job 2 (2026-11-12) added no
-    item: item 4's list gained one entry (the season chart's SVG chip digits, `--ix` for a `translate`; text only).
+    item: item 4's list gained one entry (the season chart's SVG chip digits, `--ix` for a `translate`; text only); (7) the record's dash on the
+    Standings cards (job 3, 2026-11-12): wraps each "-" of `.board .r .rr b` in `span.rdash` and writes `--dl` / `--dr` on it (the room the
+    digit before and the digit after leave at the dash's height, em; a table of ten digits from the font files). Reason: the record is one
+    text node and CSS cannot address one character of it. Text only, no layout read; a `MutationObserver` wraps the record again whenever
+    Classic writes it (H2H / Median, sort, live scores). Job 3's vs / at needed no script (`::after`).
 11. **Text never touches a frame (2026-11-10).** Inside any framed cell or tile, the visible ink INCLUDING its shadow
     or outline keeps at least 3 CSS px from the inner edge of the frame on the left and right, the left and right
     gaps equal within 0.5px (ink-centred), and at least 2px top and bottom, at every width. Measured from
@@ -667,7 +697,7 @@ figure 14px (`.fs5`), delta 11px (Classic 10px), label 11px.
 Names and logos keep their outer edges; only the two cells and the name columns' inner edges move (6px each).
 Other tabs' `.cr.lu` rows keep Classic's 38px cell with the 14.5 / 11.5px figures.
 
-**Chips and tiles (rule 11).** vs / @: no tile since 2026-11-12 (below, "vs / @ glyphs"); until then solid 17px tiles. Injury tags: one baseline for Q / O / D / IR placed for the tail of
+**Chips and tiles (rule 11).** vs / at: no tile since 2026-11-12 (below, "vs / at"); until then solid 17px tiles. Injury tags: one baseline for Q / O / D / IR placed for the tail of
 "Q". FK / FL: 11px, 3.65px / 4.4px paddings. "N on bye": centred on the ink of "b" and "y", pill height as Classic.
 HOME / ROAD in the card: Classic's 0.58px side difference taken out through `--ic`. Schedule chips and tiles (sized in
 `cqw`) and the schedule's three week columns are rounded to whole pixels. "Week rank N": Classic's chip keeps its box (the fitter's inline `!important`
@@ -675,16 +705,41 @@ styles cannot be overridden) but loses fill and ring; its digit is made transpar
 from `data-tx` at the label's 11.5px, on the label's cap band (Classic's fitter leaves the chip 4.43px above it, in
 Classic too: the label is a flex item, where a baseline marker is not on the baseline).
 
-**vs / @ glyphs (2026-11-12).** theme.css PART 10. `.cnm .gp .gha.ht.h` / `.r` on Matchups and Playoffs (week lineups, bracket-game
-lineups, the builder, the schedule grid: the only places the component occurs; `.hab` does not occur in the built pages): no fill, no
-ring, `border:0`, `cursor:inherit`; "vs" `--win`, "@" `--peri-lt`; `text-shadow:1px 1px 0 var(--shk)` (T1); 15px outside the schedule
-grid (the schedule keeps Classic's `cqw` size). The slot is Classic's 20 x 17px inline box (schedule: its whole-pixel `cqw` box), so no
-box in the row moves. Ink including the shadow: "vs" 15.5 x 10.0px, "@" 8.0 to 8.5 x 14.5px. Centred on the slot by `--gv` (.127em
-"vs", .108em "@") and `translate:0 -.9px`. Ink centre against the slot's centre, mean per glyph, side and state (Matchups Week 10 and
-Week 9, Playoffs final; down is +): Chromium at 360P / 402P / 440P / 1440, "vs" -0.45 to -0.08px, "@" -0.20 to +0.23px (single rows
--0.95 to +0.62px: headless Chromium's whole-pixel text, Known issues 19); WebKitGTK at the 402P / 440P layouts "vs" +0.33px, "@"
-+0.50px on every row and both sides, at 1440 "vs" 0.00px, "@" +0.50px (one device pixel at 2x). Across: within 0.3px in both.
-Rule 11 does not apply (no frame). Not changed: the word tags HOME / ROAD (`.hrt`) and the card's home / road tags.
+**vs / at (2026-11-12, job 3; was "vs / @ glyphs").** theme.css PART 10. `.cnm .gp .gha.ht.h` / `.r` on Matchups and Playoffs (week
+lineups, bracket-game lineups, the builder, the schedule grid: the only places the component occurs). No fill, no ring, `border:0`,
+`cursor:inherit`; "vs" `--win`, "at" `--peri-lt`, T1; 15px outside the schedule grid (`--gf`; the schedule keeps Classic's `cqw` size).
+The away word: Classic's text node "@" is `font-size:0` and `::after{content:"at"}` draws the word at `--gf` (no script; title and
+aria-label are Classic's, "Home" / "Road"). No slot: the box is the word's own text, 15.74px for both (two advances). Lineups: margins
+`0 4.302px 0 .205px` (vs) and `0 4.354px 0 .153px` (at) put the ink .7px from the name's box and the logo on one x (5.00px after "at",
+5.09px after "vs", whose ink is .09px narrower); the dot's margins `calc(4px - .1934em)` and `calc(5px - .175em)`. Down: PART 5's padding
+formula with `--gk` (.127 vs, .063 at) and `translate:0 .1px`. Schedule: `justify-self:start`, margin = minus the first glyph's bearing, the
+logo's negative margin `round(.9704 x size + 5px) - chip column - column gap (--pg)`.
+Measured (pixels, glyph fill; min / mean / max). Chromium 402P: word ink minus name ink -0.35 / -0.16 / 0.08 (vs), -0.32 / -0.01 / 0.37
+(at) (before 1.40 / 5.18 mean); word ink to logo box 5.15 / 5.12 mean (7.35 / 11.04); with the shadow 4.43 / 4.09; logo box to dot
+4.10 / 4.14 / 4.18 (6.19); dot to kickoff 4.96 / 5.34 / 5.64 (6.10), with the dot's shadow 4.00 / 4.36 / 4.69; 360P, 440P and 1440 within
+0.1px of these. WebKitGTK, 402P / 440P layouts: -0.31 / -0.12 / 0.20 and -0.44 / -0.09 / 0.50; 5.24 and 5.25; logo box to dot 4.17, dot
+to kickoff 5.59; ink centre against the logo's centre -0.03px (vs) and +0.04px (at) on every row (+0.38 / +0.47 with the shadow); at
+1440 (2x) -0.33 / -0.25px. The 23.09px logo box is kept: 22 of the 32 logos fill it edge to edge (MIN and NO stand 3.02px in).
+The line is 6.58px shorter (word box to kickoff 60.27 -> 53.50px). `luFit` over 22 states x six widths: 0 new abbreviations, 0 new
+overflow, 0 row heights changed; game line 12.75 -> 13px (360P Matchups), 11.5 -> 12.75px (360P Playoffs), 11.75 -> 13px (956L); one short
+time ("1p") shows "1 PM" again at 360P. Contrast on the built page: lineups "vs" 8.36:1, "at" 6.19:1; schedule cells 7.09 to 10.06 and
+5.25 to 7.45:1. Limits: the word's ink against the name's ink -0.44 to +0.59px by row (the name's first letter has 0.2 to 1.9px of
+bearing; the word keeps one x); the right-hand line is not mirrored (kickoff outermost; its ink against the name's -0.45 to +0.45px
+Chromium, +0.01 to +0.24px WebKitGTK); 360P Playoffs lineups: the name line 0.62px higher in the same row. WebKitGTK rounds the advance
+(16px word): its gap reads 0.1px more than Safari's will. Not changed: the word tags HOME / ROAD (`.hrt`) and the card's home / road tags.
+
+**The record's dash (2026-11-12, job 3).** theme.css PART 10 + theme.js item 7. `.board .r .rr b` (the Standings cards, phones and
+desktop: the only T2 record; the desktop table's W-L cell and Team Hub's records are plain text and are not changed). The wrapped
+glyph is switched off and keeps its advance (.475em with the tracking), so the record's box is unchanged (0.03px or less at 360P /
+402P / 440P / 874L / 1440, H2H and Median, Dumb and Nerd: no name changes size or line count). `::before` draws the dash at the
+glyph's height (.1265em, .243em above the baseline): `--white`, a 1px `--black` outline and the 2px hard shadow (`box-shadow`, T2's
+look). `--dg:4px` = white to white on each side, read at the dash's height (the band .21em to .40em: "1" and "7" stand well inside
+their box there); length `min(.27em, what is left)`: 9.0 to 9.9px at 35.1px, 5.8 to 9.9px at 29.7px ("10-8" 5.84px, "17-1" 7.9px);
+a capped dash is centred between the two inks (gaps up to 7.4px). Measured (`dashm.py`): Chromium 402P gaps 4.05 to 4.71px beside an
+uncapped dash, left and right within 0.4px (whole-pixel text: "2-7" 9.00 / 7.23px, and up to 0.78px at 874L); WebKitGTK 402P layout
+3.50 to 4.01px (it rounds the advance to 18px; Safari does not) and capped 6.33 to 7.62px, sides within 0.33px. Before: 1.33 / 0.33px
+("9-0"). Limit: after the dash a "3" is measured to its bowl tips, which lie just above and below the dash's rows (4px); along the
+dash's own rows the 3's ink is 9.6px away ("6-3").
 
 **Bench band (2026-11-12).** theme.css PART 10. `.pane-mu .lbh`, `.pane-po .lbh:not(.psbh)`: `margin-top:18px`, `--blue-3` fill,
 `inset 0 2px 0` and `inset 0 -2px 0` black, label `--yellow` (12.52:1), small text `--peri-lt` (7.81:1), inner rule `--blue`. Height
@@ -987,7 +1042,7 @@ Open items, most visible first. Each names where it was found.
 
 1. **Closed 2026-11-12 (cleanup job 2): one rank-chip style on Standings, every layout.** Fitter-sized chips = the drawn tile; chips
    the fitter does not size (dropped points, week strip, Proj finish tile, the season chart's SVG chips) = the same two fills on
-   their own box. Figures under "Cleanup job 2". Left: the other tabs' ringed chips (item 41).
+   their own box. Figures under "Cleanup job 2". The other tabs followed in job 3 (item 41, closed).
 2. **Desktop rank tiles are centred by CSS only (pass 5).** theme.js item 2 (rule 7, the device-pixel snap) runs below 1100px. On
    desktop `rkm5.py` reads the digit about 0.5 to 1px above the tile's centre in both engines (the reading is good to about 0.5px:
    the outline's and shadow's share of the ink is estimated). Gaps are far above rule 11's minimums.
@@ -1064,8 +1119,8 @@ Open items, most visible first. Each names where it was found.
     (0 at 2.6s; unsized for a moment on 80 presses at 0.45s, 27 at 1.1s, 1 at 1.7s; Chromium 0 of 96 at every sample), so the late
     check was not extended. An unsized chip shows the same fills on Classic's box, so no ring appears in that moment.
 28. **Closed 2026-11-12 (cleanup job 2):** the drawn-tile recipe is one rule set (PART 8; members set `--ce`, `--cv`, `--cz`).
-29. `dtPanels` and Classic rules for `tr.dtb` are unused; PART 4's ringed `.ch.gold` / `.ch.last` rules remain for the tabs that still
-    carry the ring (item 41) and go with them.
+29. `dtPanels` and Classic rules for `tr.dtb` are unused. PART 4's ringed `.ch.gold` / `.ch.last` rules: **gone 2026-11-12 (job 3)**, the
+    base rule is the solid recipe; the scoped copies in PART 8 / PART 9 now repeat it and can be folded into it.
 30. `retro/favicon.html` and the marked blocks of `template.html` are generated copies (`wordmark_gen.py apply`): after editing the
     generator, run it, or the two pages' icons drift apart.
 31. A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps them (`DT_CHUNKS`).
@@ -1073,10 +1128,20 @@ Open items, most visible first. Each names where it was found.
 
 **H. Found 2026-11-12 (cleanup job 2), not fixed there**
 
-39. Remaining schedule (Stats) and the Team Hub schedule cells: 0px between the logo's black shadow and the drawn rank tile (logo ring
-    2px + shadow 2px + the tile's 1px reach use up Classic's 5px gap).
-40. The record's dash: the digits' and the dash's outlines overlap (0 to 1px of white between white).
-41. The other eleven tabs' gold and worst rank chips still carry the ring; they move to the solid recipe in the next job.
+39. **Open (job 3 mocked it, not shipped).** Remaining schedule on Stats: 0px between the picture's black shadow and the rank tile (ring 2px +
+    shadow 2px + the tile's 1px reach use up Classic's 5px gap; in the two-line cell the gap is 3px and the shadow runs under the chip).
+    Team Hub's cells do not have the fault (their pictures paint about 1.6px past the box). Mock C, awaiting Nicklaus
+    (`item2.patch` outside the repo): Paper Trail's lighter ring on `.pane-sx .sox` pictures + a 4px gap from the 402P layout up to 1099px:
+    row showing 1.40px (Stats one-line cell, 1440; WebKitGTK 1.95px with the ring alone), 2.11 / 2.01px (402P / 440P), 1.17px at 360P
+    (gap stays 3px: the 44.6px cell has 0.64px to spare), Team Hub 2.58px; 0 overflow, the AVG figure does not move, chips keep one left
+    edge per column. Widening the gap to 9px / 7px instead fails at 360P (two-digit chips 1.36px past the cell).
+40. **Closed 2026-11-12 (job 3):** the record's dash is drawn shorter, 4px white to white on each side, the record's width unchanged
+    ("The record's dash").
+41. **Closed 2026-11-12 (job 3):** no gold or worst ring left on any tab. Ringed before: Compare `.ch.gold`; Leaderboards `.lbr .ch.gold`
+    / `.ch.b.last`; Matchups `.mus .ch.gold`, `.mop .ch.b.last`, card seed `.g4 .gsd.gold`; Playoffs `.mus .ch.gold`, bracket `.pbsd.gold`.
+    Players, The Wire, Rosters, Drafts, Paper Trail had none; the Playoffs schedule chips `.psk2` have no rank 1 / last state. The "Week
+    rank" figure (`.hrk .ch`) is a figure, not a tile, and keeps its digit colour. `.gsd.b.last` stays a plain `--loss` digit.
+46. vs / at (job 3): `ovf.py` skips the zero-size "@" node; engines without `text-box` show "at" with Classic's padding (item 11).
 42. Classic bug seen through the copy: in Safari's wide layout (>= 1100px) the per-week text of PF / PA / TOT EFF is missing and the
     dots stand where the full line would end (Classic too; Nicklaus's screenshots 2026-11-12; not reproducible in Chromium).
 43. Classic bug seen through the copy: Team Hub > Trends header tiles overflow their 260px cards at viewport widths 760 to about
@@ -1167,6 +1232,24 @@ Open items, most visible first. Each names where it was found.
   at the 402P / 440P layouts and 1440, `svgm.py` at the 402P / 440P layouts and 1440, frame gaps (`gapf5.py`) and dark-ink /
   contrast on Standings (402P / 440P layouts and 1440, 7 states each): frame gaps 0, dark-ink 0, contrast 0; chips as under "Cleanup job 2" (its limits (a) and (c)). theme.js item 2's inline values (FAAB and seed tiles) identical before and after (phase 1 build). All
   9 patches apply; Classic identical apart from the build stamp.
+- **Job 3 (vs / at, the record's dash, solid chips on every tab), 2026-11-12:** run on the build of the commit. Chromium: `tilechk` 0
+  (360P / 402P / 440P / 874L / 956L, four states each); dark-ink 0 and contrast 0 on Matchups, Playoffs, Stats, Team Hub (440P, 66
+  states), Matchups, Playoffs, Leaderboards, Compare (440P, 54 states, after the chips), Standings (440P and 1440, 7 states each),
+  Matchups, Leaderboards, Compare (1440, 40 states), Playoffs, Stats, Team Hub (1440, 45 states, before the chips); frame gaps 0:
+  Matchups current-week states (`gapf.py`, 360P / 402P / 440P / 1440) and pass 2's tabs (`gapf2.py`: all at 360P / 440P / 1440,
+  Leaderboards at 402P); `ovf.py` against Classic (360P / 402P / 440P / 1440; 402P again with the zero-size "@" skip): clipped 0,
+  ellipsis 0, extra lines 0, sideways scroll 0; boxes against the build before the job (`boxes.py`: Matchups 12 states and Playoffs 10
+  at 360P / 402P / 440P / 1440; Leaderboards and Compare at 402P; Stats and Team Hub at 402P and 1440): only the game line's own boxes
+  and its shrink-to-fit ancestors (`.gp`, `small`, `.cnm`, its `b`: width only), tags the fitter had moved onto the line, the schedule's
+  logo and star, and at 360P the Playoffs name line (0.62px up); 0 boxes for the chips; Standings: record boxes within 0.03px and 0
+  names changed (`tn` comparison, 360P / 402P / 440P / 874L / 1440, four states), not `boxes.py` (the wrapped dash adds ten elements);
+  no gold or worst ring left on any tab (402P, the states of `boxes.py`); `luFit` as under "vs / at". WebKitGTK: dark-ink 0 and
+  contrast 0 on Matchups, Playoffs, Leaderboards, Compare, Standings at the 402P and 440P layouts and 1440 (61 states each); frame
+  gaps 0 (Matchups current-week states and Leaderboards, 402P layout and 1440); `vsat.py` at the 402P / 440P layouts and 1440;
+  `dashm.py` at the 402P / 440P layouts and 1440 (one Median reading at the 440P layout was taken during the redraw and is void).
+  All patches of `theme_build.py` apply (it stops if one does not). Not run: WebKitGTK at the 360P layout (`vsat.py` reads no rows
+  there); frame gaps for Compare and Playoffs chips in WebKitGTK; the full-state frame-gap run of Matchups / Playoffs beyond the
+  current-week states; Stats / Team Hub after the chips' base rule (their chips were already solid by the scoped rules, which are unchanged).
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).
