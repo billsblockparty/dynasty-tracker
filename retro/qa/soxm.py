@@ -39,9 +39,12 @@ for tok in TOKS:
             rc=np.nonzero(mc.any(axis=1))[0];band=slice(rc[0],rc[-1]+1);ca=np.nonzero(ma[band].any(axis=0))[0];cc=np.nonzero(mc[band].any(axis=0))[0]
             if not len(ca):continue
             d=dict(tx=r['tx'],cls=r['cls'],avw=r['avw'],lines=r['lines'],gap=(cc[0]-ca[-1]-1)/sc,av_past=(x0+ca[-1]+1)/sc+sx-a[2],tile_before=c[0]-((x0+cc[0])/sc+sx),boxgap=c[0]-a[2],over=r['sw']-r['cw'],
-                   soa_gap=(r['soa'][0]-((x0+cc[-1]+1)/sc+sx)) if r['soa'] and r['lines']==1 else None,soa_x=r['soa'][0]-r['sox'][0] if r['soa'] else None,sox_w=r['sox'][2]-r['sox'][0]);OUT.append(d)
+                   soa_gap=(r['soa'][0]-((x0+cc[-1]+1)/sc+sx)) if r['soa'] and r['lines']==1 else None,soa_x=r['soa'][0]-r['sox'][0] if r['soa'] else None,chx=c[0]-r['sox'][0],col=round(r['sox'][0]),sox_w=r['sox'][2]-r['sox'][0]);OUT.append(d)
     json.dump(OUT,open(f'out/soxm-{LABEL}-{ENG}-{tok}-{TAB}.json','w'))
     print(f'== {LABEL} {E.name} {tok} {TAB} cells {len(OUT)} of {len(rows)}; picture widths {sorted(set(round(d["avw"],1) for d in OUT))}; lines per cell {sorted(set(d["lines"] for d in OUT))}; cell width %.1f to %.1f'%(min(d['sox_w'] for d in OUT),max(d['sox_w'] for d in OUT)) if OUT else f'== {LABEL} {tok} nothing read')
     for k,lab in [('boxgap','picture box -> chip box'),('av_past','picture paint past its box (right)'),('tile_before','tile starts left of the chip box'),('gap','ROW between picture paint and tile'),('soa_gap','tile -> AVG figure box (one-line cells)'),('over','cell scrollWidth - clientWidth')]:
         print('   %-42s'%lab,stat([d[k] for d in OUT]))
+    cols={}
+    for d in OUT:cols.setdefault(d['col'],[]).append(d['chx'])
+    print('   chip left edge within its cell, per column: %d columns, largest spread %.2f'%(len(cols),max(max(v)-min(v) for v in cols.values())) if cols else '')
     E.close()

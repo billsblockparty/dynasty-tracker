@@ -914,6 +914,11 @@ html.retro .board .r .sk[style*="padding"] .ct::before{content:"";position:absol
    "no taller than the figure's capitals" by that 1px, as for Compare's position chips; the chip's layout box is Classic's. */
 html.retro .pane-sx .csm .ch{--ce:1px}
 @media(min-width:1100px){html.retro .pane-sx .sosm.sos1:not(.tqgrid) .sox .ch{--ce:1px}}
+/* Job 3, item 2 (2026-11-12), mock C: the pictures of the Stats Remaining schedule cells take the lighter ring Paper Trail's pictures have
+   (white 1px ring, black 1px hard shadow; Team Hub's already paint that little), and from the 402P layout up to the desktop layout the
+   two-line cell's picture-to-chip gap is 4px (Classic 3px; the 360P layout keeps 3px: its 44.6px cell has no room). */
+html.retro .pane-sx .sox .pav.av:not(#_){box-shadow:0 0 0 1px var(--white),1px 1px 0 1px var(--black)!important}
+@media(min-width:450px) and (max-width:1099px){html.retro :is(.pane-sx,.thx2) .sox:not(#_){column-gap:4px}}
 html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"].gold .ct::before{background:var(--yellow)}
 html.retro :is(.pane-sx,.thx2) :is(.ch,.tqt)[style*="padding"].last .ct::before{background:var(--loss)}
 html.retro .thx2 .tqt[style*="padding"].w .ct::before{background:var(--win)}

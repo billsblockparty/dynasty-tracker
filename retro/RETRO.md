@@ -406,8 +406,12 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 - 2026-11-12 · **Solid rank chips on every tab** (the decision of cleanup job 2 carried out): Leaderboards, Compare, the Matchups and
   Playoffs cards, bracket seeds and opponent chips. A seed chip takes the solid fill for seed 1 only: `.gsd.b.last` stays a plain
   `--loss` digit (Classic's markup marks the worst seed, its stylesheet does not).
-- 2026-11-12 · Remaining schedule, picture against the rank tile (Known issues 39): NOT in this job's commit. Mocked: the lighter ring
-  on the Stats cells plus a 4px picture-to-chip gap from the 402P layout up; awaiting Nicklaus.
+- 2026-11-13 · **Remaining schedule, picture against the rank tile (Nicklaus: ship mock C).** Stats cells (`.pane-sx .sox`): the
+  pictures take Paper Trail's lighter ring (white 1px ring, black 1px hard shadow); from the 402P layout up to 1099px the two-line
+  cell's picture-to-chip gap is 4px (Classic 3px) on Stats and Team Hub; the 360P layout keeps 3px and the desktop one-line cell its
+  5px · row colour now showing between the picture's paint and the tile: 360P 1.17px, 402P 2.11px (WebKitGTK 2.20), 440P 2.01px
+  (2.15), 1440 1.40px (1.95); Team Hub 2.58px at 402P (2.67). It was 0px or less (the shadow ran under the chip). Rejected: widening
+  the gap alone to 9px / 7px (B): at 360P two-digit chips ran 1.36px past the 44.6px cell and the AVG figure moved 4px at 1440.
 
 ## Mechanism ("always-current clone")
 
@@ -1128,13 +1132,16 @@ Open items, most visible first. Each names where it was found.
 
 **H. Found 2026-11-12 (cleanup job 2), not fixed there**
 
-39. **Open (job 3 mocked it, not shipped).** Remaining schedule on Stats: 0px between the picture's black shadow and the rank tile (ring 2px +
-    shadow 2px + the tile's 1px reach use up Classic's 5px gap; in the two-line cell the gap is 3px and the shadow runs under the chip).
-    Team Hub's cells do not have the fault (their pictures paint about 1.6px past the box). Mock C, awaiting Nicklaus
-    (`item2.patch` outside the repo): Paper Trail's lighter ring on `.pane-sx .sox` pictures + a 4px gap from the 402P layout up to 1099px:
-    row showing 1.40px (Stats one-line cell, 1440; WebKitGTK 1.95px with the ring alone), 2.11 / 2.01px (402P / 440P), 1.17px at 360P
-    (gap stays 3px: the 44.6px cell has 0.64px to spare), Team Hub 2.58px; 0 overflow, the AVG figure does not move, chips keep one left
-    edge per column. Widening the gap to 9px / 7px instead fails at 360P (two-digit chips 1.36px past the cell).
+39. **Closed 2026-11-13 (job 3, item 2).** Remaining schedule: the picture's black shadow met the rank tile (0px at 1440; under the chip
+    in the two-line cell). Now (theme.css PART 8): lighter ring on `.pane-sx .sox` pictures (paint 2px past the box, was 4px) and
+    `column-gap:4px` on `:is(.pane-sx,.thx2) .sox` from 450px to 1099px of layout width. Row showing (min / mean / max): Chromium 360P
+    0.00 / 1.17 / 1.96, 402P 0.78 / 2.11 / 2.74, 440P 0.78 / 2.01 / 2.74 (whole-pixel boxes at the page scale), 1440 1.00 / 1.40 / 2.00;
+    WebKitGTK 402P layout 1.67 / 2.20 / 2.67, 440P 1.67 / 2.15 / 2.67, 1440 1.50 / 1.95 / 2.00; Team Hub 402P 2.58 (WebKitGTK 2.67),
+    440P 2.58, 360P 1.57 and 1440 1.70 (unchanged: its pictures already painted about 1.6px past the box). Cell overflow 0, the AVG
+    figure does not move, picture 0.5px left and chip 0.5px right at 402P / 440P, nothing moves at 360P and 1440.
+    **Limit:** 360P keeps 1.17px: the 44.6px cell has 0.64px to spare with a two-digit chip, no room for a fourth pixel.
+    Seen, not changed: in the Stats one-line cell (>= 1100px) the chips of one column do not share a left edge (up to 3.6px: picture,
+    chip and figure are centred as a group and the chip is one or two digits wide), as in Classic.
 40. **Closed 2026-11-12 (job 3):** the record's dash is drawn shorter, 4px white to white on each side, the record's width unchanged
     ("The record's dash").
 41. **Closed 2026-11-12 (job 3):** no gold or worst ring left on any tab. Ringed before: Compare `.ch.gold`; Leaderboards `.lbr .ch.gold`
@@ -1250,6 +1257,14 @@ Open items, most visible first. Each names where it was found.
   All patches of `theme_build.py` apply (it stops if one does not). Not run: WebKitGTK at the 360P layout (`vsat.py` reads no rows
   there); frame gaps for Compare and Playoffs chips in WebKitGTK; the full-state frame-gap run of Matchups / Playoffs beyond the
   current-week states; Stats / Team Hub after the chips' base rule (their chips were already solid by the scoped rules, which are unchanged).
+- **Job 3, item 2 (Remaining schedule), 2026-11-13:** only what the two rules can reach, Stats > Schedules and Team Hub. `soxm.py`
+  Chromium 360P / 402P / 440P / 1440 (Stats 50 cells, Team Hub 5) and WebKitGTK 402P / 440P layouts and 1440 (Stats), 402P (Team Hub):
+  figures under Known issues 39, overflow 0. Boxes against the build of c29edd9 (Stats 3 states, Team Hub 2, at 360P / 402P / 440P /
+  1440): only `.sox` pictures (0.5px left) and chips with their digits (0.5px right) at 402P / 440P; 0 at 360P and 1440. Chromium:
+  dark-ink 0 and contrast 0 on Stats and Team Hub (440P and 1440, 62 states); frame gaps 0 (`gapf4.py`, Schedules, 360P / 402P /
+  440P / 1440); `chipm.py` at 1440: 104 drawn chips, minimum gaps hold, 2 Team Hub schedule chips read 0.68 / 0.71px between their
+  side gaps (headless Chromium's whole-pixel text, Known issues 19; nothing of this change applies to Team Hub at 1440); `tilechk` 0
+  (360P / 402P / 440P). All patches apply. Not run: dark-ink and frame gaps in WebKitGTK (colours and chips unchanged), every other tab.
 - Real iPhone Safari is checked by Nicklaus.
 - Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
   (plus the documented one-liners).
