@@ -56,13 +56,13 @@
   "Sleeper 2026": {
    "waiver:complete": 65,
    "waiver:failed": 27,
-   "free_agent:complete": 281,
-   "trade:complete": 15,
+   "free_agent:complete": 283,
+   "trade:complete": 16,
    "commissioner:complete": 1,
    "draft:rookie": 40
   }
  },
- "events": 3036,
+ "events": 3039,
  "player_map": {
   "dynastyprocess": 460,
   "defense": 32
@@ -712,6 +712,12 @@
    "sleeper_start": "Bill's Block Party"
   },
   {
+   "pick": "2028 R1 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
    "pick": "2028 R1 (Mandingoes)",
    "mfl_snapshot": null,
    "mfl_replay": "Mandingoes",
@@ -754,6 +760,12 @@
    "sleeper_start": "Cheating is Trying"
   },
   {
+   "pick": "2029 R1 (Homer's Heroes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Homer's Heroes",
+   "sleeper_start": "Homer's Heroes"
+  },
+  {
    "pick": "2029 R1 (Mandingoes)",
    "mfl_snapshot": null,
    "mfl_replay": "Mandingoes",
@@ -772,7 +784,7 @@
    "sleeper_start": "Reverse Apache Master"
   }
  ],
- "picks": 230,
+ "picks": 232,
  "roster_stitch": {
   "Bill's Block Party": {
    "mfl_end": 17,
