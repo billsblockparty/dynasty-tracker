@@ -1159,6 +1159,11 @@ Open items, most visible first. Each names where it was found.
 45. Desktop, WebKitGTK at 1440: two fitted "10" chips read 0.61px between their side gaps and 7 of 180 week-strip chips 0.51 to
     0.63px (102 of 180 up to 1.11px before the job); the same two fitted chips read 0.61px on the build before the job.
 
+47. **For the Fable audit (2026-11-14):** Classic's page column is now 712px (680px of content) from 760 to 1099px (was 560 / 528px). Three rules in
+  `retro/theme.css` were written for the 530px column and may no longer be needed or may now be wrong in that band: lines 548-551 (Compare
+  section pills: 11px, tracking 0, 3px gaps for eight pills across 530px), 672 (Drafts Original order: "Anderson" allowed 1.4px into the gap
+  with ten 42.8px slots) and 921 (Stats / Team Hub schedule cell column gap 4px at 450-1099px). Not changed (retro/ untouched).
+
 **G. Requests parked by Nicklaus on 2026-11-11 (rechecked against the build of pass 5 on 2026-11-12, cleanup job 1; all five closed)**
 
 33. Matchups vs / @ tiles: **closed 2026-11-12: tiles removed, coloured glyphs (Nicklaus 2026-11-12).** The old black top band on
