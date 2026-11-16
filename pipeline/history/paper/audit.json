@@ -57,12 +57,12 @@
    "waiver:complete": 65,
    "waiver:failed": 27,
    "free_agent:complete": 287,
-   "trade:complete": 16,
+   "trade:complete": 18,
    "commissioner:complete": 1,
    "draft:rookie": 40
   }
  },
- "events": 3043,
+ "events": 3045,
  "player_map": {
   "dynastyprocess": 460,
   "defense": 32
@@ -730,6 +730,12 @@
    "sleeper_start": "Nuts in the Face"
   },
   {
+   "pick": "2028 R2 (Mandingoes)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Mandingoes",
+   "sleeper_start": "Mandingoes"
+  },
+  {
    "pick": "2028 R2 (Reverse Apache Master)",
    "mfl_snapshot": null,
    "mfl_replay": "Reverse Apache Master",
@@ -784,7 +790,7 @@
    "sleeper_start": "Reverse Apache Master"
   }
  ],
- "picks": 232,
+ "picks": 233,
  "roster_stitch": {
   "Bill's Block Party": {
    "mfl_end": 17,
