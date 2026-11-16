@@ -1149,7 +1149,7 @@ Open items, most visible first. Each names where it was found.
     Players, The Wire, Rosters, Drafts, Paper Trail had none; the Playoffs schedule chips `.psk2` have no rank 1 / last state. The "Week
     rank" figure (`.hrk .ch`) is a figure, not a tile, and keeps its digit colour. `.gsd.b.last` stays a plain `--loss` digit.
 46. vs / at (job 3): `ovf.py` skips the zero-size "@" node; engines without `text-box` show "at" with Classic's padding (item 11).
-42. Classic bug seen through the copy: in Safari's wide layout (>= 1100px) the per-week text of PF / PA / TOT EFF is missing and the
+42. **Closed 2026-11-14 (Classic's Range overflow fix, DESIGN.md §7); confirmed on Nicklaus's iPhone 956L 2026-11-14.** Classic bug seen through the copy: in Safari's wide layout (>= 1100px) the per-week text of PF / PA / TOT EFF is missing and the
     dots stand where the full line would end (Classic too; Nicklaus's screenshots 2026-11-12; not reproducible in Chromium).
 43. Classic bug seen through the copy: Team Hub > Trends header tiles overflow their 260px cards at viewport widths 760 to about
     900px (24.1px past the card in the copy, 103px in Classic).
