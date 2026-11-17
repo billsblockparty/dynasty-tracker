@@ -31,10 +31,11 @@ def pos(pid):
     return HI['m'].get(pid,['?'])[0]
 import season,roster_files as RF
 m8={r[0]:(r[1],r[2]) for r in X8a['m8']}
+mp={r[0]:r[3] for r in X8a['m8'] if len(r)>3}  # each roster's week-NOW matchup players (2026-11-17); empty for older pulls
 R=RF.rosters(RO,A,META,nm,pos,DONE,season.RID)
 f=P+f'wk{NOW}.json';old=L(f'wk{NOW}.json') if _dt_os.path.exists(f) else None
 played=set((L('stats.json') if _dt_os.path.exists(P+'stats.json') else {}).get(str(NOW),{}))
-wk=RF.lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,old=old,played=played)
+wk=RF.lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,old=old,played=played,mp=mp)
 # ---------- FUT week NOW: projected totals for the set lineups and win % (same formula as full_update.py section 2)
 s=open(P+'data_block.js',encoding='utf-8').read()
 mF=re.search(r'const FUT=(\{.*?\});\n',s);FUT=json.loads(mF.group(1))
@@ -72,7 +73,8 @@ bad=0
 for rid,r in sorted(RO.items()):
     sl=set(r['pl'] or []);rj={p[0] for p in R[keys[rid]]};X_=wk['out'].get(str(rid),{'st':[],'bn':[]})
     wj={p[0] for p in X_['st']+X_['bn'] if p[0] and p[0]!='0'};st={p for p in m8[rid][1] if p and p!='0'}
-    miss=sorted(sl-rj)+sorted((sl|st)-wj);extra=sorted(rj-sl)+sorted(wj-(sl|st))
+    ex=set(p for p in (mp.get(rid) or []) if p and p!='0') or (sl|st)  # wk<NOW> follows the matchup list when the pull has it
+    miss=sorted(sl-rj)+sorted(ex-wj);extra=sorted(rj-sl)+sorted(wj-ex)
     if miss or extra:bad+=1;print('WARNING midweek.py: roster',rid,'missing',miss,'extra',extra,file=sys.stderr)
     print(f'midweek.py: roster {rid}: Sleeper {len(sl)} players (IR {len(r["res"] or [])}, taxi {len(r["taxi"] or [])}), rosters.json {len(rj)}, wk{NOW} {len(wj)}')
 print('midweek.py: week',NOW,'rosters refreshed;',('FUT projections refreshed' if nf==1 else 'FUT unchanged'),'; new ages',na,'; roster mismatches',bad)

@@ -38,6 +38,13 @@ def optimal(pool):
     g=lambda p_,n:by.get(p_,[])[:n]
     fl=sorted(by.get('RB',[])[2:]+by.get('WR',[])[2:]+by.get('TE',[])[1:],key=lambda q:-q['pts'])[:1]
     return g('QB',1)+g('RB',2)+g('WR',2)+g('TE',1)+fl+g('K',1)+g('DEF',1)
+# a player in two rosters' players_points in one week would be counted twice (Sleeper keeps a player traded after his
+# game kicked off on the roster he played for, so this should never happen); warn, never stop (2026-11-17)
+_seen={}
+for m in M7['M7']:
+    for pid in m['pp']:_seen.setdefault(pid,[]).append(m['rid'])
+for pid,rs in _seen.items():
+    if len(rs)>1:print('WARNING full_update.py: week',DONE,'player',pid,'in players_points of rosters',rs,file=sys.stderr)
 for m in M7['M7']:
     rid=m['rid'];st=m['st'];pp=m['pp']
     def ent(pid):
@@ -66,6 +73,7 @@ s=open(P+'data_block.js',encoding='utf-8').read()
 FUT=json.loads(re.search(r'const FUT=(\{.*?\});\n',s).group(1))
 SH={1:"Convicts",2:"Homer's",3:"Ram Rod",4:"RIPMFL",5:"Apache",6:"Canton",7:"Nuts",8:"Bill's",9:"Mandingoes",10:"Cheating"}
 m8={r[0]:(r[1],r[2]) for r in X8a['m8']}
+mp={r[0]:r[3] for r in X8a['m8'] if len(r)>3}  # each roster's week-NOW matchup players (2026-11-17); empty for older pulls
 def projtot(rid):return round(sum(PJ.get(p,[0])[0] for p in m8[rid][1]),2)
 NF={}
 for t,L_ in FUT.items():
@@ -142,5 +150,5 @@ for pid,v in META.items():
     if v and v[4] and pid not in X['age']:X['age'][pid]=v[4]
 json.dump(X,open(P+'cmp_extra.json','w'),ensure_ascii=False)
 # ---------- 6. current week lineups (wk{NOW}.json) + kickoffs: roster_files.lineups (shared with midweek.py)
-_RF.lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW)
+_RF.lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,mp=mp)
 print('ok',{season.RN[r]:(wact[r],wmx[r]) for r in wact})

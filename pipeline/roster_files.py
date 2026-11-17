@@ -37,13 +37,18 @@ def rosters(RO,A,META,nm,pos,DONE,RID):
     json.dump(K,open(P+'ro_ranks.json','w'));json.dump(PG,open(P+'ro_pg.json','w'))
     return R
 
-def lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,old=None,played=()):
+def lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,old=None,played=(),mp=None):
     """wk<NOW>.json from Sleeper's week-NOW matchups (starters) and the current rosters (bench).
+    mp = {roster id: that roster's week-NOW matchup `players`} (pull8a m8 4th field, 2026-11-17): when given, the bench is
+    that list minus the starters (current-roster order first), so a player traded after his game kicked off stays with the
+    team he played for and is not listed for the new one; without it (older pulls) the bench is the current roster.
+    IR / taxi tags still come from the current roster.
     old = the existing wk<NOW>.json (mid-week refresh): its scores (team totals, player points, done / live / left) are
     kept, and a player who already has points or a stat line this week (played = ids with a week-NOW stat line) keeps the
-    NFL team and opponent of his row, as teams.py does. old=None (completed-week pull) writes a fresh week."""
+    NFL team and opponent of his row, as teams.py does; old rows are matched within the same roster only. old=None
+    (completed-week pull) writes a fresh week."""
     home8={h for w_,a_,h in S8 if w_==NOW}
-    prev={p[0]:p for X in (old or {}).get('out',{}).values() for p in X['st']+X['bn']}
+    prev={(r_,p[0]):p for r_,X in (old or {}).get('out',{}).items() for p in X['st']+X['bn']}
     out={}
     for rid,(mid,st) in m8.items():
         r=RO[rid]
@@ -52,12 +57,15 @@ def lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,old=None,played=()):
             if pid in (r['res'] or []):inj=inj or 'IR'
             tm=(META.get(pid) or [None,None,None])[2] or ''
             x=[pid,pos(pid),nm(pid),tm,pj[0],0,pj[1],inj if inj in INJ else None]
-            o=prev.get(pid)
+            o=prev.get((str(rid),pid))
             if o:
                 x[5]=o[5]
                 if o[5] or pid in played:x[3],x[6]=o[3],o[6]
             return x
-        X={'mid':mid,'pts':0,'st':[row(p) for p in st],'bn':[row(p) for p in r['pl'] if p not in st]}
+        ml=[p for p in ((mp or {}).get(rid) or []) if p and p!='0']
+        if ml:bn=[p for p in r['pl'] if p in ml and p not in st]+[p for p in ml if p not in r['pl'] and p not in st]
+        else:bn=[p for p in r['pl'] if p not in st]
+        X={'mid':mid,'pts':0,'st':[row(p) for p in st],'bn':[row(p) for p in bn]}
         if old and str(rid) in old.get('out',{}):X['pts']=old['out'][str(rid)].get('pts',0)
         out[str(rid)]=X
     w={'done':[],'out':out,'home':sorted(home8),'done_note':'final + vs/@ for completed games too'}
