@@ -43,6 +43,9 @@ if mode=='weekly':
     if os.path.exists(P+'history/paper_pull.mjs') and subprocess.run(['node',P+'history/paper_pull.mjs'],cwd=P).returncode==0:subprocess.run(['python3',P+'history/paper_audit.py'],cwd=P,stdout=subprocess.DEVNULL)
     subprocess.run(['python3',P+'trades.py'],cwd=P)  # Compare / Stats > Trades: new league trades from the Paper Trail pull (never fatal)
     subprocess.run(['node',P+'pull.mjs','top',str(G())],cwd=P)  # Players tab: top players by position (never fatal)
+    # new stats data (brief newstats-data 2026-11-17): NFL stat lines of completed weeks 1..D, schedule, matchup lists ->
+    # nfl_wk.json.gz (read by nflx.py; committed by Save season data). Weekly and midweek runs alike; never fatal
+    subprocess.run(['node',P+'pull.mjs','nfl',str(D)],cwd=P)
     sh('node',P+'pull.mjs','detail',f'1-{G()+1}')  # full stat lines for the Detailed view (all played weeks + current)
     # current NFL teams (trades/signings since the last completed-week pull) into the current week's files; never fatal
     if subprocess.run(['node',P+'pull.mjs','teams',str(G()+1),'full'],cwd=P).returncode==0:subprocess.run(['python3',P+'teams.py'],cwd=P)
