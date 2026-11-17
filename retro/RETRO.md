@@ -1163,6 +1163,9 @@ Open items, most visible first. Each names where it was found.
   `retro/theme.css` were written for the 530px column and may no longer be needed or may now be wrong in that band: lines 548-551 (Compare
   section pills: 11px, tracking 0, 3px gaps for eight pills across 530px), 672 (Drafts Original order: "Anderson" allowed 1.4px into the gap
   with ten 42.8px slots) and 921 (Stats / Team Hub schedule cell column gap 4px at 450-1099px). Not changed (retro/ untouched).
+48. **For retro job 4 (found 2026-11-16, Season highs faced + Median splits):** in the copy, Team Hub's Games lists in the Season highs
+  faced and Median splits blocks run the Score figures ("109.92–147.32") up to 6.81px past their 92px column (Martian Mono is wider than
+  Classic's Barlow; 360P, 402P, 440P and 1440 alike; Classic 0px). Not changed (retro/ untouched).
 
 **G. Requests parked by Nicklaus on 2026-11-11 (rechecked against the build of pass 5 on 2026-11-12, cleanup job 1; all five closed)**
 
