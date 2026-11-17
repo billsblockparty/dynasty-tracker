@@ -33,8 +33,12 @@ def parse(sx):
         f=x.split('|');pos,name=HM.get(f[0],['?',f[0]])
         o.append(dict(pid=f[0],pos=pos,name=name,nfl=f[1],proj=float(f[2]),pts=float(f[3])))
     return o
+import irtx as _IX
 def lineup(t,w):
-    d=HI['w'][str(w)][str(RID[t])];return parse(d[2]),parse(d[3])
+    """starters, bench of a completed week; the bench leaves out whoever irtx lists as IR / taxi at his kickoff (2026-11-17)"""
+    d=HI['w'][str(w)][str(RID[t])];st,bn=parse(d[2]),parse(d[3])
+    x=_IX.out(w,RID[t],[(q['pid'],q['nfl']) for q in bn],{q['pid'] for q in st})
+    return st,([q for q in bn if q['pid'] not in x] if x else bn)
 def optimal(pool):
     by={}
     for q in pool:by.setdefault(q['pos'],[]).append(q)

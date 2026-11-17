@@ -74,4 +74,5 @@ def lineups(m8,RO,PJ,META,S8,K8,nm,pos,NOW,old=None,played=(),mp=None):
             if k in old:w[k]=old[k]
     json.dump(w,open(P+f'wk{NOW}.json','w'))
     KI=L('kick.json');KI[str(NOW)]=K8;json.dump(KI,open(P+'kick.json','w'))
+    import irtx;irtx.record(NOW,{rid:{'ir':r['res'] or [],'tx':r['taxi'] or []} for rid,r in RO.items()})  # IR / taxi as of this run, for week NOW (CI only; 2026-11-17)
     return w

@@ -1,6 +1,8 @@
 exec(open("w6.py").read().split("teams=list(season)\ndef")[0])
-mx[5]={R:221.06,H:186.30,A:140.16,N:119.24,M:129.20,B:114.48,P:110.44,T:105.12,W:88.60,C:96.24}
+mx[5]={R:221.06,H:186.30,A:140.16,N:119.24,M:129.04,B:114.48,P:110.44,T:105.12,W:88.60,C:96.24}
 mx[6]={B:133.90,N:147.44,R:129.20,T:114.02,M:123.86,P:105.88,C:126.72,H:97.30,A:92.20,W:94.84}
+# 2026-11-17: W5 Mandingoes 129.20 -> 129.04, the best lineup from hist.json (every player's points present and equal to
+# pull_pts.json); 129.20 had left out the only QB's -0.16 (Tyler Shough); the QB slot must be filled, as full_update.py does
 teams=list(season); W=range(1,7)
 for w in W:
     for t in teams: assert mx[w][t]>=act[w][t]-1e-9,(w,t)

@@ -21,6 +21,16 @@ SLIM_FIELDS = ("full_name", "first_name", "last_name", "position", "fantasy_posi
 API = "https://api.sleeper.app/v1"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
 os.makedirs(CACHE, exist_ok=True)
+sys.path.insert(0, os.path.dirname(ROOT)); import irtx as _IX   # pipeline/irtx.py (IR / taxi per week, 2026-11-17)
+_HT = {}   # (week, player id) -> his NFL team that week, from hist.json (for his kickoff); never fatal
+try:
+    for _w, _R in json.load(open(os.path.join(os.path.dirname(ROOT), "hist.json")))["w"].items():
+        for _v in _R.values():
+            for _s in _v[2:4]:
+                for _e in _s.split(","):
+                    _f = _e.split("|")
+                    if len(_f) > 1: _HT[(int(_w), _f[0])] = _f[1]
+except Exception as _ex: print("teamhub: hist.json teams unavailable:", _ex)
 
 def get(url, ua=None, raw=False):
     req = urllib.request.Request(url, headers={"User-Agent": ua or "teamhub/1.0"})
@@ -145,7 +155,9 @@ def main():
             apw = sum(1 for o in rids if o != rid and sc[o] < me); apl = sum(1 for o in rids if o != rid and sc[o] > me)
             apt = N - 1 - apw - apl
             pp = {k: (v or 0) for k, v in (a.get("players_points") or {}).items()}
-            pool = {p: pp[p] for p in (a.get("players") or []) if p in pp and p not in teams[rid]["taxi"]}
+            # IR / taxi at each player's own kickoff that week (irtx, 2026-11-17); was: today's taxi list for every week
+            xo = _IX.out(w, rid, [(p, _HT.get((w, p)) or (players.get(p) or {}).get("team") or "") for p in (a.get("players") or []) if p in pp], set(a.get("starters") or []))
+            pool = {p: pp[p] for p in (a.get("players") or []) if p in pp and p not in xo}
             opt, pick = optimal(pp, pool)
             starters = a.get("starters") or []; spts = a.get("starters_points") or []
             st = []
