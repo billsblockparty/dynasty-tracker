@@ -54,15 +54,15 @@
    "draft:import": 150
   },
   "Sleeper 2026": {
-   "waiver:complete": 65,
-   "waiver:failed": 27,
-   "free_agent:complete": 290,
+   "waiver:complete": 73,
+   "waiver:failed": 30,
+   "free_agent:complete": 296,
    "trade:complete": 18,
    "commissioner:complete": 1,
    "draft:rookie": 40
   }
  },
- "events": 3048,
+ "events": 3062,
  "player_map": {
   "dynastyprocess": 460,
   "defense": 32
