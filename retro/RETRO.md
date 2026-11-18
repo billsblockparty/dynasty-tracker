@@ -426,6 +426,32 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   rule (the tile was already radius 0) · every `.nfl` in the Compare chunk is a logo (32 teams, all with the logo rule); retro counts
   at 9 widths identical with and without them.
 
+## Decisions (2026-11-18, lineup rows)
+
+- 2026-11-18 · Matchups / Playoffs lineup rows = dark framed bands with a lip (briefs RL-2 to RL-4; Nicklaus 16:11 and 17:18 ET) · CSS at
+  the end of theme.css ("Lineup rows = dark framed bands on the panel"): row `background-color:var(--blue-3)` and
+  `box-shadow:0 2px 0 0 var(--black)`; `::before` `inset:0; box-shadow:inset 0 0 0 1px var(--black); background:none; z-index:2`;
+  `margin-top:6px` on row -> row, `.lbh:not(.psbh)` -> row, `.mcr.slc` -> row, on `.mcr.ltot2 + .lpv`, and (>=1100px) on
+  `.mup > .lus + .mcard` (Classic 0 there; phones keep Classic's 20px). Tokens `--blue-2`, `--blue-3`, `--black`; no new token.
+- Measured on the built page (Chromium 360P / 402P / 440P / 1440, 20 states a width; WebKitGTK 402P layout; ship re-check 402P / 1440):
+  every gap 6.000px in layout (per 1440 state set of the re-check: 75 row, 15 strip, 6 slate header, 1 "Points gained", 1 result card;
+  RL-4 counts at 4px: 315 / 60 / 54 / 5 / 8 a width), row fill #202f4f and gap #2a3e6a from pixels, frame 1.00px (WebKitGTK 3 device
+  px at 3x; Chromium phones 0.83-1.08, whole device pixels at 2.555x), lip 2.00px black at 1440 (phones 1.96-2.35, same rasterisation),
+  1.5px of panel between the row's right edge and the panel frame at every width (Matchups and Playoffs), 0 rows within 0.5px of
+  another element, row boxes and every box inside a row 0.000px vs main (y only by the gaps), dark-ink and contrast 0 (Matchups +
+  Playoffs, 402P / 1440, 72 states), frame gaps (rule 11) unchanged in count (4 / 4 pre-existing `i.pp.sm` readings, none new; cell
+  readings within one device px), pinned Points band and open week menu: 0 pixels of the rows painted over them, tilechk 0, Classic
+  byte-identical. Height at 402P (screen 1,027 CSS px) vs before: starters +48px (569.81 -> 617.81), full current lineup with
+  Bench / IR / Taxi +108px (1,353.44 -> 1,461.44; 1.318 -> 1.423 screens), Slate order +120px. The panel's inner glow lightens the
+  ends of each gap (visible about 4px, measurable to 9-12px): accepted.
+- Rejected (not picked by Nicklaus after the mocks): A, B, C (RL-1 mock variants); D (`--blue-2` rows on a 4px `--blue-3` gap painted
+  by a zero-blur shadow); E without the frame (`rl-nf`; the strips and the Points band share the rows' `--blue-3`); S1 / S2
+  (`--sh-hard` with the 2px sideways offset, gaps 4 / 6px): the rows end 1.5px from the panel frame, so the sideways shadow ran 0.5px
+  into the frame on phones and on Playoffs at 1440 and read as a thicker frame, not depth.
+- Elements that share the row colour (not changed): Bench / IR / Taxi strips, the Points band, slate header tiles (`--blue-3`,
+  1.00:1 against a row; separated by the 6px gap, the frame and their own rules / ring); FK / FL chips 1.32:1 against the row (their
+  1px ring carries them).
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -500,6 +526,13 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 
 1. **Rows:** lighter row `--blue` > darker row `--blue-2` > divider `--blue-3` > frame black; alternating shades AND
    a divider. Measured with the grain's mean: 1.27:1, 1.17:1, 1.58:1.
+   **Exception (2026-11-18): Matchups / Playoffs lineup rows** (`:is(.pane-mu,.pane-po) .cr.lu:not(.psr)`) are dark framed bands on
+   the panel, not zebra rows: fill `--blue-3`, 1px black inset frame drawn by `::before` (Classic's `.lgs` pseudo, so the slot-group
+   line is removed), a 2px black lip under the row (`0 2px 0 0 var(--black)` = `--sh-hard` without the sideways offset, because the
+   rows end 1.5px from the panel frame: a fill-free hard shadow, i.e. rule-conformant depth, not a glow), and a 6px gap (2px lip +
+   4px of `--blue-2` panel) after every row, under each Bench / IR / Taxi strip, under each slate header, under the "Points gained"
+   rule (Optimal) and above the result card at >=1100px. A lineup row never touches another black line (the pinned Points band
+   passing over the rows is exempt). Row vs panel 1.26:1; black frame / lip 1.58:1 on the row, 2.00:1 on the panel.
 2. **Type treatment by role, and the dark-ink rule.** T2 (black 2px outline under the fill + 2px hard shadow): header
    title, weeks-left figure, team names, records, group buttons, rank-tile digits (18px and up). T1 (1px hard shadow,
    no outline): every other light text. T0 (nothing): dark text on a light tile, and chip digits and letters (rank
@@ -640,6 +673,9 @@ kind of plate (8px) on these two tabs. Cards on a panel are `--blue` (lighter, r
 comparison card `.mcard`, bracket games `.pbm` / `.pbyt`. Wells are `--blue-3`: toggle tracks, the team switch, the
 dropdown button, the points band `.ltot.lsb` (periwinkle 1px ring), slate day tiles `.stc`, the "vs" badge.
 The bench strip is a `--blue-3` head strip since 2026-11-12 (below, "Bench band" and "Slate header"); Classic's other `--pg` strips stay purple.
+**Lineup rows (2026-11-18).** Matchups and Playoffs lineup rows are dark framed bands (`--blue-3`, 1px black frame, 2px black lip,
+6px gap of panel; rule 1 exception, "Decisions (2026-11-18, lineup rows)"); the slot-group line is gone, the slot groups are carried by
+the position tile colours.
 
 **Literal Classic colours overridden** (everything else arrives through the tokens):
 
@@ -776,7 +812,7 @@ tracking and the 1px shadow; across it uses the segments' `text-indent` formula.
 card share one top edge, the lineup's heading sits on its own line below it as in Classic; the ground shows no orange
 behind short columns because the panel spans them; nothing on these tabs stands on the ground.
 
-**Not changed on purpose.** Row heights, the centre line, slot-group dividers, the bench strip, Classic's fitters, the
+**Not changed on purpose.** Row heights, the centre line, the bench strip, Classic's fitters, the
 sticky points band (its compact state uses 10 / 10.5px labels, Classic's), sizes under 11px that are Classic's own
 (units in stat lines 9 to 10px, Detailed stats labels 9 to 10px, card "Final" 10.5px).
 
@@ -790,7 +826,7 @@ glow. Players `.plx` and The Wire `.wrx` have no panel in Classic: each is a `--
 plate, 2px black frame, 2px hard shadow, the glow), so no box moves. The Glossary switch and text get the 8px plate on all four.
 The Wire's table `.wrt` is a `--blue` panel on the plate: head strip `--blue-3`, rows `--blue` / `--blue-2` alternating over the
 1px `--blue-3` divider (rule 1), counted over the rows the position filter leaves visible (`:nth-child(even of :not([hidden]))`).
-Players rows and Compare's player rows are the lineup row of Game Day (`--blue-2`, black 1px frame), unchanged; since 2026-11-18
+Players rows and Compare's player rows are the lineup row of Game Day before 2026-11-18 (`--blue-2`, black 1px frame; Game Day's rows are now dark bands, rule 1), unchanged; since 2026-11-18
 Compare's player rows are square (`.cmx .cr` radius 0, as `.cr.lu`) and its IR / Taxi band strip is the Matchups Bench band (§34,
 `--blue-3`, 12px above as Classic's position-head gap).
 
@@ -845,7 +881,7 @@ glow), so no box moves; `.rox` has a 2px frame of its own in Classic, which beco
 are `--blue` (Rosters' team picker cells and Team assessment, Drafts' Original order and the desktop board panel), round panels
 keep Classic's alternating rows (`--blue` / `--blue-2` over the 1px `--blue-3` divider) under a `--blue-3` head strip, wells are
 `--blue-3` (the two inner boxes of Team assessment, an empty board cell, points tiles, the search field). Rosters' player rows are
-the lineup row of Game Day (`--blue-2`, black 1px frame), as on Players. The sheet is Classic's full-screen `--deck` panel
+the lineup row of Game Day before 2026-11-18 (`--blue-2`, black 1px frame; Game Day's rows are now dark bands, rule 1), as on Players. The sheet is Classic's full-screen `--deck` panel
 (`--blue-2`); its season strip is `--blue-3`. The Glossary switch and text get the 8px plate on the three panes.
 
 **Controls.** Year buttons (`.dfyb`, `.ptyb`) and the Picks / Players switch (`.ptsw`): `--blue`, 4px corner, yellow label
