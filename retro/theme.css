@@ -537,11 +537,9 @@ html.retro .cmx .pk.faab{background:rgba(125,255,160,.16)}
 /* position heads of the Players section: K / DEF as text are 4.43 / 3.69:1 on the panel, so the head is the position chip */
 html.retro .cmx .cgh>em{background:var(--pc);color:var(--black);border-radius:2px;text-shadow:none;letter-spacing:0!important;padding:1px 8px;margin:0 2px}
 html.retro .cmx .cgh{border-bottom-color:var(--pc)!important}
-/* NFL team chips (text chips here, no logo): light inks on Classic's team colour reach 4.5:1 only on 75% colour + black */
-html.retro .cmx .nfl{text-shadow:none;border-radius:2px;letter-spacing:0!important}
-html.retro .cmx .nfl:not(.n-CIN,.n-DEN,.n-NO,.n-PIT){background-image:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.25))}
+/* (2026-11-18: the Compare NFL team text-chip rules were removed: every .nfl in the Compare chunk is now a logo) */
 /* chips of the pane (rule 11): T0, tracking 0, ink centred across by --ix (theme.js item 4) */
-html.retro .cmx :is(.nfl,.pk,.cgh>em){text-indent:calc(var(--ix,0em) + var(--iw,0px))}
+html.retro .cmx :is(.pk,.cgh>em){text-indent:calc(var(--ix,0em) + var(--iw,0px))}
 /* "QB" chips: the tail of "Q" reaches .19em under the baseline (1.85px to the edge of a 15px chip); the line sits 1px higher
    (2.65px above the capitals, 2.85px under the tail) */
 html.retro .cmx .pp.sm.p-qb .ct{position:relative;top:-1px}
@@ -553,7 +551,7 @@ html.retro .cmx .pp.sm.p-qb .ct{position:relative;top:-1px}
   html.retro .cmx .lbc.csub label{--it:0em}}
 /* section pills, ink + shadow centred (rule 11): --ix (theme.js item 4), + Classic's .05em tracking after the last letter (--it), - the 1px shadow */
 html.retro .cmx .lbc.csub label{text-indent:calc(var(--ix,0em) + var(--it,.05em) - 1px + var(--iw,0px))}
-html.retro .cmx :is(.nfl,.pk) .ct{letter-spacing:0!important}
+html.retro .cmx .pk .ct{letter-spacing:0!important}
 /* position chips between two figures: 17px tall (Classic 15px; the row does not grow), so "QB" keeps 2px under the tail of "Q" in
    an engine that puts text on whole pixels too */
 html.retro .cmx .mcr em .pp.sm{height:17px}
@@ -1050,9 +1048,9 @@ html.retro .seg10 i:not(.on):not(#_){background:var(--blue-3)!important;border-c
 /* --- 34. Bench band (Matchups and the Playoffs lineups): its own section head. 18px of panel above it (Classic's own .lbh margin, which
    its later margin shorthand resets to 0), a --blue-3 head strip (pass 3: head strips are --blue-3; the page colour reads as "ground" here)
    closed by the frame's black line above and below, label in the label colour. The strip keeps Classic's 33.5px; the rows keep theirs. --- */
-html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh)){margin-top:18px;background:var(--blue-3);box-shadow:inset 0 2px 0 var(--black),inset 0 -2px 0 var(--black)}
-html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh)) b{color:var(--yellow)}
-html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh)) i{background:var(--blue)}
+html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh),.pane-cm .lbh.cxb){margin-top:18px;background:var(--blue-3);box-shadow:inset 0 2px 0 var(--black),inset 0 -2px 0 var(--black)}
+html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh),.pane-cm .lbh.cxb) b{color:var(--yellow)}
+html.retro :is(.pane-mu .lbh,.pane-po .lbh:not(.psbh),.pane-cm .lbh.cxb) i{background:var(--blue)}
 /* --- 36. Slate header: day and time in a framed tile, the slate day tile's recipe (.stc: --blue-3 well, 1px ring in the slate's state
    colour, 1px hard shadow, 2px corner). Rule 11: 5px of padding beside the 1px ring and --ix (theme.js item 4) across, less the running tracking after the last glyph and the 1px shadow; down, a
    cap-trimmed line placed so the capitals (.7em = 11.9px) plus the 1px text shadow are centred between the ring lines (3.55px each).
@@ -1107,3 +1105,12 @@ html.retro .cr.lu .psg.cnm .gp .gha.ht.h{margin-left:calc(var(--gf)*-.033)!impor
 html.retro .cr.lu .psg.cnm .gp .gha.ht.r{font-size:0!important;margin-left:calc(var(--gf)*-.0365)!important}
 @supports (width:round(1.5px,1px)){
   html.retro .cr.lu .psg.cnm .gp .nfl.opp{margin-left:calc(round(clamp(11.5px,14.5cqw,16px)*.9704 + 5px,1px) - round(clamp(20px,27cqw,30px),1px) - var(--pg))!important}}
+/* 2026-11-18 COMPARE PLAYERS: LOGOS, IR / TAXI BANDS (retro). Compare player rows square in retro, as the Matchups lineup rows (.cr.lu:has(.sln) .cn>.pq, and
+   Classic's .cr.lu radius 0): the position / rank tile is clipped by its row's 9px corners (readability.css .cr), so the row goes square
+   (Players rows, IR / Taxi band rows, Positions › Best player rows); the tile itself is already radius 0 in retro (its own radius rule was dead, removed 2026-11-18) */
+html.retro .cmx .cr{border-radius:0!important}
+html.retro .pane-cm .lbh.cxb{margin-top:12px}  /* Compare's gap above the band = its position-head gap (Classic 12px) */
+/* retro names sit lower on their line than Classic's, so the Compare logos are re-centred: name-line logo centre minus
+   name cap centre was +1.00px (Classic fix -.47px applied; retro Matchups lineup +0.66px), now +0.41px; GP-line logo +0.75px -> 0.00px */
+html.retro .pane-cm .cn .cnm b>.nfl.tm{top:-1.06px}
+html.retro .pane-cm .cnm small>.nfl.tm.opp{top:-.75px}

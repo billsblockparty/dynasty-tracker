@@ -413,6 +413,19 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   (2.15), 1440 1.40px (1.95); Team Hub 2.58px at 402P (2.67). It was 0px or less (the shadow ran under the chip). Rejected: widening
   the gap alone to 9px / 7px (B): at 360P two-digit chips ran 1.36px past the 44.6px cell and the AVG figure moved 4px at 1440.
 
+## Decisions (2026-11-18, Compare › Players: logos, IR / Taxi bands)
+
+- 2026-11-18 · Compare player rows show the NFL logo (Classic's change, DESIGN.md §6 Compare › Players): the logo rule of Classic wins
+  in retro too (22 × 20px, one `url()` layer, radius 0); re-centred for retro's lower names: name line `top:-1.06px` (+0.42px from the
+  name's cap centre; retro Matchups +0.66), GP line `top:-.75px` (0.00px). Phones show the GP-line state at every width below 760px.
+- 2026-11-18 · Compare rows square (`html.retro .cmx .cr{border-radius:0}`, as `.cr.lu`): the tile was clipped by the 9px row corners.
+  Band strip = §34 Bench band, `margin-top:12px` (Classic's position-head gap).
+- 2026-11-18 · Removed as dead: Pass 2's Compare team text-chip rules (`.cmx .nfl` text-shadow / radius / tracking, the 25% black
+  gradient, the `.nfl` parts of the `--ix` text-indent and `.ct` tracking rules) and **theme.js item 4's `['.cmx .nfl',700,0]` entry**
+  (it wrote `--ix` on 4,626 hidden-text logos; only the removed text-indent rule read it), and the mock's `.cmx .cr .cn>.pq` radius
+  rule (the tile was already radius 0) · every `.nfl` in the Compare chunk is a logo (32 teams, all with the logo rule); retro counts
+  at 9 widths identical with and without them.
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -777,7 +790,9 @@ glow. Players `.plx` and The Wire `.wrx` have no panel in Classic: each is a `--
 plate, 2px black frame, 2px hard shadow, the glow), so no box moves. The Glossary switch and text get the 8px plate on all four.
 The Wire's table `.wrt` is a `--blue` panel on the plate: head strip `--blue-3`, rows `--blue` / `--blue-2` alternating over the
 1px `--blue-3` divider (rule 1), counted over the rows the position filter leaves visible (`:nth-child(even of :not([hidden]))`).
-Players rows and Compare's player rows are the lineup row of Game Day (`--blue-2`, black 1px frame), unchanged.
+Players rows and Compare's player rows are the lineup row of Game Day (`--blue-2`, black 1px frame), unchanged; since 2026-11-18
+Compare's player rows are square (`.cmx .cr` radius 0, as `.cr.lu`) and its IR / Taxi band strip is the Matchups Bench band (§34,
+`--blue-3`, 12px above as Classic's position-head gap).
 
 **Pills and controls.** `.lbc label` (Leaderboards stats, Compare sections, Players positions) and `.wpb` (The Wire filter):
 `--blue-3`, 4px corner, `--peri-lt` label (7.81:1). Selected = the badge through `--chalk: var(--seg-on); --ink: var(--white)` on
@@ -802,9 +817,9 @@ strip (`.lbc.roc.plc`, an L-shaped black line here) is off. Segments (`.pseg`), 
 | `#ff5d73` | IR mark `.cir` | `--loss` |
 | `rgba(127,166,255,.1)` + `--sky` ring and digit; `rgba(63,214,155,.15)` | acquired pick chip `.pk.via`; FAAB chip | `--blue-3`, `--peri` ring, `--peri-lt` digit; `rgba(125,255,160,.16)` |
 | `color-mix(--pc 55%, transparent)` line, `--pc` text | Compare Players, position head `.cgh` | `--pc` line; the head is a `--pos-*` chip with black ink |
-| NFL team colours (text chips, no logo in this pane: KC 3.27:1) | Compare team chips `.nfl` | 25% black over the team colour for light-ink teams, the four dark-ink teams plain |
+| NFL team colours (text chips: KC 3.27:1) | Compare team chips `.nfl` | 25% black over the team colour for light-ink teams, the four dark-ink teams plain; **removed 2026-11-18**: Compare shows NFL logos (Classic's logo rule), no text chip left |
 
-**Chips (rule 11).** Compare's team chips, pick chips and position heads and The Wire's position tiles are T0 with tracking 0
+**Chips (rule 11).** Compare's pick chips and position heads (team chips until 2026-11-18) and The Wire's position tiles are T0 with tracking 0
 (their inner `.ct` too: the body-wide tracking rule reaches it) and are ink-centred by `--ix` (theme.js item 4). "QB" chips in
 Compare sit 1px higher and the chips between two figures are 17px tall (Classic 15px; row heights measured unchanged). Compare's
 section pills are centred on ink + shadow: `--ix` + Classic's .05em tracking after the last letter - the 1px shadow.

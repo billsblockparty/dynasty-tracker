@@ -143,7 +143,7 @@
     ['.mres',700,0],['.pp.sm',700,0],['.pq .pqi>span',700,0],['.pq .pqi>b',700,0],['.ch:not([data-oh])',600,0],['.hrk .ch',700,0,1],
     ['.pane-pt .ptxn b',700,0],['.pane-pt .ptn b',700,0],['.pane-pt .ptn span',700,0],
     ['.pane-pt .pthx i',700,1],['.pane-pt .pthv',700,1],['.pane-pt .ptvc',600,1],['.pane-df .dfn b',700,0],['.pane-df .dfn span',700,0],['.pane-df .dftl',700,0],['.pts .pz',700,0],['.pane-df .dfvia',600,1],['.rox .rat',700,1],['.rox .txc',700,1],
-    ['.cmx .nfl',700,0],['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1],
+    ['.cmx .pk',700,0],['.cmx .cgh>em',700,0],['.wrr .wpt b',700,0],['.wrr .wpt span',700,0],['.cmx .lbc.csub label',700,1],
     // pass 4 (Stats, Team Hub): chips and tiles of the two panes; a fifth field = also write the character count as --nc (theme.css PART 8, "rank chips")
     [':is(.pane-sx,.thx2) :is(.ch,.tqt)',600,0,0,1],[':is(.pane-sx,.thx2) .hx-t',700,1],['.pane-sx .txft',700,0],['.pane-sx .dch2 .dwk',700,1],['.pane-sx .gmv:is(.cl,.bo)',700,0],['.thx2 .tqid .stk',700,0],
     [':is(.pane-sx,.thx2) :is(.bnt,.bop) em',700,0],['.pane-sx .hx-all',700,1],[':is(.pane-sx,.thx2) .pz',700,0],[':is(.pane-sx,.thx2) .wl',700,0],['.pane-sx .pkc',700,0],['.pane-sx .dtag',700,1],['.pane-sx .txw',700,1],['.pane-sx .pp:not(.sm)',700,0],[':is(.pane-sx,.thx2) .sxm .sxr>span:is(.mx,.hm,.bx)',600,0],
