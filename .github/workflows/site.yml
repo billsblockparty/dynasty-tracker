@@ -15,11 +15,12 @@ on:
     # weekly refresh, Tuesday morning after Monday night (06:17 / 11:17 ET), second run as a backstop
     - cron: '17 10 * * 2'
     - cron: '17 15 * * 2'
-    # daily full data refresh at 8:30 AM New York time, all year (weekly mode, commits data; 2026-11-12). Cron is UTC with
-    # no daylight saving: 12:30 UTC = 8:30 EDT, 13:30 UTC = 8:30 EST; the gate job runs only the one that matches the
+    # daily full data refresh, scheduled 7:23 AM New York time (11:23 UTC = 7:23 EDT, 12:23 UTC = 7:23 EST) so that, with GitHub's usual
+    # 60-75 min start delay, it lands about 8:30 AM (2026-11-18; was 12:30 / 13:30 UTC, which landed 9:30-9:45), all year
+    # (weekly mode, commits data; 2026-11-12). Cron is UTC with no daylight saving; the gate job runs only the one that matches the
     # current New York offset (-0400 / -0500), so exactly one fires each day, even if GitHub starts it late.
-    - cron: '30 12 * * *'
-    - cron: '30 13 * * *'
+    - cron: '23 11 * * *'
+    - cron: '23 12 * * *'
     # live scores every 10 minutes during game windows (UTC; covers both EDT and EST)
     - cron: '*/10 0-5 * * 5'      # Thursday night
     - cron: '*/10 13-23 * * 0'    # Sunday
@@ -56,8 +57,8 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then m="${{ inputs.mode }}";
           elif [ "${{ github.event_name }}" = "push" ]; then m=weekly; [ -f .github/selftest ] && m=selftest; [ -f .github/live-trigger ] && m=live;
           elif [ "$s" = "17 10 * * 2" ] || [ "$s" = "17 15 * * 2" ]; then m=weekly;
-          elif [ "$s" = "30 12 * * *" ]; then if [ "$z" = "-0400" ]; then m=weekly; else m=skip; fi;
-          elif [ "$s" = "30 13 * * *" ]; then if [ "$z" = "-0500" ]; then m=weekly; else m=skip; fi;
+          elif [ "$s" = "23 11 * * *" ]; then if [ "$z" = "-0400" ]; then m=weekly; else m=skip; fi;
+          elif [ "$s" = "23 12 * * *" ]; then if [ "$z" = "-0500" ]; then m=weekly; else m=skip; fi;
           elif [ "$h" = "08" ]; then m=skip;  # live window runs in New York's 8 AM hour (Sunday 13:xx UTC in EST): no game starts before 9:30 AM ET; leaves the hour to the daily run
           else m=live; fi
           echo "mode=$m" >> "$GITHUB_OUTPUT"; echo "Mode: $m (schedule '$s', New York $(TZ=America/New_York date '+%F %H:%M %z'))"
