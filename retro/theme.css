@@ -1115,6 +1115,24 @@ html.retro .cr.lu .psg.cnm .gp .gha.ht.h{margin-left:calc(var(--gf)*-.033)!impor
 html.retro .cr.lu .psg.cnm .gp .gha.ht.r{font-size:0!important;margin-left:calc(var(--gf)*-.0365)!important}
 @supports (width:round(1.5px,1px)){
   html.retro .cr.lu .psg.cnm .gp .nfl.opp{margin-left:calc(round(clamp(11.5px,14.5cqw,16px)*.9704 + 5px,1px) - round(clamp(20px,27cqw,30px),1px) - var(--pg))!important}}
+/* --- GL-1 (2026-11-18, Nicklaus 12:00 ET): the lineup game line ("vs [logo] · TNF", schedule grid excluded) has one centre: the ink centre of
+   the word, the centre of the logo box and the ink centre of the kickoff (capitals / digits) are one point. One reference: word, logo, dot
+   and kickoff are all boxes with vertical-align:middle, Classic's top:-1.4px x --rh, and odd heights (word, dot, kickoff 17px; logo 21px),
+   so their tops differ by whole CSS px and every engine snaps them together (before, the word sat on its padding formula and the kickoff on
+   the baseline, rounded apart: 1px jumps from row to row). Inside each 17px box the text has an integer line box (line-height 17px, no
+   padding, no trim). The kickoff (and the dot with it) follows Classic's luFit size (--lgf, 11 to 13px): its translate puts the capitals'
+   centre (.3485em above the baseline) on the box's centre, from the engines' own line metrics (ascent .875em and descent .175em, each
+   rounded to a whole px; the half-leading rounded down), so every size from 11 to 13px lands within one device pixel. The rest is per
+   word, a translate (after snapping, so it cannot split the line): "vs" up 1/3px, "at" down .38px
+   (measured: whole-box placement leaves the "vs" ink .46-.49px low and the "at" ink .43-.45px high; 1/3px is a whole device pixel at 3x,
+   so WebKit renders it the same on every row). Replaces PART 10's --gk padding and translate for these lines. --- */
+@supports (text-box:trim-both cap alphabetic){
+  html.retro .cr.lu .cnm:not(.psg) .gp :is(.gsep,.gwhen){display:inline-block;vertical-align:middle;height:17px;line-height:17px;position:relative;top:calc(-1.4px*var(--rh));
+    translate:0 calc(8.5px + .3485em - round(.875em,1px) - round(down,(17px - round(.875em,1px) - round(.175em,1px))/2,1px))}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht:is(.h,.r){padding:0!important;text-box:normal}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.h{line-height:17px;translate:0 calc(-1px/3)}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.r{translate:0 .38px}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.r::after{line-height:17px;text-box:normal}}
 /* 2026-11-18 COMPARE PLAYERS: LOGOS, IR / TAXI BANDS (retro). Compare player rows square in retro, as the Matchups lineup rows (.cr.lu:has(.sln) .cn>.pq, and
    Classic's .cr.lu radius 0): the position / rank tile is clipped by its row's 9px corners (readability.css .cr), so the row goes square
    (Players rows, IR / Taxi band rows, Positions › Best player rows); the tile itself is already radius 0 in retro (its own radius rule was dead, removed 2026-11-18) */

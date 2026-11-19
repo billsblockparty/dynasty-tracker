@@ -491,6 +491,38 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   WebKitGTK at the 473px layout paints the gradient, highlight, lip, wells, tile foot, tiles and menu as Chromium (sampled colours
   within 3/255 on the same structures).
 
+## Decisions (2026-11-18, game line centres)
+
+- 2026-11-18 · The lineup game line ("vs [logo] · TNF"; Matchups and Playoffs lineups, schedule grid excluded) has one centre: word
+  ink, logo box and kickoff ink (capitals / digits) within 0.34px of each other on every row (brief GL-1, mock `cab7212` approved by
+  Nicklaus 22:35 ET as built, the 360P shrunk-lineup case accepted) · before, the word sat on PART 10's padding formula and the kickoff on
+  the line's baseline, which the engines rounded apart: 1px jumps from row to row (word - kickoff -1.55 to -0.08px at 402P). Mechanism
+  under Game Day, "vs / at" ("Down (GL-1 …)"); block "GL-1" in theme.css. No size, x position or gap changed.
+- Measured on the built copy (ink from screenshots, coverage-weighted, shadow excluded; logo = the painted box; Chromium device scale 4;
+  16 states a width: Weeks 11 / 10 / 12 x Actual / Optimal x Position / Slate with Bench / IR / Taxi, Playoffs bracket default, Final,
+  Final Slate + Optimal, Builder; 581 lines, 441 with a kickoff). min / median / max in px, before (main `c76139a`) -> after:
+
+  | width | word - logo | kickoff - logo | word - kickoff | row to row (word - kickoff, one lineup) | lines outside 0.34 |
+  |---|---|---|---|---|---|
+  | 402P | -1.60 / -0.44 / -0.18 -> -0.20 / +0.04 / +0.29 | -0.27 / -0.04 / +1.01 -> -0.16 / -0.03 / +0.14 | -1.55 / -1.25 / -0.08 -> -0.10 / -0.08 / +0.22 | 1.48 -> 0.32 | 481 -> 0 |
+  | 440P | -1.59 / -0.43 / -0.19 -> -0.19 / +0.04 / +0.29 | -0.28 / -0.04 / +1.02 -> -0.17 / -0.04 / +0.14 | -1.56 / -1.25 / -0.07 -> -0.10 / +0.19 / +0.22 | 1.47 -> 0.33 | 488 -> 0 |
+  | 360P | -1.59 / -0.43 / -0.19 -> -0.23 / +0.03 / +0.29 | -0.28 / +0.12 / +1.20 -> -0.19 / -0.04 / +0.19 | -1.66 / -1.26 / -0.07 -> -0.22 / +0.10 / +0.42 | 1.56 -> 0.64 | 496 -> 13 |
+  | 1440 | -1.53 / -0.53 / -0.42 -> +0.08 / +0.08 / +0.23 | -0.06 / -0.04 / +0.96 -> -0.06 / -0.04 / -0.04 | -1.49 / -1.36 / -0.36 -> +0.11 / +0.26 / +0.29 | 1.13 -> 0.17 | 581 -> 0 |
+
+  Dot - kickoff centre after: -0.03 to +0.10px (Chromium). 360P's 13 lines are the known case: Week 12, the lineups luFit sets to an
+  11px game line, all "vs", word - kickoff +0.39 to +0.42px (each pair with the logo within 0.34).
+  WebKitGTK (473px layout, 3x; 12 of the 16
+  states, 420 lines): word - kickoff +0.19 to +0.21 ("vs") and -0.07 to -0.05 ("at") on every row, row to row 0.28, dot - kickoff
+  -0.20 to -0.14; word / kickoff - logo outside 0.34 on 11 lines, none from the page: Nacua and Achane (Week 12, 6 lines) sit at a
+  rare device phase (row y x 3 fraction .453) where the painted logo rounds one device pixel (0.33px) from the text, the known case of
+  the mock; Sadiq, Tate (Week 10) and Boswell (Week 12 Optimal Slate) read a partly repainted logo picture (11.2 to 16.2px tall of 21),
+  their word against the logo's layout box is +0.30 as on every other row.
+- Checks on the built copy against main: boxes (Matchups 14 states, Playoffs 10, 360P / 402P / 440P / 1440): only the
+  word, dot and kickoff boxes change, y only (word 0.29 to 0.44px by its translate; dot and kickoff boxes 13 -> 17px, 12 -> 17px at the
+  11px size, tops up to 2.53px), x and width 0.000; rows, names, logos, cells and the schedule grid 0.000. Ink x 0.03px at most (the 12
+  Nov gaps unchanged). Schedule grid computed styles identical to main (0 of 4,833 elements and pseudos). Frame gaps, clip / wrap /
+  ellipsis / sideways scroll, text under 11px, dark-ink and tilechk: identical to main / 0 (details in the GL-2 report).
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -820,8 +852,14 @@ lineups, bracket-game lineups, the builder, the schedule grid: the only places t
 The away word: Classic's text node "@" is `font-size:0` and `::after{content:"at"}` draws the word at `--gf` (no script; title and
 aria-label are Classic's, "Home" / "Road"). No slot: the box is the word's own text, 15.74px for both (two advances). Lineups: margins
 `0 4.302px 0 .205px` (vs) and `0 4.354px 0 .153px` (at) put the ink .7px from the name's box and the logo on one x (5.00px after "at",
-5.09px after "vs", whose ink is .09px narrower); the dot's margins `calc(4px - .1934em)` and `calc(5px - .175em)`. Down: PART 5's padding
-formula with `--gk` (.127 vs, .063 at) and `translate:0 .1px`. Schedule: `justify-self:start`, margin = minus the first glyph's bearing, the
+5.09px after "vs", whose ink is .09px narrower); the dot's margins `calc(4px - .1934em)` and `calc(5px - .175em)`. Down (GL-1, 2026-11-18): the
+lineup game line has one centre: the word's ink centre, the logo box's centre and the kickoff's ink centre (capitals and digits) are
+one point, tolerance 0.34px (schedule grid excluded). Word, dot and kickoff are 17px inline-blocks and the logo 21px, all
+`vertical-align:middle` with Classic's `top:-1.4px x --rh`, so their tops differ by whole CSS px and the engines snap them together;
+inside each box the text has an integer 17px line box, and a translate applied after snapping places the ink ("vs" up 1/3px, "at"
+down .38px, kickoff and dot by a formula on luFit's `--lgf`, 11 to 13px). Known case: the lineups luFit shrinks to an 11px game line at
+360P (Week 12 on 2026-11-18 data) read word - kickoff up to 0.42px (rounding phase at 3.4 device px per CSS px). Block "GL-1" in
+theme.css (inside `@supports (text-box…)`; replaces PART 10's `--gk` padding and translate for these lines). Schedule: `justify-self:start`, margin = minus the first glyph's bearing, the
 logo's negative margin `round(.9704 x size + 5px) - chip column - column gap (--pg)`.
 Measured (pixels, glyph fill; min / mean / max). Chromium 402P: word ink minus name ink -0.35 / -0.16 / 0.08 (vs), -0.32 / -0.01 / 0.37
 (at) (before 1.40 / 5.18 mean); word ink to logo box 5.15 / 5.12 mean (7.35 / 11.04); with the shadow 4.43 / 4.09; logo box to dot
