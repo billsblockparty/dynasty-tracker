@@ -214,6 +214,8 @@ def main():
             f.write(html)
         with open(os.path.join(tmp, 'data.json'), 'w', encoding='utf-8') as f:  # same data as the page, for in-place updates
             f.write(data)
+        if os.path.isfile(os.path.join(HERE, 'gl3.html')):  # brief GL-3 phase 1: unlinked candidates page, removed in phase 2
+            shutil.copyfile(os.path.join(HERE, 'gl3.html'), os.path.join(tmp, 'gl3.html'))
         shutil.rmtree(OUT, ignore_errors=True)
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         shutil.move(tmp, OUT)
