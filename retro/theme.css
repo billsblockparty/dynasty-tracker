@@ -18,17 +18,11 @@ html.retro:root{
   --peri-lt:#b9c4fb;     /* --peri 60% + white: dim text on the blue rows (4.80:1 on --blue; --peri itself is 3.21:1) */
   --loss-lt:#ffb1b1;     /* template --loss 70% + white: 4.73:1 on --blue (--loss itself is 3.72:1) */
   --badge:linear-gradient(to bottom,#4d5ff5,#2040fa);  /* steps 5 and 7 of --card: white text >= 4.92:1 at every point */
-  /* plates and wells (2026-11-18, brief PL-1; RETRO.md rule 13): raised = plate + highlight + lip, sunken = well + top shade */
-  --plate:linear-gradient(180deg,var(--blue-2) 0%,var(--blue-3) 100%);   /* fill of a raised element */
-  --plate-hi:rgb(139 157 248 / .55);   /* --peri at 55%: 1px highlight under a plate's top frame */
-  --lip:0 3px 0 0 var(--black);        /* hard lip under a plate */
-  --well:rgba(0,0,0,.28);              /* fill of a sunken element */
-  --well-sh:rgba(0,0,0,.45);           /* 2px top shade inside a well */
-  --tile-foot:rgba(0,0,0,.22);         /* 3px darker foot of a position tile */
-  --slat-sh:rgba(0,0,0,.30);           /* 2px foot shade between slats (lineup rows of one block; 2026-11-19, brief RL-7) */
-  --well-up:rgba(125,255,160,.16);     /* result tints over --well: --win 16% (#7dffa0) */
-  --well-dn:rgba(255,143,143,.14);     /* loss tint: the loop's --loss #ff8f8f at 14% (retro --loss is --loss-lt #ffb1b1, so not a color-mix of it) */
-  --well-lv:rgba(255,255,111,.16);     /* live tint: --yellow 16% */
+  /* result tints (2026-11-19, brief FS-1: renamed from --well-up / --well-dn / --well-lv, same values; the wells are gone): laid over
+     plain --blue-2 in the lineup result cells and used by PART 5's score cells */
+  --res-up:rgba(125,255,160,.16);      /* final win: --win 16% (#7dffa0) */
+  --res-dn:rgba(255,143,143,.14);      /* final loss: the loop's --loss #ff8f8f at 14% (retro --loss is --loss-lt #ffb1b1, so not a color-mix of it) */
+  --res-lv:rgba(255,255,111,.16);      /* live: --yellow 16% */
   /*__GRAIN__*/
 
   /* Classic's tokens */
@@ -292,7 +286,7 @@ html.retro .mpk label.g4{background:var(--blue)!important;border-radius:4px}
 html.retro input[id$="-0"]:checked~.mpk label[for$="-0"],html.retro input[id$="-1"]:checked~.mpk label[for$="-1"],
 html.retro input[id$="-2"]:checked~.mpk label[for$="-2"],html.retro input[id$="-3"]:checked~.mpk label[for$="-3"],
 html.retro input[id$="-4"]:checked~.mpk label[for$="-4"],html.retro input[id$="-5"]:checked~.mpk label[for$="-5"]{
-  box-shadow:inset 0 0 0 1px var(--white),var(--sh-hard)}   /* 1px, as painted (was 2px: Classic's #id:checked ring rule wins; the plate rules at the end of the file draw Matchups' ring) */
+  box-shadow:inset 0 0 0 1px var(--white),var(--sh-hard)}   /* 1px, as painted (was 2px: Classic's #id:checked ring rule wins and paints 1px) */
 html.retro .g4 .g4vs{background:var(--blue-3);box-shadow:none;border-radius:2px;color:var(--peri-lt)}
 html.retro .g4 .gn{text-shadow:1px 1px 0 var(--black)}
 html.retro .g4 .g4p.l,html.retro .pbwp.l{color:var(--loss)}
@@ -349,11 +343,11 @@ html.retro .cr.lu .cv:not(.act){color:var(--peri-lt)}
 html.retro .cr.lu.wa .cv.a:not(.act),html.retro .cr.lu.wb .cv.b:not(.act){color:var(--yellow)}
 html.retro .cv .fs.up .fdf{color:var(--win)} html.retro .cv .fs.dn .fdf{color:var(--loss)}
 html.retro .cr.lu .cv .fs small{opacity:1!important;color:var(--peri-lt)}
-html.retro .cr.lu .cv .fs.up{background:rgba(125,255,160,.16);box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win)!important}
-html.retro .cr.lu .cv .fs.dn{background:rgba(255,143,143,.14);box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss)!important}
+html.retro .cr.lu .cv .fs.up{background:var(--res-up);box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win)!important}
+html.retro .cr.lu .cv .fs.dn{background:var(--res-dn);box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss)!important}
 html.retro .cr.lu:has(.sln) .cv .fs.up{box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win),inset 0 -1px 0 var(--win)!important;border-radius:0!important}
 html.retro .cr.lu:has(.sln) .cv .fs.dn{box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss),inset 0 -1px 0 var(--loss)!important;border-radius:0!important}
-html.retro .cr.lu .cv .fs.lv{background:rgba(255,255,111,.16);box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow)}
+html.retro .cr.lu .cv .fs.lv{background:var(--res-lv);box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow)}
 html.retro .cr.lu:has(.sln) .cv .fs.lv{box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow),inset 0 -1px 0 var(--yellow)!important;border-radius:0!important}
 html.retro .cr.lu .cv .fs.lv small{color:var(--yellow)}
 html.retro .cr.lu:has(.sln) .cn>.pq{border-radius:0!important}
@@ -365,6 +359,16 @@ html.retro .dx-xp>u,html.retro .dx-fg>u{color:var(--pos-k)!important;background:
 html.retro .dx-def>u,html.retro .dx-allow>u{color:var(--pos-def)!important;background:rgba(0,0,0,.45)}
 html.retro .dx-pts>u,html.retro .dx-fum>u{background:rgba(0,0,0,.45)}
 html.retro .dxl>u{border-radius:2px;text-shadow:none}
+/* Detailed stat label tiles (2026-11-19, brief FS-1 part E): the label ink-centred in its 34 x 16px tile from Martian Mono's glyph geometry.
+   Capitals (and digits) span 0 to .80em of the face = .70em at size-adjust .875 (7px at the tile's 10px; S / C / O / G overshoot .019em
+   both ways, so their centre is the same), and the font's sCapHeight is that same 800 units, so a cap-trimmed line (text-box: trim-both
+   cap alphabetic) holds exactly the capitals' band: (16px - .7em) / 2 = 4.5px above and below. Across: text-align centre + rule 11's
+   --ix (theme.js item 4). display:block: the tile is a grid item of .dxl, blockified as Classic's inline-flex was, same 34 x 16px box
+   (Classic's flex centring put the ink 1.2 to 1.7px high: top 2.61-3.72px, bottom 5.10-6.16px at 402P). */
+@supports (text-box:trim-both cap alphabetic){
+  html.retro .dxl>u{display:block!important;text-align:center;line-height:1;text-box:trim-both cap alphabetic;padding:calc((16px - .7em)/2) 0!important}}
+/* the tile carries the theme's 1px hard shadow (Nicklaus 2026-11-19 12:54 ET, brief FS-1b) */
+html.retro .dxl>u{box-shadow:var(--sh-1)}
 
 /* --- Playoffs --- */
 html.retro .pox{background:var(--blue-2);box-shadow:0 0 0 12px var(--blue-2),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
@@ -1124,16 +1128,25 @@ html.retro .cr.lu .psg.cnm .gp .gha.ht.r{font-size:0!important;margin-left:calc(
    padding, no trim). The kickoff (and the dot with it) follows Classic's luFit size (--lgf, 11 to 13px): its translate puts the capitals'
    centre (.3485em above the baseline) on the box's centre, from the engines' own line metrics (ascent .875em and descent .175em, each
    rounded to a whole px; the half-leading rounded down), so every size from 11 to 13px lands within one device pixel. The rest is per
-   word, a translate (after snapping, so it cannot split the line): "vs" up 1/3px, "at" down .38px
-   (measured: whole-box placement leaves the "vs" ink .46-.49px low and the "at" ink .43-.45px high; 1/3px is a whole device pixel at 3x,
-   so WebKit renders it the same on every row). Replaces PART 10's --gk padding and translate for these lines. --- */
+   word: since 2026-11-19 (brief GL-3, candidate D) placed from the font's glyph geometry, see the comment on its rules (GL-1's per-word
+   translate, "vs" up 1/3px and "at" down .38px from the engine's line metrics, centred in Chromium and WebKitGTK but not on the iPhone).
+   Replaces PART 10's --gk padding and translate for these lines. --- */
 @supports (text-box:trim-both cap alphabetic){
   html.retro .cr.lu .cnm:not(.psg) .gp :is(.gsep,.gwhen){display:inline-block;vertical-align:middle;height:17px;line-height:17px;position:relative;top:calc(-1.4px*var(--rh));
     translate:0 calc(8.5px + .3485em - round(.875em,1px) - round(down,(17px - round(.875em,1px) - round(.175em,1px))/2,1px))}
-  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht:is(.h,.r){padding:0!important;text-box:normal}
-  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.h{line-height:17px;translate:0 calc(-1px/3)}
-  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.r{translate:0 .38px}
-  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.r::after{line-height:17px;text-box:normal}}
+  /* the word (2026-11-19, brief GL-3, candidate D; replaces GL-1's per-word box translate): placed from Martian Mono's glyph geometry
+     (wght 700, wdth 75, size-adjust .875, --gf 15px), never the engine's ascent / descent. The box keeps its width through an invisible
+     ::before sizer (the word's two advances); the visible word is an absolute ::after whose block is trimmed at its end to the alphabetic
+     baseline (text-box: trim-end text alphabetic) and whose bottom edge sits 4px above the 17px box's bottom (baseline 13px below the box
+     top), then translated so the ink centre lands 8.5px below the box top: "vs" x-height band (centre .2690em) -.465px, "at" on its "a"
+     (centre .271175em) -.432px. */
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht:is(.h,.r){padding:0!important;text-box:normal;font-size:0!important;line-height:0;translate:none;position:relative}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht:is(.h,.r)::before{display:block;visibility:hidden;font-size:var(--gf);line-height:1;letter-spacing:0;white-space:nowrap;height:0;overflow:hidden}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.h::before{content:"vs"}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.r::before{content:"at"}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht:is(.h,.r)::after{position:absolute;left:0;bottom:4px;display:block;font-size:var(--gf);line-height:1;letter-spacing:0;white-space:nowrap;text-box:trim-end text alphabetic}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.h::after{content:"vs";translate:0 -.465px}
+  html.retro .cr.lu .cnm:not(.psg) .gp .gha.ht.r::after{translate:0 -.432px}}
 /* 2026-11-18 COMPARE PLAYERS: LOGOS, IR / TAXI BANDS (retro). Compare player rows square in retro, as the Matchups lineup rows (.cr.lu:has(.sln) .cn>.pq, and
    Classic's .cr.lu radius 0): the position / rank tile is clipped by its row's 9px corners (readability.css .cr), so the row goes square
    (Players rows, IR / Taxi band rows, Positions › Best player rows); the tile itself is already radius 0 in retro (its own radius rule was dead, removed 2026-11-18) */
@@ -1143,57 +1156,67 @@ html.retro .pane-cm .lbh.cxb{margin-top:12px}  /* Compare's gap above the band =
    name cap centre was +1.00px (Classic fix -.47px applied; retro Matchups lineup +0.66px), now +0.41px; GP-line logo +0.75px -> 0.00px */
 html.retro .pane-cm .cn .cnm b>.nfl.tm{top:-1.06px}
 html.retro .pane-cm .cnm small>.nfl.tm.opp{top:-.75px}
-/* Lineup rows = a slat board of plates on the panel (2026-11-18: briefs RL-4 + ship; brief PL-1, plates and wells; 2026-11-19: brief
-   RL-7, slat board; RETRO.md rules 1 and 13). Matchups + Playoffs lineups only. A block = a run of adjacent lineup rows (starters, each
-   Bench / IR / Taxi group, each slate). Rows are plates (--plate gradient, --blue-2 to --blue-3) and the rows of a block touch (0 gap).
-   The 1px black frame is drawn by ::before (Classic's .lgs line pseudo, so the slot-group line goes; z-index 2, over tiles and wells)
-   inside the row's free 1px ring: no box inside a row moves. One frame per block: sides on every row, top on the first, bottom on the
-   last. Every row has the 1px --plate-hi highlight at its top (under the frame on the first row); every row but the last has a 2px
-   --slat-sh shade at its foot, so players are separated by a bevel (2px shade + 1px highlight), never a black line. Only the last row
-   of a block (and a single-row block) carries the 3px black --lip (no sideways offset: rows end 1.5px from the panel frame). 7px (3px
-   lip + 4px of the --blue-2 panel) separates a block from the strip, slate header, "Points gained" rule or result card next to it.
-   First of a block = no lineup row before it; last = no lineup row after it. Score / projection cells are wells; position tiles carry
-   a --tile-foot. */
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr){background:var(--plate)!important;box-shadow:var(--lip)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(+.cr.lu:not(.psr)){box-shadow:none!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)+.cr.lu:not(.psr){margin-top:0!important}
-html.retro :is(.pane-mu,.pane-po) .lbh:not(.psbh)+.cr.lu:not(.psr),
-html.retro :is(.pane-mu,.pane-po) .mcr.slc+.cr.lu:not(.psr){margin-top:7px!important}
-html.retro :is(.pane-mu,.pane-po) .mcr.ltot2+.lpv{margin-top:7px}
-@media (min-width:1100px){html.retro :is(.pane-mu,.pane-po) .mup>.lus+.mcard{margin-top:7px!important}}
-/* frame + bevel by role: single-row block (no rule below matches) = full frame + highlight; first / middle / last as named */
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)::before{content:"";position:absolute;inset:0;height:auto;background:none;box-shadow:inset 0 0 0 1px var(--black),inset 0 2px 0 0 var(--plate-hi);z-index:2;pointer-events:none}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(+.cr.lu:not(.psr))::before{box-shadow:inset 1px 0 0 0 var(--black),inset -1px 0 0 0 var(--black),inset 0 1px 0 0 var(--black),inset 0 -2px 0 0 var(--slat-sh),inset 0 2px 0 0 var(--plate-hi)}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)+.cr.lu:not(.psr):has(+.cr.lu:not(.psr))::before{box-shadow:inset 1px 0 0 0 var(--black),inset -1px 0 0 0 var(--black),inset 0 -2px 0 0 var(--slat-sh),inset 0 1px 0 0 var(--plate-hi)}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)+.cr.lu:not(.psr):not(:has(+.cr.lu:not(.psr)))::before{box-shadow:inset 1px 0 0 0 var(--black),inset -1px 0 0 0 var(--black),inset 0 -1px 0 0 var(--black),inset 0 1px 0 0 var(--plate-hi)}
-/* wells: score / projection cells (the rows' result side lines kept; up / dn / lv tint over the well) */
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv.pjc{background:none!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs{background:var(--well)!important;box-shadow:inset 0 2px 0 0 var(--well-sh)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.up{background:linear-gradient(var(--well-up),var(--well-up)),var(--well)!important;box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win),inset 0 2px 0 0 var(--well-sh)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.dn{background:linear-gradient(var(--well-dn),var(--well-dn)),var(--well)!important;box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss),inset 0 2px 0 0 var(--well-sh)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.lv{background:linear-gradient(var(--well-lv),var(--well-lv)),var(--well)!important;box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow),inset 0 2px 0 0 var(--well-sh)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(.sln) .cv .fs.up{box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win),inset 0 -1px 0 var(--win),inset 0 2px 0 0 var(--well-sh)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(.sln) .cv .fs.dn{box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss),inset 0 -1px 0 var(--loss),inset 0 2px 0 0 var(--well-sh)!important}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(.sln) .cv .fs.lv{box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow),inset 0 -1px 0 var(--yellow),inset 0 2px 0 0 var(--well-sh)!important}
-/* position tiles: the 1px black side line toward the name, plus a 3px --tile-foot */
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cn.a>.pq{box-shadow:inset -1px 0 0 var(--black),inset 0 -3px 0 0 var(--tile-foot)}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cn.b>.pq{box-shadow:inset 1px 0 0 var(--black),inset 0 -3px 0 0 var(--tile-foot)}
-/* Matchups only (Playoffs' own tiles and Points band keep PART 5's rules): matchup tiles = plates with the highlight under their 1px
-   black border and the lip; the selected tile's 1px white inner ring replaces the highlight (:not(#z): Classic's #id:checked ring rule
-   would win otherwise); VS chip and win-bar track = wells; Points band = a plate, --peri ring kept, lip for --sh-hard. */
-html.retro .pane-mu .mpk label.g4{background:var(--plate)!important;box-shadow:inset 0 1px 0 0 var(--plate-hi),var(--lip)}
+/* Lineup rows = flat rows by slot group (2026-11-19, brief FS-1; RETRO.md rule 1). Matchups + Playoffs lineups only; replaces the
+   slat board (RL-7) and the plate / well language (PL-1) of the rows, the Matchups tiles, VS chip, win bar, Points band and the week
+   menu tiers (those go back to PART 5's rules; .wkf / .wkn / .wkp stay in the markup, unstyled). Rows are the Standings' flat recipe:
+   one shade per slot group starting dark at QB (--blue-2 / --blue, by Classic's .lgs, which marks the first row of each new group),
+   --grain at 96px; one ::before per row draws a 1px --row-divider at its top (--rt) and / or foot (--rb): where the shade changes and
+   where a block edge meets the panel. Bench / IR / Taxi = --blue-2, a divider between players and at the foot (the strip's 2px black
+   foot marks the top). Slate order = one shade per slate, alternating. Projection cells: no fill. Result cells: --res-* tint over plain
+   --blue-2, closed by a 1px ring in --win / --loss / --yellow, radius 0. Centre line 2px --blue-3 at calc(50% - 1px). Level-2 grain
+   on the Matchups pane's dark flat surfaces (never on dark-ink tiles, the VS chip, the win bar, the selected tile or the menu: rule 8). */
+/* rows: flat, one shade per slot group, starting dark */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr){background-color:var(--blue-2)!important;background-image:var(--grain)!important;background-size:96px 96px!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs,.lgs~.cr.lu){background-color:var(--blue)!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs~.lgs,.lgs~.lgs~.cr.lu){background-color:var(--blue-2)!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs~.lgs~.lgs,.lgs~.lgs~.lgs~.cr.lu){background-color:var(--blue)!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs~.lgs~.lgs~.lgs,.lgs~.lgs~.lgs~.lgs~.cr.lu){background-color:var(--blue-2)!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs~.lgs~.lgs~.lgs~.lgs,.lgs~.lgs~.lgs~.lgs~.lgs~.cr.lu){background-color:var(--blue)!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs~.lgs~.lgs~.lgs~.lgs~.lgs,.lgs~.lgs~.lgs~.lgs~.lgs~.lgs~.cr.lu){background-color:var(--blue-2)!important}
+html.retro :is(.pane-mu,.pane-po) .lpv>:is(.lgs~.lgs~.lgs~.lgs~.lgs~.lgs~.lgs,.lgs~.lgs~.lgs~.lgs~.lgs~.lgs~.lgs~.cr.lu){background-color:var(--blue)!important}
+html.retro :is(.pane-mu,.pane-po) .lsv>.slx:nth-child(odd)>.cr.lu:not(.psr){background-color:var(--blue)!important}
+/* lines: one ::before per row, 1px --row-divider at the top (--rt) and / or foot (--rb) */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)::before{content:"";position:absolute;inset:0;height:auto;background:none;z-index:2;pointer-events:none;box-shadow:var(--rt,0 0 0 0 transparent),var(--rb,0 0 0 0 transparent)}
+html.retro :is(.pane-mu,.pane-po) .cr.lu.lgs:not(.psr),
+html.retro :is(.pane-mu,.pane-po) :not(.lpv,.slx)>.cr.lu:not(.psr)+.cr.lu:not(.psr),
+html.retro :is(.pane-mu,.pane-po) .lpv>.cr.lu:first-child,
+html.retro :is(.pane-mu,.pane-po) .lsv>.slx:nth-child(even)>:not(.cr)+.cr.lu{--rt:inset 0 1px 0 0 var(--row-divider)}
+html.retro :is(.pane-mu,.pane-po) .lpv>.cr.lu:last-child,
+html.retro :is(.pane-mu,.pane-po) .lsv>.slx:nth-child(even)>.cr.lu:last-child,
+html.retro :is(.pane-mu,.pane-po) :not(.lpv,.slx)>.cr.lu:not(.psr):not(:has(+.cr.lu:not(.psr))){--rb:inset 0 -1px 0 0 var(--row-divider)}
+/* texture level 2: grain on the Matchups pane's dark flat surfaces; never on the selected tile */
+html.retro .pane-mu section.mux,
+html.retro .pane-mu .mpk label.g4,
+html.retro .pane-mu .mcr.ltot.lsb,
+html.retro .pane-mu .msh.lbh,
+html.retro .pane-mu :is(.mcr.slc,.slg),
+html.retro .pane-mu .mcr.ltot2{background-image:var(--grain)!important;background-size:96px 96px!important;background-repeat:repeat!important}
 html.retro .pane-mu input[id$="-0"]:checked~.mpk label[for$="-0"]:not(#z),html.retro .pane-mu input[id$="-1"]:checked~.mpk label[for$="-1"]:not(#z),
 html.retro .pane-mu input[id$="-2"]:checked~.mpk label[for$="-2"]:not(#z),html.retro .pane-mu input[id$="-3"]:checked~.mpk label[for$="-3"]:not(#z),
-html.retro .pane-mu input[id$="-4"]:checked~.mpk label[for$="-4"]:not(#z),html.retro .pane-mu input[id$="-5"]:checked~.mpk label[for$="-5"]:not(#z){
-  box-shadow:inset 0 0 0 1px var(--white),var(--lip)}
-html.retro .pane-mu .g4 .g4vs{background:var(--well);box-shadow:inset 0 2px 0 0 var(--well-sh)}
-html.retro .pane-mu .g4b:not(#z){background:var(--well)!important;box-shadow:inset 0 2px 0 0 var(--well-sh)}
-html.retro .pane-mu .mcr.ltot.lsb{background:var(--plate);box-shadow:inset 0 0 0 1px var(--peri),var(--lip)!important}
-/* week menu, three tiers by mu_build's label class: future .wkf (--blue, yellow label, white tag), now .wkn (the menu's default row),
-   past .wkp (--blue-3, --peri-lt label and tag); 4px between tiers. The selected row (Classic's #mw-N:checked rule, an id, = the badge
-   through --seg-on) wins in every tier. */
-html.retro .pane-mu .wdd .ddm label.wkf{background:var(--blue);color:var(--yellow)}
-html.retro .pane-mu .wdd .ddm label.wkf i{color:var(--white)}
-html.retro .pane-mu .wdd .ddm label.wkp{background:var(--blue-3);color:var(--peri-lt)}
-html.retro .pane-mu .wdd .ddm label.wkp i{color:inherit}   /* = the label's --peri-lt; inherits the selected row's white (a fixed --peri-lt tag would sit on the badge at 3.4:1) */
-html.retro .pane-mu .wdd .ddm :is(.wkf+.wkn,.wkn+.wkp,.wkf+.wkp){margin-top:4px}
+html.retro .pane-mu input[id$="-4"]:checked~.mpk label[for$="-4"]:not(#z),html.retro .pane-mu input[id$="-5"]:checked~.mpk label[for$="-5"]:not(#z){background-image:none!important}
+/* no centre shade; centre line 2px */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv:is(.pjc,.act){background:none!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.pj{background:none!important;box-shadow:none!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)::after{left:calc(50% - 1px)!important;width:2px!important;background:var(--blue-3)!important}
+/* result cells: plain --blue-2 base under the tint, closed by a 1px ring in the result colour */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.up{background:linear-gradient(var(--res-up),var(--res-up)),var(--blue-2)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.dn{background:linear-gradient(var(--res-dn),var(--res-dn)),var(--blue-2)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.up{box-shadow:inset 0 0 0 1px var(--win)!important;border-radius:0!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.dn{box-shadow:inset 0 0 0 1px var(--loss)!important;border-radius:0!important}
+/* LIVE cells: no tint, no ring (what .fs.pj carries); white figure + the yellow word LIVE. Boxed = final. (Nicklaus 13:06 ET, brief FS-1b mock lv-w) */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.lv{background:none!important;box-shadow:none!important}
+/* texture level 2 on Playoffs too (Nicklaus 2026-11-19 12:54 ET, brief FS-1b): the same list as Matchups on .pane-po's panel, strips
+   (not the schedule grid's .psbh), slate headers and Points bands; never on dark-ink tiles / chips or menus (rule 8). The panel's 12px
+   spread ring (box-shadow) beside the rows cannot take a background, so it stays plain. */
+html.retro .pane-po section.pox,
+html.retro .pane-po .mcr.ltot.lsb,
+html.retro .pane-po .msh.lbh:not(.psbh),
+html.retro .pane-po :is(.mcr.slc,.slg),
+html.retro .pane-po .mcr.ltot2{background-image:var(--grain)!important;background-size:96px 96px!important;background-repeat:repeat!important}
+/* block frame (Nicklaus 13:06 ET, brief FS-1b mock pm-a): each block (run of adjacent lineup rows: starters, each Bench / IR / Taxi group,
+   each slate) gets a 1px --black frame on its outer edge, drawn inset on the rows' ::before (both sides of every row, top of the first,
+   foot of the last; the --row-divider lines there are replaced), and a 2px downward black shadow under the last row of every block
+   (where a strip follows flush it covers the strip's top 2px). No sideways offset: the rows end 1.5px from the panel frame. */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)::before{box-shadow:var(--pt,var(--rt,0 0 0 0 transparent)),var(--pb,var(--rb,0 0 0 0 transparent)),inset 1px 0 0 0 var(--black),inset -1px 0 0 0 var(--black)}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):not(.cr.lu:not(.psr)+*){--pt:inset 0 1px 0 0 var(--black)}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):not(:has(+.cr.lu:not(.psr))){--pb:inset 0 -1px 0 0 var(--black);box-shadow:0 2px 0 0 var(--black)!important}

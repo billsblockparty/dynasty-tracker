@@ -602,6 +602,88 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   dark-ink 0, low contrast 0 (Matchups 20 states, Playoffs 15). WebKitGTK at 1440 (scale 2): roles' `box-shadow` as Chromium; shade
   4 device px (2 CSS px) + highlight 2 (1), no black; block top 2 black + 2 highlight; bottom 8 black (4 CSS px); sides 1px black.
 
+## Decisions (2026-11-19, flat rows)
+
+- 2026-11-19 · Matchups and Playoffs lineup rows become flat rows by slot group (brief FS-1 = RL-8e version 3; Nicklaus 11:28 ET "go with
+  rec") · the slat board, plates, wells, lips and bevels leave the lineups; rule 1 now describes the recipe; rule 13 is not in use. CSS:
+  block "Lineup rows = flat rows by slot group" at the end of theme.css (the approved mock's rules, switch classes removed, same order;
+  replaces the slat block and the Matchups-only PL-1 block). Old -> new: row fill `--plate` -> `--blue-2` / `--blue` by slot group +
+  `--grain` 96px; frame / lip / bevel -> 1px `--row-divider` (`::before`, `--rt` top / `--rb` foot); 7px after a block -> Classic's
+  spacing; projection cells well -> nothing; result cells tint over `--well` + side lines -> `--res-*` over plain `--blue-2` + `inset 0 0
+  0 1px` ring in `--win` / `--loss` / `--yellow`, radius 0; centre line 1px `--line` -> 2px `--blue-3` at `calc(50% - 1px)`; position
+  tiles, matchup tiles, selected tile, VS chip, win bar, Points band -> PART 5's rules (the PL-1 rules removed); week menu tiers -> none
+  (`.wkf` / `.wkn` / `.wkp` stay in the markup, unstyled). Texture level 2 on the Matchups pane's dark flat surfaces (rule 1). Tokens:
+  `--plate`, `--plate-hi`, `--lip`, `--well`, `--well-sh`, `--tile-foot`, `--slat-sh` removed (no use left anywhere, Playoffs included);
+  `--well-up` / `--well-dn` / `--well-lv` renamed `--res-up` / `--res-dn` / `--res-lv`, same values; PART 5's score-cell tints were the
+  same literals and now read the tokens (computed values identical). No new colour, no new token.
+- Measured on the built copy (Chromium unless named; data of 2026-11-19, Week 11 current):
+  - Ship = the approved mock rebuilt as a reference (theme of main with the two blocks switched off by `html.retro:not(.rl-f)` /
+    `:not(.rl-ft)` + the mock's rules, classes `rl-f rl-ft rl-g2 rl-fx rl-fxt rl-fxr` on `<html>`): 0 pixels over 32 full-page
+    captures (402P / 1440: current week Position / Optimal / Slate / Detailed, Week 9 Lean / Detailed / Optimal / Slate, Week 12, week
+    menu open with Weeks 9 / 11 / 12 selected, Playoffs bracket default, Final, Final Slate, Matchup builder); noise floor (reference
+    captured twice) 0. Removing the switch classes needed no specificity fix.
+  - Boxes against main (Matchups 12 states, Playoffs 10, 402P / 1440): x and width of every element 0.000; heights change only on
+    containers by the removed 7px gaps (current week -21px = 3 strips; Optimal -28; Slate order -63 / -70 with each slate 7px shorter);
+    week menu 546.31 -> 538.31px (tiers' 2 x 4px gone). Heights at 402P: starters 569.81 -> 569.81px (rows touched already), full
+    current lineup 1,453.44 -> 1,432.44px. Playoffs schedule grid: 0 boxes changed.
+  - Result cells (simulated mixed lineup: LIVE, FINAL up, FINAL dn and PROJ in one lineup, 402P, 3 device px per CSS px): ring 3 device
+    px (1.000 CSS px) left and right on every cell, 2-3 device px top / bottom (fractional row y), no side drops out; cell 61.31px in a
+    63.31px row, 1.00px from each row edge, so the ring never doubles a divider.
+  - Dark-ink and contrast (`darkink.py`, Matchups 21 + Playoffs 15 states, 402P / 1440): 0 FAIL, 0 low. Lowest readings: 4.65:1
+    (Week 9, Colors: Team, a team-coloured position tile: the existing §8 team-colour item, not the rows) and 4.73:1 ("22% win" on
+    a matchup tile, loss colour over the grained `--blue`). tilechk 0 (Classic BBP, YILM, the copy; 360P / 402P / 440P / 874L / 956L /
+    402 / 440 / 360 / 1440).
+- 2026-11-19 · Game line word = GL-3 candidate D (Game Day, "vs / at") · measured on the built copy: pixel-identical to the GL-3 test
+  page's D rules (32 full-page captures, 402P / 1440). x-band centre ("vs": the word; "at": its "a") minus kickoff ink centre, Chromium at
+  device scale 4 (plain 424 / 473 / 518 / 1440 = the 360P / 402P / 440P layouts and desktop): current week 31 lines a width, -0.12 to
+  +0.08, 0 outside 0.34; Playoffs bracket default (473 / 1440) and Final (424), 119 lines, 0 outside; Week 12, 40 lines a width, 1 outside
+  at 402P / 440P / 1440 and 2 at 360P, every one a line whose kickoff has lowercase ink beyond the capitals the check assumes ("Fri 3
+  PM": the i's dot, +0.34 to +0.36; the 360P 11px line's short form "Thu 4:30p": h and p, -0.71 / -0.72). Word, dot and kickoff x and
+  width 0.000 against main; schedule grid boxes 0.000.
+- 2026-11-19 · Detailed stat label tiles `.dxl>u` ink-centred (brief FS-1 part E) · before: Martian Mono 700 10px, tracking 0, a flex
+  box 34 x 16px with padding 0 0 1px, `rgba(0,0,0,.45)` over the row (`--blue` light / `--blue-2` dark rows), radius 2px, ink 7.00 to
+  7.35px tall; gaps (Chromium 402P, 86 tiles of Week 9 Detailed) top 2.61-3.72, bottom 5.10-6.16, left / right 4.05-12.32 (equal within
+  0.09). After: `display:block`, `text-align:center`, `line-height:1`, `text-box: trim-both cap alphabetic`, padding `calc((16px - .7em) /
+  2) 0` = 4.5px; box 34 x 16px and every box around it 0.000 against main. WebKitGTK (473px layout, 3x): top 4.50-4.66, bottom
+  4.18-4.34, |top - bottom| 0.28-0.33 on every label but FUM (0.48: its U overshoots .166px below, nothing above), |left - right| <= 0.10.
+  Chromium reads |top - bottom| up to 0.94 because it puts text on whole CSS px: the reading follows each tile's y phase (mean +0.13).
+  Contrast: label on its tile 4.93:1 (DEF / ALLOW on the light row's tile) to 15.81:1; tile against the row 1.73:1 (light) / 1.50:1
+  (dark). With the theme's 1px hard shadow `--sh-1` (Nicklaus 12:54 ET, brief FS-1b; outside the tile, so the gaps above are
+  unchanged): the shadow's edge is 5.00px from the value text to its right, 3.00px from the next line below, 6.00px on the mirrored side
+  (no shadow there), at 360P / 402P / 440P / 1440.
+- 2026-11-19 · Playoffs takes texture level 2 (brief FS-1b, Nicklaus 12:54 ET): grain on `.pane-po section.pox`, `.mcr.ltot.lsb`,
+  `.msh.lbh:not(.psbh)`, `.mcr.slc` / `.slg`, `.mcr.ltot2` (Matchups' list; the schedule grid's strip excluded; never dark-ink tiles,
+  chips or menus, rule 8). Measured at 402P (means, text off): strip vs panel ring 1.174 -> 1.268, strip vs dark row 1.080 -> 1.000
+  (the grained strip matches the dark rows; the rows themselves unchanged). The visible panel beside the Playoffs rows is `.pox`'s 12px
+  spread ring (box-shadow), which takes no background: it stays plain.
+- 2026-11-19 · LIVE = the word only, boxed = final (Nicklaus 13:06 ET; FS-1b mock `lv-w`, now unconditional): `.fs.lv` takes
+  `background:none; box-shadow:none`; figure white 700, word `--yellow`; PROJ stays `--peri-lt` 500. Contrast (lightest pixel under the
+  glyph, 402P): LIVE figure 10.52 / word 9.91 on the dark row, 8.16 / 7.69 on the light row (were 6.81 / 6.41 over the tint).
+  `--res-lv` stays: PART 5's score-cell rule (`.cr.lu .cv .fs.lv`) still reads it (overridden in the lineups).
+- 2026-11-19 · Block frame + foot shadow (Nicklaus 13:06 ET; FS-1b mock `pm-a`, now unconditional; `pm-b` --peri frame and `pm-ns`
+  not taken). Perimeter before (Chromium): phones, rows 1.5px inside the panel's 2px black frame with ~1.5px of glow-lit panel between;
+  Points band 10.00px above the first row; at 1440 Matchups the rows are the centre column (>380px from the panel edges); Playoffs rows
+  run 10.5px outside `.pox`'s box into its 12px spread ring, 1.5px from its black frame. Frame 1px (3 device px at 402P); contrast black
+  on `--blue` 2.57:1, on `--blue-2` 2.00:1. Every block is followed by 18.00px before the next strip / slate header (no flush case;
+  the measured FS-1b "covers the next strip" note was wrong), so the 2px shadow ends 16px clear; label ink of the next element >= 27.33px
+  below the shadow (360P / 402P / 1440, Matchups current, Slate order, Playoffs). One flush case: the result card under the Week 9
+  lineup at 1440 (Classic 0 gap), its ink 15.00px below the shadow. Position tiles: ink to the frame >= 4.89px (rule 11).
+- Phase 2a checks on the final build (Chromium unless named; 2026-11-19): boxes vs main at 360P / 402P / 440P / 874L / 956L / 1440
+  (Matchups 12 + Playoffs 10 states): x / width 0.000, element counts equal, heights only on containers (the removed 7px gaps); dark-ink /
+  contrast 0 FAIL 0 low at all six widths (lowest 4.65:1, the Colors: Team tile, §8); clip / ellipsis / wrap / sideways scroll 0; text
+  under 11px equal to main once the "vs" box (now `font-size:0`, its word drawn by `::after`, like "at") gets the "at" exemption (44 = 44
+  at 402P + 1440); frame gaps (`gapf.py`, 360P / 402P / 440P / 1440): 4 per width, all the matchup bar's QB pill (pre-existing), none on
+  FINAL cells or label tiles; separations at 402P (means, Matchups / Playoffs): light row vs panel 1.273 / 1.276, dark row vs panel 1.008 /
+  1.010, frame vs light row 2.35, vs dark row 1.86, vs panel 1.84 / 1.84, strip vs light row 1.60 / 1.61, strip vs dark row 1.27 / 1.27;
+  pinned Points band topmost 162 / 162 points per width (402P / 1440, Matchups and Playoffs, 6 scroll positions), week menu labels 14 / 14
+  topmost and 0 menu pixels changed by the frame / shadow; with the frame and shadow switched off only the band's partly covered edge
+  column changes (3-8 device px at 402P, 0-4 at 1440; a no-op toggle changes 0); Playoffs schedule grid computed styles identical to main
+  (2,253 elements and pseudos, custom properties aside); tilechk 0 (Classic BBP, YILM, the copy); every other tab identical to main at
+  402P / 1440 (Standings 402P: 1 px of 2/255). WebKitGTK vs Chromium: 1440 (2x) frame, divider, centre line, FINAL rings, label shadow
+  identical, row means within 0.4/255, grain std within 0.02; 402P (3x) row means within 0.4, divider and centre line identical, no hairline
+  at same-shade joins (max 0.67/255 WebKitGTK, 1.22 Chromium). Game line, kickoff ink from capitals and digits only (Week 12): Chromium
+  0 of 40 outside 0.34 at 424 / 473 / 518 / 1440; WebKitGTK 402P 0 of 13 measured (+0.18 to +0.21).
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -619,14 +701,8 @@ New for the tracker (each a mix of two palette colours):
 | `--pos-qb` `--pos-rb` `--pos-wr` `--pos-te` `--pos-k` `--pos-def` | `#fbb2c9` `#3ddcc1` `#76cff6` `#fcb674` `#c491ff` `#c98a72` | position palette (Game Day): tile and pill fills with black ink; QB / RB / WR / TE also as label text on the blue rows |
 | `--seg-on` | the badge gradient inset 2px on white, as one `background` value | stands in for Classic's `--chalk` inside segmented controls and menus (Game Day, "Segments") |
 | `--win-2` `--loss-2` | `#61c188` (`--win` 70% + `--blue-3`), `#bc8a94` (`--loss` 70% + `--blue-3`) | second step of the heat scale (pass 4): 4.76 / 3.61:1 on the panel, black ink 9.49 / 7.20:1 |
-| `--plate` | `linear-gradient(180deg,var(--blue-2) 0%,var(--blue-3) 100%)` | fill of a raised element (rule 13) |
-| `--plate-hi` | `rgb(139 157 248 / .55)` (`--peri` at 55%) | 1px highlight under a plate's top frame |
-| `--lip` | `0 3px 0 0 var(--black)` | hard lip under a plate |
-| `--well` | `rgba(0,0,0,.28)` | fill of a sunken element |
-| `--well-sh` | `rgba(0,0,0,.45)` | 2px top shade inside a well |
-| `--tile-foot` | `rgba(0,0,0,.22)` | 3px darker foot of a position tile |
-| `--slat-sh` | `rgba(0,0,0,.30)` | 2px foot shade between slats (lineup rows of one block; rule 13, 2026-11-19) |
-| `--well-up` `--well-dn` `--well-lv` | `rgba(125,255,160,.16)`, `rgba(255,143,143,.14)`, `rgba(255,255,111,.16)` | result tints laid over `--well` (final win / final loss / live score cells). Tokens, not `color-mix()` of `--win` / `--loss` / `--yellow`: the loss tint is the loop's `--loss` `#ff8f8f`, while the tracker's `--loss` is `--loss-lt` `#ffb1b1`, so a mix would not paint the approved pixels |
+| `--res-up` `--res-dn` `--res-lv` | `rgba(125,255,160,.16)`, `rgba(255,143,143,.14)`, `rgba(255,255,111,.16)` | result tints: `--res-up` / `--res-dn` over plain `--blue-2` in the Matchups / Playoffs lineup final cells (rule 1) and all three in PART 5's score cells (`--res-lv` only there since LIVE lost its box in the lineups, 2026-11-19) (were literals there; same computed value). Renamed 2026-11-19 (brief FS-1) from `--well-up` / `--well-dn` / `--well-lv`, same values. Tokens, not `color-mix()` of `--win` / `--loss` / `--yellow`: the loss tint is the loop's `--loss` `#ff8f8f`, while the tracker's `--loss` is `--loss-lt` `#ffb1b1`, so a mix would not paint the approved pixels |
+| ~~`--plate` `--plate-hi` `--lip` `--well` `--well-sh` `--tile-foot` `--slat-sh`~~ | removed 2026-11-19 (brief FS-1) | rule 13 recipe, not in use |
 
 Classic's tokens are re-pointed in `html.retro:root` (38 overrides): `--pg` purple, `--frame` black, `--deck`
 `--blue-2`, `--row-lt` `--blue`, `--row-divider` / `--line` `--blue-3`, `--chalk` white, `--label` yellow,
@@ -638,20 +714,24 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 
 1. **Rows:** lighter row `--blue` > darker row `--blue-2` > divider `--blue-3` > frame black; alternating shades AND
    a divider. Measured with the grain's mean: 1.27:1, 1.17:1, 1.58:1.
-   **Exception (2026-11-18): Matchups / Playoffs lineup rows** (`:is(.pane-mu,.pane-po) .cr.lu:not(.psr)`) are dark framed bands on
-   the panel, not zebra rows. Since 2026-11-18 (brief PL-1) they are **plates** (rule 13), and since 2026-11-19 (brief RL-7) a **slat
-   board**: a block (a run of adjacent lineup rows: the starters, each Bench / IR / Taxi group, each slate) is one plate cut into
-   slats. The rows of a block touch (0 gap between players); fill `--plate` on every row; one 1px black frame per block, drawn by each
-   row's `::before` (Classic's `.lgs` pseudo, so the slot-group line is removed): sides on every row, top on the first, bottom on the
-   last; the 1px `--plate-hi` highlight at the top of every row (under the frame on the first); a 2px `--slat-sh` shade at the foot of
-   every row but the last, so players are separated by a bevel (2px shade + 1px highlight = 3px), never a black line. The 3px black
-   `--lip` (no sideways offset, because the rows end 1.5px from the panel frame) sits only under the last row of a block (and under a
-   single-row block). 7px (3px lip + 4px of `--blue-2` panel) after a block, i.e. under the last row before a strip / slate header /
-   "Points gained" / result card, and under each Bench / IR / Taxi strip, each slate header, the "Points gained" rule (Optimal) and
-   above the result card at >=1100px. No black line between the players of a block (the pinned Points band passing over the rows is
-   exempt). Score / projection cells are wells; position tiles carry a `--tile-foot`. (2026-11-18 PL-1: every row framed with its own
-   lip and a 7px gap after every row; RL ship: flat `--blue-3`, 2px lip, 6px gaps; row vs panel 1.26:1, black frame / lip 1.58:1 on
-   the row, 2.00:1 on the panel.)
+   **Matchups / Playoffs lineup rows (2026-11-19, brief FS-1: flat rows by slot group)** (`:is(.pane-mu,.pane-po) .cr.lu:not(.psr)`)
+   follow this rule's flat recipe, by slot group instead of by row: one shade per slot group starting dark at QB (`--blue-2`, then
+   `--blue`, alternating; Classic's `.lgs` marks the first row of each new group, so BBP QB | RB RB | WR WR | TE | FLEX | K | DEF), every
+   row grained (`--grain` at 96px). One `::before` per row draws a 1px `--row-divider` at its top and / or foot: where the shade changes
+   (`.lgs`), above the first starter, under the last starter and under the last row of a run outside the starters. Bench / IR / Taxi rows:
+   `--blue-2` + grain, a divider between players and at the foot, no top line (the strip's 2px black foot marks it). Slate order: one
+   shade per slate, alternating (odd slates `--blue`), no line inside a slate. No frame, no lip, no bevel, no gap: Classic's spacing.
+   Projection cells: no fill, no side lines (row shade and grain run across). Final cells (`.fs.up` / `.dn`): `--res-up` / `--res-dn`
+   over plain `--blue-2`, closed by a full `inset 0 0 0 1px` ring in `--win` / `--loss`, radius 0, every row. LIVE cells (`.fs.lv`,
+   2026-11-19 FS-1b): no tint, no ring, as a projection cell; white figure + the word LIVE in `--yellow`. Boxed = final, yellow word = in
+   progress, PROJ = neutral. **Block frame** (2026-11-19 FS-1b): each block (starters, each Bench / IR / Taxi group, each slate) has a
+   1px `--black` frame on its outer edge, drawn inset on the rows' `::before` (both sides of every row, top of the first, foot of the
+   last; it replaces the `--row-divider` lines there), and `0 2px 0 0 var(--black)` under the last row of every block (no sideways
+   offset: the rows end 1.5px from the panel frame). Centre line (row `::after`): 2px `--blue-3` at `left: calc(50% - 1px)`. Texture level 2: grain also on the Matchups pane's
+   dark flat surfaces (`section.mux`, unselected `.mpk label.g4`, the Points band `.mcr.ltot.lsb`, strips `.msh.lbh`, slate headers
+   `.mcr.slc` / `.slg`, `.mcr.ltot2`), never on dark-ink tiles / chips, the VS chip, the win bar, the selected tile or the week menu
+   (rule 8). Measured values under "Decisions (2026-11-19, flat rows)". (History: 2026-11-18 RL ship framed `--blue-3` bands, 2px lip,
+   6px gaps; PL-1 plates and wells, 7px gaps; 2026-11-19 RL-7 slat board. All three retired by FS-1.)
 2. **Type treatment by role, and the dark-ink rule.** T2 (black 2px outline under the fill + 2px hard shadow): header
    title, weeks-left figure, team names, records, group buttons, rank-tile digits (18px and up). T1 (1px hard shadow,
    no outline): every other light text. T0 (nothing): dark text on a light tile, and chip digits and letters (rank
@@ -739,7 +819,12 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     Multi-line cells (score cells, slate tiles, position tiles) are centred line by line.
 12. **No synthetic italic (2026-11-11).** Martian Mono has no italic face; where Classic sets Barlow Condensed italic
     (seed chips of the Playoffs card) the theme sets `font-style:normal`.
-13. **Plates and wells (2026-11-18, brief PL-1; retro theme only, Classic and YILM stay flat).** A deliberate exception to Classic's
+13. **Plates and wells: NOT IN USE since 2026-11-19 (brief FS-1); kept as history.** Matchups and Playoffs (rows, matchup tiles, VS
+    chip, win-bar track, Points band, week menu tiers) went back to flat: rows by rule 1, the rest by PART 5's rules. Nothing in the
+    theme uses the recipe below any more: its tokens `--plate`, `--plate-hi`, `--lip`, `--well`, `--well-sh`, `--tile-foot` and
+    `--slat-sh` were removed; the result tints survive as `--res-up` / `--res-dn` / `--res-lv`. (The "--blue-2 plate" panels of other
+    tabs are flat panels drawn with spread shadows, not this recipe.) Text as it stood:
+    **Plates and wells (2026-11-18, brief PL-1; retro theme only, Classic and YILM stay flat).** A deliberate exception to Classic's
     flat rule, inside the retro copy only. Raised elements = `--plate` (vertical `--blue-2` to `--blue-3` gradient) + a 1px
     `--plate-hi` highlight directly under the top frame + `--lip` (3px black, no sideways offset). Sunken elements = `--well` + a 2px
     `--well-sh` top shade (result cells add `--well-up` / `--well-dn` / `--well-lv` over the well and keep their 1px result side
@@ -904,8 +989,18 @@ aria-label are Classic's, "Home" / "Road"). No slot: the box is the word's own t
 lineup game line has one centre: the word's ink centre, the logo box's centre and the kickoff's ink centre (capitals and digits) are
 one point, tolerance 0.34px (schedule grid excluded). Word, dot and kickoff are 17px inline-blocks and the logo 21px, all
 `vertical-align:middle` with Classic's `top:-1.4px x --rh`, so their tops differ by whole CSS px and the engines snap them together;
-inside each box the text has an integer 17px line box, and a translate applied after snapping places the ink ("vs" up 1/3px, "at"
-down .38px, kickoff and dot by a formula on luFit's `--lgf`, 11 to 13px). Known case: the lineups luFit shrinks to an 11px game line at
+inside each box the text has an integer 17px line box, and a translate applied after snapping places the ink (kickoff and dot by a
+formula on luFit's `--lgf`, 11 to 13px). **The word (2026-11-19, brief GL-3, candidate D; replaces GL-1's "vs" up 1/3px / "at" down
+.38px, which were centred in Chromium and WebKitGTK but read off on the iPhone, where the placement depended on line metrics):** placed
+from Martian Mono's glyph geometry (wght 700, wdth 75, size-adjust .875, `--gf` 15px), never the engine's ascent / descent. The 17px box
+keeps its width through an invisible `::before` sizer ("vs" / "at", two advances; box `font-size:0`, `line-height:0`, `translate:none`,
+`position:relative`); the visible word is an absolute `::after` (`left:0; bottom:4px`, `line-height:1`, `text-box: trim-end text
+alphabetic`), so its baseline is 13px below the box top (b = round(8.5 + 15c)), then `translate` puts the x-band centre 8.5px below the
+box top: "vs" (x-height band, c = .2690em) -.465px, "at" centred on its "a" (c = .271175em) -.432px. D is GL-3's candidate B mechanism
+(the one measured in Safari before GL-3d: 0 of 9 lines outside 0.34px) with the "a"-centred value. Nicklaus's iPhone capture (translator's measurement, 13px line, CSS px, min / median / max; 1 device
+px = 0.39): "vs" -0.20 / +0.20 / +0.31, "at" a-centre -0.39 / -0.14 / +0.01 (D and E identical within one device pixel at 13px; D kept).
+Open item: the 11px line's "at" reads about 0.3 to 0.7px high on the iPhone. LIVE lines before GL-3: "vs" +0.98 to +1.39. Checked on the built copy: identical, pixel for pixel, to the GL-3 test page's D rules (32 full-page
+captures, 402P / 1440); figures under "Decisions (2026-11-19, flat rows)". The test page `retro/gl3.html` is deleted. Known case: the lineups luFit shrinks to an 11px game line at
 360P (Week 12 on 2026-11-18 data) read word - kickoff up to 0.42px (rounding phase at 3.4 device px per CSS px). Block "GL-1" in
 theme.css (inside `@supports (text-box…)`; replaces PART 10's `--gk` padding and translate for these lines). Schedule: `justify-self:start`, margin = minus the first glyph's bearing, the
 logo's negative margin `round(.9704 x size + 5px) - chip column - column gap (--pg)`.
