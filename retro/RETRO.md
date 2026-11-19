@@ -452,6 +452,45 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   1.00:1 against a row; separated by the 6px gap, the frame and their own rules / ring); FK / FL chips 1.32:1 against the row (their
   1px ring carries them).
 
+## Decisions (2026-11-18, plates and wells)
+
+- 2026-11-18 · Matchups (rows, tiles, VS chip, win-bar track, Points band, week menu) and Playoffs lineup rows take the plate / well
+  language (brief PL-1, approved mock RL-5 parts A + B; Nicklaus 18:34 ET: "I honestly don't have any critiques of it") · rule 13;
+  tokens `--plate`, `--plate-hi`, `--lip`, `--well`, `--well-sh`, `--tile-foot`, `--well-up`, `--well-dn`, `--well-lv`. CSS: the
+  "Lineup rows = plates on the panel" block at the end of theme.css (the RL ship block, values replaced in place; the mock's switch
+  classes `.rl-p` / `.rl-pb` are gone). Old -> new: row fill `--blue-3` -> `--plate`; lip `0 2px 0 0 black` -> `--lip` (3px); frame
+  `::before` gains `inset 0 2px 0 0 var(--plate-hi)` (1px visible under the 1px frame); every gap 6px -> 7px; `.cv .fs` = wells,
+  `.cv.pjc` background none; position tiles `inset 0 -3px 0 0 var(--tile-foot)` after their 1px side line. Matchups only (`.pane-mu`;
+  PART 5's rules stay for Playoffs' own tiles and Points band): tiles `--blue` -> `--plate` + `inset 0 1px 0 0 var(--plate-hi)` +
+  `--lip`; selected tile 1px white ring + `--lip` (`:not(#z)` kept: Classic's `#mu-N:checked` / `#hwW-N:checked` / `#fwW-N:checked`
+  ring rule would win otherwise); VS chip and win-bar track (`.g4b:not(#z)`, as PART 5) = wells; Points band `--blue-3` -> `--plate`,
+  `--peri` ring kept, `--sh-hard` -> `--lip`. PART 5's selected-card declaration corrected 2px -> 1px (it never painted; nothing
+  changes on screen).
+- **Week menu, three tiers** by a class from `mu_build.py` (`wkf` future / `wkn` now / `wkp` past, the same test as the tag Proj /
+  Now / Final; both repos, unstyled outside this theme): future `--blue` fill, `--yellow` label, `--white` tag; now = the menu's
+  default row (no rule); past `--blue-3` fill, `--peri-lt` label and tag (the tag inherits the label colour, so a selected past week's
+  tag turns white with its label; the mock's fixed `--peri-lt` tag sat on the badge at 3.89:1 to 2.89:1); 4px between tiers
+  (`.wkf + .wkn`, `.wkn + .wkp`, `.wkf + .wkp`; never above the first row). The selected row (Classic's `#mw-N:checked` rule, an id)
+  is the badge in every tier. Menu 538.31 -> 546.31px (WebKitGTK 530 -> 538px).
+- Measured on the built copy (Chromium; ship = mock pixel for pixel in 18 full-page captures at 402P / 1440: current week, Optimal,
+  Slate order, past week, future week, menu open with Weeks 10 / 11 / 12 selected, Playoffs; the only difference is the selected
+  past week's tag, above): every gap 7.000px in layout at 360P / 402P / 440P / 1440 (per width, current week: 15 row, 3 strip;
+  Optimal + 1 "Points gained"; Slate order 6 slate header + 12 row; past week 16 row; future week 18 row; Playoffs 17 row, 3 strip,
+  1 "Points gained", 6 slate header; result card at 1440 on past and future weeks 7.000px; on the current week the card stands beside
+  the lineup, not under it); lip `0 3px 0 0` black on every row; row boxes and every box inside a row 0.000px against main (y only by
+  the gaps; 0 x / width changes over 22 Matchups and Playoffs states at 402P and 1440); Playoffs tiles, band and every element outside
+  the lineup rows: computed styles identical to main (5 states); every other tab pixel-identical to main at 402 and 1440 (Standings
+  1440 differs by 68 pixels between two runs of main as well). Height at 402P: starters 617.81 -> 625.81px (+8), full lineup 1,457.44
+  -> 1,475.44px (+18). Contrast against the lightest pixel under the ink (text on / off difference, dilated 1px): 0 under the limits
+  on any changed element (Matchups + Playoffs, 144 states at 360P / 402P / 440P / 1440); lowest: loss delta on the loss well 6.21:1
+  (360P, Week 9 Detailed), win delta on the win well 7.07:1, Points band figures 6.39:1, "Points" 6.71:1, menu labels on the badge
+  5.40:1; selected past week tag white on the badge 4.92:1 at its lightest stop (was `--peri-lt`, 2.89:1). Dark-ink 0. Frame gaps:
+  wells' figures >= 3.13px from the side lines and the 2px shade at the phone widths, 3.50px at 1440; Chromium 360P reads one FK chip
+  bottom gap 1.57px in Week 9 Final (one device pixel lower than main's 1.96px; the chip's box is unchanged; WebKitGTK at the 360P
+  layout reads 0 violations in that state). tilechk 0 (both trackers and the copy). Clip / ellipsis / extra lines / sideways scroll 0.
+  WebKitGTK at the 473px layout paints the gradient, highlight, lip, wells, tile foot, tiles and menu as Chromium (sampled colours
+  within 3/255 on the same structures).
+
 ## Mechanism ("always-current clone")
 
 - `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
@@ -515,6 +554,13 @@ New for the tracker (each a mix of two palette colours):
 | `--pos-qb` `--pos-rb` `--pos-wr` `--pos-te` `--pos-k` `--pos-def` | `#fbb2c9` `#3ddcc1` `#76cff6` `#fcb674` `#c491ff` `#c98a72` | position palette (Game Day): tile and pill fills with black ink; QB / RB / WR / TE also as label text on the blue rows |
 | `--seg-on` | the badge gradient inset 2px on white, as one `background` value | stands in for Classic's `--chalk` inside segmented controls and menus (Game Day, "Segments") |
 | `--win-2` `--loss-2` | `#61c188` (`--win` 70% + `--blue-3`), `#bc8a94` (`--loss` 70% + `--blue-3`) | second step of the heat scale (pass 4): 4.76 / 3.61:1 on the panel, black ink 9.49 / 7.20:1 |
+| `--plate` | `linear-gradient(180deg,var(--blue-2) 0%,var(--blue-3) 100%)` | fill of a raised element (rule 13) |
+| `--plate-hi` | `rgb(139 157 248 / .55)` (`--peri` at 55%) | 1px highlight under a plate's top frame |
+| `--lip` | `0 3px 0 0 var(--black)` | hard lip under a plate |
+| `--well` | `rgba(0,0,0,.28)` | fill of a sunken element |
+| `--well-sh` | `rgba(0,0,0,.45)` | 2px top shade inside a well |
+| `--tile-foot` | `rgba(0,0,0,.22)` | 3px darker foot of a position tile |
+| `--well-up` `--well-dn` `--well-lv` | `rgba(125,255,160,.16)`, `rgba(255,143,143,.14)`, `rgba(255,255,111,.16)` | result tints laid over `--well` (final win / final loss / live score cells). Tokens, not `color-mix()` of `--win` / `--loss` / `--yellow`: the loss tint is the loop's `--loss` `#ff8f8f`, while the tracker's `--loss` is `--loss-lt` `#ffb1b1`, so a mix would not paint the approved pixels |
 
 Classic's tokens are re-pointed in `html.retro:root` (38 overrides): `--pg` purple, `--frame` black, `--deck`
 `--blue-2`, `--row-lt` `--blue`, `--row-divider` / `--line` `--blue-3`, `--chalk` white, `--label` yellow,
@@ -527,12 +573,13 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 1. **Rows:** lighter row `--blue` > darker row `--blue-2` > divider `--blue-3` > frame black; alternating shades AND
    a divider. Measured with the grain's mean: 1.27:1, 1.17:1, 1.58:1.
    **Exception (2026-11-18): Matchups / Playoffs lineup rows** (`:is(.pane-mu,.pane-po) .cr.lu:not(.psr)`) are dark framed bands on
-   the panel, not zebra rows: fill `--blue-3`, 1px black inset frame drawn by `::before` (Classic's `.lgs` pseudo, so the slot-group
-   line is removed), a 2px black lip under the row (`0 2px 0 0 var(--black)` = `--sh-hard` without the sideways offset, because the
-   rows end 1.5px from the panel frame: a fill-free hard shadow, i.e. rule-conformant depth, not a glow), and a 6px gap (2px lip +
-   4px of `--blue-2` panel) after every row, under each Bench / IR / Taxi strip, under each slate header, under the "Points gained"
-   rule (Optimal) and above the result card at >=1100px. A lineup row never touches another black line (the pinned Points band
-   passing over the rows is exempt). Row vs panel 1.26:1; black frame / lip 1.58:1 on the row, 2.00:1 on the panel.
+   the panel, not zebra rows. Since 2026-11-18 (brief PL-1) they are **plates** (rule 13): fill `--plate`, 1px black inset frame
+   drawn by `::before` (Classic's `.lgs` pseudo, so the slot-group line is removed) with the 1px `--plate-hi` highlight under its top
+   edge, a 3px black `--lip` under the row (no sideways offset, because the rows end 1.5px from the panel frame), and a 7px gap (3px
+   lip + 4px of `--blue-2` panel) after every row, under each Bench / IR / Taxi strip, under each slate header, under the "Points
+   gained" rule (Optimal) and above the result card at >=1100px. A lineup row never touches another black line (the pinned Points band
+   passing over the rows is exempt). Score / projection cells are wells; position tiles carry a `--tile-foot`. (2026-11-18 RL ship:
+   flat `--blue-3`, 2px lip, 6px gaps; row vs panel 1.26:1, black frame / lip 1.58:1 on the row, 2.00:1 on the panel.)
 2. **Type treatment by role, and the dark-ink rule.** T2 (black 2px outline under the fill + 2px hard shadow): header
    title, weeks-left figure, team names, records, group buttons, rank-tile digits (18px and up). T1 (1px hard shadow,
    no outline): every other light text. T0 (nothing): dark text on a light tile, and chip digits and letters (rank
@@ -558,7 +605,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    gradient is 2.82:1 against white and may only show behind panels.
 4. **Selected = the badge** (`--badge` fill, white 2px inner ring, white text); unselected = flat blue with yellow
    (level 1) or `--peri-lt` (level 2, toggles) text. Yellow = labels and the bye tier. Never a coloured bar on a
-   card edge.
+   card edge. **The selected matchup card is the 1px case** (2026-11-18, brief PL-1): its plate keeps the badge's role with a 1px
+   white inner ring + `--lip` (Classic's `#id:checked` ring rule painted 1px all along; the theme's dead 2px declaration now says 1px).
 5. **Tiles:** as Classic (never taller than the figure's cap height, digits never touch the frame, ink centred,
    stacked tiles one width and one left edge). **Rank chips carry no ring (2026-11-12): rank 1 is a solid `--yellow` tile, last a solid
    `--loss` tile, both with black ink, on every tab (Standings in cleanup job 2, the other tabs in job 3; a seed chip takes the fill for seed 1 only).** The
@@ -619,6 +667,14 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     Multi-line cells (score cells, slate tiles, position tiles) are centred line by line.
 12. **No synthetic italic (2026-11-11).** Martian Mono has no italic face; where Classic sets Barlow Condensed italic
     (seed chips of the Playoffs card) the theme sets `font-style:normal`.
+13. **Plates and wells (2026-11-18, brief PL-1; retro theme only, Classic and YILM stay flat).** A deliberate exception to Classic's
+    flat rule, inside the retro copy only. Raised elements = `--plate` (vertical `--blue-2` to `--blue-3` gradient) + a 1px
+    `--plate-hi` highlight directly under the top frame + `--lip` (3px black, no sideways offset). Sunken elements = `--well` + a 2px
+    `--well-sh` top shade (result cells add `--well-up` / `--well-dn` / `--well-lv` over the well and keep their 1px result side
+    lines). Position tiles carry a 3px `--tile-foot`. Contrast is always computed against the lightest pixel under the text (the
+    gradient's top, the highlight, the well over the plate), never the mean. In use: Matchups lineup rows, matchup tiles, VS chip,
+    win-bar track and Points band; Playoffs lineup rows (bracket panels and builder). Not yet: Playoffs' own tiles and Points band,
+    every other tab. No glow, no blur, no gradient anywhere else.
 
 ## Wordmark (header title, 2026-11-10)
 
@@ -673,9 +729,9 @@ kind of plate (8px) on these two tabs. Cards on a panel are `--blue` (lighter, r
 comparison card `.mcard`, bracket games `.pbm` / `.pbyt`. Wells are `--blue-3`: toggle tracks, the team switch, the
 dropdown button, the points band `.ltot.lsb` (periwinkle 1px ring), slate day tiles `.stc`, the "vs" badge.
 The bench strip is a `--blue-3` head strip since 2026-11-12 (below, "Bench band" and "Slate header"); Classic's other `--pg` strips stay purple.
-**Lineup rows (2026-11-18).** Matchups and Playoffs lineup rows are dark framed bands (`--blue-3`, 1px black frame, 2px black lip,
-6px gap of panel; rule 1 exception, "Decisions (2026-11-18, lineup rows)"); the slot-group line is gone, the slot groups are carried by
-the position tile colours.
+**Lineup rows (2026-11-18).** Matchups and Playoffs lineup rows are framed plates (`--plate`, 1px black frame with the `--plate-hi`
+highlight under it, 3px `--lip`, 7px gap of panel; rule 1 exception and rule 13, "Decisions (2026-11-18, lineup rows)" and "Decisions
+(2026-11-18, plates and wells)"); the slot-group line is gone, the slot groups are carried by the position tile colours.
 
 **Literal Classic colours overridden** (everything else arrives through the tokens):
 

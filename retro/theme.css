@@ -18,6 +18,16 @@ html.retro:root{
   --peri-lt:#b9c4fb;     /* --peri 60% + white: dim text on the blue rows (4.80:1 on --blue; --peri itself is 3.21:1) */
   --loss-lt:#ffb1b1;     /* template --loss 70% + white: 4.73:1 on --blue (--loss itself is 3.72:1) */
   --badge:linear-gradient(to bottom,#4d5ff5,#2040fa);  /* steps 5 and 7 of --card: white text >= 4.92:1 at every point */
+  /* plates and wells (2026-11-18, brief PL-1; RETRO.md rule 13): raised = plate + highlight + lip, sunken = well + top shade */
+  --plate:linear-gradient(180deg,var(--blue-2) 0%,var(--blue-3) 100%);   /* fill of a raised element */
+  --plate-hi:rgb(139 157 248 / .55);   /* --peri at 55%: 1px highlight under a plate's top frame */
+  --lip:0 3px 0 0 var(--black);        /* hard lip under a plate */
+  --well:rgba(0,0,0,.28);              /* fill of a sunken element */
+  --well-sh:rgba(0,0,0,.45);           /* 2px top shade inside a well */
+  --tile-foot:rgba(0,0,0,.22);         /* 3px darker foot of a position tile */
+  --well-up:rgba(125,255,160,.16);     /* result tints over --well: --win 16% (#7dffa0) */
+  --well-dn:rgba(255,143,143,.14);     /* loss tint: the loop's --loss #ff8f8f at 14% (retro --loss is --loss-lt #ffb1b1, so not a color-mix of it) */
+  --well-lv:rgba(255,255,111,.16);     /* live tint: --yellow 16% */
   /*__GRAIN__*/
 
   /* Classic's tokens */
@@ -281,7 +291,7 @@ html.retro .mpk label.g4{background:var(--blue)!important;border-radius:4px}
 html.retro input[id$="-0"]:checked~.mpk label[for$="-0"],html.retro input[id$="-1"]:checked~.mpk label[for$="-1"],
 html.retro input[id$="-2"]:checked~.mpk label[for$="-2"],html.retro input[id$="-3"]:checked~.mpk label[for$="-3"],
 html.retro input[id$="-4"]:checked~.mpk label[for$="-4"],html.retro input[id$="-5"]:checked~.mpk label[for$="-5"]{
-  box-shadow:inset 0 0 0 2px var(--white),var(--sh-hard)}
+  box-shadow:inset 0 0 0 1px var(--white),var(--sh-hard)}   /* 1px, as painted (was 2px: Classic's #id:checked ring rule wins; the plate rules at the end of the file draw Matchups' ring) */
 html.retro .g4 .g4vs{background:var(--blue-3);box-shadow:none;border-radius:2px;color:var(--peri-lt)}
 html.retro .g4 .gn{text-shadow:1px 1px 0 var(--black)}
 html.retro .g4 .g4p.l,html.retro .pbwp.l{color:var(--loss)}
@@ -1114,15 +1124,47 @@ html.retro .pane-cm .lbh.cxb{margin-top:12px}  /* Compare's gap above the band =
    name cap centre was +1.00px (Classic fix -.47px applied; retro Matchups lineup +0.66px), now +0.41px; GP-line logo +0.75px -> 0.00px */
 html.retro .pane-cm .cn .cnm b>.nfl.tm{top:-1.06px}
 html.retro .pane-cm .cnm small>.nfl.tm.opp{top:-.75px}
-/* Lineup rows = dark framed bands on the panel (2026-11-18, briefs RL-4 + ship; Nicklaus: variant E framed + S3 lip, one 6px gap).
-   Matchups + Playoffs lineups only. Rows take the wells' --blue-3; the 1px black frame is drawn by ::before (Classic's .lgs line
-   pseudo, so the slot-group line goes) inside the row's free 1px ring: no box inside a row moves. Each row carries a 2px black lip
-   (--sh-hard without the sideways offset: rows end 1.5px from the panel frame). 6px (2px lip + 4px of the --blue-2 panel) separates
-   a row from the row, strip, slate header, "Points gained" rule or result card next to it. */
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr){background-color:var(--blue-3)!important;box-shadow:0 2px 0 0 var(--black)!important}
+/* Lineup rows = plates on the panel (2026-11-18: briefs RL-4 + ship, dark framed bands with a lip, 6px gaps; brief PL-1, plates and wells,
+   RETRO.md rule 13). Matchups + Playoffs lineups only. Rows are plates (--plate gradient, --blue-2 to --blue-3); the 1px black frame is
+   drawn by ::before (Classic's .lgs line pseudo, so the slot-group line goes) inside the row's free 1px ring, with the 1px --plate-hi
+   highlight under its top edge: no box inside a row moves. Each row carries a 3px black --lip (no sideways offset: rows end 1.5px from the
+   panel frame). 7px (3px lip + 4px of the --blue-2 panel) separates a row from the row, strip, slate header, "Points gained" rule or
+   result card next to it. Score / projection cells are wells; position tiles carry a --tile-foot. */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr){background:var(--plate)!important;box-shadow:var(--lip)!important}
 html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)+.cr.lu:not(.psr),
 html.retro :is(.pane-mu,.pane-po) .lbh:not(.psbh)+.cr.lu:not(.psr),
-html.retro :is(.pane-mu,.pane-po) .mcr.slc+.cr.lu:not(.psr){margin-top:6px!important}
-html.retro :is(.pane-mu,.pane-po) .mcr.ltot2+.lpv{margin-top:6px}
-@media (min-width:1100px){html.retro :is(.pane-mu,.pane-po) .mup>.lus+.mcard{margin-top:6px!important}}
-html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)::before{content:"";position:absolute;inset:0;height:auto;background:none;box-shadow:inset 0 0 0 1px var(--black);z-index:2;pointer-events:none}
+html.retro :is(.pane-mu,.pane-po) .mcr.slc+.cr.lu:not(.psr){margin-top:7px!important}
+html.retro :is(.pane-mu,.pane-po) .mcr.ltot2+.lpv{margin-top:7px}
+@media (min-width:1100px){html.retro :is(.pane-mu,.pane-po) .mup>.lus+.mcard{margin-top:7px!important}}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr)::before{content:"";position:absolute;inset:0;height:auto;background:none;box-shadow:inset 0 0 0 1px var(--black),inset 0 2px 0 0 var(--plate-hi);z-index:2;pointer-events:none}
+/* wells: score / projection cells (the rows' result side lines kept; up / dn / lv tint over the well) */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv.pjc{background:none!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs{background:var(--well)!important;box-shadow:inset 0 2px 0 0 var(--well-sh)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.up{background:linear-gradient(var(--well-up),var(--well-up)),var(--well)!important;box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win),inset 0 2px 0 0 var(--well-sh)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.dn{background:linear-gradient(var(--well-dn),var(--well-dn)),var(--well)!important;box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss),inset 0 2px 0 0 var(--well-sh)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cv .fs.lv{background:linear-gradient(var(--well-lv),var(--well-lv)),var(--well)!important;box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow),inset 0 2px 0 0 var(--well-sh)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(.sln) .cv .fs.up{box-shadow:inset 1px 0 0 var(--win),inset -1px 0 0 var(--win),inset 0 -1px 0 var(--win),inset 0 2px 0 0 var(--well-sh)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(.sln) .cv .fs.dn{box-shadow:inset 1px 0 0 var(--loss),inset -1px 0 0 var(--loss),inset 0 -1px 0 var(--loss),inset 0 2px 0 0 var(--well-sh)!important}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):has(.sln) .cv .fs.lv{box-shadow:inset 1px 0 0 var(--yellow),inset -1px 0 0 var(--yellow),inset 0 -1px 0 var(--yellow),inset 0 2px 0 0 var(--well-sh)!important}
+/* position tiles: the 1px black side line toward the name, plus a 3px --tile-foot */
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cn.a>.pq{box-shadow:inset -1px 0 0 var(--black),inset 0 -3px 0 0 var(--tile-foot)}
+html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr) .cn.b>.pq{box-shadow:inset 1px 0 0 var(--black),inset 0 -3px 0 0 var(--tile-foot)}
+/* Matchups only (Playoffs' own tiles and Points band keep PART 5's rules): matchup tiles = plates with the highlight under their 1px
+   black border and the lip; the selected tile's 1px white inner ring replaces the highlight (:not(#z): Classic's #id:checked ring rule
+   would win otherwise); VS chip and win-bar track = wells; Points band = a plate, --peri ring kept, lip for --sh-hard. */
+html.retro .pane-mu .mpk label.g4{background:var(--plate)!important;box-shadow:inset 0 1px 0 0 var(--plate-hi),var(--lip)}
+html.retro .pane-mu input[id$="-0"]:checked~.mpk label[for$="-0"]:not(#z),html.retro .pane-mu input[id$="-1"]:checked~.mpk label[for$="-1"]:not(#z),
+html.retro .pane-mu input[id$="-2"]:checked~.mpk label[for$="-2"]:not(#z),html.retro .pane-mu input[id$="-3"]:checked~.mpk label[for$="-3"]:not(#z),
+html.retro .pane-mu input[id$="-4"]:checked~.mpk label[for$="-4"]:not(#z),html.retro .pane-mu input[id$="-5"]:checked~.mpk label[for$="-5"]:not(#z){
+  box-shadow:inset 0 0 0 1px var(--white),var(--lip)}
+html.retro .pane-mu .g4 .g4vs{background:var(--well);box-shadow:inset 0 2px 0 0 var(--well-sh)}
+html.retro .pane-mu .g4b:not(#z){background:var(--well)!important;box-shadow:inset 0 2px 0 0 var(--well-sh)}
+html.retro .pane-mu .mcr.ltot.lsb{background:var(--plate);box-shadow:inset 0 0 0 1px var(--peri),var(--lip)!important}
+/* week menu, three tiers by mu_build's label class: future .wkf (--blue, yellow label, white tag), now .wkn (the menu's default row),
+   past .wkp (--blue-3, --peri-lt label and tag); 4px between tiers. The selected row (Classic's #mw-N:checked rule, an id, = the badge
+   through --seg-on) wins in every tier. */
+html.retro .pane-mu .wdd .ddm label.wkf{background:var(--blue);color:var(--yellow)}
+html.retro .pane-mu .wdd .ddm label.wkf i{color:var(--white)}
+html.retro .pane-mu .wdd .ddm label.wkp{background:var(--blue-3);color:var(--peri-lt)}
+html.retro .pane-mu .wdd .ddm label.wkp i{color:inherit}   /* = the label's --peri-lt; inherits the selected row's white (a fixed --peri-lt tag would sit on the badge at 3.4:1) */
+html.retro .pane-mu .wdd .ddm :is(.wkf+.wkn,.wkn+.wkp,.wkf+.wkp){margin-top:4px}
