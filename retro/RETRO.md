@@ -710,12 +710,22 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   4.73:1 ("29%" / "39%" / "48%" 11px `--loss-lt`); ink to ring >= 4.00px left, >= 4.00px right, >= 5.00px top, >= 6.00px bottom (rule 11:
   3 / 2); boxes 0.000px against NF-4's build. Avatar discs (`i.av.g4a`, `i.av.pba`): 0 pixels visible at 402P on Matchups (10 avatars)
   and the bracket (12): every team logo is an opaque 96 x 96 RGB webp drawn with `cover`, so the disc colour never shows.
-- Open, not decided: (1) the bracket divider `.pbd` (`--blue-3`, full width of the card's padding box) is painted over the selected card's
-  inset ring, so the ring has a 1px gap on the left and right at the divider. (2) (closed, NF-4b: 0 disc pixels visible). (3) `border-radius:4px` on the retro Points band and on the pinned Optimal total is inert: Classic's
+- Open, not decided: (1) (closed, NF-4c: the divider stops at the ring, see below). (2) (closed, NF-4b: 0 disc pixels visible). (3) `border-radius:4px` on the retro Points band and on the pinned Optimal total is inert: Classic's
   `.mcr{border-radius:0!important}` (readability.css) wins on both, both compute 0px. Left as written, not changed.
 - Pinned Optimal total (`.lus-o .mcr.ltot:not(.lsb)`): the Points band's surface, `--blue-3` + grain, `inset 0 0 0 1px var(--peri)` +
   `--sh-hard`, no bottom border, 14px sides; no `:not(#_)` (the retro selector (0,5,1) already beats Classic's (0,2,0) and (0,4,0)). Cost:
   the total 1.000px shorter, everything below it in the Optimal view 1.000px higher; nothing else moves (boxes vs main).
+- `.mcard` scope (brief NF-4c): NF-4's `html.retro .mcard{background:var(--blue-2)!important}` was unscoped and recoloured Compare's 45
+  `.mcard.chead` head cards (53 / 78 / 132 -> 42 / 62 / 106). Now `html.retro .mcard` keeps main's `--blue` and
+  `html.retro :is(.pane-mu,.pane-po) .mcard` sets `--blue-2`. Measured: Compare 45 cards 53 / 78 / 132 (= main), Matchups 5 per week and
+  Playoffs 1 per game panel 42 / 62 / 106; every tab other than Matchups / Playoffs pixel-identical to main at 402P and 1440. The other
+  NF-4 classes (`.g4`, `.pbm`, `.pbyt`, `.pbd`, `.pox`, `section.mux`, `.lus-o .ltot`) exist only in the Matchups / Playoffs chunks.
+- Selected bracket card divider (brief NF-4c): on the selected card only, `.pbd` is painted as
+  `linear-gradient(var(--blue-3),var(--blue-3)) 50% 0/calc(100% - 2px) 100% no-repeat` (same token, 2px narrower than its box, centred), so
+  it stops at the white ring's inner edge; no box moves (0.000px vs NF-4b, all 5 games, 402P and 1440). `clip-path:inset(0 1px)` was tried
+  first and dropped: Chromium anti-aliases the clip at the card's fractional x (divider 3 device rows -> 2 + one 30% row, ring's inner
+  column 244 / 245 / 247 at 402P). Measured, Chromium and WebKitGTK, 402P and 1440: ring 0 broken device rows on all four sides; at each
+  divider end 0 device px of card fill between the divider and the ring; divider rows as the unselected cards' (3 at 402P, 1 at 1440).
 
 ## Tokens
 

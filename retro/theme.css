@@ -306,7 +306,8 @@ html.retro .mpk .stk.w{background:var(--win);color:var(--black)}
 html.retro .mpk .stk.l{background:var(--loss);color:var(--black)}
 
 /* --- comparison card (.mcard), results / remaining lists --- */
-html.retro .mcard{background:var(--blue-2)!important;border-radius:4px!important}   /* --blue-2 on the --blue panel (NF-4) */
+html.retro .mcard{background:var(--blue)!important;border-radius:4px!important}
+html.retro :is(.pane-mu,.pane-po) .mcard{background:var(--blue-2)!important}   /* --blue-2 on the --blue panel (NF-4), Matchups / Playoffs only (NF-4c: unscoped it recoloured Compare's .mcard.chead) */
 html.retro .mcard .mus>b{text-shadow:1px 1px 0 var(--black)}
 html.retro .hrt{border-radius:2px;text-shadow:none}
 /* home / road tiles: solid, black ink, no ring (a ringed 17px tile leaves the 10.7px "@" under 2px) */
@@ -384,6 +385,10 @@ html.retro #bk-qf1:checked~.prd label[for="bk-qf1"],html.retro #bk-qf2:checked~.
 html.retro .pbc:not(#_){border-color:var(--peri)!important}
 html.retro .pbc.on:not(#_){border-color:var(--white)!important}
 html.retro .pbm .pbd{background:var(--blue-3)}
+/* selected card: the divider stops at the white ring's inner edge (NF-4c). Painted as a --blue-3 background 2px narrower than the box,
+   centred: no box moves. clip-path:inset(0 1px) (the brief's first choice) anti-aliased in Chromium at fractional x (divider 3 device rows ->
+   2 + one 30% row, the ring's inner column 244,245,247 at 402P), so the background is used instead. */
+html.retro #bk-qf1:checked~.prd label[for="bk-qf1"] .pbd,html.retro #bk-qf2:checked~.prd label[for="bk-qf2"] .pbd,html.retro #bk-sf1:checked~.prd label[for="bk-sf1"] .pbd,html.retro #bk-sf2:checked~.prd label[for="bk-sf2"] .pbd,html.retro #bk-fin:checked~.prd label[for="bk-fin"] .pbd{background:linear-gradient(var(--blue-3),var(--blue-3)) 50% 0/calc(100% - 2px) 100% no-repeat}
 html.retro .cr.lu .cv.act .fs small{color:var(--white)}
 html.retro .dlt.up{color:var(--win)} html.retro .dlt.dn{color:var(--loss)}
 html.retro .slx{--sc:var(--white)} html.retro .slx.sx-final{--sc:var(--win)} html.retro .slx.sx-live{--sc:var(--yellow)} html.retro .slx.sx-bye{--sc:var(--peri-lt)}
