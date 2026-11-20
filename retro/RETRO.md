@@ -727,6 +727,20 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   column 244 / 245 / 247 at 402P). Measured, Chromium and WebKitGTK, 402P and 1440: ring 0 broken device rows on all four sides; at each
   divider end 0 device px of card fill between the divider and the ring; divider rows as the unselected cards' (3 at 402P, 1 at 1440).
 
+## Decisions (2026-11-20, lineup points cell)
+
+- 2026-11-20 · Brief LV-2 (Nicklaus 10:48 ET, variant A): the lineup score cell's big figure shows real points only; the bottom line
+  holds the pre-game projection in every state, no PROJ / LIVE / FINAL word (Classic markup from `mu_build._pjl` / `live.js`). Retro:
+  the figure takes Classic's `--chalk` (= white here) and the T1 shadow by layer 1; theme.css's three per-word text-indent constants
+  became one rule `calc(var(--fz,0) * 13px - 1px + var(--fxj,0px))`, `--fz` from theme.js (Martian Mono wght 600 bearings at wdth 75,
+  fontTools, x .875, unitless), `--fxj` = the engine's advance offset at 600 13px; both `.fs.lv small{color:var(--yellow)}` rules
+  removed (no word left; no other selector used them). theme.js `fig()` now sees real points only: a not-started cell's no-break space
+  trims to '' (no `--fx`), so `.fs5` follows real points. QA fixtures (gapf*.py, darkink.py) inject live.js's new markup.
+- Measured: contrast (lightest pixel) not started 10.52, live 10.52, final up 7.04, final down 8.44 (:1); ink |L-R| 360P 1.00, 402P 0.67,
+  440P 0.34, 1440 2.01px (DPR 1; mock's constants 1.33 / 1.33 / 0.67 / 2.01); WebKitGTK 402P <= 0.67, 1440 1.0px; boxes 0.000px vs main
+  (20 states x 6 widths, bracket panels) and through not started -> live -> final; darkink 0 FAIL 0 low; tilechk_r 0; gapf: only main's
+  existing `i.pp.sm` 'QB' pill item.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -765,8 +779,8 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    players; `--pt` / `--pb` = the black frame at the top of a block's first row and the foot of its last (side frame listed first, so the
    frame stays continuous at every join). `0 2px 0 0 var(--black)` under the last row of every block (starters, each Bench / IR / Taxi
    group, each slate). No lip, no bevel, no gap: Classic's spacing. Projection cells: no fill, no side lines. Final cells (`.fs.up` / `.dn`):
-   `--res-up` / `--res-dn` over plain `--blue-2`, closed by a full `inset 0 0 0 1px` ring in `--win` / `--loss`, radius 0. LIVE cells
-   (`.fs.lv`): no tint, no ring; white figure + the word LIVE in `--yellow`. Centre line (row `::after`): 2px `--blue-3` at
+   `--res-up` / `--res-dn` over plain `--blue-2`, closed by a full `inset 0 0 0 1px` ring in `--win` / `--loss`, radius 0. LIVE cells (`.fs.lv`): no tint, no ring; white figure, no word (brief LV-2, 2026-11-20: the game line says Live). Bottom line of
+   every score cell: the pre-game projection, white (`--chalk`), T1 by the automatic rule, Martian Mono 13px, ink-centred by `--fz`. Centre line (row `::after`): 2px `--blue-3` at
    `left: calc(50% - 1px)`. **Panel** (Matchups `section.mux`, Playoffs `.pox` and its 12px spread ring): `--blue` + grain, one step
    lighter than `--deck` by decision (NF-4): the rows stand off it 1.25:1 instead of sitting in a darker "field". The cards on the panel
    (unselected matchup tiles `.mpk label.g4`, result card `.mcard`, bracket cards `label.pbm`, bye cards `.pbyt`) are `--blue-2` (1.29:1

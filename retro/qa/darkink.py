@@ -153,11 +153,11 @@ def run(tok):
     if WANT('standings'):
         tab('standings');audit('standings/Dumb H2H');click('dn-full');audit('standings/Nerd H2H');E.ev("()=>document.getElementById('bm').click()");E.wait(1200);audit('standings/Nerd Median');click('dn-lean');audit('standings/Dumb Median');E.ev("()=>document.getElementById('bh').click()");E.wait(1200)
         click('gl-s');audit('standings/Dumb glossary');click('dn-full');audit('standings/glossary');E.ev("()=>{const u=document.getElementById('upd');if(u)u.hidden=false}");E.wait(200);audit('standings/refresh pill','#upd')
-    # ---- Matchups: current week (projection states), then a final week (lineups with FINAL cells)
+    # ---- Matchups: current week (projection states), then a final week (lineups with final cells; LIVE cells injected in live.js's markup since brief LV-2)
     if WANT('matchups'):
         tab('matchups');audit('matchups/current week');sweep('matchups','now>',{'*':1,'mwk':0,'mus':2},set())
         click('mw-9',1500);audit('matchups/week 9');sweep('matchups','w9>',{'*':1,'mwk':0,'mus':1},set())
-        tab('matchups');E.ev("""()=>{let n=0;document.querySelectorAll('.pane-mu .cr.lu .cv.pjc').forEach((c,i)=>{if(!c.getClientRects().length||i%3==2)return;const f=c.querySelector('.fs');const v=(f.firstChild&&f.firstChild.nodeType==3?f.firstChild.nodeValue:'1.0');c.classList.remove('pjc');c.classList.add('act');c.innerHTML='<span class=\"fs lv\" title=\"Projected 1.0\"><em class=\"fdf\"></em>'+v.trim()+'<small>LIVE</small></span>';n++});return n}""");E.wait(600);audit('matchups/LIVE simulated')
+        tab('matchups');E.ev("""()=>{let n=0;document.querySelectorAll('.pane-mu .cr.lu .cv.pjc').forEach((c,i)=>{if(!c.getClientRects().length||i%3==2)return;const j=(+(c.dataset.j||0)).toFixed(1);c.classList.remove('pjc');c.classList.add('act');c.innerHTML='<span class=\"fs lv\" title=\"Projected '+j+'\"><em class=\"fdf\"></em>'+j+'<small><b class=\"fpj\">'+j+'</b></small></span>';n++});return n}""");E.wait(600);audit('matchups/LIVE simulated')
         tab('matchups');E.ev("()=>{document.querySelector('.pane-mu .wdd').open=true}");E.wait(500);audit('matchups/week menu open')
         tab('matchups');click('gl-s');audit('matchups/glossary')
         tab('matchups');click('ld-d');click('lo-o');audit('matchups/detailed optimal');E.ev("()=>{const u=document.getElementById('upd');if(u)u.hidden=false}");E.wait(200);audit('matchups/refresh pill','#upd')

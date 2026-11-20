@@ -79,7 +79,7 @@
       five-character figure (theme.css, "lineup score cells"; RETRO.md rule 11).
       Why a script: CSS cannot see which glyphs a figure starts and ends with ("1" has .068em of room on its left, "4" .017em on
       its right, so "13.4" sits 0.6px right of where "0.7" does), nor how many characters it has.
-      What it does: per cell, --fx (points figure) and --fy (delta) = (right bearing of the last glyph - left bearing of the first) in em (tables L / R below: Martian
+      What it does: per cell, --fx (points figure), --fy (delta) and --fz (the bottom line's pre-game projection, wght 600, unitless) = (right bearing of the last glyph - left bearing of the first) in em (tables L / R below: Martian
       Mono wght 700 at wdth 75, from retro/fonts with fontTools, x .875 for size-adjust); per lineup (.lus), class fs5 when any of
       its figures has five characters or more. It reads text only, never layout (one probe at start measures this engine's glyph advance: WebKitGTK rounds it to whole
       px), and holds no element between runs.
@@ -87,18 +87,22 @@
 (function(){
   var K=.875,L={"0":.029,"1":.0777,"2":.054,"3":.049,"4":.0332,"5":.0468,"6":.046,"7":.0699,"8":.0473,"9":.046,"-":.0303,"+":.0303,"\u2212":.0303},
       R={"0":.029,"1":.0377,"2":.054,"3":.049,"4":.0193,"5":.0493,"6":.046,"7":.0699,"8":.0473,"9":.046};
+      // wght 600 (the bottom line's pre-game projection .fpj, 13px; brief LV-2 2026-11-20), same source and method
+      L6={"0":.038,"1":.0854,"2":.063,"3":.058,"4":.0404,"5":.0576,"6":.0561,"7":.0758,"8":.0565,"9":.0561,"\u2013":.0456},
+      R6={"0":.038,"1":.0454,"2":.063,"3":.058,"4":.0285,"5":.0585,"6":.0561,"7":.0758,"8":.0565,"9":.0561,"\u2013":.0456};
   function fig(fs){for(var n=fs.firstChild;n;n=n.nextSibling)if(n.nodeType===3){var t=n.nodeValue.trim();if(t)return t}return ''}
   function off(t){var a=L[t.charAt(0)],b=R[t.charAt(t.length-1)];return (a===undefined||b===undefined)?'':((b-a)*K).toFixed(4)+'em'}
+  function off6(t){var a=L6[t.charAt(0)],b=R6[t.charAt(t.length-1)];return (a===undefined||b===undefined)?'':((b-a)*K).toFixed(4)}   // unitless: theme.css multiplies by the figure's 13px
   function put(fs,k,v){if(fs.style.getPropertyValue(k)!==v){if(v)fs.style.setProperty(k,v);else fs.style.removeProperty(k)}}
   function run(root){
     var list=root.matches&&root.matches('.cv .fs')?[root]:(root.querySelectorAll?root.querySelectorAll('.cr.lu .cv .fs'):[]);if(!list.length)return;
     var ups=[],i,j;
-    for(i=0;i<list.length;i++){var fs=list[i],df=fs.firstElementChild;put(fs,'--fx',off(fig(fs)));put(fs,'--fy',df&&df.className==='fdf'?off(df.textContent.trim()):'');
+    for(i=0;i<list.length;i++){var fs=list[i],df=fs.firstElementChild;put(fs,'--fx',off(fig(fs)));put(fs,'--fy',df&&df.className==='fdf'?off(df.textContent.trim()):'');var pj=fs.querySelector('small .fpj');put(fs,'--fz',pj?off6(pj.textContent.trim()):'');
       var row=fs.closest('.cr.lu'),p=row&&(row.closest('.lus')||row.parentNode);if(p&&ups.indexOf(p)<0)ups.push(p)}
     for(i=0;i<ups.length;i++){var c=ups[i].querySelectorAll('.cr.lu .cv .fs'),five=false;for(j=0;j<c.length&&!five;j++)five=fig(c[j]).length>4;
       if(ups[i].classList.contains('fs5')!==five)ups[i].classList.toggle('fs5',five)}}
   // one layout read, once: the advance this engine gives a glyph at the four sizes used in the cells (see theme.css, --fxd ...)
-  function probe(){var S=[['--fxd','700 14.5px'],['--fxe','700 11.5px'],['--fxf','700 10px'],['--fxg','600 11px'],['--fxh','700 18px'],['--fxi','700 14px']],d=document.createElement('div'),sp=[],w,i;
+  function probe(){var S=[['--fxd','700 14.5px'],['--fxe','700 11.5px'],['--fxf','700 10px'],['--fxg','600 11px'],['--fxh','700 18px'],['--fxi','700 14px'],['--fxj','600 13px']],d=document.createElement('div'),sp=[],w,i;
     d.style.cssText='position:absolute;left:-999px;top:0;visibility:hidden;white-space:nowrap';
     for(i=0;i<S.length;i++){var e=document.createElement('span');e.style.cssText='display:block;width:max-content;font:'+S[i][1]+'/1 "Martian Mono"';e.style.setProperty('letter-spacing','0','important');e.textContent='0000000000';d.appendChild(e);sp.push(e)}
     document.body.appendChild(d);w=sp.map(function(e){return e.getBoundingClientRect().width/10});d.remove();

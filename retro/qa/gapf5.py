@@ -25,7 +25,7 @@ PSH="js:(()=>{const b=[...document.querySelectorAll('.pane-pt .ptv-p .ptk')].fil
 ST=[('standings','dumb h2h','.pane-st',['dn-lean']),('standings','nerd h2h','.pane-st',['dn-full']),('standings','nerd median','.pane-st',['dn-full','#bm']),('standings','dumb median','.pane-st',['dn-lean','#bm']),('standings','nerd h2h + glossary','.pane-st',['dn-full','gl-s'])]
 ONLY=os.environ.get('ONLY','')
 CK="(id)=>{if(id[0]=='#'){document.querySelector(id).click();return}if(id[0]=='@'){document.querySelector('.'+id.slice(1)).open=true;return}const l=document.querySelector('label[for=\"'+id+'\"]');(l||document.getElementById(id)).click()}"
-LIVE=r"""()=>{let n=0;document.querySelectorAll('.pane-mu .cr.lu .cv.pjc').forEach((c,i)=>{if(!c.getClientRects().length||i%3==2)return;const f=c.querySelector('.fs');const v=(f.firstChild&&f.firstChild.nodeType==3?f.firstChild.nodeValue:(f.textContent.match(/[\d.]+/)||['0.0'])[0]);c.classList.remove('pjc');c.classList.add('act');c.innerHTML='<span class="fs lv" title="Projected 1.0"><em class="fdf"></em>'+v.trim()+'<small>LIVE</small></span>';n++});return n}"""
+LIVE=r"""()=>{let n=0;document.querySelectorAll('.pane-mu .cr.lu .cv.pjc').forEach((c,i)=>{if(!c.getClientRects().length||i%3==2)return;const j=(+(c.dataset.j||0)).toFixed(1);c.classList.remove('pjc');c.classList.add('act');c.innerHTML='<span class="fs lv" title="Projected '+j+'"><em class="fdf"></em>'+j+'<small><b class="fpj">'+j+'</b></small></span>';n++});return n}"""   # live.js markup since brief LV-2 (2026-11-20): points figure + the pre-game projection small, no word
 for tok in TOKS:
     E=(eng.Ch if ENG=='ch' else eng.Wk)(tok);out={};tot=0
     for tab,name,pane,ids in ST:
