@@ -377,6 +377,10 @@ html.retro .dxl>u{box-shadow:var(--sh-1)}
 html.retro .pox{background:var(--blue);box-shadow:0 0 0 12px var(--blue),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}   /* --blue, as the Matchups panel (NF-4) */
 html.retro .pox::after{content:"";position:absolute;inset:-12px;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
 html.retro .pbm,html.retro .pby .pbyt{background:var(--blue-2);border-radius:4px!important}   /* --blue-2 on the --blue panel (NF-4) */
+/* selected bracket card = the selected matchup tile (RETRO rule 4, the 1px case; NF-4b): --blue + 1px white inner ring + hard shadow.
+   Classic fills it with #bk-*:checked~.prd label{background:var(--deck-2)}, which after NF-4 equals the unselected cards (1.00:1). Bye cards .pbyt are divs: never selected. */
+html.retro #bk-qf1:checked~.prd label[for="bk-qf1"],html.retro #bk-qf2:checked~.prd label[for="bk-qf2"],html.retro #bk-sf1:checked~.prd label[for="bk-sf1"],html.retro #bk-sf2:checked~.prd label[for="bk-sf2"],html.retro #bk-fin:checked~.prd label[for="bk-fin"]{
+  background-color:var(--blue)!important;box-shadow:inset 0 0 0 1px var(--white),var(--sh-hard)!important}   /* !important: readability.css's shared .pbm list sets box-shadow:var(--sh-hard)!important */
 html.retro .pbc:not(#_){border-color:var(--peri)!important}
 html.retro .pbc.on:not(#_){border-color:var(--white)!important}
 html.retro .pbm .pbd{background:var(--blue-3)}

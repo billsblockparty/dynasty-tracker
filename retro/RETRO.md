@@ -699,10 +699,19 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 - Text (lightest pixel under each glyph, 402P and 1440): lowest on the panel 4.80:1 ("Order" / "Lineup" 11px), on a row 4.89:1
   (Week 9 "−10.7" 11px), on a card 4.73:1 ("21% win" on the selected tile), unselected tile 6.10, result card 6.19, bracket 6.10;
   `darkink.py` Matchups + Playoffs 0 FAIL 0 low at 402P and 1440.
-- Open, not decided: (1) the selected Playoffs bracket card has no cue of its own: it never had a ring, and its fill (`--blue-2`, kept)
-  now equals the unselected cards' (1.00:1; on main it was the darker card among `--blue` cards, 1.29:1). (2) The avatar discs inside
-  the cards (`i.av.g4a`, `i.av.pba`, `--blue-2`) now sit on a `--blue-2` card (1.00:1, was 1.29); they show only through transparent logo
-  pixels. (3) `border-radius:4px` on the retro Points band and on the pinned Optimal total is inert: Classic's
+- Selected Playoffs bracket card (brief NF-4b, closes NF-4's open item 1): Classic fills it through
+  `#bk-<game>:checked~.prd label[for="bk-<game>"]{border-color:var(--chalk);background:var(--deck-2)}` (the border loses to the frame
+  rule; `--deck-2` = `--blue-2` here), so after NF-4 it equalled the unselected cards (1.000:1). It now takes the selected matchup tile's
+  treatment exactly: `background-color:var(--blue)!important;box-shadow:inset 0 0 0 1px var(--white),var(--sh-hard)!important` (the
+  `!important` on box-shadow because readability.css's shared `.pbm` frame list sets `box-shadow:var(--sh-hard)!important`). Measured
+  (402P, 1440; every bracket game selected in turn): fill 53 / 78 / 132 vs unselected 42 / 62 / 106 = 1.29:1; ring white, 8.16:1 against
+  the card and against `--blue` (9.02 against the grained panel mean); ring 3 device px on all four sides at 402P (1 at 1440, DPR 1),
+  interrupted only where the 1px `--blue-3` divider `.pbd` crosses it (3 device rows each side at 402P; open item below); text lowest
+  4.73:1 ("29%" / "39%" / "48%" 11px `--loss-lt`); ink to ring >= 4.00px left, >= 4.00px right, >= 5.00px top, >= 6.00px bottom (rule 11:
+  3 / 2); boxes 0.000px against NF-4's build. Avatar discs (`i.av.g4a`, `i.av.pba`): 0 pixels visible at 402P on Matchups (10 avatars)
+  and the bracket (12): every team logo is an opaque 96 x 96 RGB webp drawn with `cover`, so the disc colour never shows.
+- Open, not decided: (1) the bracket divider `.pbd` (`--blue-3`, full width of the card's padding box) is painted over the selected card's
+  inset ring, so the ring has a 1px gap on the left and right at the divider. (2) (closed, NF-4b: 0 disc pixels visible). (3) `border-radius:4px` on the retro Points band and on the pinned Optimal total is inert: Classic's
   `.mcr{border-radius:0!important}` (readability.css) wins on both, both compute 0px. Left as written, not changed.
 - Pinned Optimal total (`.lus-o .mcr.ltot:not(.lsb)`): the Points band's surface, `--blue-3` + grain, `inset 0 0 0 1px var(--peri)` +
   `--sh-hard`, no bottom border, 14px sides; no `:not(#_)` (the retro selector (0,5,1) already beats Classic's (0,2,0) and (0,4,0)). Cost:
@@ -783,6 +792,9 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    (level 1) or `--peri-lt` (level 2, toggles) text. Yellow = labels and the bye tier. Never a coloured bar on a
    card edge. **The selected matchup card is the 1px case** (2026-11-18, brief PL-1): its plate keeps the badge's role with a 1px
    white inner ring + `--lip` (Classic's `#id:checked` ring rule painted 1px all along; the theme's dead 2px declaration now says 1px).
+   **The selected Playoffs bracket card takes the same 1px case** (2026-11-19, brief NF-4b): `--blue` fill + `inset 0 0 0 1px var(--white)`
+   + `--sh-hard`, the declarations of the selected matchup tile's rule (five `#bk-<game>:checked~.prd label[for="bk-<game>"]` pairs).
+   Bye cards `.pbyt` are divs, never selected.
 5. **Tiles:** as Classic (never taller than the figure's cap height, digits never touch the frame, ink centred,
    stacked tiles one width and one left edge). **Rank chips carry no ring (2026-11-12): rank 1 is a solid `--yellow` tile, last a solid
    `--loss` tile, both with black ink, on every tab (Standings in cleanup job 2, the other tabs in job 3; a seed chip takes the fill for seed 1 only).** The
@@ -957,7 +969,8 @@ highlight under it, 3px `--lip`, 7px gap of panel; rule 1 exception and rule 13,
 `background:var(--chalk);color:var(--ink)` through one rule per radio id. Inside `.pseg`, `.msw` and `.ddm` the theme
 re-points the two tokens (`--chalk: var(--seg-on); --ink: var(--white)`), so the selected state is the badge with its
 white 2px ring on every tab that uses these components, with no list of ids. Selected matchup card: white 2px inner
-ring (the six `input[id$="-N"]:checked ~ .mpk label[for$="-N"]` pairs); selected bracket game: Classic's own ring.
+ring (the six `input[id$="-N"]:checked ~ .mpk label[for$="-N"]` pairs); selected bracket game: the same 1px white inner ring on
+`--blue` (2026-11-19, NF-4b; Classic's own cue was only its `--deck-2` fill, and its 1px `--chalk` border loses to the frame rule).
 
 **Position tiles.** Fill `--pos-*`, black ink (opacity 1), no shadow, tracking 0, each line ink-centred, the stack centred in
 the 33px beside the 1px edge line.
