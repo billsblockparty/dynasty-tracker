@@ -684,6 +684,30 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   at same-shade joins (max 0.67/255 WebKitGTK, 1.22 Chromium). Game line, kickoff ink from capitals and digits only (Week 12): Chromium
   0 of 40 outside 0.34 at 424 / 473 / 518 / 1440; WebKitGTK 402P 0 of 13 measured (+0.18 to +0.21).
 
+## Decisions (2026-11-19, simple rows + lighter panel)
+
+- 2026-11-19 · Brief NF-4 (Nicklaus 19:38 ET "yes to recs"; earlier the same day: one dark row colour, a line between every two players,
+  no black title bars, no darker field). theme.css block "Lineup rows = simple rows" (rewritten in place from "flat rows by slot group";
+  the eight `.lgs` shade rules, the odd-slate rule, the old `--rt` / `--rb` rules deleted; no `:not(#_)` padding). Rule 1 rewritten.
+  No token added or removed.
+- Measured (Chromium, `tools/device.py`, pixel means with text hidden; 360P / 402P / 440P / 1440 agree to 0.01-0.2 of a channel):
+  row `--blue-2` + grain 38.94 / 57.41 / 98.02; line `--blue-3` 32 / 47 / 79 (row / line 1.174, every join identical); panel `--blue` +
+  grain 48.56 / 71.71 / 121.73 (row / panel 1.254); strip 29.73 / 43.59 / 73.15 (row / strip 1.233, strip / panel 1.546); Points band
+  29.54 / 43.41 / 72.95 (band / panel 1.550); frame black (frame / row 1.856, frame / panel 2.328); unselected tile 38.42 / 56.89 / 97.63
+  (tile / panel 1.264); result, bracket and bye cards `--blue-2` flat (1.165-1.169 against the panel); selected tile `--blue` flat (1.106
+  against the grained panel, 1.00:1 by token; 1.398 against an unselected tile; its white ring 8.16:1 against the panel).
+- Text (lightest pixel under each glyph, 402P and 1440): lowest on the panel 4.80:1 ("Order" / "Lineup" 11px), on a row 4.89:1
+  (Week 9 "−10.7" 11px), on a card 4.73:1 ("21% win" on the selected tile), unselected tile 6.10, result card 6.19, bracket 6.10;
+  `darkink.py` Matchups + Playoffs 0 FAIL 0 low at 402P and 1440.
+- Open, not decided: (1) the selected Playoffs bracket card has no cue of its own: it never had a ring, and its fill (`--blue-2`, kept)
+  now equals the unselected cards' (1.00:1; on main it was the darker card among `--blue` cards, 1.29:1). (2) The avatar discs inside
+  the cards (`i.av.g4a`, `i.av.pba`, `--blue-2`) now sit on a `--blue-2` card (1.00:1, was 1.29); they show only through transparent logo
+  pixels. (3) `border-radius:4px` on the retro Points band and on the pinned Optimal total is inert: Classic's
+  `.mcr{border-radius:0!important}` (readability.css) wins on both, both compute 0px. Left as written, not changed.
+- Pinned Optimal total (`.lus-o .mcr.ltot:not(.lsb)`): the Points band's surface, `--blue-3` + grain, `inset 0 0 0 1px var(--peri)` +
+  `--sh-hard`, no bottom border, 14px sides; no `:not(#_)` (the retro selector (0,5,1) already beats Classic's (0,2,0) and (0,4,0)). Cost:
+  the total 1.000px shorter, everything below it in the Optimal view 1.000px higher; nothing else moves (boxes vs main).
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -714,24 +738,24 @@ tokens. Position labels on the cards are Classic's position colours lightened to
 
 1. **Rows:** lighter row `--blue` > darker row `--blue-2` > divider `--blue-3` > frame black; alternating shades AND
    a divider. Measured with the grain's mean: 1.27:1, 1.17:1, 1.58:1.
-   **Matchups / Playoffs lineup rows (2026-11-19, brief FS-1: flat rows by slot group)** (`:is(.pane-mu,.pane-po) .cr.lu:not(.psr)`)
-   follow this rule's flat recipe, by slot group instead of by row: one shade per slot group starting dark at QB (`--blue-2`, then
-   `--blue`, alternating; Classic's `.lgs` marks the first row of each new group, so BBP QB | RB RB | WR WR | TE | FLEX | K | DEF), every
-   row grained (`--grain` at 96px). One `::before` per row draws a 1px `--row-divider` at its top and / or foot: where the shade changes
-   (`.lgs`), above the first starter, under the last starter and under the last row of a run outside the starters. Bench / IR / Taxi rows:
-   `--blue-2` + grain, a divider between players and at the foot, no top line (the strip's 2px black foot marks it). Slate order: one
-   shade per slate, alternating (odd slates `--blue`), no line inside a slate. No frame, no lip, no bevel, no gap: Classic's spacing.
-   Projection cells: no fill, no side lines (row shade and grain run across). Final cells (`.fs.up` / `.dn`): `--res-up` / `--res-dn`
-   over plain `--blue-2`, closed by a full `inset 0 0 0 1px` ring in `--win` / `--loss`, radius 0, every row. LIVE cells (`.fs.lv`,
-   2026-11-19 FS-1b): no tint, no ring, as a projection cell; white figure + the word LIVE in `--yellow`. Boxed = final, yellow word = in
-   progress, PROJ = neutral. **Block frame** (2026-11-19 FS-1b): each block (starters, each Bench / IR / Taxi group, each slate) has a
-   1px `--black` frame on its outer edge, drawn inset on the rows' `::before` (both sides of every row, top of the first, foot of the
-   last; it replaces the `--row-divider` lines there), and `0 2px 0 0 var(--black)` under the last row of every block (no sideways
-   offset: the rows end 1.5px from the panel frame). Centre line (row `::after`): 2px `--blue-3` at `left: calc(50% - 1px)`. Texture level 2: grain also on the Matchups pane's
-   dark flat surfaces (`section.mux`, unselected `.mpk label.g4`, the Points band `.mcr.ltot.lsb`, strips `.msh.lbh`, slate headers
-   `.mcr.slc` / `.slg`, `.mcr.ltot2`), never on dark-ink tiles / chips, the VS chip, the win bar, the selected tile or the week menu
-   (rule 8). Measured values under "Decisions (2026-11-19, flat rows)". (History: 2026-11-18 RL ship framed `--blue-3` bands, 2px lip,
-   6px gaps; PL-1 plates and wells, 7px gaps; 2026-11-19 RL-7 slat board. All three retired by FS-1.)
+   **Matchups / Playoffs lineup rows (2026-11-19, brief NF-4: simple rows)** (`:is(.pane-mu,.pane-po) .cr.lu:not(.psr)`): one shade on
+   every row, `--blue-2` + `--grain` at 96px (no alternation, no slot groups, no per-slate shade; `.lgs` stays in Classic's markup, no retro
+   rule keys on it). One `::before` per row (inset 0) draws, in this order, the block's 1px `--black` side frame (`inset 1px 0 0 0`,
+   `inset -1px 0 0 0`), then `--pt` / `--rt` at its top and `--pb` at its foot: `--rt` = `inset 0 1px 0 0 var(--row-divider)` (`--blue-3`)
+   on every row that follows another row of its block (`.cr.lu:not(.psr)+.cr.lu:not(.psr)`), so there is a line between every two
+   players; `--pt` / `--pb` = the black frame at the top of a block's first row and the foot of its last (side frame listed first, so the
+   frame stays continuous at every join). `0 2px 0 0 var(--black)` under the last row of every block (starters, each Bench / IR / Taxi
+   group, each slate). No lip, no bevel, no gap: Classic's spacing. Projection cells: no fill, no side lines. Final cells (`.fs.up` / `.dn`):
+   `--res-up` / `--res-dn` over plain `--blue-2`, closed by a full `inset 0 0 0 1px` ring in `--win` / `--loss`, radius 0. LIVE cells
+   (`.fs.lv`): no tint, no ring; white figure + the word LIVE in `--yellow`. Centre line (row `::after`): 2px `--blue-3` at
+   `left: calc(50% - 1px)`. **Panel** (Matchups `section.mux`, Playoffs `.pox` and its 12px spread ring): `--blue` + grain, one step
+   lighter than `--deck` by decision (NF-4): the rows stand off it 1.25:1 instead of sitting in a darker "field". The cards on the panel
+   (unselected matchup tiles `.mpk label.g4`, result card `.mcard`, bracket cards `label.pbm`, bye cards `.pbyt`) are `--blue-2` (1.29:1
+   against `--blue` by token); the selected matchup tile keeps `--blue` + its white ring. Texture level 2: grain also on the strips
+   `.msh.lbh`, slate headers, the Points band and the pinned Optimal total, never on dark-ink tiles / chips, the VS chip, the win bar,
+   the selected tile or the week menu (rule 8). Measured values under "Decisions (2026-11-19, simple rows + lighter panel)". (History:
+   2026-11-18 RL ship framed `--blue-3` bands; PL-1 plates and wells; 2026-11-19 RL-7 slat board; FS-1 flat rows by slot group. All
+   retired.)
 2. **Type treatment by role, and the dark-ink rule.** T2 (black 2px outline under the fill + 2px hard shadow): header
    title, weeks-left figure, team names, records, group buttons, rank-tile digits (18px and up). T1 (1px hard shadow,
    no outline): every other light text. T0 (nothing): dark text on a light tile, and chip digits and letters (rank
