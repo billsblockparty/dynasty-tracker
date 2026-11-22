@@ -1218,3 +1218,59 @@ html.retro .pane-po .mcr.ltot2{background-image:var(--grain)!important;backgroun
    (where a strip follows flush it covers the strip's top 2px). No sideways offset: the rows end 1.5px from the panel frame. */
 html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):not(.cr.lu:not(.psr)+*){--pt:inset 0 1px 0 0 var(--black)}
 html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):not(:has(+.cr.lu:not(.psr))){--pb:inset 0 -1px 0 0 var(--black);box-shadow:0 2px 0 0 var(--black)!important}
+
+/* ================= Team Hub › Draft (briefs TD-2 .. TD-5; Nicklaus approved the TD-4 mock 2026-11-20 21:34 ET). Scoped html.retro .tqfv.
+   Structure is Classic's (th_build.py: number column, header row, line weights, grid from 1366px); this block is the retro surface only.
+   Lines: --tqf-thin (1px between two picks of a round) and --tqf-thick (3px between rounds, at the top and foot of every year strip,
+   between years and as the desktop column rules) both --black. Rows: --grain at 96px over a round ramp, R1 lightest -> R4 darkest:
+   --blue, --tqf-r2, --tqf-r3, --tqf-r4 = 82 / 63 / 45% of --blue over --black (Draft-only derived steps, RETRO.md); the startup draft
+   = one continuous ramp of 15 equal-ratio steps, round n = --blue x 100*0.45^((n-1)/14) % + black (the rookie ramp's ends). Year strip
+   --tqf-strip = --blue 25% + black (#0d1421, 1.155:1 against the R4 row), label --yellow, count --peri-lt. Header rows (phone RD / PICK /
+   PLAYER, desktop ROUND n) arrive through the tokens (--row-divider = --blue-3, --text-dim, --display) with --yellow heads on desktop.
+   Card: --blue on the --blue-2 plate, 4px corner. Pick tile: the lineup position tile (--pos-* fill, black ink, 1px black side frame).
+   Round numbers: Martian Mono 800 13px, white, T1 shadow from the body rule. */
+html.retro .tqfv{--tqf-thin:var(--black);--tqf-thick:var(--black);--tqf-strip:color-mix(in srgb,var(--blue) 25%,var(--black));
+  --tqf-r2:color-mix(in srgb,var(--blue) 82%,var(--black));--tqf-r3:color-mix(in srgb,var(--blue) 63%,var(--black));--tqf-r4:color-mix(in srgb,var(--blue) 45%,var(--black))}
+html.retro .tqfv .tqfp{background:var(--blue);border-radius:4px}
+html.retro .tqfv .tqfr,html.retro .tqfv .tqfrk .tqfb,html.retro .tqfv .tqfh{background-image:var(--grain);background-size:96px 96px}
+html.retro .tqfv .tqfy{background-color:var(--tqf-strip);background-image:var(--grain);background-size:96px 96px}
+/* the startup strip stands on the panel's 2px black frame: no top line, 3px less above the text (27px between its lines elsewhere) */
+html.retro .tqfv .tqfsu .tqfy{padding-top:8px;box-shadow:inset 0 -3px 0 var(--black)}
+html.retro .tqfv .tqfy>span:first-child,html.retro .tqfv .tqfh>span{color:var(--yellow)}
+html.retro .tqfv .tqfy>span+span{color:var(--peri-lt)}
+/* label and count centred by ink (Martian Mono caps 0.28px low in the box); the count's dot in the middle of its two words' ink */
+html.retro .tqfv .tqfy>span{transform:translateY(-.28px)}
+html.retro .tqfv .tqfy i{margin:0 1px 0 -1px}
+/* -1px (moves a centred line .5px): RD / PICK ink centred over the number column / tile */
+html.retro .tqfv .tqfq>span{transform:none}   /* Classic's -1.67px is Barlow's; Martian Mono caps sit centred in the 9/8 box */
+html.retro .tqfv .tqfq>span:not(:last-child){text-indent:-1px}
+/* -.6px: measured at 3x, the digits' white ink sat .2-.7px right of the column centre (one-digit mean .28, two-digit .53) */
+html.retro .tqfv .tqfrn{font:800 13px/1 var(--display);color:var(--chalk);transform:translateX(-.6px)}
+html.retro .tqfv [style*="--pc:#f7739c"]{--pc:var(--pos-qb)!important}
+html.retro .tqfv [style*="--pc:#5ec6f4"]{--pc:var(--pos-wr)!important}
+html.retro .tqfv [style*="--pc:#fca95c"]{--pc:var(--pos-te)!important}
+html.retro .tqfv .dfn{color:var(--black);border-radius:0;box-shadow:inset 1px 0 0 var(--black),inset -1px 0 0 var(--black);padding:1px 1.2px 0 .8px}
+html.retro .tqfv .tqfg>.tqfr:nth-child(1){background-color:var(--blue)}
+html.retro .tqfv .tqfg>.tqfr:nth-child(2){background-color:var(--tqf-r2)}
+html.retro .tqfv .tqfg>.tqfr:nth-child(3){background-color:var(--tqf-r3)}
+html.retro .tqfv .tqfg>.tqfr:nth-child(n+4){background-color:var(--tqf-r4)}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(1){background-color:color-mix(in srgb,var(--blue) 100.00%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(2){background-color:color-mix(in srgb,var(--blue) 94.46%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(3){background-color:color-mix(in srgb,var(--blue) 89.22%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(4){background-color:color-mix(in srgb,var(--blue) 84.27%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(5){background-color:color-mix(in srgb,var(--blue) 79.60%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(6){background-color:color-mix(in srgb,var(--blue) 75.19%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(7){background-color:color-mix(in srgb,var(--blue) 71.02%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(8){background-color:color-mix(in srgb,var(--blue) 67.08%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(9){background-color:color-mix(in srgb,var(--blue) 63.36%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(10){background-color:color-mix(in srgb,var(--blue) 59.85%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(11){background-color:color-mix(in srgb,var(--blue) 56.53%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(12){background-color:color-mix(in srgb,var(--blue) 53.40%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(13){background-color:color-mix(in srgb,var(--blue) 50.44%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(14){background-color:color-mix(in srgb,var(--blue) 47.64%,var(--black))}
+html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(15){background-color:color-mix(in srgb,var(--blue) 45.00%,var(--black))}
+@media(min-width:1366px){
+  html.retro .tqfv .tqfrk .tqfy{background:none}   /* the year cell is part of its year row (grain from .tqfb) */
+  html.retro .tqfv .tqfp.tqfrk{background:var(--black)}   /* the 3px breaks between years; the card fill above would show through */
+  html.retro .tqfv .tqfrk .tqfh>span::before{background:var(--row-divider)}   /* header row: the column rule in the row's own --blue-3 (as approved: no black rule there) */
+}

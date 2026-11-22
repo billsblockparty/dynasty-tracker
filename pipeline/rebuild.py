@@ -173,7 +173,7 @@ if _os.path.isdir(P+'logos'):
                 _bb=_io.BytesIO();_im.save(_bb,format='WEBP',quality=90,method=6)
                 _u='data:image/webp;base64,'+_b64.b64encode(_bb.getvalue()).decode()
             except Exception:pass
-            _LG+=f'.thr .nfl.tm.n-{_t},.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t},.tpb .nfl.n-{_t},.ppl .nfl.n-{_t},.wrx .nfl.n-{_t},.dfs .nfl.n-{_t},.ptx .nfl.n-{_t},.pts .nfl.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct,.tpb .nfl.n-{_t} .ct,.ppl .nfl.n-{_t} .ct,.wrx .nfl.n-{_t} .ct,.dfs .nfl.n-{_t} .ct,.ptx .nfl.n-{_t} .ct,.pts .nfl.n-{_t} .ct{{visibility:hidden}}'
+            _LG+=f'.thr .nfl.tm.n-{_t},.tqfv .nfl.tm.n-{_t},.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t},.tpb .nfl.n-{_t},.ppl .nfl.n-{_t},.wrx .nfl.n-{_t},.dfs .nfl.n-{_t},.ptx .nfl.n-{_t},.pts .nfl.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct,.tpb .nfl.n-{_t} .ct,.ppl .nfl.n-{_t} .ct,.wrx .nfl.n-{_t} .ct,.dfs .nfl.n-{_t} .ct,.ptx .nfl.n-{_t} .ct,.pts .nfl.n-{_t} .ct{{visibility:hidden}}'
 # THE WIRE tab (best available players), after Players; needs pull_wire.json
 _WR=_dt_os.path.exists(P+'pull_wire.json') and _PL
 _WRCSS=''

@@ -412,11 +412,61 @@ if not _OWN:
 picker=('<div class="tqpk rofb" role="tablist" aria-label="Team" style="--n:'+str(len(H))+';--n2:'+str((len(H)+1)//2)+'">'
         +''.join(f'<label for="thx-{i}" title="{e(t)}"><i class="pav rfi" data-avt="{e(t)}" aria-hidden="true"></i><span>{e(_OWN.get(t) or SHORT0.get(t,t))}</span></label>' for i,t in enumerate(H))+'</div>')
 wks='<div class="tqwk" role="group" aria-label="Week"><span>Week</span>'+''.join(f'<label for="thw-{k}">{k}</label>' for k in range(1,G+1))+'</div>'
+# ---------------------------------------------------------------- Draft view (brief TD-1, 2026-11-19; BBP: dynasty only)
+# Every pick the team MADE (drafts.json field 4 `by` after draft_build.norm(); acquired picks included, the original slot
+# ignored), rookie drafts newest first, then the startup. On the roster = the pick's Sleeper id (Paper Trail draft events)
+# is on the same team's current roster (rosters.json; IR and taxi included). Not on past-season pages, not without a
+# startup draft (YILM is redraft).
+def _dfdata():
+    if _dt_os.environ.get('DT_PAST')=='1':return None
+    try:import draft_build as DB
+    except Exception:return None
+    if not DB.D or not any(d.get('type')=='startup' for d in DB.D.values()):return None
+    try:ev=json.load(open(P+'history/paper/events.json',encoding='utf-8'))
+    except Exception:ev=[]
+    sid={tuple(x['slot']):next((m[1] for m in x['moves'] if m[0]=='player'),None) for x in ev if x.get('type')=='draft' and x.get('kind') in ('startup','rookie')}
+    _rn=lambda n:{'RIPMFL':'Team RIPMFL'}.get(n.replace('\u2019',"'").replace(' \U0001F451','').strip(),n.replace('\u2019',"'").replace(' \U0001F451','').strip())
+    try:ros={_rn(k):{r[0] for r in v} for k,v in json.load(open(P+'rosters.json',encoding='utf-8')).items()}
+    except Exception:ros={}
+    yrs=[]
+    for y in sorted(DB.D,key=lambda y:int(str(y)[:4]),reverse=True):
+        d=DB.D[y];rows,_=DB.norm(d,y)
+        yrs.append((y,d.get('type'),d.get('rounds') or max(r[0] for r in rows),[(r,sid.get((int(str(y)[:4]),r[0],r[1]))) for r in rows]))
+    yrs.sort(key=lambda a:(a[1]=='startup',-int(str(a[0])[:4])))
+    return DB,yrs,ros
+DFD=_dfdata()
+def draft_view(t):
+    if not DFD:return ''
+    DB,yrs,ros=DFD;mine=ros.get(t,set());out=[sec('Draft history','Every pick this team made · <i class="tqfo" aria-hidden="true"></i>\u00a0still on the roster')]
+    def item(r,s):
+        rd,pk,slot,orig,by,pl,pos,nfl=r;on=bool(s) and s in mine
+        dot='<i class="tqfo" role="img" title="On the roster" aria-label="On the roster"></i>' if on else ''
+        return (f'<div class="tqfk{"" if on else " tqfx"}" style="--pc:{DB.PC.get(pos or "","var(--line)")}"><span class="tqfrn" aria-label="Round {rd}">{rd}</span><i class="dfn"><b>{rd}.{pk:02d}</b><span>{e(pos or "")}</span></i>'
+                f'<span class="tqfn"><b title="{e(str(pl).replace("FootballTeam","Football Team"))}">{e(str(pl).replace("FootballTeam","Football Team"))}</b>{DB.badge(nfl).replace('<em class="nfl','<em class="nfl tm',1) if nfl else ""}</span>{dot}</div>')
+    def block(y,typ,R,rows,cls):
+        rr=[(r,s) for r,s in rows if r[4]==t];n=len(rr);k=sum(1 for r,s in rr if s and s in mine)
+        lab=f'{str(y)[:4]} · {"Startup" if typ=="startup" else "Rookie"}'
+        cnt=f'<em>{n} pick{"" if n==1 else "s"}</em>'+(f'<i> · </i><em>{k} on roster</em>' if n else '')
+        h=[f'<div class="tqfb {cls}"><div class="tqfy"><span>{lab}</span><span>{cnt}</span></div><div class="tqfg">']
+        # a draft in which the team made no pick (brief TD-1b): one row "No picks made" at the names' x; desktop spans R1-R4
+        if not n:return ''.join(h)+'<div class="tqfr tqf0"><span class="tqfz">No picks made</span></div></div></div>'
+        for i in range(1,R+1):
+            its=sorted([x for x in rr if x[0][0]==i],key=lambda x:x[0][1])
+            h.append(f'<div class="tqfr"><div class="tqfc">'
+                     +(''.join(item(r,s) for r,s in its) if its else f'<span class="tqfrn" aria-label="Round {i}">{i}</span><span class="tqfz" aria-label="No pick">–</span>')+'</div></div>')
+        return ''.join(h)+'</div></div>'
+    rk=[a for a in yrs if a[1]!='startup'];su=[a for a in yrs if a[1]=='startup']
+    R4=max([a[2] for a in rk]+[1])
+    out.append('<div class="tqfp tqfrk" style="--tqfn:'+str(R4)+'"><div class="tqfq"><span title="Round" aria-label="Round">RD</span><span>Pick</span><span>Player</span></div><div class="tqfh" aria-hidden="true"><span></span>'+''.join(f'<span>R<i>ound </i>{i}</span>' for i in range(1,R4+1))+'</div>'
+               +''.join(block(y,ty,R,rows,'') for y,ty,R,rows in rk)+'</div>')
+    out.append(''.join(f'<div class="tqfp tqfsu">{block(y,ty,R,rows,"tqfs")}</div>' for y,ty,R,rows in su))
+    return ''.join(out)
 radios=(''.join(f'<input type="radio" name="thx" id="thx-{i}" class="lr"{" checked" if i==0 else ""}>' for i in range(N))
-        +'<input type="radio" name="tqv" id="thv-d" class="lr" checked><input type="radio" name="tqv" id="thv-t" class="lr">'
+        +'<input type="radio" name="tqv" id="thv-d" class="lr" checked><input type="radio" name="tqv" id="thv-t" class="lr">'+('<input type="radio" name="tqv" id="thv-f" class="lr">' if DFD else '')
         +''.join(f'<input type="radio" name="thw" id="thw-{k}" class="lr"{" checked" if k==G else ""}>' for k in range(1,G+1)))
-ctl=('<div class="tqctl"><div class="pseg tqvs" role="group" aria-label="View"><label for="thv-d">Data</label><label for="thv-t">Trends</label></div></div>')
-pans=''.join((lambda tr:f'<div class="tqp tqp-{i}"><div class="tqdv">{data_view(t)}</div><div class="tqtv"><div class="tqsk">{wks}{tr[0]}</div>{tr[1]}</div></div>')(trends_view(t)) for i,t in enumerate(H))
+ctl=('<div class="tqctl"><div class="pseg tqvs" role="group" aria-label="View"><label for="thv-d">Data</label><label for="thv-t">Trends</label>'
+     +('<label for="thv-f">Draft</label>' if DFD else '')+'</div></div>')
+pans=''.join((lambda tr:f'<div class="tqp tqp-{i}"><div class="tqdv">{data_view(t)}</div><div class="tqtv"><div class="tqsk">{wks}{tr[0]}</div>{tr[1]}</div>'+(f'<div class="tqfv">{draft_view(t)}</div>' if DFD else '')+'</div>')(trends_view(t)) for i,t in enumerate(H))
 JS=('<script>(function(){var VW=%d,PL=%d,PR=%d,G=%d;function pick(sv,x){var r=sv.getBoundingClientRect();var vx=(x-r.left)*VW/r.width;'
     'var k=Math.round((vx-PL)/((VW-PL-PR)/(G-1)))+1;k=Math.max(1,Math.min(G,k));var el=document.getElementById("thw-"+k);'
     'if(el&&!el.checked){el.checked=true;el.dispatchEvent(new Event("change",{bubbles:true}))}}'
@@ -517,6 +567,86 @@ css+=('.tqew{display:grid;grid-template-columns:1fr 1fr;column-gap:14px}'
       '.tqew span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;color:var(--label)}'
       '.tqew b{flex:none;font-family:var(--display);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;color:var(--steel)}'
       '.tqew b.up{color:var(--win)}.tqew b.dn{color:#ff8a9a}')
+# Draft view (briefs TD-1 .. TD-5, 2026-11-20): every selector scoped to .tqfv. Structure (both looks): a number column (.tqfrn,
+# --tqfrw 28px) and one header row (.tqfq RD / PICK / PLAYER) on phones; two line weights: --tqf-thin (1px between two picks of a
+# round) and --tqf-thick (3px between rounds, at the top and foot of every year strip, between years and as the column rules of the
+# grid from 1366px). Classic: one row shade (--deck), year strip --pg, thin --row-divider, thick --pg, header row --row-divider.
+# The retro theme (retro/theme.css, "Team Hub › Draft") re-points the two lines to --black and adds the round ramp and the strip step.
+# Pick tile = the Drafts list's .dfn declarations repeated here (draft_css.css is the Drafts tab's CSS: never relied on from Team Hub);
+# strip = the Paper Trail sheet's season strip (.ptsy).
+def _dfnum(p):
+    # number-column row form: phones (p = '.tqfv ') and the startup grid from 1366px (p = '.tqfv .tqfsu ')
+    return (f'{p}.tqfr{{grid-template-columns:minmax(0,1fr);column-gap:0;padding-left:0}}'
+            f'{p}.tqf0 .tqfz{{padding-left:calc(var(--tqfrw) + 56px)}}'
+            f'{p}.tqfk{{grid-template-columns:var(--tqfrw) 46px minmax(0,1fr) 18px;column-gap:0}}'
+            f'{p}.tqfk .tqfn{{margin-left:10px}}{p}.tqfk>.tqfo{{justify-self:end}}'
+            f'{p}.tqfrn{{display:block;width:var(--tqfrw);font:700 14px/1 var(--display);color:var(--text-dim);text-align:center;text-box:trim-both cap alphabetic;align-self:center;transform:translateY(.67px)}}'   # .67px: digit ink sat 2 device px (3x) above the row centre
+            f'{p}.tqfc:has(>.tqfz){{flex-direction:row;align-items:center}}{p}.tqfc>.tqfrn{{flex:none}}{p}.tqfc>.tqfrn+.tqfz{{padding-left:56px}}')
+if DFD:
+    css+=('.thx2 .tqfv{display:none}#thv-f:checked~.tqctl label[for="thv-f"]{background:var(--chalk);color:var(--ink)}'
+      '#thv-f:checked~.tqp .tqdv{display:none}#thv-f:checked~.tqp .tqfv{display:block}'
+      '.tqfv{--tqfrw:28px;--tqf-thin:var(--row-divider);--tqf-thick:var(--pg)}'
+      '.tqfv .tqfp{background:var(--row-divider);border:2px solid var(--frame);border-radius:var(--r-panel);box-shadow:var(--sh-hard);overflow:hidden;margin:0 0 16px}'
+      '.tqfv .tqfh,.tqfv .tqfq,.tqfv .tqfrn{display:none}'
+      # year strip: 3px thick line at its top and foot (inset), 11px / 10px inside them
+      '.tqfv .tqfy,.tqfv .tqfh>span{display:flex;justify-content:space-between;align-items:center;padding:10px 16px 9px;font:700 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);background:var(--pg)}'
+      '.tqfv .tqfy{padding-top:11px;padding-bottom:10px;box-shadow:inset 0 3px 0 var(--tqf-thick),inset 0 -3px 0 var(--tqf-thick)}'
+      '.tqfv .tqfy>span+span{color:var(--steel)}.tqfv .tqfy em{font-style:normal}'
+      # brief TD-2b: label and count centred by ink in the strip (Barlow caps sit 1.67px low in the box; a transform, as text in a
+      # line box only moves in whole px); the dot of the count set in the middle of its two words' ink
+      '.tqfv .tqfy>span{transform:translateY(-1.67px)}.tqfv .tqfy i{margin:0 .33px 0 -.33px}'
+      # rows: one shade; rounds of a rookie draft split by the 3px gap (thick), picks of one round by a 1px painted line (thin)
+      '.tqfv .tqfg{display:flex;flex-direction:column;gap:3px;background:var(--tqf-thick)}'
+      '.tqfv .tqfr{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;padding:0 var(--fr,16px) 0 0;background:var(--deck)}'
+      '.tqfv .tqfc{display:flex;flex-direction:column;min-width:0;margin:0 calc(-1*var(--fr,16px)) 0 calc(-1*var(--fl,0px))}'
+      '.tqfv .tqfk{position:relative;display:grid;grid-template-columns:46px minmax(0,1fr) 8px;column-gap:10px;align-items:center;min-height:46px;padding:0 var(--fr,16px) 0 var(--fl,0px)}'
+      '.tqfv .tqfk+.tqfk{padding-top:1px;min-height:47px}'
+      # lines are painted, not borders: readability.css paints every border --frame (!important, body *:not(...))
+      '.tqfv .tqfk+.tqfk::before,.tqfv .tqfs .tqfr+.tqfr::after{content:"";position:absolute;left:0;right:0;top:0;pointer-events:none}'
+      '.tqfv .tqfk+.tqfk::before{height:1px;background:var(--tqf-thin)}'
+      # startup: every round is one pick, so its rounds are split by a 3px painted line (no gap)
+      '.tqfv .tqfs .tqfg{gap:0}.tqfv .tqfs .tqfr{position:relative}.tqfv .tqfs .tqfr+.tqfr{padding-top:3px}'
+      '.tqfv .tqfs .tqfr+.tqfr::after{height:3px;background:var(--tqf-thick)}'
+      '.tqfv .dfn{align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--pc);color:#0b0e14;font-style:normal;padding:1px 0 0 .3px}'
+      '.tqfv .dfn b{font:700 14px/1 var(--display);text-box:trim-both cap alphabetic}'
+      '.tqfv .dfn span{font:700 11px/1 var(--display);letter-spacing:.06em;text-box:trim-both cap alphabetic}'
+      # name + NFL logo: the Matchups lineup name line (readability.css .cr.lu .cnm b gap 4px; logo 22 x 20px x --rh 1.05 = 23.1 x 21px,
+      # margin-block -2px x 1.05; logo image from rebuild.py _LG, which lists .tqfv .nfl.tm.n-X)
+      '.tqfv .tqfn{display:flex;align-items:center;gap:4px;min-width:0;margin-right:2px}'
+      '.tqfv .tqfn b{min-width:0;white-space:nowrap;font:600 var(--tqfnf,15px)/1.2 var(--body);color:var(--chalk)}'
+      '.tqfv .tqfx .tqfn b{color:var(--text-dim)}'
+      '.tqfv .tqfk .tqfn .nfl.tm{flex:none;width:23.1px!important;height:21px!important;margin:-2.1px 0!important}'
+      '.tqfv .tqfo{flex:none;box-sizing:border-box;width:8px;height:8px;border-radius:50%;border:1px solid var(--frame);background:var(--chalk);background-clip:padding-box}'
+      '.tqfv .tqfz{display:flex;align-items:center;min-height:46px;font:600 15px/1.2 var(--body);color:var(--text-dim)}'
+      '.tqfv .tqfc>.tqfz{padding:0 var(--fr,16px) 0 var(--fl,0px)}'
+      '.tqfv .tqf0 .tqfz{grid-column:1/-1}.tqfv .sxh .tqfo{display:inline-block;vertical-align:middle}'
+      # phones (below 1366px): number column + one header row (the Drafts list round header .dfrh: Barlow 700 12px, .1em caps,
+      # --text-dim, 9px / 8px) on --row-divider; "RD" (title / aria-label "Round") over the numbers, PICK over the tiles
+      '@media(max-width:1365.98px){'
+      '.tqfv .tqfq{display:grid;grid-template-columns:var(--tqfrw) 46px minmax(0,1fr);align-items:center;padding:9px 0 8px;font:700 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);background:var(--row-divider)}'
+      # header: caps ink-centred as the year strip (-1.67px, same font and 1px padding asymmetry); RD / PICK 1px text-indent (moves a
+      # centred line .5px right: the trailing .1em letter-spacing put their ink .5-.67px left of the column / tile centre)
+      '.tqfv .tqfq>span{text-align:center;transform:translateY(-1.67px)}.tqfv .tqfq>span:not(:last-child){text-indent:1px}.tqfv .tqfq>span:last-child{text-align:left;margin-left:10px}'
+      +_dfnum('.tqfv ')+'}'
+      # grid from 1366px: rookie panel = header row "ROUND n" + one grid row per year (120px year cell, one column per round, no
+      # number per cell); startup = 15 rounds in three columns of five, number column as on phones. Years, header foot and column
+      # rules are the thick line (3px)
+      '@media(min-width:1366px){'
+      '.tqfv .tqfrk{display:flex;flex-direction:column;gap:3px;background:var(--tqf-thick)}'
+      '.tqfv .tqfrk .tqfh,.tqfv .tqfrk .tqfb{display:grid;grid-template-columns:120px repeat(var(--tqfn),minmax(0,1fr));column-gap:0}'
+      '.tqfv .tqfrk .tqfh{background:var(--row-divider)}'
+      '.tqfv .tqfrk .tqfh>span{display:block;position:relative;background:none}.tqfv .tqfh i{font-style:normal}.tqfv .tqfrk .tqfh>span:nth-child(n+2){padding-left:15px}'
+      '.tqfv .tqfrk .tqfb{background:var(--deck)}'
+      '.tqfv .tqfrk .tqfy{flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;background:none;box-shadow:none;padding-top:10px;padding-bottom:9px}'
+      '.tqfv .tqfrk .tqfy>span{transform:none}'
+      '.tqfv .tqfrk .tqfy>span+span{display:flex;flex-direction:column;gap:5px}.tqfv .tqfrk .tqfy i{display:none}'
+      '.tqfv .tqfrk .tqfg{display:contents}'
+      '.tqfv .tqfrk .tqfr{position:relative;display:block;--fl:15px;--fr:12px;padding:0 var(--fr) 0 var(--fl);background:none}.tqfv .tqfrk .tqfr:last-child{--fr:16px}'
+      '.tqfv .tqfrk .tqfr::before,.tqfv .tqfrk .tqfh>span:nth-child(n+2)::before,.tqfv .tqfsu .tqfr:nth-child(n+6)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tqf-thick);pointer-events:none}'
+      '.tqfv .tqfrk .tqf0{grid-column:2/-1}'
+      '.tqfv .tqfsu .tqfg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:0}.tqfv .tqfsu .tqfr:nth-child(5n+1){padding-top:0}.tqfv .tqfsu .tqfr:nth-child(5n+1)::after{display:none}'
+      '.tqfv .tqfsu .tqfr{--fr:12px}.tqfv .tqfsu .tqfr:nth-child(n+11){--fr:16px}'
+      +_dfnum('.tqfv .tqfsu ')+'.tqfv .tqfsu .tqfr:nth-child(n+6){padding-left:3px}}')
 open(P+'th_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
     t=H[1];print(t,{k:[round(x,2) if isinstance(x,float) else x for x in v] for k,v in SER[t].items()})

@@ -632,6 +632,18 @@ function luFit(){LUR.length=0;
   window.__luReport=LUR.slice()}
 window.luFit=luFit;
 if(!FL())luFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(luFit);addEventListener('resize',()=>requestAnimationFrame(luFit));document.addEventListener('change',()=>requestAnimationFrame(luFit));document.addEventListener('panebuilt',()=>requestAnimationFrame(luFit));
+// 2026-11-19 (brief TD-1b) Team Hub › Draft names: never clipped / "…". One shared name size per Draft view (--tqfnf on .tqfv, 0.25px
+// steps, 15px down to the 11px floor, luShared), then a name that still does not fit takes the approved short form of a word (LUA);
+// a name with no approved form stays at 11px and is reported (window.__dfReport, needsForm). Read, then write, as luFit.
+function dfFit(){const V=[...document.querySelectorAll('.tqfv')].find(v=>v.offsetParent);if(!V)return;
+  const S=[...V.querySelectorAll('.tqfn b')].filter(b=>b.offsetParent);V.style.removeProperty('--tqfnf');
+  S.forEach(b=>{if(b.dataset.full){b.textContent=b.dataset.full;delete b.dataset.full}});if(!S.length)return;
+  const k=luShared(V,'--tqfnf',S,parseFloat(getComputedStyle(S[0]).fontSize),11),R={size:k,abbr:[],needsForm:[]};
+  for(const b of S.filter(luOver)){const f=b.textContent,t=f.split(' ').map(w=>LUA[w]||w).join(' ');
+    if(t!==f){b.dataset.full=f;b.textContent=t;R.abbr.push(t)}if(luOver(b))R.needsForm.push(f)}
+  window.__dfReport=R}
+window.dfFit=dfFit;
+if(!FL())dfFit();(document.fonts&&document.fonts.ready||Promise.resolve()).then(dfFit);addEventListener('resize',()=>requestAnimationFrame(dfFit));document.addEventListener('change',()=>requestAnimationFrame(dfFit));document.addEventListener('panebuilt',()=>requestAnimationFrame(dfFit));
 // Remaining schedule (Stats matrix and Team Hub, 2026-11-10): the opponents' points-for rank chips are sized by the rank-tile
 // sizer at 16px (digits ink-centred, 3.5px from the frame, one width for one or two digits) where they sit beside the picture with
 // the average under them. In the one-line desktop cell (Stats, >=1100px) the chip sits beside the average, so its height is that
