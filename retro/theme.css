@@ -1247,6 +1247,16 @@ html.retro .pane-po .mcr.ltot2{background-image:var(--grain)!important;backgroun
 html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):not(.cr.lu:not(.psr)+*){--pt:inset 0 1px 0 0 var(--black)}
 html.retro :is(.pane-mu,.pane-po) .cr.lu:not(.psr):not(:has(+.cr.lu:not(.psr))){--pb:inset 0 -1px 0 0 var(--black);box-shadow:0 2px 0 0 var(--black)!important}
 
+/* --- Empty lineup slot (2026-11-21, briefs ES-1 / ES-1b; RETRO.md "Decisions (2026-11-21, empty lineup slot)"). Classic's block
+   ("2026-11-21 EMPTY LINEUP SLOT", readability.css) does the work: grey tile, "Empty" in --text-dim (= --peri-lt here, T1 by the
+   automatic rule), the band rows' "–" (.fpj, white, Martian Mono 600 13px, --fz indent) on the bottom line, a player row's height.
+   Three retro values, all measured: (1) label margin -.06em (Martian Mono's 3-letter-wide ink sits left in its advance; Classic's
+   -.04em gives back a letter-spacing the retro label does not have); (2) a 4+ letter label (.w4, FLEX) at Classic's 11px also takes
+   letter-spacing -.07em and margin -.02em so its ink clears the frame as DEF's does and is centred across; (3) the name's lift .25em
+   (Classic's .19em is IBM Plex Sans 600's "Empty"). --- */
+html.retro .cr.lu .cn.emp .pq .pqi>span{margin-right:-.06em}
+html.retro .cr.lu .cn.emp .cnm>b>span:first-child{padding-bottom:.25em}
+html.retro .cr.lu .cn.emp .pq.w4 .pqi>span{letter-spacing:-.07em!important;margin-right:-.02em}
 /* ================= Team Hub › Draft (briefs TD-2 .. TD-5; Nicklaus approved the TD-4 mock 2026-11-20 21:34 ET). Scoped html.retro .tqfv.
    Structure is Classic's (th_build.py: number column, header row, line weights, grid from 1366px); this block is the retro surface only.
    Lines: --tqf-thin (1px between two picks of a round) and --tqf-thick (3px between rounds, at the top and foot of every year strip,

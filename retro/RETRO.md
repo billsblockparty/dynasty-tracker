@@ -768,6 +768,24 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   plate's size). Boxes: Matchup / Schedule views 0 moved, 0 px vs main (402P, 1440); Bracket view = the approved PB-1b mock to 0.000px.
   darkink Playoffs 402P + 1440 0 FAIL 0 low; tilechk_r 0; every other tab pixel-identical to main.
 
+## Decisions (2026-11-21, empty lineup slot)
+
+- 2026-11-21 · Briefs ES-1 / ES-1b (Nicklaus 2026-11-20 21:34 ET "ship recs"; second pass after the independent critique): an empty
+  starter slot (Classic markup `mu_build.ecell`, `.cn.emp` / `.cv.emp`; DESIGN.md §6 "Empty starter slot") reads the grey tile with
+  the slot's position, "Empty", no game line, and the band rows' "–" on the points cell's bottom line, at a player row's height.
+  The theme takes Classic's block ("Empty" `--text-dim` = `--peri-lt`, T1 by the automatic rule; the dash is `.fpj`, white Martian
+  Mono 600 13px with its `--fz` indent, the same element and treatment as the IR / Taxi band rows' dash; no tint, no ring), plus
+  theme.css block "Empty lineup slot": label `margin-right:-.06em`; a 4+ letter label (`.w4`, FLEX) at Classic's 11px with
+  `letter-spacing:-.07em` and `margin-right:-.02em`; the name's `padding-bottom:.25em` (Classic's .19em is IBM Plex Sans 600's). No
+  token added.
+- Measured (402P unless named): contrast (lightest pixel under the ink) "Empty" 6.19 on `--blue-2` + grain (lightest 42 / 62 / 106),
+  label 8.28 on the grey tile, "–" 10.54-10.71; WebKitGTK GDK_SCALE 3: label "FLEX" ink L / R / T / B 7.00 / 6.83 / 26.97 / 26.65px
+  (360P / 402P / 440P), 1440 6.80 / 6.96 (DEF 6.53 / 7.29, 1440 6.37 / 7.45); Chromium 7.23 / 7.35; "Empty" ink centre minus tile
+  centre +0.10 (1440 +0.24); dash ink 6.76 x 2.05-2.44 as the band dash, baseline = the opposite small figure's; row 63.31 / tile
+  61.31px with both sides empty. Boxes 0.000px vs main outside the empty side (exceptions in DESIGN.md §6); darkink Matchups 402P +
+  1440 0 FAIL 0 low (9 "Empty" nodes); tilechk_r 0; theme_build's 9 patches apply.
+- Rule 3: the PB-1c wording is in force (Nicklaus approved 2026-11-21 22:15 ET); the 1100px purple zone is retired.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -844,9 +862,7 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    - Check: `darkink` audit under "Checks before shipping" = 0.
 3. **Contrast, computed against the plain (lightest) surface:** ≥ 4.5:1 small text, ≥ 3:1 large text and graphics.
    Text that sits straight on the ground: >= 4.5:1 against the lightest ground pixel under it at every test width (>= 3:1 large text
-   and graphics); measured, not assumed from the zone. (proposed 2026-11-21, brief PB-1c; awaiting Nicklaus) Until approved the rule
-   in force is the old sentence: "Text that sits straight on the ground must stay in the purple zone (first 1100px); the orange end of
-   the gradient is 2.82:1 against white and may only show behind panels." The Playoffs bracket key sits at page-y 1249-1301px (6.90:1).
+   and graphics); measured, not assumed from the zone. The Playoffs bracket key sits at page-y 1249-1301px (6.90:1).
 4. **Selected = the badge** (`--badge` fill, white 2px inner ring, white text); unselected = flat blue with yellow
    (level 1) or `--peri-lt` (level 2, toggles) text. Yellow = labels and the bye tier. Never a coloured bar on a
    card edge. **The selected matchup card is the 1px case** (2026-11-18, brief PL-1): its plate keeps the badge's role with a 1px
