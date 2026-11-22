@@ -393,6 +393,34 @@ html.retro .slx{--sc:var(--white)} html.retro .slx.sx-final{--sc:var(--win)} htm
 html.retro .hrd{opacity:1!important}
 html.retro .pag.ay{color:var(--win)} html.retro .pag.ap{color:var(--yellow)} html.retro .pag.ao{color:var(--loss)}
 html.retro .pox{--ca:var(--peri);--cb:var(--orange)}
+/* Bracket view: the bracket stands on the ground (2026-11-21, briefs PB-1 / PB-1b / PB-1c; Nicklaus "A second pass looks good" 21:36 ET).
+   Only while the Bracket view is shown (#pv-b checked; :has(), Safari 15.4+ / Chrome 105+; an engine without :has() matches none of
+   this and shows the .pox panel whole, as before). Matchup and Schedule views keep .pox exactly. In the Bracket view:
+   - .pox loses its fill, plate, frame and glow and becomes a one-column grid, so a pseudo-element can span the header's rows:
+     .pox::before = the header plate (title .posh, subtitle .prsub, view switch .pvw on grid rows 1-3; the .pox recipe: --blue + grain,
+     12px plate, 2px black frame, 2px hard offset), ending at the switch's bottom (margin-bottom 14px = the switch's own margin, inside
+     row 3), so its plate ends 12px under the switch; .pox::after = the glow over the same rows (12px out on top and sides, 12px under
+     the switch). Grid items paint in order, so the plate (first) lies under the header text with no z-index.
+   - The selected game's panel .bkx takes the .pox recipe (same declarations) and the glow.
+   - Gaps (ink incl. its 1px shadow, WebKitGTK GDK_SCALE 3 the authority): round-heading ink top 16px under the plate's outer frame
+     (.prd margin-top 6px -> -12.4px); key ink bottom 16px over the game panel's outer frame (.bkx margin-top 14px -> 29.4px). The .4 puts
+     both on 16 within 0.17px at 360P / 402P / 440P in WebKitGTK (15.83 / 16.17 at 360P, 15.99 / 16.01 at 402P and 440P). */
+html.retro .pane-po section.pox:has(>#pv-b:checked){display:grid;grid-template-columns:minmax(0,1fr);background:none!important;box-shadow:none!important}
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.posh{grid-row:1;grid-column:1}
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.prsub{grid-row:2;grid-column:1}
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.pvw{grid-row:3;grid-column:1;justify-self:start}
+html.retro .pane-po section.pox:has(>#pv-b:checked)::before{content:"";grid-row:1/4;grid-column:1;margin-bottom:14px;
+  background-color:var(--blue);background-image:var(--grain);background-size:96px 96px;background-repeat:repeat;
+  box-shadow:0 0 0 12px var(--blue),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
+html.retro .pane-po section.pox:has(>#pv-b:checked)::after{position:relative;inset:auto;grid-row:1/4;grid-column:1;margin:-12px -12px 2px}
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.prd{margin-top:-12.4px}
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.bkx{position:relative;margin-top:29.4px;background-color:var(--blue);
+  background-image:var(--grain);background-size:96px 96px;background-repeat:repeat;
+  box-shadow:0 0 0 12px var(--blue),0 0 0 14px var(--black),2px 2px 0 14px var(--black)}
+/* .bkx is a grid item now (its own formatting context): the result card's 6px top margin no longer collapses through it; 0 keeps the
+   card 14px from the plate's outer frame on top, as on the sides */
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.bkx>.bkp>.mcard:first-child{margin-top:0}
+html.retro .pane-po section.pox:has(>#pv-b:checked)>.bkx::after{content:"";position:absolute;inset:-12px;z-index:1;pointer-events:none;box-shadow:inset 0 0 8px 3px var(--glow)}
 html.retro .ddk{border-radius:2px;color:var(--black)}
 /* schedule grid: Classic fades the other week's column to 28% (1.9:1 here); full strength, told apart by the darker cell and dim figures */
 html.retro .psg.psy>*{opacity:1}

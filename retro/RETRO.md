@@ -741,6 +741,33 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   (20 states x 6 widths, bracket panels) and through not started -> live -> final; darkink 0 FAIL 0 low; tilechk_r 0; gapf: only main's
   existing `i.pp.sm` 'QB' pill item.
 
+## Decisions (2026-11-21, bracket on the ground)
+
+- 2026-11-21 · Briefs PB-1 / PB-1b / PB-1c (Nicklaus 2026-11-19 22:50 ET "a lot of blue"; option A second pass approved 2026-11-21 21:36 ET
+  "A second pass looks good"; option B, head strip + bye wells on the panel, dropped). Playoffs › Bracket view only (`#pv-b` checked):
+  the title, subtitle and view switch stand on a **header plate** (the `.pox` recipe: `--blue` + grain, 12px plate, 2px black frame, 2px
+  hard offset, glow; outer left / right / top edges = `.pox`'s, its plate ending 12px under the switch); the bracket (round headings,
+  cards, connectors, key) stands **on the ground**; the selected game's panel `.bkx` takes the `.pox` recipe. Matchup and Schedule views
+  keep `.pox` exactly. No token added, no colour added.
+- CSS (theme.css PART 5, "--- Playoffs ---", block "Bracket view: the bracket stands on the ground"): `section.pox:has(>#pv-b:checked)`
+  (`:has()`: Safari 15.4+, Chrome 105+, Firefox 121+; without it nothing matches and `.pox` shows whole, as before) = one-column grid,
+  no fill / ring / glow; `.posh` / `.prsub` / `.pvw` on rows 1-3 (`.pvw` `justify-self:start`); `.pox::before` (plate) and `.pox::after`
+  (glow, `margin:-12px -12px 2px`) span rows 1-3; plate `margin-bottom:14px` (the switch's own margin) so it ends at the switch. Grid items
+  paint in order: no z-index, no `isolation`, no script (PB-1b's measured `--pbhh` from theme.js was dropped in PB-1c). `.prd` margin-top
+  6px -> -12.4px, `.bkx` 14px -> 29.4px, `.bkx>.bkp>.mcard:first-child{margin-top:0}` (the card's 6px margin no longer collapses through
+  the grid item `.bkx`; keeps it 14px from the plate's outer frame on top, as on the sides).
+- Measured (402P unless named; pixel means, text hidden): blue share below the nav band, viewport 87.4% -> 39.9% (panel 13.3, card 26.6,
+  purple 48.7), full page 78.3% -> 63.9%. Ground at the bracket top 46.34 / 31.56 / 102.18 (lightest 51 / 35 / 112), at its bottom
+  56.51 / 37.13 / 100.32 (lightest 61 / 40 / 108); unselected card / ground 1.32 (top) / 1.23 (bottom); `--peri` connector 5.12 / 4.82,
+  white connector and selected ring 13.0 / 12.2. Gaps, ink incl. its 1px shadow (WebKitGTK GDK_SCALE 3, the authority): round-heading ink
+  top to the plate's outer frame 15.83 / 15.99 / 15.99, key ink bottom to the game panel's outer frame 16.17 / 16.01 / 16.01 at 360P /
+  402P / 440P (Chromium 360P 15.57 / 16.53: whole-CSS-px text snapping). Ground text (lightest pixel under each glyph), lowest
+  "projected path" 11.5px: 6.99 (360P), 6.98 (402P, 440P, 874L), 6.90 (956L, 1440), 7.10 (360); lowest ground glyph page-y 1249-1301px,
+  lightest ground under it 65 / 43 / 109. Header plate text 5.28 ("If the season ended today ...", = main). Selected ring 3 device px
+  on all four sides, every game (as main). Header region vs main: 0 px with grain off; with grain max 7/255 (grain tile resampled at the
+  plate's size). Boxes: Matchup / Schedule views 0 moved, 0 px vs main (402P, 1440); Bracket view = the approved PB-1b mock to 0.000px.
+  darkink Playoffs 402P + 1440 0 FAIL 0 low; tilechk_r 0; every other tab pixel-identical to main.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -786,7 +813,9 @@ tokens. Position labels on the cards are Classic's position colours lightened to
    `--res-up` / `--res-dn` over plain `--blue-2`, closed by a full `inset 0 0 0 1px` ring in `--win` / `--loss`, radius 0. LIVE cells (`.fs.lv`): no tint, no ring; white figure, no word (brief LV-2, 2026-11-20: the game line says Live). Bottom line of
    every score cell: the pre-game projection, white (`--chalk`), T1 by the automatic rule, Martian Mono 13px, ink-centred by `--fz`. Centre line (row `::after`): 2px `--blue-3` at
    `left: calc(50% - 1px)`. **Panel** (Matchups `section.mux`, Playoffs `.pox` and its 12px spread ring): `--blue` + grain, one step
-   lighter than `--deck` by decision (NF-4): the rows stand off it 1.25:1 instead of sitting in a darker "field". The cards on the panel
+   lighter than `--deck` by decision (NF-4): the rows stand off it 1.25:1 instead of sitting in a darker "field". Playoffs › Bracket view (2026-11-21, PB-1c): `.pox` keeps only a header plate
+   (title, subtitle, view switch); the bracket stands on the ground and the selected game's panel `.bkx` takes the panel recipe;
+   Matchup / Schedule views keep `.pox` whole. The cards on the panel
    (unselected matchup tiles `.mpk label.g4`, result card `.mcard`, bracket cards `label.pbm`, bye cards `.pbyt`) are `--blue-2` (1.29:1
    against `--blue` by token); the selected matchup tile keeps `--blue` + its white ring. Texture level 2: grain also on the strips
    `.msh.lbh`, slate headers, the Points band and the pinned Optimal total, never on dark-ink tiles / chips, the VS chip, the win bar,
@@ -814,8 +843,10 @@ tokens. Position labels on the cards are Classic's position colours lightened to
      white or yellow. Do not add a fixed `text-shadow: ... var(--black)` to a selector whose ink Classic decides.
    - Check: `darkink` audit under "Checks before shipping" = 0.
 3. **Contrast, computed against the plain (lightest) surface:** ≥ 4.5:1 small text, ≥ 3:1 large text and graphics.
-   Text that sits straight on the ground must stay in the purple zone (first 1100px); the orange end of the
-   gradient is 2.82:1 against white and may only show behind panels.
+   Text that sits straight on the ground: >= 4.5:1 against the lightest ground pixel under it at every test width (>= 3:1 large text
+   and graphics); measured, not assumed from the zone. (proposed 2026-11-21, brief PB-1c; awaiting Nicklaus) Until approved the rule
+   in force is the old sentence: "Text that sits straight on the ground must stay in the purple zone (first 1100px); the orange end of
+   the gradient is 2.82:1 against white and may only show behind panels." The Playoffs bracket key sits at page-y 1249-1301px (6.90:1).
 4. **Selected = the badge** (`--badge` fill, white 2px inner ring, white text); unselected = flat blue with yellow
    (level 1) or `--peri-lt` (level 2, toggles) text. Yellow = labels and the bye tier. Never a coloured bar on a
    card edge. **The selected matchup card is the 1px case** (2026-11-18, brief PL-1): its plate keeps the badge's role with a 1px
@@ -953,7 +984,8 @@ untouched.
 **Surfaces.** Matchups keeps Classic's panel `.mux` (`--deck` = `--blue-2`, black frame, hard shadow) and gains the
 board's inner glow. Playoffs has no panel in Classic (it sits on the page): here `.pox` is a `--blue-2` plate drawn with
 spread shadows (12px of plate, 2px black frame, 2px hard shadow, the glow), so no box moves and no text sits on the
-ground. The Glossary switch and its text (`.glw`, `.key`), which stand on the orange end of the ground, get the same
+ground. Since 2026-11-21 (PB-1c) the Bracket view is the exception: header plate (title, subtitle,
+switch) + the bracket on the ground + the game panel `.bkx` as a plate; Matchup / Schedule views keep `.pox` whole. The Glossary switch and its text (`.glw`, `.key`), which stand on the orange end of the ground, get the same
 kind of plate (8px) on these two tabs. Cards on a panel are `--blue` (lighter, raised): matchup cards `.g4`, the
 comparison card `.mcard`, bracket games `.pbm` / `.pbyt`. Wells are `--blue-3`: toggle tracks, the team switch, the
 dropdown button, the points band `.ltot.lsb` (periwinkle 1px ring), slate day tiles `.stc`, the "vs" badge.
