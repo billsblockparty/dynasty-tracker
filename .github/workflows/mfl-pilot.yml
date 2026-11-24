@@ -1,0 +1,33 @@
+name: MFL prior-season pilot pull
+
+# Brief PY-1 (2026-11-24): pulls one MyFantasyLeague season (league 68106) plus Sleeper's public NFL data for it and
+# uploads the raw files as a workflow artifact. Runs only on pushes to pilot/** branches. No Pages, no commits.
+on:
+  push:
+    branches: ['pilot/**']
+
+permissions:
+  contents: read
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Pull 2024
+        run: node pipeline/history/mfl_pull.mjs 2024 "$RUNNER_TEMP/mfl_2024_raw"
+      - name: Summary
+        if: always()
+        run: cat "$RUNNER_TEMP/mfl_2024_raw/missing.json" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mfl-2024-raw
+          path: |
+            ${{ runner.temp }}/mfl_2024_raw/*.json.gz
+            ${{ runner.temp }}/mfl_2024_raw/missing.json
+            ${{ runner.temp }}/mfl_2024_raw/pull.log
+          retention-days: 14
