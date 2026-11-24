@@ -119,6 +119,10 @@ for _t in _D.TEAMS:
         _ins=sorted([q for q in _op if q['pid'] not in _ids],key=lambda q:-q['pts']);_outs=sorted([q for q in _st if q['pid'] not in _oi],key=lambda q:q['pts'])
         for _i in _ins:
             _c=[o for o in _outs if o['pos']==_i['pos']] or [o for o in _outs if _i['pos'] in('RB','WR','TE') and o['pos'] in('RB','WR','TE')]
+            if not _c:  # guard (2026-11-24): an empty starter slot in a completed week (hist.json '0||0|0|'): the bench player replaces the empty slot (0 pts); never fatal
+                print(f'WARNING dropped points: {_t} week {_w}: {_i["pid"]} replaces an empty starter slot (0 pts)',file=_sy.stderr)
+                _c=[o for o in _outs if o['pid'] in('0','')]
+                if not _c:_a[_i['pos']]+=_i['pts'];continue
             _o=_c[0];_outs.remove(_o);_a[_i['pos']]+=_i['pts']-_o['pts']
     _DP[_t]=[round(_a[k]/_D.G,2) for k in ['QB','RB','WR','TE','K','DEF']]
 d+='// dropped points per week by position [QB,RB,WR,TE,K,DEF]: bench player who should have started minus the starter he replaces, credited to the bench player\'s position\nconst DP='+json.dumps(_DP)+';\n'

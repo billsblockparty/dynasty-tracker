@@ -93,6 +93,9 @@ for t in TEAMS:
         ins=sorted([q for q in op if q['pid'] not in ids],key=lambda q:-q['pts']);outs=sorted([q for q in s_ if q['pid'] not in oi],key=lambda q:q['pts'])
         for i in ins:
             c=[o for o in outs if o['pos']==i['pos']] or [o for o in outs if i['pos'] in('RB','WR','TE') and o['pos'] in('RB','WR','TE')]
+            if not c:  # guard (2026-11-24): an empty starter slot in a completed week: the bench player replaces it (0 pts); rebuild.py prints the warning; never fatal
+                c=[o for o in outs if o['pid'] in('0','')]
+                if not c:a[i['pos']]+=i['pts'];continue
             o=c[0];outs.remove(o);a[i['pos']]+=i['pts']-o['pts']
     DP[t]=[a[k]/G for k in ORD]
 CLS=SB.CL;STS=SB.ST;YOS=SB.YO;HES=SB.HE;BYS=SB.BY;HRT=SB.HRT
