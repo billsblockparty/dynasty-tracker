@@ -56,13 +56,13 @@
   "Sleeper 2026": {
    "waiver:complete": 73,
    "waiver:failed": 30,
-   "free_agent:complete": 305,
-   "trade:complete": 21,
+   "free_agent:complete": 306,
+   "trade:complete": 22,
    "commissioner:complete": 1,
    "draft:rookie": 40
   }
  },
- "events": 3074,
+ "events": 3076,
  "player_map": {
   "dynastyprocess": 460,
   "defense": 32
@@ -730,6 +730,12 @@
    "sleeper_start": "Nuts in the Face"
   },
   {
+   "pick": "2028 R2 (Bill's Block Party)",
+   "mfl_snapshot": null,
+   "mfl_replay": "Bill's Block Party",
+   "sleeper_start": "Bill's Block Party"
+  },
+  {
    "pick": "2028 R2 (Mandingoes)",
    "mfl_snapshot": null,
    "mfl_replay": "Mandingoes",
@@ -802,7 +808,7 @@
    "sleeper_start": "Reverse Apache Master"
   }
  ],
- "picks": 235,
+ "picks": 236,
  "roster_stitch": {
   "Bill's Block Party": {
    "mfl_end": 17,
