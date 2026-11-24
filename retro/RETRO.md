@@ -786,6 +786,18 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   1440 0 FAIL 0 low (9 "Empty" nodes); tilechk_r 0; theme_build's 9 patches apply.
 - Rule 3: the PB-1c wording is in force (Nicklaus approved 2026-11-21 22:15 ET); the 1100px purple zone is retired.
 
+## Decisions (2026-11-24, Paper Trail trade step)
+
+- 2026-11-24 · Brief PT-1e (Nicklaus chose V2 14:02 ET, recs 14:04 / 14:19 ET; DESIGN.md §6 Paper Trail "Trade step in a sheet"):
+  the sheet's trade rows lose "Traded to / From"; the logo slot holds the Stats › Trades swap badge (fill `--swap-fill` `#8da3d1`,
+  black glyph, the theme's `--sh-hard`; the same values on Stats' `.txsw`, which the theme otherwise leaves to the tokens); one headed
+  column per team (18px logo with the theme's white ring + black 1px hard shadow, Martian Mono name, 1px rule in black: the §2.15 border rule paints it `--frame`, as the sheet's row dividers). theme.css
+  block "Paper Trail sheet, trade step": `--ptak:2px` (the ring's black shadow reaches 2px under the box) so Classic's `gapFit` keeps
+  6px of ink each side of the rule; `--swap-fill`. Structure stays in paper_build.py. Measured in WebKitGTK 3x at 473 CSS px: rule
+  gaps 6.00-6.06px above, 6.00 below (16 heads); darkink (Paper Trail + Stats, 440P / 1440) 0 FAIL 0 low; gapf3 0 (360P-1440);
+  ovf3 / ovf4 0; gapf4 5 at 402P, all Stats › Ranks "10" chips, the same 5 on main.
+- **Retro is BBP only** (Nicklaus 2026-11-24 14:05 ET: "YiLM will always be Yilm, retro is only for non YILM tracker").
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -808,6 +820,7 @@ New for the tracker (each a mix of two palette colours):
 | startup ramp (Team Hub › Draft only, 15 rules, no token) | round n = `--blue` × 100·0.45^((n−1)/14) % + black: 100.00 / 94.46 / 89.22 / 84.27 / 79.60 / 75.19 / 71.02 / 67.08 / 63.36 / 59.85 / 56.53 / 53.40 / 50.44 / 47.64 / 45.00 % (#354e84 … #18233b) | startup draft rows, one equal-ratio step per round, ends = the rookie ramp's ends (brief TD-4b) |
 | `--tqf-strip` (Team Hub › Draft only) | `#0d1421` (`--blue` 25% + black) | year strip, darker than the R4 row (1.155:1 from pixels); label `--yellow`, count `--peri-lt` (brief TD-4b) |
 | `--tqf-thin` `--tqf-thick` (Team Hub › Draft only) | `--black` (Classic: `--row-divider` / `--pg`) | 1px line between two picks of a round / 3px line between rounds, at strip edges, between years and as desktop column rules (brief TD-4, TD-5) |
+| `--swap-fill` (Classic token, retro value; 2026-11-24, brief PT-1e) | `#8da3d1` (`--blue` lightened in HSL to the first value >= 3.2:1 on `--blue`) | trade swap badge fill (Stats › Trades `.txsw`, Paper Trail sheet `.ptswb`): 3.22:1 on `--blue`, 4.16:1 on `--blue-2`; glyph black 8.29:1 |
 | ~~`--plate` `--plate-hi` `--lip` `--well` `--well-sh` `--tile-foot` `--slat-sh`~~ | removed 2026-11-19 (brief FS-1) | rule 13 recipe, not in use |
 
 Classic's tokens are re-pointed in `html.retro:root` (38 overrides): `--pg` purple, `--frame` black, `--deck`
@@ -1216,6 +1229,8 @@ tile fitter then sizes the chip to that label's cap height (14 x 10px with an 8.
 row's divider. The left-hand chip has no cell before it and keeps 20 x 17px. Here: theme.js item 5 (rule 10). To report to the
 Classic builder.
 
+**Paper Trail sheet, trade step (2026-11-24):** see "Decisions (2026-11-24, Paper Trail trade step)": swap badge in the logo slot, headed team columns, `--ptak` 2px, `--swap-fill`.
+
 **Not changed on purpose.** Row heights and grids, Classic's fitters, the horizontal scroll strip of the Leaderboards pills on
 phones (Classic's: "EFF" and later pills are reached by scrolling), sizes under 11px that are
 Classic's own (Compare chart axis: 10 svg units, 14.5px on a 440P screen), the Leaderboards rows (dividers only, no alternating
@@ -1293,6 +1308,8 @@ it had 0.8px under the capitals).
 box clips at 42.8px). Board between 1100 and 1239px: last names at tracking -.085em, so the fitter keeps "England Patriots" on
 one line (11.5px; Classic 12.5px on one line, the theme's default tracking wrapped it). Glossary: a bold term does not break.
 
+**Paper Trail sheet, trade step (2026-11-24):** see "Decisions (2026-11-24, Paper Trail trade step)": swap badge in the logo slot, headed team columns, `--ptak` 2px, `--swap-fill`.
+
 **Not changed on purpose.** Row heights and grids, Classic's fitters (`nameFit`, `holdFit`, `slotFit`, `trFit`, the board's name
 fitter), the trade rows' text forms (a pick shows its full form where that fits: "2026 R2 (Reverse Apache Master)" on a 440P
 screen), the plate standing flush under the navigation band and against the Glossary plate (as Players), the 3px black divider
@@ -1356,6 +1373,8 @@ fitter's padding difference); nothing else moves. Measured from pixels (`chipm.p
 right padding allowed for its .06em tracking), "All", pick chips, position pills and heads, FAAB tile, "Wk N" and "+N pts lost"
 (shadow off), close / blowout margins, "cost the win", "WON", bye-list rank chips, the unfitted rank chips of Points by position.
 Hero streak tile: a cap-trimmed line with 3px above and below (Classic 1px / 0).
+
+**Paper Trail sheet, trade step (2026-11-24):** see "Decisions (2026-11-24, Paper Trail trade step)": swap badge in the logo slot, headed team columns, `--ptak` 2px, `--swap-fill`.
 
 **Not changed on purpose.** Row heights and grids, Classic's fitters (`sosFit`, the tile fitter, `pcnFit`), the Trades side headers'
 ellipsis (Classic's by design), the horizontal scroll strip of the section pills on phones, SVG axis text sizes (Classic's own: 10

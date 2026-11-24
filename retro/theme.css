@@ -697,6 +697,13 @@ html.retro :is(.ptx,.pts) .pav.av:not(#_),html.retro .ptv-k :is(.ptl1,.ptvl) .pa
 /* sheet: the season strip is a --blue-3 head strip (Classic: the page colour), the close button a 4px-corner button */
 html.retro .pts .ptsy{background:var(--blue-3)}
 html.retro .pts .ptsx{border-radius:4px}
+/* Paper Trail sheet, trade step (2026-11-24, brief PT-1e). Column heads: the picture's ring here is white 1px + a 1px black
+   hard shadow, so its ink reaches 2px under its box (--ptak; Classic 1.5px): gapFit (paper_build.py) keeps 6px of ink between
+   it and the 1px head rule (black: Classic's border rule paints every border --frame), and 6px between the rule and the first item (Martian glyph outlines).
+   Swap badge fill --swap-fill (NEW token, Stats › Trades .txsw and the sheet's .ptswb): --blue lightened to the first value
+   >= 3.2:1 on --blue (3.22:1; 4.16:1 on --blue-2); glyph --frame (black) 8.29:1. */
+html.retro .pts{--ptak:2px}
+html.retro:root{--swap-fill:#8da3d1}
 /* Picks, right-hand columns (rule 11 and "by glyph ink"). Classic centres the TIMES / TRADED and VIA heads and the coach names
    under the VIA pictures with a canvas measurement (an inline transform): glyph ink in Chromium, the advance box in WebKitGTK.
    Here the transform is off and each line is centred by its own first and last glyph (--ix, theme.js item 4; - .05em for the

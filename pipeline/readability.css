@@ -1527,3 +1527,9 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
 .cr.lu .cn.a.emp .cnm>b>span:first-child{left:0}
 .cr.lu .cn.b.emp .cnm>b>span:first-child{right:0}
 .cr.lu .cn.emp .cnm :is(.nfl,.gha){visibility:hidden}
+
+/* 2026-11-24 SWAP BADGE FILL (brief PT-1e; DESIGN.md 4): --swap-fill, a NEW token with one job, the trade swap badge (Stats › Trades
+   .txsw and the Paper Trail sheet's .ptswb). Value = the row hue (--row-lt) lightened (HSL) to the first value >= 3.2:1 on --row-lt:
+   3.22:1 on --row-lt, 4.17:1 on --deck; glyph --frame 5.80:1 (was --row-divider fill + --text-dim glyph, 1.16-1.61:1 against the rows). */
+:root{--swap-fill:#5392a9}
+.txsw{background:var(--swap-fill);color:var(--frame)}
