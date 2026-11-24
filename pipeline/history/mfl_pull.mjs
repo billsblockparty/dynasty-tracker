@@ -18,7 +18,8 @@ if (!/^20\d\d$/.test(Y || '')) { console.error('usage: node mfl_pull.mjs <year> 
 fs.mkdirSync(PARTS, { recursive: true });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MFLGAP = 3500, LID = '68106';
-const MFL = q => `https://api.myfantasyleague.com/${Y}/export?L=${LID}&JSON=1&${q}`;
+// league requests carry L=; NFL-wide ones (nflSchedule, nflByeWeeks) must not, or MFL refuses them
+const MFL = q => /TYPE=nfl/.test(q) ? `https://api.myfantasyleague.com/${Y}/export?JSON=1&${q}` : `https://api.myfantasyleague.com/${Y}/export?L=${LID}&JSON=1&${q}`;
 const A = 'https://api.sleeper.app/v1', S = 'https://api.sleeper.com';
 const missing = {}, log = [];
 let lastMfl = 0;
@@ -33,7 +34,7 @@ async function get(key, url, { mfl = false, tries = 6 } = {}) {
       const r = await fetch(url, { headers: { 'user-agent': 'dynasty-tracker season pull' } }); st = r.status;
       if (!r.ok) throw new Error(r.status + ' ' + url);
       const j = await r.json();
-      if (mfl && j && j.error) throw new Error('MFL error ' + JSON.stringify(j.error).slice(0, 200));
+      if (mfl && j && j.error) { missing[key] = 'MFL error ' + JSON.stringify(j.error).slice(0, 200); log.push(key + ': ' + missing[key]); return null; }  // a refusal is not retried
       fs.writeFileSync(f, JSON.stringify(j)); return j;
     } catch (e) {
       log.push(`${new Date().toISOString()} try ${i} ${key}: ${String(e && e.message || e).slice(0, 200)}`);

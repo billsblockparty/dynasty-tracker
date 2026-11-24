@@ -22,6 +22,15 @@ jobs:
       - name: Summary
         if: always()
         run: cat "$RUNNER_TEMP/mfl_2024_raw/missing.json" || true
+      - name: Files into the log (base64, between markers; the sandbox cannot reach the artifact store)
+        if: always()
+        run: |
+          cd "$RUNNER_TEMP/mfl_2024_raw"
+          for f in *.json.gz missing.json; do
+            echo "=====BEGIN $f $(sha256sum "$f" | cut -c1-64) $(stat -c %s "$f")"
+            base64 -w 120 "$f"
+            echo "=====END $f"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
