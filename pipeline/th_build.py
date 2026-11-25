@@ -572,8 +572,8 @@ css+=('.tqew{display:grid;grid-template-columns:1fr 1fr;column-gap:14px}'
       '.tqew b.up{color:var(--win)}.tqew b.dn{color:#ff8a9a}')
 # Draft view (briefs TD-1 .. TD-5, 2026-11-20): every selector scoped to .tqfv. Structure (both looks): a number column (.tqfrn,
 # --tqfrw 28px) and one header row (.tqfq RD / PICK / PLAYER) on phones; two line weights: --tqf-thin (1px between two picks of a
-# round) and --tqf-thick (3px between rounds, at the top and foot of every year strip, between years and as the column rules of the
-# grid from 1366px). Classic: one row shade (--deck), year strip --pg, thin --row-divider, thick --pg, header row --row-divider.
+# round) and --tqf-thick (6px between rounds since TD-6c, 2026-11-25; 3px at the foot of every year strip and on the startup's own
+# card edge; the desktop column rules 6px). Every year is its own raised slate (TD-6c, block after this one). Classic: one row shade (--deck), year strip --pg, thin --row-divider, thick --pg, header row --row-divider.
 # The retro theme (retro/theme.css, "Team Hub › Draft") re-points the two lines to --black and adds the round ramp and the strip step.
 # Pick tile = the Drafts list's .dfn declarations repeated here (draft_css.css is the Drafts tab's CSS: never relied on from Team Hub);
 # strip = the Paper Trail sheet's season strip (.ptsy).
@@ -599,7 +599,7 @@ if DFD:
       # line box only moves in whole px); the dot of the count set in the middle of its two words' ink
       '.tqfv .tqfy>span{transform:translateY(-1.67px)}.tqfv .tqfy i{margin:0 .33px 0 -.33px}'
       # rows: one shade; rounds of a rookie draft split by the 3px gap (thick), picks of one round by a 1px painted line (thin)
-      '.tqfv .tqfg{display:flex;flex-direction:column;gap:3px;background:var(--tqf-thick)}'
+      '.tqfv .tqfg{display:flex;flex-direction:column;gap:6px;background:var(--tqf-thick)}'
       '.tqfv .tqfr{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;padding:0 var(--fr,16px) 0 0;background:var(--deck)}'
       '.tqfv .tqfc{display:flex;flex-direction:column;min-width:0;margin:0 calc(-1*var(--fr,16px)) 0 calc(-1*var(--fl,0px))}'
       '.tqfv .tqfk{position:relative;display:grid;grid-template-columns:46px minmax(0,1fr) 8px;column-gap:10px;align-items:center;min-height:46px;padding:0 var(--fr,16px) 0 var(--fl,0px)}'
@@ -608,8 +608,8 @@ if DFD:
       '.tqfv .tqfk+.tqfk::before,.tqfv .tqfs .tqfr+.tqfr::after{content:"";position:absolute;left:0;right:0;top:0;pointer-events:none}'
       '.tqfv .tqfk+.tqfk::before{height:1px;background:var(--tqf-thin)}'
       # startup: every round is one pick, so its rounds are split by a 3px painted line (no gap)
-      '.tqfv .tqfs .tqfg{gap:0}.tqfv .tqfs .tqfr{position:relative}.tqfv .tqfs .tqfr+.tqfr{padding-top:3px}'
-      '.tqfv .tqfs .tqfr+.tqfr::after{height:3px;background:var(--tqf-thick)}'
+      '.tqfv .tqfs .tqfg{gap:0}.tqfv .tqfs .tqfr{position:relative}.tqfv .tqfs .tqfr+.tqfr{padding-top:6px}'
+      '.tqfv .tqfs .tqfr+.tqfr::after{height:6px;background:var(--tqf-thick)}'
       '.tqfv .dfn{align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--pc);color:#0b0e14;font-style:normal;padding:1px 0 0 .3px}'
       '.tqfv .dfn b{font:700 14px/1 var(--display);text-box:trim-both cap alphabetic}'
       '.tqfv .dfn span{font:700 11px/1 var(--display);letter-spacing:.06em;text-box:trim-both cap alphabetic}'
@@ -645,11 +645,30 @@ if DFD:
       '.tqfv .tqfrk .tqfy>span+span{display:flex;flex-direction:column;gap:5px}.tqfv .tqfrk .tqfy i{display:none}'
       '.tqfv .tqfrk .tqfg{display:contents}'
       '.tqfv .tqfrk .tqfr{position:relative;display:block;--fl:15px;--fr:12px;padding:0 var(--fr) 0 var(--fl);background:none}.tqfv .tqfrk .tqfr:last-child{--fr:16px}'
-      '.tqfv .tqfrk .tqfr::before,.tqfv .tqfrk .tqfh>span:nth-child(n+2)::before,.tqfv .tqfsu .tqfr:nth-child(n+6)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tqf-thick);pointer-events:none}'
+      '.tqfv .tqfrk .tqfr::before,.tqfv .tqfsu .tqfr:nth-child(n+6)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--tqf-thick);pointer-events:none}'
       '.tqfv .tqfrk .tqf0{grid-column:2/-1}'
       '.tqfv .tqfsu .tqfg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:0}.tqfv .tqfsu .tqfr:nth-child(5n+1){padding-top:0}.tqfv .tqfsu .tqfr:nth-child(5n+1)::after{display:none}'
       '.tqfv .tqfsu .tqfr{--fr:12px}.tqfv .tqfsu .tqfr:nth-child(n+11){--fr:16px}'
       +_dfnum('.tqfv .tqfsu ')+'.tqfv .tqfsu .tqfr:nth-child(n+6){padding-left:3px}}')
+# Year slates (brief TD-6c, 2026-11-25; Nicklaus 2026-11-24 22:30 ET, approved 2026-11-25 07:40 ET): every year / draft is its own
+# raised slate (the startup card already was one). Below 1366px the rookie container .tqfp.tqfrk is a bare column of slates .tqfb
+# (2px --frame, --r-panel, --sh-hard, 16px apart); the RD / PICK / PLAYER heads stand once above the first slate on the plate (no fill;
+# 2px side padding = the slate frame, so they keep the columns' x; cap ink 8px above the first slate: --tqfqm, Barlow 5.67px). The year
+# strip is the slate's head: no line above it. From 1366px each year row is a slate under one ROUND n head row on the plate (--tqfhm).
+# A round without a pick ("–") is 28px tall below 1366px, its number and dash centred by ink (--tqfny / --tqfzy).
+if DFD:
+    css+=('.tqfv .tqfp.tqfrk{background:none;border:0;border-radius:0;box-shadow:none;overflow:visible}'
+      '.tqfv .tqfrk>.tqfb{background:var(--row-divider);border:2px solid var(--frame);border-radius:var(--r-panel);box-shadow:var(--sh-hard);overflow:hidden}'
+      '.tqfv .tqfrk>.tqfb+.tqfb{margin-top:16px}'
+      '.tqfv .tqfy{box-shadow:inset 0 -3px 0 var(--tqf-thick)}'
+      '@media(max-width:1365.98px){'
+      '.tqfv .tqfq{background:none;padding:0 2px;margin:0 0 var(--tqfqm,5.67px)}'
+      '.tqfv .tqfc>.tqfz{min-height:28px}.tqfv .tqfc:has(>.tqfz)>.tqfrn{translate:0 var(--tqfny,-.33px)}.tqfv .tqfc:has(>.tqfz)>.tqfz{translate:0 var(--tqfzy,-.17px)}'
+      '}'
+      '@media(min-width:1366px){'
+      '.tqfv .tqfrk{gap:0;background:none}'
+      '.tqfv .tqfrk .tqfh{background:none;padding:0 2px;margin:0 0 var(--tqfhm,7px)}.tqfv .tqfrk .tqfh>span{padding-top:0;padding-bottom:0}'
+      '}')
 open(P+'th_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
     t=H[1];print(t,{k:[round(x,2) if isinstance(x,float) else x for x in v] for k,v in SER[t].items()})

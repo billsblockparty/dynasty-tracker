@@ -837,6 +837,28 @@ links here ("Tracker"). Below, "the copy" means this page.
   (47 chunks + index.html, build stamp aside); boxes at 402P: Stats 0 changed, Team Hub only `.sxr` game-row children resized,
   0 moved, page heights identical; tilechk_r 360P / 402P / 440P 0; ovf4 402P / 360P 0; theme_build's 9 patches apply.
 
+## Decisions (2026-11-25, Draft year slates)
+
+- 2026-11-25 · Briefs TD-6 .. TD-6c (Nicklaus 2026-11-24 22:30 ET from his iPhone: "separate the years from each other so each year is
+  its own raised slate ... visually separate the rounds even more"; recommendations approved 2026-11-25 07:40 ET; DESIGN.md §6 "Team
+  Hub › Draft", §9). Structure in th_build.py (block "Year slates", both looks); the theme's part is theme.css "Team Hub › Draft" +
+  its "Year slates" sub-block (surface values only):
+  - every year / draft is its own slate: `--blue` under its rows, 2px black frame, 4px corner, `2px 2px 0` black shadow, on the
+    `--blue-2` plate, 16.00px apart (layout and pixels, 360P / 402P / 440P / 874L / 1440; WebKitGTK 402P the same). The rookie
+    container has no fill / frame of its own (`html.retro .tqfv .tqfp.tqfrk{background:none;border-radius:0}`; the desktop rule that
+    painted it black for the 3px year breaks is gone).
+  - every year strip stands on its slate's frame like the startup strip did (no top line, padding-top 8px below 1366px: 33 -> 30px);
+    the strip keeps its 3px black foot line.
+  - round break 3 -> 6px black (`--tqf-thick`), also the desktop column rules; the round ramp unchanged (6px black vs R1 / R2 / R3 /
+    R4 2.574 / 2.055 / 1.633 / 1.344:1 computed). Rejected: blocks framed on a dark well (their 1px frame was 1.14:1 against the well:
+    invisible; +140px a team), and 8px (+58px a team over 6px for no visible gain).
+  - heads (RD / PICK / PLAYER on phones, ROUND n from 1366px) once on the plate, no fill, no column rules; Martian Mono cap ink 8.00px
+    above the first slate (`--tqfqm` 6.33px, `--tqfhm` 6px); `--peri-lt` 6.19:1 on `--blue-2`.
+  - a round without a pick is 28px tall below 1366px (was 46px), its number / dash centred by ink with `--tqfny` .67px / `--tqfzy`
+    -.5px (measured 0.00-0.17px off the row centre at 402P); saves 18px per empty round (0-126px a team at 402P).
+  Height against FR-1 at 402P (6px breaks and 28px empty rounds together): +33.33px Team Ram Rod, +96.33px Bill's Block Party, +69.33px
+  Reverse Apache Master (0.03-0.09 screens of 1,027px); 1440 +64px. Pick rows: 0.000px change in x, width and height.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -858,7 +880,7 @@ New for the tracker (each a mix of two palette colours):
 | `--tqf-r2` `--tqf-r3` `--tqf-r4` (Team Hub › Draft only, scoped `.tqfv`) | `--blue` 82% / 63% / 45% + black | rookie round ramp R2 / R3 / R4 (R1 = `--blue`), with `--grain` (brief TD-3 B, approved TD-4 2026-11-20) |
 | startup ramp (Team Hub › Draft only, 15 rules, no token) | round n = `--blue` × 100·0.45^((n−1)/14) % + black: 100.00 / 94.46 / 89.22 / 84.27 / 79.60 / 75.19 / 71.02 / 67.08 / 63.36 / 59.85 / 56.53 / 53.40 / 50.44 / 47.64 / 45.00 % (#354e84 … #18233b) | startup draft rows, one equal-ratio step per round, ends = the rookie ramp's ends (brief TD-4b) |
 | `--tqf-strip` (Team Hub › Draft only) | `#0d1421` (`--blue` 25% + black) | year strip, darker than the R4 row (1.155:1 from pixels); label `--yellow`, count `--peri-lt` (brief TD-4b) |
-| `--tqf-thin` `--tqf-thick` (Team Hub › Draft only) | `--black` (Classic: `--row-divider` / `--pg`) | 1px line between two picks of a round / 3px line between rounds, at strip edges, between years and as desktop column rules (brief TD-4, TD-5) |
+| `--tqf-thin` `--tqf-thick` (Team Hub › Draft only) | `--black` (Classic: `--row-divider` / `--pg`) | 1px line between two picks of a round / 6px line between rounds and as desktop column rules, 3px at a strip's foot (briefs TD-4, TD-5; 6px since TD-6c, 2026-11-25) |
 | `--swap-fill` (Classic token, retro value; 2026-11-24, brief PT-1e) | `#8da3d1` (`--blue` lightened in HSL to the first value >= 3.2:1 on `--blue`) | trade swap badge fill (Stats › Trades `.txsw`, Paper Trail sheet `.ptswb`): 3.22:1 on `--blue`, 4.16:1 on `--blue-2`; glyph black 8.29:1 |
 | ~~`--plate` `--plate-hi` `--lip` `--well` `--well-sh` `--tile-foot` `--slat-sh`~~ | removed 2026-11-19 (brief FS-1) | rule 13 recipe, not in use |
 

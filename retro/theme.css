@@ -1266,17 +1266,31 @@ html.retro .cr.lu .cn.emp .cnm>b>span:first-child{padding-bottom:.25em}
 html.retro .cr.lu .cn.emp .pq.w4 .pqi>span{letter-spacing:-.07em!important;margin-right:-.02em}
 /* ================= Team Hub › Draft (briefs TD-2 .. TD-5; Nicklaus approved the TD-4 mock 2026-11-20 21:34 ET). Scoped html.retro .tqfv.
    Structure is Classic's (th_build.py: number column, header row, line weights, grid from 1366px); this block is the retro surface only.
-   Lines: --tqf-thin (1px between two picks of a round) and --tqf-thick (3px between rounds, at the top and foot of every year strip,
-   between years and as the desktop column rules) both --black. Rows: --grain at 96px over a round ramp, R1 lightest -> R4 darkest:
+   Lines: --tqf-thin (1px between two picks of a round) and --tqf-thick (6px between rounds and as the desktop column rules, 3px at the
+   foot of every year strip; TD-6c, 2026-11-25) both --black. Rows: --grain at 96px over a round ramp, R1 lightest -> R4 darkest:
    --blue, --tqf-r2, --tqf-r3, --tqf-r4 = 82 / 63 / 45% of --blue over --black (Draft-only derived steps, RETRO.md); the startup draft
    = one continuous ramp of 15 equal-ratio steps, round n = --blue x 100*0.45^((n-1)/14) % + black (the rookie ramp's ends). Year strip
    --tqf-strip = --blue 25% + black (#0d1421, 1.155:1 against the R4 row), label --yellow, count --peri-lt. Header rows (phone RD / PICK /
    PLAYER, desktop ROUND n) arrive through the tokens (--row-divider = --blue-3, --text-dim, --display) with --yellow heads on desktop.
-   Card: --blue on the --blue-2 plate, 4px corner. Pick tile: the lineup position tile (--pos-* fill, black ink, 1px black side frame).
+   Slates (TD-6c, 2026-11-25): every year / draft its own slate, --blue under its rows, 4px corner, on the --blue-2 plate, 16px apart. Pick tile: the lineup position tile (--pos-* fill, black ink, 1px black side frame).
    Round numbers: Martian Mono 800 13px, white, T1 shadow from the body rule. */
 html.retro .tqfv{--tqf-thin:var(--black);--tqf-thick:var(--black);--tqf-strip:color-mix(in srgb,var(--blue) 25%,var(--black));
   --tqf-r2:color-mix(in srgb,var(--blue) 82%,var(--black));--tqf-r3:color-mix(in srgb,var(--blue) 63%,var(--black));--tqf-r4:color-mix(in srgb,var(--blue) 45%,var(--black))}
 html.retro .tqfv .tqfp{background:var(--blue);border-radius:4px}
+/* Year slates (TD-6c, 2026-11-25; structure in th_build.py "Year slates"): the rookie container is a bare column of slates; each year
+   .tqfb is a slate (4px corner, --blue under its rows as the old card). Below 1366px the rookie strips stand on the slate frame like the
+   startup strip (8px above the text); Martian Mono values: heads' cap ink 8px above the first slate (--tqfqm / --tqfhm), the 28px empty
+   round's number and dash centred by ink (--tqfny / --tqfzy; Classic's are Barlow / Plex). */
+html.retro .tqfv .tqfp.tqfrk{background:none;border-radius:0}
+html.retro .tqfv .tqfrk>.tqfb{border-radius:4px}
+@media(max-width:1365.98px){
+  html.retro .tqfv .tqfrk>.tqfb{background-color:var(--blue)}
+  html.retro .tqfv .tqfrk .tqfy{padding-top:8px}   /* stands on the slate's frame, as the startup strip */
+  html.retro .tqfv{--tqfqm:6.33px;--tqfny:.67px;--tqfzy:-.5px}
+}
+@media(min-width:1366px){
+  html.retro .tqfv{--tqfhm:6px}
+}
 html.retro .tqfv .tqfr,html.retro .tqfv .tqfrk .tqfb,html.retro .tqfv .tqfh{background-image:var(--grain);background-size:96px 96px}
 html.retro .tqfv .tqfy{background-color:var(--tqf-strip);background-image:var(--grain);background-size:96px 96px}
 /* the startup strip stands on the panel's 2px black frame: no top line, 3px less above the text (27px between its lines elsewhere) */
@@ -1316,8 +1330,6 @@ html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(14){background-color:color-mix(in s
 html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(15){background-color:color-mix(in srgb,var(--blue) 45.00%,var(--black))}
 @media(min-width:1366px){
   html.retro .tqfv .tqfrk .tqfy{background:none}   /* the year cell is part of its year row (grain from .tqfb) */
-  html.retro .tqfv .tqfp.tqfrk{background:var(--black)}   /* the 3px breaks between years; the card fill above would show through */
-  html.retro .tqfv .tqfrk .tqfh>span::before{background:var(--row-divider)}   /* header row: the column rule in the row's own --blue-3 (as approved: no black rule there) */
 }
 /* ================= Score columns (FR-2, 2026-11-24; FR-2b second pass). Team Hub's game lists: Could have won / lost, Close games,
    Season highs faced, Median splits. Classic's Score tracks (92px, Close games 96px) hold Barlow's "109.92–147.32"; in Martian Mono
