@@ -718,6 +718,8 @@ html.retro .ptv-k .ptns{translate:var(--nx,0px) 0}
 html.retro .dfn{padding-right:1px}
 /* points tile: light figure with the 1px shadow */
 html.retro .dfs .dftl{text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
+/* NFL slot (DL-1c, 2026-11-25): Martian slot digits on the RPTS figure's baseline (measured from pixels, 402P / 360P) */
+html.retro .dfx.dfn1{--dfnb:0px}html.retro .dfx.dfn1.dfn11{--dfnb:.6px}
 /* position pill in the sheet's header: dark ink, tracking 0 */
 html.retro .pts .pz{color:var(--black)!important;border-radius:2px;letter-spacing:0!important;text-indent:calc(var(--ix,0em) + var(--iw,0px))}
 /* Rosters, outlook tag (Contender ...): the ring stays, the label is centred on ink + shadow; same 23px height on a cap-trimmed line */

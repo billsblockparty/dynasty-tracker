@@ -859,6 +859,15 @@ links here ("Tracker"). Below, "the copy" means this page.
   Height against FR-1 at 402P (6px breaks and 28px empty rounds together): +33.33px Team Ram Rod, +96.33px Bill's Block Party, +69.33px
   Reverse Apache Master (0.03-0.09 screens of 1,027px); 1440 +64px. Pick rows: 0.000px change in x, width and height.
 
+## Decisions (2026-11-25, Drafts NFL slot)
+
+- 2026-11-25 · Briefs DL-1 .. DL-1c (Nicklaus 2026-11-24 22:34 ET; approved 2026-11-25 07:40 ET; DESIGN.md §6 "Drafts round table").
+  Structure in pipeline/draft_build.py (one-line slot, form per draft view, one RPTS tile width per draft). The theme adds only the
+  Martian Mono baseline offsets after the `.dftl` rule: `html.retro .dfx.dfn1{--dfnb:0px}` (13px) and `.dfx.dfn1.dfn11{--dfnb:.6px}`
+  (11px), so the slot's digits sit on the RPTS figure's baseline (measured from pixels: -0.33..+0.33px at 13px, -0.67..+1.00 at 11px;
+  Classic's Barlow values 1px / 1.7px live in draft_build.py). Slot ink in Martian Mono comes from the font's outlines (wght 600, wdth
+  75, x .875), so RD / PK fields keep one x per draft view in the theme too.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
