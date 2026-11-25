@@ -283,7 +283,8 @@ links here ("Tracker"). Below, "the copy" means this page.
 - 2026-11-11 · Rosters team picker: selected = the badge; the other teams' pictures are dimmed by opacity alone · Classic uses
   `--ink` as the selected fill and `filter:grayscale(1)` on the pictures (rule 8: no filter).
 - 2026-11-11 · A traded pick's banner on the Drafts board is the white ticket with black ink (the colours of the TIMES TRADED tile
-  and the FAAB tile); the VIA box of the list is a `--blue-3` chip with a yellow ring · one motif for "this changed hands"; Classic's
+  and the FAAB tile); the VIA box of the list is a `--blue-3` chip with a yellow ring (superseded 2026-11-25: the list's via mark is a quiet
+  text line, see "Decisions (2026-11-25, Drafts via line)") · one motif for "this changed hands"; Classic's
   gold literals have no token here. Yellow was the alternative (louder: 25 of 40 cells carry a banner in 2026).
 - 2026-11-11 · Board cells: black ink at full strength · Classic dims four of the cell's lines to 70-82% ("QB" in the strip 3.83:1).
 - 2026-11-11 · theme.js item 6: Paper Trail's tile width, column widths and NFL slot edge by Martian Mono's glyph ink · Classic's
@@ -896,6 +897,23 @@ links here ("Tracker"). Below, "the copy" means this page.
   Height against main at 402P: +380px a team (+304px Bill's Block Party), 0.30-0.37 screens of 1,027px. darkink 0 FAIL / 0 low
   (402P, 360P); gapf 3 on the Draft view (main 33; the three left are startup two-digit tiles, |L-R| > .5).
 
+## Decisions (2026-11-25, Drafts via line)
+
+- 2026-11-25 · Briefs VIA-1 .. VIA-1d (Nicklaus 08:28 ET: the original owner is a secondary fact; 11:46 ET "leave the board";
+  approved 14:51 ET; DESIGN.md §6 "Drafts round table", §9). The list's VIA chip (`--blue-3` with a yellow ring) becomes one quiet
+  line "via <owner>" under the GM name (from 760px); structure in draft_build.py (both looks), the theme's part is one rule in
+  theme.css block "Drafts":
+  - colour `--text-dim` = `--peri-lt`, Martian Mono 600 11px, mixed case, no fill / ring; T1 (1px hard black shadow) by rule 2, as
+    the row's other light text; the body's -.05em tracking kept; `word-spacing:-2.455px` (the body's -.22em + .625px) so the real
+    space between "via" and the name gives Classic's 2.75px gap.
+  - `--dfvb` 0px: the name + via glyph ink (shadow pixels not counted, as the avatar's centre is its box without its shadow) sits
+    -0.34 .. +0.15px from the avatar's centre (mean -0.12, Chromium 3x, 760-1099px); Nick / Brian are the -0.34 (the Martian Mono
+    i-dot rises above the cap height), every other name within ±0.15px. Layout moves in whole-px steps (1px of `--dfvb` = 0.5px):
+    1px gives -0.84 .. -0.35. Counting the shadow pixel, 1px would be the match (-0.35 .. +0.14).
+  - contrast 7.03:1 on the GM cell (pixels); darkink 0 FAIL on the Drafts pane. theme.js item 4's `['.pane-df .dfvia',600,1]` entry
+    removed (its `--ix` only fed the chip's padding); `--via-bg` / `--via-line` removed from `html.retro:root`, `--via-ink` from the
+    root token block (nothing reads them). The board banner (white ticket, `--via-bar*`) is unchanged.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -1378,7 +1396,7 @@ the space left of it.
 | `rgba(0,0,0,.12)` ring, `opacity` .70 to .82 on four lines | board cells | 1px black frame, full strength |
 | `rgba(238,240,244,.035)` | empty board cell `.dfc0` | `--blue-3` |
 | `--via-bar` `#e6cf96` and its three literals | traded-pick banner `.dfct` | white, black line and ink |
-| `--via-bg` / `--via-line` gold tints | VIA box of the list `.dfvia` (from 760px) | `--blue-3`, `--yellow` ring |
+| ~~`--via-bg` / `--via-line` gold tints~~ | ~~VIA box of the list `.dfvia` (from 760px)~~ | ~~`--blue-3`, `--yellow` ring~~ (box and tokens removed 2026-11-25, VIA-1) |
 | `rgba(0,0,0,.4)` + a blurred `rgba(0,0,0,.25)` shadow | Paper Trail pictures | white 1px ring, black 1px hard shadow (ring ink still 38px wide) |
 | `--pg` as a strip fill | sheet season strip `.ptsy` | `--blue-3` |
 
@@ -1403,9 +1421,9 @@ WebKitGTK, and knows nothing of the theme's word spacing. Here:
 
 **Chips and tiles (rule 11).** Pick tiles: tracking 0, each line centred by `--ix`. Points tile `.dftl`, outlook tag `.rat`:
 `--ix` - .05em - 1px (light ink with the shadow); the outlook tag keeps its 23px height on a cap-trimmed line (7.125px above and
-below). Taxi tag and position pill: T0, tracking 0, `--ix`. VIA box of the Drafts list (from 760px): a T0 chip, 17px tall (Classic 16px, rows
+below). Taxi tag and position pill: T0, tracking 0, `--ix`. ~~VIA box of the Drafts list (from 760px): a T0 chip, 17px tall (Classic 16px, rows
 unchanged at 50px), `--ix` from the "V" of VIA to the name's last letter shared between its two side paddings (with the shadow
-it had 0.8px under the capitals).
+it had 0.8px under the capitals)~~ (superseded 2026-11-25: one text line, "Decisions (2026-11-25, Drafts via line)").
 
 **Fit.** Original order between 760 and 1099px: "Anderson" (45.6px) may run 1.4px into the 8px gap on each side (Classic's name
 box clips at 42.8px). Board between 1100 and 1239px: last names at tracking -.085em, so the fitter keeps "England Patriots" on
