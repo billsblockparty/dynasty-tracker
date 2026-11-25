@@ -914,6 +914,28 @@ links here ("Tracker"). Below, "the copy" means this page.
     removed (its `--ix` only fed the chip's padding); `--via-bg` / `--via-line` removed from `html.retro:root`, `--via-ink` from the
     root token block (nothing reads them). The board banner (white ticket, `--via-bar*`) is unchanged.
 
+## Decisions (2026-11-25, Paper Trail move types)
+
+- 2026-11-25 · Briefs PT-2 .. PT-2g (Nicklaus approved the PT-2f captures 2026-11-24 22:22 ET; DESIGN.md §6 "Move types in a sheet",
+  §9). Structure in paper_build.py (both looks; `KH` = `--mv-w` defined); the theme's part is theme.css block "Paper Trail sheet,
+  move types" (after `--swap-fill`) and theme.js item 4's `['.pts .ptkr',700,1]`:
+  - type step S2 (`--ptf*` on `.pts`), tiles only on waiver claims (WAIVER, `--mv-w #daac0f`) and free-agent adds (FREE AGENT,
+    `--mv-a #87ac96`): the look's solid chip, Martian 700 11px caps, tracking 0, black ink, 17px, 2px corner, no shadow, one width
+    `--ptkw` 66px, `.667px` padding-top (ink rode 1/3px high); waiver rows one line with the bid "$N" 8px of ink left of the tile.
+  - counts line dots (PT-2g, translator review 2026-11-24: the dot sat 4.3-5.2px nearer the item before it, because the body's
+    -.22em word spacing shortens only the space before the box): `--ptsep` stays 1.05em (items per line unchanged); the dot moves
+    inside its box by `text-indent: calc(.05em + 1.46px + (var(--kd) - var(--ke)) * .4375em)`, `--kd` / `--ke` = the next item's
+    first glyph's left bearing / the previous item's last glyph's right bearing (Martian Mono wght 400 wdth 75 outlines; markup
+    `data-d` / `data-e`). From the outlines the constant is 1.54px; 1.46px centres the two engines (WebKitGTK's whole-pixel advances
+    sit ~.17px off Chromium). Ink gaps before / after, 402P, sheets 5012 / 4943 / 1426 / 10444: Chromium 9.44-9.73 / 9.54-9.84px
+    (after - before -0.06..+0.21; was 6.91-7.45 / 11.75-12.10, +4.29..+5.18), WebKitGTK 3x 9.69-9.92 / 9.60-9.77px (-0.23..-0.04;
+    was 7.19-7.58 / 11.87-12.12, +4.29..+4.91). Every line starts with no dot (first ink 0.98-1.33px right of the box), none ends with one.
+  - measured (WebKitGTK 3x, 402P layout): tiles 17.000px on the device grid, tile centre - line 1 cap centre -0.65 device px, ink
+    FREE AGENT 5.25 / 5.26 / 4.47 / 4.54px (L / R / T / B), WAIVER 15.23 / 15.37 / 4.64 / 4.67, one left edge; bid baseline = line 1
+    baseline (0.000), bid -> tile ink 8.08-8.14px (Chromium 1440 8.01-8.09). darkink (Paper Trail, + 7 move-type sheets) 0 FAIL
+    0 low (Chromium 360P / 402P / 440P / 1440, WebKitGTK 473); tilechk_r 0.
+
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -937,6 +959,8 @@ New for the tracker (each a mix of two palette colours):
 | `--tqf-strip` (Team Hub › Draft only) | `#0d1421` (`--blue` 25% + black) | year strip, darker than the R4 row (1.155:1 from pixels); label `--yellow`, count `--peri-lt` (brief TD-4b) |
 | `--tqf-thin` `--tqf-thick` (Team Hub › Draft only) | `--black` (Classic: `--row-divider` / `--pg`) | 1px line between two picks of a round / 6px line between rounds and as desktop column rules, 3px at a strip's foot (briefs TD-4, TD-5; 6px since TD-6c, 2026-11-25) |
 | `--swap-fill` (Classic token, retro value; 2026-11-24, brief PT-1e) | `#8da3d1` (`--blue` lightened in HSL to the first value >= 3.2:1 on `--blue`) | trade swap badge fill (Stats › Trades `.txsw`, Paper Trail sheet `.ptswb`): 3.22:1 on `--blue`, 4.16:1 on `--blue-2`; glyph black 8.29:1 |
+| `--mv-w` (Classic token name, retro value; 2026-11-25, briefs PT-2 .. PT-2g) | `#daac0f` | Paper Trail sheet WAIVER tile fill: 3.84:1 on `--blue`, 4.96:1 on `--blue-2`; black ink 9.89:1. Outside the loop mixes (PT-2b's search) |
+| `--mv-a` (same) | `#87ac96` | Paper Trail sheet FREE AGENT tile fill: 3.25:1 on `--blue`, 4.19:1 on `--blue-2`; black ink 8.37:1; ΔE00 30.3 from `--mv-w` (deuteranopia / protanopia 24.7 / 22.1) |
 | ~~`--plate` `--plate-hi` `--lip` `--well` `--well-sh` `--tile-foot` `--slat-sh`~~ | removed 2026-11-19 (brief FS-1) | rule 13 recipe, not in use |
 
 Classic's tokens are re-pointed in `html.retro:root` (38 overrides): `--pg` purple, `--frame` black, `--deck`

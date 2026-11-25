@@ -703,6 +703,45 @@ html.retro .pts .ptsx{border-radius:4px}
    >= 3.2:1 on --blue (3.22:1; 4.16:1 on --blue-2); glyph --frame (black) 8.29:1. */
 html.retro .pts{--ptak:2px}
 html.retro:root{--swap-fill:#8da3d1}
+/* Paper Trail sheet, move types (2026-11-24, briefs PT-2 .. PT-2d: option A, type step S2; tiles on adds only, Nicklaus 20:57 ET).
+   Type step S2: the sheet's sizes are paper_build.py's var(--ptf*, <Classic value>) hooks, set here (Classic keeps the fallbacks).
+   Defining --mv-w is what switches the move-type markup on (paper_build.py KH).
+   A tile only on waiver claims and free-agent adds; every other row has none and keeps the three-column row. NEW tokens outside the
+   loop mixes (see PT-2b's search: the position colours, --win, --loss, --swap-fill and --peri-lt cover the hue circle at the lightness
+   3:1 on --blue and 7:1 under black allow):
+   --mv-w waivers     #daac0f  3.84 / 4.96:1 on --blue / --blue-2, black 9.89:1
+   --mv-a free agent  #87ac96  3.25 / 4.19:1, black 8.37:1      dE00 w-a 30.3; deuteranopia / protanopia 24.7 / 22.1
+   Tile = the look's solid chip (Stats › Trades / Paper Trail .pz): Martian 700 11px, caps, tracking 0, T0, black ink, 17px tall,
+   cap-trimmed line centred in a grid, 2px corner. No shadow, by decision: the approved solid chip has none. One width (--ptkw: FREE
+   AGENT, 10 glyphs x .525em + 2 x 4px, rounded up), in a fourth grid column at the row's right inset (W / A rows only). Tile centre on line 1's cap
+   centre, top on the device-pixel grid: paper_build.py kSnap (shared with YILM). */
+html.retro:root{--mv-w:#daac0f;--mv-a:#87ac96}
+html.retro .pts{--ptf1:17px;--ptf2:15px;--ptfh:15px;--ptfi:15px;--ptfc:13.5px;--ptf3:13.5px;--ptfl:17px;--ptfm:15px;--ptfy:14.5px;--ptfdm:13.5px;--ptfdd:20.5px;--ptkw:66px;--ptsep:1.05em}   /* --ptsep: "· " in Martian Mono = 2 x .525em */
+/* down: the cap-trimmed line sits centred, but its ink rides 1/3px high (measured from pixels, both engines: WebKitGTK 3x
+   4.13 / 4.83px, Chromium 4.33 / 4.93px top / bottom): .667px of padding-top moves the centred line down by half of it */
+html.retro .pts .ptkr{display:grid;place-items:center;box-sizing:border-box;height:17px;padding:.667px 4px 0;border-radius:2px;font:700 11px/1 var(--display);text-transform:uppercase;letter-spacing:0!important;
+  text-shadow:none;white-space:nowrap;font-style:normal;text-indent:calc(var(--ix,0em) + var(--iw,0px));color:var(--black)}
+@supports (text-box:trim-both cap alphabetic){html.retro .pts .ptkr{text-box:trim-both cap alphabetic}}
+html.retro .pts .ptkr.ptkt-w{background:var(--mv-w)}html.retro .pts .ptkr.ptkt-a{background:var(--mv-a)}
+/* counts line dots (brief PT-2g, translator review 2026-11-24): the dot sat 4.3-5.2px nearer the item before it (the body's
+   -.22em word spacing, -3.08px, shortens only the space before the box). Box (--ptsep 1.05em), .ptkw's pull and .ptkc's clip unchanged,
+   so every line breaks where it did; the dot moves right inside its box by text-indent = half of (box - dot advance + .05em tracking
+   - the space before it) = .05em + 1.54px (from the outlines; 1.46px here: centres the two engines' measured spread, WebKitGTK's
+   whole-pixel glyph advances put its gaps ~.17px off Chromium's), plus half the difference of the next item's first glyph's left
+   bearing (--kd) and the previous item's last glyph's right bearing (--ke), Martian Mono wght 400 wdth 75 outlines (em at size-adjust
+   .875: x .4375em). paper_build.py writes those glyphs as data-d / data-e. Ink gaps: DESIGN.md §6 "Move types in a sheet". */
+html.retro .pts .ptkn::before{text-indent:calc(.05em + 1.46px + (var(--kd,.1) - var(--ke,.084)) * .4375em)}
+html.retro .pts .ptkn[data-d="0"]{--kd:.055}html.retro .pts .ptkn[data-d="1"]{--kd:.100}html.retro .pts .ptkn[data-d="2"]{--kd:.080}html.retro .pts .ptkn[data-d="3"]{--kd:.075}html.retro .pts .ptkn[data-d="4"]{--kd:.054}html.retro .pts .ptkn[data-d="5"]{--kd:.078}html.retro .pts .ptkn[data-d="6"]{--kd:.075}html.retro .pts .ptkn[data-d="7"]{--kd:.087}html.retro .pts .ptkn[data-d="8"]{--kd:.074}html.retro .pts .ptkn[data-d="9"]{--kd:.075}html.retro .pts .ptkn[data-e="s"]+.ptkn{--ke:.084}html.retro .pts .ptkn[data-e="p"]+.ptkn{--ke:.062}html.retro .pts .ptkn[data-e="t"]+.ptkn{--ke:.076}html.retro .pts .ptkn[data-e="r"]+.ptkn{--ke:.056}html.retro .pts .ptkn[data-e="e"]+.ptkn{--ke:.074}
+html.retro .pts .pte.ptk-a{grid-template-columns:32px 28px minmax(0,1fr) var(--ptkw)}
+/* waiver rows are one line (brief PT-2f): line 1 | the bid "$N" (paper_build.py .ptkf) | tile. --ptrb = the bid's last digit's right
+   bearing, Martian Mono wght 600 at size-adjust .875 (theme.js table B x .875), minus the body text's -.05em tracking (it trails the last
+   glyph and is part of the box), so its ink ends 8px before the tile */
+html.retro .pts .pte.ptk-w{grid-template-columns:32px 28px minmax(0,1fr) max-content var(--ptkw)}html.retro .pts .pte.ptk-w>.ptkr{grid-column:5}
+html.retro .pts .ptkf[data-d="0"]{--ptrb:-0.0167em}html.retro .pts .ptkf[data-d="1"]{--ptrb:-0.0106em}html.retro .pts .ptkf[data-d="2"]{--ptrb:0.0051em}html.retro .pts .ptkf[data-d="3"]{--ptrb:0.0008em}html.retro .pts .ptkf[data-d="4"]{--ptrb:-0.0255em}html.retro .pts .ptkf[data-d="5"]{--ptrb:0.0008em}html.retro .pts .ptkf[data-d="6"]{--ptrb:-0.001em}html.retro .pts .ptkf[data-d="7"]{--ptrb:0.0165em}html.retro .pts .ptkf[data-d="8"]{--ptrb:-0.001em}html.retro .pts .ptkf[data-d="9"]{--ptrb:-0.001em}
+
+html.retro .pts .ptkr{grid-column:4;width:var(--ptkw);align-self:center;position:relative}
+/* a line 2 that wraps never ends on one word (brief PT-2d item 6) */
+html.retro .pts .ptb2{text-wrap:balance}
 /* Picks, right-hand columns (rule 11 and "by glyph ink"). Classic centres the TIMES / TRADED and VIA heads and the coach names
    under the VIA pictures with a canvas measurement (an inline transform): glyph ink in Chromium, the advance box in WebKitGTK.
    Here the transform is off and each line is centred by its own first and last glyph (--ix, theme.js item 4; - .05em for the
