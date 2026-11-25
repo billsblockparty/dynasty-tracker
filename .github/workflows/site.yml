@@ -134,14 +134,9 @@ jobs:
           fi
           mkdir -p site/2025 && cp archive/2025/index.html site/2025/index.html
       - name: Retro edition
-        # separate page at /retro/ (retro/build.py reads pipeline/, writes only site/retro/); never fatal to Classic
+        # separate page at /retro/ (retro/build.py reads pipeline/, writes only site/retro/); never fatal to the tracker
         continue-on-error: true
         run: python3 retro/build.py
-      - name: Retro tracker theme
-        # themed copy of Classic's built page at /retro/tracker/ (retro/theme_build.py reads site/, writes only site/retro/tracker/);
-        # must run after "Retro edition" (that step replaces the whole site/retro/ folder); never fatal to Classic or to the loop
-        continue-on-error: true
-        run: python3 retro/theme_build.py
       - name: Live-game probe (temporary)
         if: steps.mode.outputs.mode == 'live'
         continue-on-error: true
@@ -162,6 +157,13 @@ jobs:
           rm -f .github/selftest
           git add -A pipeline .github
           if ! git diff --cached --quiet; then git commit -m "Weekly data refresh"; git pull --rebase -X theirs origin main; git push; fi
+      - name: Retro tracker theme
+        # BBP's published page (2026-11-24, brief FR-1): Classic's built page + retro/theme.css / theme.js, written to site/index.html
+        # (Classic's page is kept outside site/, in site-classic/, never published); site/retro/tracker/ becomes a redirect to the root.
+        # Must run after "Retro edition" (that step replaces the whole site/retro/ folder) and after "Save season data" (the data commit
+        # happens even when this step fails). No continue-on-error: a failure stops the run before configure-pages / upload / deploy,
+        # so the last good deploy stays live (site/index.html would still be Classic's, which BBP no longer publishes).
+        run: python3 retro/theme_build.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }

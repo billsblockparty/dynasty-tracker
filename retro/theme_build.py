@@ -1,23 +1,35 @@
 #!/usr/bin/env python3
-"""Retro tracker theme ("always-current clone"): a themed copy of Classic's BUILT page.
+"""Retro tracker theme ("always-current clone"): BBP's published page = Classic's BUILT page with the DynastyCast theme.
 
-    python3 retro/theme_build.py            (after Classic has built site/, and after retro/build.py)
+    python3 retro/theme_build.py            (after Classic has built site/, after retro/build.py; re-runnable)
 
-Reads (never writes): site/index.html, site/p/*, site/build.json, retro/theme.css, retro/theme.js (optional), retro/wordmark.svg,
-retro/favicon.html, retro/fonts/.
-Writes: site/retro/tracker/ only (index.html, p/, fonts/, build.json), atomically: everything is assembled in a temp directory
-next to the target and moved into place at the end. Any missing input or any marker that is not found exactly as
-expected: message on stderr, exit 1, and site/retro/tracker/ does not exist (a stale one is removed).
+Since 2026-11-24 (brief FR-1) the themed page IS the site: it is written to site/index.html (the root) and uses Classic's
+site/p/ and site/build.json in place (no copy). Classic's built index.html is kept outside site/ as a build intermediate,
+site-classic/ at the repo root (git-ignored; never published): site-classic/index.html + a symlink to every other entry of
+site/, so `python3 -m http.server` in site-classic/ serves Classic with its chunks (tools/tilechk.py, tools/shots.py,
+retro/qa h.CL). A run finds Classic in site/index.html when that page is not themed yet (no class="retro" on <html>) and saves
+it to site-classic/index.html; when site/index.html is already themed (a second run) it reads the saved site-classic/index.html.
 
-It edits nothing under pipeline/ and nothing of Classic's. The copy differs from Classic's index.html only by the
-patches listed in PATCHES below (each one is checked); the chunks and build.json are byte-for-byte copies.
-Workflow step "Retro tracker theme" (after "Retro edition", continue-on-error). See retro/RETRO.md, "Tracker theme".
+Reads: site/index.html (or site-classic/index.html, see above), site/p/*, site/build.json, retro/theme.css, retro/theme.js
+(optional), retro/wordmark.svg, retro/favicon.html, retro/fonts/.
+Writes: site/index.html (themed), site/fonts/ (Martian Mono), site/retro/tracker/index.html (a redirect to the root that keeps
+location.hash: the old address of the themed copy; retro/build.py replaces the whole site/retro/ folder, so this runs after it),
+site-classic/; removes site/DynastyStandings.html (moved to site-classic/: BBP no longer publishes it).
+Any missing input or any marker that is not found exactly as expected: message on stderr, exit 1, and nothing under site/ is
+changed (site/index.html stays the Classic build, which is NOT fit to publish: the workflow step "Retro tracker theme" has no
+continue-on-error and sits before configure-pages / upload / deploy, so the last good deploy stays live). The themed page is
+written last, with a temp file + rename.
+
+It edits nothing under pipeline/. The themed page differs from Classic's index.html only by the patches listed in PATCHES below
+(each one is checked). See retro/RETRO.md, "Tracker theme".
 """
 import base64, hashlib, os, re, shutil, struct, sys, tempfile, zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(HERE, '..', 'site')
-OUT = os.path.join(SITE, 'retro', 'tracker')
+CLASSIC = os.path.join(HERE, '..', 'site-classic')     # build intermediate: Classic's page (git-ignored, never published)
+OLD = os.path.join(SITE, 'retro', 'tracker')            # old address of the themed copy: a redirect to the root
+THEMED = '<html lang="en" class="retro">'
 # Martian Mono, self-hosted (retro/fonts/, SIL OFL 1.1, the unmodified @fontsource-variable/martian-mono 5.x files:
 # axes wdth 75-112.5 and wght 100-800). Declared in <head>, before any script asks document.fonts for it.
 #   font-stretch:75%   the face is declared as the condensed width only, so the family IS condensed: Classic's fitters
@@ -67,13 +79,24 @@ def grain_png(n=96, seed=1977, amax=40):
     return 'data:image/png;base64,' + base64.b64encode(png).decode()
 
 
-def build(tmp):
+def classic_page():
+    """Classic's built page: site/index.html while it is not themed yet, else the copy saved by an earlier run"""
     src = os.path.join(SITE, 'index.html')
     need(os.path.isfile(src), 'missing site/index.html (build Classic first)')
+    s = open(src, encoding='utf-8').read()
+    if THEMED not in s:
+        return s, True
+    sv = os.path.join(CLASSIC, 'index.html')
+    need(os.path.isfile(sv), 'site/index.html is already themed and site-classic/index.html is missing (rebuild Classic)')
+    s = open(sv, encoding='utf-8').read()
+    need(THEMED not in s, 'site-classic/index.html is themed (rebuild Classic)')
+    return s, False
+
+
+def build(s):
     need(os.path.isfile(os.path.join(SITE, 'build.json')), 'missing site/build.json')
     css_p = os.path.join(HERE, 'theme.css')
     need(os.path.isfile(css_p), 'missing retro/theme.css')
-    s = open(src, encoding='utf-8').read()
     css = open(css_p, encoding='utf-8').read()
     need('</style' not in css and '<' not in re.sub(r'/\*.*?\*/', '', css, flags=re.S), 'retro/theme.css: "<" outside a comment')
     css = once(css, '/*__GRAIN__*/', f'--grain:url({grain_png()});', 'theme.css grain marker')
@@ -100,15 +123,9 @@ def build(tmp):
     need(n <= 1, 'more than one robots meta')
     if n == 0:
         s = once(s, '<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="robots" content="noindex">', 'charset meta')
-    # 5. past-season buttons: the copy has no past seasons of its own, they are Classic's (two levels up)
-    yrs = re.search(r'<nav class="yrs[^"]*"[^>]*>.*?</nav>', s, re.S)
-    if yrs:   # (no year strip when there is one season only)
-        fixed = re.sub(r'href="(\d{4}/)"', r'href="../../\1"', yrs.group(0))
-        s = s.replace(yrs.group(0), fixed, 1)
-    # 6. title
-    t = re.search(r'<title>(.*?)</title>', s, re.S)
-    need(t is not None, 'no <title>')
-    s = s.replace(t.group(0), f'<title>{t.group(1).strip()} · Retro</title>', 1)
+    # 5. (dropped 2026-11-24, FR-1: at the root Classic's own year-button hrefs are right)
+    # 6. (dropped 2026-11-24, FR-1: the title stays Classic's)
+    need(re.search(r'<title>(.*?)</title>', s, re.S) is not None, 'no <title>')
     # 8. header wordmark: Classic's bitmap script art ("League") is replaced by the theme's own vector lockup (retro/wordmark.svg,
     #    THE + LEAGUE drawn as paths). The h1 keeps its accessible name as visually hidden text; the svg keeps the class .lgs so
     #    Classic's height rules size it and the header rows stay where they are. Classic's page is not touched.
@@ -138,14 +155,8 @@ def build(tmp):
     last_style = [m.start() for m in re.finditer(r'<style\b', s)][-1]
     need(s[last_style:].startswith('<style id="retro-theme">'), 'the theme is not the last <style> in the document')
 
-    os.makedirs(os.path.join(tmp, 'p'))
-    os.makedirs(os.path.join(tmp, 'fonts'))
     for f in list(FONT_FILES.values()) + ['OFL.txt']:
         need(os.path.isfile(os.path.join(HERE, 'fonts', f)), f'missing retro/fonts/{f}')
-        shutil.copyfile(os.path.join(HERE, 'fonts', f), os.path.join(tmp, 'fonts', f))
-    with open(os.path.join(tmp, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(s)
-    shutil.copyfile(os.path.join(SITE, 'build.json'), os.path.join(tmp, 'build.json'))   # the refresh pill polls ./build.json
     pd = os.path.join(SITE, 'p')
     names = sorted(os.listdir(pd)) if os.path.isdir(pd) else []
     want = set(re.findall(r'"(p/[\w.-]+\.html)"', s))    # window.LZ manifest
@@ -153,40 +164,83 @@ def build(tmp):
     styled = []
     for nme in names:
         a = os.path.join(pd, nme)
-        if not os.path.isfile(a):
-            continue
-        shutil.copyfile(a, os.path.join(tmp, 'p', nme))
-        if b'<style' in re.sub(rb'<script\b.*?</script>', b'', open(a, 'rb').read(), flags=re.S):
+        if os.path.isfile(a) and b'<style' in re.sub(rb'<script\b.*?</script>', b'', open(a, 'rb').read(), flags=re.S):
             styled.append(nme)
     need(not styled, 'chunks carry their own <style> (would load after the theme): ' + ', '.join(styled[:5]))
-    return len(s.encode()), len(names), hashlib.sha256(css.encode()).hexdigest()[:12]
+    return s, len(names), hashlib.sha256(css.encode()).hexdigest()[:12]
+
+
+# the old address /retro/tracker/ (2026-11-09 .. 2026-11-24): same hash, at the root. Page colour = the theme's --purple.
+REDIRECT = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n<meta name="robots" content="noindex">\n'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>The League</title>\n'
+            '<script>location.replace("../../"+location.hash)</script>\n'
+            '<noscript><meta http-equiv="refresh" content="0;url=../../"></noscript>\n'
+            '<style>html,body{background:#332370;color:#fff}</style>\n</head><body><p><a href="../../" style="color:inherit">The League</a></p></body></html>\n')
+
+
+def write_atomic(path, data, mode='w'):
+    d = os.path.dirname(path)
+    os.makedirs(d, exist_ok=True)
+    fd, tp = tempfile.mkstemp(prefix='.tmp-', dir=d)
+    try:
+        with os.fdopen(fd, mode, **({'encoding': 'utf-8'} if 'b' not in mode else {})) as f:
+            f.write(data)
+        os.chmod(tp, 0o644)
+        os.replace(tp, path)
+    except BaseException:
+        if os.path.exists(tp):
+            os.remove(tp)
+        raise
+
+
+def publish(s, classic, fresh):
+    """everything is checked; write the outputs, the themed root page last"""
+    os.makedirs(CLASSIC, exist_ok=True)
+    if fresh:
+        write_atomic(os.path.join(CLASSIC, 'index.html'), classic)
+    # Martian Mono: site/fonts/ (assembled beside it, then renamed)
+    fd = os.path.join(SITE, 'fonts')
+    tmp = tempfile.mkdtemp(prefix='.fonts-', dir=SITE)
+    try:
+        for f in list(FONT_FILES.values()) + ['OFL.txt']:
+            shutil.copyfile(os.path.join(HERE, 'fonts', f), os.path.join(tmp, f))
+        os.chmod(tmp, 0o755)
+        if os.path.isdir(fd):
+            shutil.rmtree(fd)
+        os.rename(tmp, fd)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    # the old address
+    shutil.rmtree(OLD, ignore_errors=True)
+    write_atomic(os.path.join(OLD, 'index.html'), REDIRECT)
+    # DynastyStandings.html: BBP no longer publishes it (pipeline/build_site.py still writes it; kept beside Classic)
+    ds = os.path.join(SITE, 'DynastyStandings.html')
+    if os.path.isfile(ds):
+        os.replace(ds, os.path.join(CLASSIC, 'DynastyStandings.html'))
+    # site-classic/: a symlink to every other entry of site/ (QA serves Classic from there over http)
+    for n in os.listdir(CLASSIC):
+        q = os.path.join(CLASSIC, n)
+        if os.path.islink(q):
+            os.remove(q)
+    for n in sorted(os.listdir(SITE)):
+        if n in ('index.html', 'DynastyStandings.html') or n.startswith('.'):
+            continue
+        if not os.path.exists(os.path.join(CLASSIC, n)):
+            os.symlink(os.path.join('..', 'site', n), os.path.join(CLASSIC, n))
+    write_atomic(os.path.join(SITE, 'index.html'), s)
 
 
 def main():
-    tmp = None
     try:
-        os.makedirs(os.path.dirname(OUT), exist_ok=True)
-        tmp = tempfile.mkdtemp(prefix='.tracker-', dir=os.path.dirname(OUT))
-        size, n, v = build(tmp)
-        old = None
-        if os.path.exists(OUT):
-            old = OUT + '.old'
-            shutil.rmtree(old, ignore_errors=True)
-            os.rename(OUT, old)
-        os.rename(tmp, OUT)
-        os.chmod(OUT, 0o755)
-        tmp = None
-        if old:
-            shutil.rmtree(old, ignore_errors=True)
-        print(f'retro tracker: wrote site/retro/tracker/ (index.html {size} bytes, {n} chunks, theme {v})')
+        classic, fresh = classic_page()
+        s, n, v = build(classic)
+        publish(s, classic, fresh)
+        print(f'retro tracker: wrote site/index.html ({len(s.encode())} bytes, {n} chunks, theme {v}); Classic in site-classic/ '
+              f'({"saved from this build" if fresh else "kept from the earlier run"}); site/retro/tracker/ = redirect')
     except BaseException as e:
-        if tmp:
-            shutil.rmtree(tmp, ignore_errors=True)
-        shutil.rmtree(OUT, ignore_errors=True)          # never leave a stale or partial copy
-        shutil.rmtree(OUT + '.old', ignore_errors=True)
         if isinstance(e, (KeyboardInterrupt, SystemExit)):
             raise
-        print(f'retro tracker: build failed, site/retro/tracker/ not written: {e if isinstance(e, Bad) else repr(e)}', file=sys.stderr)
+        print(f'retro tracker: build failed, site/index.html not themed (not fit to publish): {e if isinstance(e, Bad) else repr(e)}', file=sys.stderr)
         sys.exit(1)
 
 

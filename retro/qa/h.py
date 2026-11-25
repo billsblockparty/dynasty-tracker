@@ -18,7 +18,9 @@ def setup(pg):
         if n.startswith('martian'): r.fulfill(status=200,content_type='font/woff2',body=open(D+n,'rb').read(),headers={'access-control-allow-origin':'*'})
         else: r.fallback()
     pg.route('https://fonts.local/**',font)
-_B=os.environ.get('QA_BASE','http://127.0.0.1:8830');CL=_B+'/index.html';RT=_B+'/retro/tracker/index.html'
+# themed page = site/ root (since 2026-11-24, FR-1); Classic = site-classic/ (theme_build.py's intermediate) served on its own port
+_B=os.environ.get('QA_BASE','http://127.0.0.1:8830');_C=os.environ.get('QA_CLASSIC','http://127.0.0.1:8831')
+CL=_C+'/index.html';RT=_B+'/index.html'
 def open_page(b,tok,url,h=1000,wait=1800):
     pg,d=device.new_page(b,tok,h);pg.route('**/api.sleeper.app/**',lambda r:r.abort());setup(pg)
     pg.goto(url);pg.evaluate('()=>document.fonts.ready');pg.wait_for_timeout(wait);return pg,d

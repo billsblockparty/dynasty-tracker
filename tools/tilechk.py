@@ -28,7 +28,8 @@ JS='''(tol)=>{const out=[];let n=0;const C=document.createElement('canvas').getC
   n++;const up=top-tr.top,dn=tr.bottom-base;  // up>0: pokes above the cap top; dn>0: below the baseline; <0: short of it
   if(Math.abs(up)>tol||Math.abs(dn)>tol)out.push(lab+' top '+(-up).toFixed(2)+' bottom '+dn.toFixed(2))});
  return {n,out}}'''
-U={'bbp':'/home/claude/dynasty-tracker/site/index.html','yilm':'/home/claude/yilm-tracker.github.io/.season/2026/site/index.html'}
+U={'bbp':os.environ.get('TC_BBP','/home/claude/dynasty-tracker/site-classic/index.html'),  # BBP's Classic page (site/index.html is the retro theme since 2026-11-24)
+   'yilm':'/home/claude/yilm-tracker.github.io/.season/2026/site/index.html'}
 bad=0
 with sync_playwright() as p:
     b=p.chromium.launch()

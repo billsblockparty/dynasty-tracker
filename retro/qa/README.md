@@ -8,10 +8,13 @@ read named files in `retro/` and never this folder; `retro/**` is not in the wor
 
 1. Build: `cd pipeline && python3 run.py build` (the Team Hub's Sleeper 403 offline is expected), `python3 retro/build.py`,
    `python3 retro/theme_build.py`.
-2. For WebKitGTK: `cp tools/mem/frame.html site/__frame.html && cp tools/mem/frame.html site/retro/tracker/__frame.html`
-   (again after every `theme_build.py`: it replaces the folder). The page is loaded in an iframe of the exact width.
-3. Serve `site/` over http: `cd site && python3 -m http.server 8830 --bind 127.0.0.1`. Other address: `QA_BASE=http://host:port`.
-   For the box comparison serve a copy of `site/retro/tracker/` built from the commit before your change on a second port (8832).
+2. For WebKitGTK: `cp tools/mem/frame.html site/__frame.html && cp tools/mem/frame.html site-classic/__frame.html`.
+   The page is loaded in an iframe of the exact width.
+3. Since 2026-11-24 (FR-1) the themed page is the site root: serve `site/` over http, `cd site && python3 -m http.server 8830 --bind 127.0.0.1`
+   (other address: `QA_BASE=http://host:port`). Classic (`h.CL`, for `ovf*.py` and `tilechk_r.py c`) is `theme_build.py`'s intermediate
+   `site-classic/` (Classic's `index.html` + symlinks to the rest of `site/`): `cd site-classic && python3 -m http.server 8831 --bind 127.0.0.1`
+   (other address: `QA_CLASSIC=http://host:port`). For the box comparison serve a copy of `site/` built from the commit before your
+   change on a second port (8832) (before FR-1: that build's `site/retro/tracker/`).
    For `loop.py` serve a folder that holds `build.json` and `retro/index.html` + `retro/data.json` (a copy: `swap` rewrites the two
    json files and restores them).
 4. Run from a scratch folder that has `out/` and `s/` (results are written to `./out`): `mkdir -p out s`.
@@ -44,7 +47,7 @@ layout widths (`518 473 1440`). One WebKitGTK run at a time; run them one after 
 | `icons_png.py` | Not an audit: renders `retro/favicon-16.png` (from `favicon-16.svg`), `favicon-32.png` (from `favicon.svg`) and `favicon-180.png` (then `python3 retro/wordmark_gen.py apply`) | `icons_png.py` |
 | `h.py` `eng.py` `mmfont.py` | Harness: fonts, the two engines behind one interface, the text-on / text-off ink scan | imported |
 
-`$U` = `http://127.0.0.1:8830/retro/tracker/index.html`.
+`$U` = `http://127.0.0.1:8830/index.html` (the site root; was `/retro/tracker/index.html` until 2026-11-24).
 
 ## Reading the results
 

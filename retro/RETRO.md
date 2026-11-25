@@ -1,7 +1,8 @@
 # RETRO.md: the Retro edition ("DynastyCast")
 
-Retro's own design source of truth. `DESIGN.md` governs Classic only and none of its rules apply here; nothing in
-this file applies to Classic. Gradients and glow are allowed here and only here.
+Retro's own design source of truth. Since 2026-11-24 (brief FR-1) the retro look is BBP's only published look: the tracker
+theme below is the site root. `DESIGN.md` governs YILM's look and the structure both sites share; none of its look rules
+apply here, and nothing in this file applies to YILM or to Classic's own build. Gradients and glow are allowed here and only here.
 
 Page: `/dynasty-tracker/retro/` (`site/retro/index.html`, self-contained, plus `site/retro/data.json` for in-place
 updates). BBP only; not ported to YILM.
@@ -12,18 +13,21 @@ updates). BBP only; not ported to YILM.
    `theme.css`, `theme.js`, `wordmark.svg`, `wordmark_gen.py`, the `favicon*` files, `fonts/`; `qa/` holds development audits only).
 2. `retro/build.py` only reads `pipeline/` (as text / JSON; it never imports or runs a pipeline script) and only
    writes `site/retro/`. It shares no CSS, JS or fitting code with Classic.
-3. Nothing under `pipeline/` and nothing in Classic's HTML/CSS/JS is edited for Retro. Classic has no link to Retro.
+3. Nothing under `pipeline/` and nothing in Classic's HTML/CSS/JS is edited for Retro (`pipeline/` stays identical to YILM's
+   shared code). Classic's build has no link to Retro; the published root (the tracker theme) is BBP's only tracker page, and the
+   loop links to it ("Tracker").
 4. The page reads Classic's `../build.json` (read-only) to notice a new deploy. That is its only runtime dependency
    on Classic; `build.py` itself never reads `site/`.
 
 ## Build
 
 - `python3 retro/build.py` (workflow step "Retro edition", directly after "Past seasons (year switch)",
-  `continue-on-error: true`; runs in every mode, so it refreshes with the Tuesday update and the 10-minute live runs).
+  `continue-on-error: true`; runs in every mode, so it refreshes with the Tuesday update and the 10-minute live runs). The
+  tracker theme ("Mechanism" below) runs later, after "Save season data", and a failure there stops the deploy.
 - Atomic: `index.html` and `data.json` are written to a temp directory and moved to `site/retro/` together, only after
   everything succeeded. Any
   missing or malformed input: message on stderr, exit 1, and `site/retro/` does not exist (a stale one is removed).
-  Classic still deploys.
+  The tracker still deploys (the theme step then writes `site/retro/tracker/`, the redirect, again).
 - `retro/**` is not in the workflow's push paths. Test with Actions > Run workflow > build.
 - Needs Pillow (already installed by the workflow's Install step).
 - `template.html` is the page; `build.py` replaces the single marker `/*__RETRO_DATA__*/` with
@@ -181,11 +185,13 @@ replaces the ODL / DYNASTY badge and the ODL favicon of pass 5 (same day, earlie
 
 ---
 
-# Tracker theme (`/retro/tracker/`)
+# Tracker theme (the site root, `/dynasty-tracker/`)
 
-The full tracker in the DynastyCast look: a themed copy of Classic's built page at `/dynasty-tracker/retro/tracker/`.
-The loop above is unchanged. These rules replace DESIGN.md's look rules inside the copy; Nicklaus's precision standards
-carry over. BBP only. No link from Classic or from the loop points here yet.
+The full tracker in the DynastyCast look: Classic's built page with the theme, published at the site root
+`/dynasty-tracker/` since 2026-11-24 (brief FR-1; from 2026-11-09 it was a sandbox copy at `/dynasty-tracker/retro/tracker/`,
+which is now a redirect to the root that keeps the `#hash`). BBP's only look: Classic's own page is a build intermediate and is
+not published. These rules replace DESIGN.md's look rules on BBP; Nicklaus's precision standards carry over. BBP only. The loop
+links here ("Tracker"). Below, "the copy" means this page.
 
 ## Status per tab
 
@@ -525,32 +531,41 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
 
 ## Mechanism ("always-current clone")
 
-- `python3 retro/theme_build.py`: workflow step "Retro tracker theme", directly after "Retro edition",
-  `continue-on-error: true`, every mode. `retro/**` is not in the workflow's push paths.
+- `python3 retro/theme_build.py`: workflow step "Retro tracker theme", every mode, after "Retro edition" and after "Save season
+  data", directly before `configure-pages` / upload / deploy, **no `continue-on-error`** (2026-11-24, FR-1): a failure stops the
+  run before the deploy, so the last good deploy stays live; the data commit has already happened. `retro/**` is in the
+  workflow's push paths (since 2026-11-18).
 - **Build order:** `retro/build.py` replaces the whole `site/retro/` folder on every run (and removes it when it
-  fails), so the theme step must come after it. Loop build fails: `site/retro/` is gone, then this step creates
-  `site/retro/tracker/` again, so the tracker is published without the loop. Theme build fails: only
-  `site/retro/tracker/` is removed; the loop page and Classic are untouched.
-- Reads (never writes): `site/index.html`, `site/p/*`, `site/build.json`, `retro/theme.css`, `retro/theme.js`,
-  `retro/wordmark.svg`, `retro/favicon.html`, `retro/fonts/`. Writes `site/retro/tracker/` only: `index.html`, `p/` (byte-for-byte copies of the chunks),
-  `fonts/`, `build.json` (copy). Atomic: built in a temp folder beside the target, then renamed. Any missing input or
-  marker: message on stderr, exit 1, and `site/retro/tracker/` does not exist.
-- This relaxes hard rule 2 above for this one script: `theme_build.py` reads `site/` (read-only). It edits nothing
-  under `pipeline/` and nothing of Classic's.
-- **The 9 patches** (the only differences from Classic's `index.html`; each is checked and the build fails if one does
+  fails), so the theme step must come after it. Loop build fails: `site/retro/` is gone, the theme step still writes the redirect
+  `site/retro/tracker/index.html`, and the tracker is published without the loop. Theme build fails: the run stops before the
+  deploy (`site/index.html` is then still Classic's build, which is not fit to publish).
+- Reads: Classic's page (`site/index.html` while it carries no `class="retro"`; on a second run, the copy saved in
+  `site-classic/index.html`), `site/p/*` and `site/build.json` (used in place, no copy), `retro/theme.css`, `retro/theme.js`,
+  `retro/wordmark.svg`, `retro/favicon.html`, `retro/fonts/`. Writes, only after every check passed: `site-classic/index.html`
+  (Classic's page; `site-classic/` is git-ignored, never published, and holds a symlink to every other entry of `site/`, so
+  `python3 -m http.server` in it serves Classic with its chunks for `tools/tilechk.py`, `tools/shots.py` and `retro/qa` `h.CL`),
+  `site/fonts/` (Martian Mono), `site/retro/tracker/index.html` (redirect: `location.replace("../../" + location.hash)`, a
+  `<noscript>` meta refresh, `noindex`, page colour `--purple`), moves `site/DynastyStandings.html` into `site-classic/` (BBP no
+  longer publishes the download file; `pipeline/build_site.py` still writes it), and last `site/index.html` (temp file + rename).
+  Any missing input or marker: message on stderr, exit 1, and nothing under `site/` is changed.
+- Re-runnable: a second run reads `site-classic/index.html`, never the themed root page.
+- This relaxes hard rule 2 above for this one script: `theme_build.py` reads and writes `site/`. It edits nothing
+  under `pipeline/`. The 2021-24 archive pages (`pipeline/history_pages.py`, inside `run.py`) lift `<style>` / `<link>` from
+  Classic's `site/index.html` before this step runs, so they stay Classic and byte-identical. `site/2025/` (the year switch) is
+  Classic's page (FR-3 themes it).
+- **The patches** (seven since 2026-11-24: 1-4 and 7-9; the only differences from Classic's `index.html`; each is checked and the build fails if one does
   not apply): (1) `class="retro"` on `<html>`; (2) Classic's Google Fonts link replaced by the self-hosted Martian
   Mono face (`<head>`); (3) the reveal script's four `document.fonts.load()` calls ask for Martian Mono; (4) one
-  `noindex` robots meta (Classic already has it); (5) past-season buttons point at Classic's pages (`../../2025/`);
-  (6) title gets " · Retro"; (8) the header wordmark: `The <img class="lgs">` (Classic's script art) is replaced by visually hidden text "The League"
+  `noindex` robots meta (Classic already has it); (5) and (6) dropped 2026-11-24 (FR-1: at the root Classic's own
+  year-button hrefs are right, and the title stays Classic's); (8) the header wordmark: `The <img class="lgs">` (Classic's script art) is replaced by visually hidden text "The League"
   (`.wm-tx`, the h1's accessible name) + the inline `retro/wordmark.svg` (`aria-hidden`), see "Wordmark"; (7) `<style id="retro-theme">` + `<script id="retro-theme-js">` as the last things in
   `<body>`, after every `<style>` of the page including the ones `lazy.py` moves out of the chunks (the build checks
   that the theme is the last `<style>` and that no chunk carries one); (9) the favicon (2026-11-12): the three self-contained
   `<link>` tags of `retro/favicon.html` after the charset meta; any icon link of Classic's is dropped first and the build checks
   that exactly three remain. After any change to Classic's page shell
-  (head, reveal script, year buttons, style order) run the script and check that all nine still apply.
-- Verified in the copy: chunks load from its own `p/`, `#hash` deep links and the hash kept on tab change, the refresh
-  pill polls its own `build.json`, live scores poll Sleeper as in Classic. Nothing is requested from Classic or from
-  Google.
+  (head, reveal script, year buttons, style order) run the script and check that all seven still apply.
+- Verified at the root (2026-11-24, FR-1): chunks load from `p/`, `#hash` deep links and the hash kept on tab change, the refresh
+  pill polls `./build.json`, `/retro/tracker/#x` lands on `/#x`. Nothing is requested from Google.
 
 ## Font
 
@@ -1528,8 +1543,9 @@ Open items, most visible first. Each names where it was found.
     (10px).
 15. **Short pages / orange ground:** every tab's Glossary now stands on a plate; any free-standing text added later below the first
     1100px would again sit on the orange end (2.8:1 against white).
-16. **Past-season buttons** open Classic's (unthemed) pages, and those pages' 2026 button returns to Classic.
-17. **No link** from Classic or from the loop to the themed tracker yet (by decision; the loop has a CLASSIC link only).
+16. **Past-season buttons** open Classic's (unthemed) archive pages (2021-24, and 2025 until FR-3); their 2026 button returns to
+    the root, which is the themed tracker since 2026-11-24.
+17. **Closed 2026-11-24 (FR-1):** the themed tracker is the site root; the loop's link reads "Tracker" (was "Classic", same `../`).
 18. **Favicon:** the 16px point is closed (2026-11-12: TL, hand-hinted 16px drawing). Still open: desktop Safari's pinned-tab
     `mask-icon` is not provided; the pages link PNG icons only, so sizes above 32px (other than the 180px touch icon) scale the 32px PNG.
 
@@ -1571,7 +1587,9 @@ Open items, most visible first. Each names where it was found.
     base rule is the solid recipe; the scoped copies in PART 8 / PART 9 now repeat it and can be folded into it.
 30. `retro/favicon.html` and the marked blocks of `template.html` are generated copies (`wordmark_gen.py apply`): after editing the
     generator, run it, or the two pages' icons drift apart.
-31. A page left open across a deploy uses the copy's own `p/`; old chunks are published only as far as Classic keeps them (`DT_CHUNKS`).
+31. A page left open across a deploy uses `p/` at the root, as Classic did; old chunks are published as far as `DT_CHUNKS` keeps them.
+    A page left open at the old `/retro/tracker/` asks for `/retro/tracker/p/...` (gone since FR-1): the 404 reloads it once, onto
+    the redirect, which opens the root.
 32. Wordmark options A and B are kept outside the repo only (`shots-theme/wordmark/` patches).
 
 **H. Found 2026-11-12 (cleanup job 2), not fixed there**
@@ -1723,5 +1741,6 @@ Open items, most visible first. Each names where it was found.
   side gaps (headless Chromium's whole-pixel text, Known issues 19; nothing of this change applies to Team Hub at 1440); `tilechk` 0
   (360P / 402P / 440P). All patches apply. Not run: dark-ink and frame gaps in WebKitGTK (colours and chips unchanged), every other tab.
 - Real iPhone Safari is checked by Nicklaus.
-- Classic byte-identical before / after `retro/build.py` + `retro/theme_build.py`; `git status` shows only `retro/`
-  (plus the documented one-liners).
+- Classic's page (`site-classic/index.html`) byte-identical to `pipeline/`'s build, before / after `retro/build.py` +
+  `retro/theme_build.py`; `git status` shows only `retro/` (plus the documented one-liners). The themed page is served from
+  `site/`, Classic from `site-classic/` (`retro/qa/README.md`).
