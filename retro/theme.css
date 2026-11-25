@@ -680,10 +680,10 @@ html.retro .rox .rag.dn li::before{background:var(--loss)}
    alternating over the divider as Classic's tokens give them */
 html.retro .dfs :is(.dfo,.dfg){background:var(--blue)}
 html.retro .dfs .dfrh{background:var(--blue-3)}
-html.retro:root{--via-bg:var(--blue-3);--via-line:var(--yellow);--via-bar:var(--white);--via-bar-line:var(--black);--via-bar-ink:var(--black);--via-bar-strong:var(--black)}
-/* VIA box (list from 760px): a T0 chip (no shadow, tracking 0); 1px more under the capitals (17px tall, Classic 16px; the row does not grow) */
-html.retro .dfs .dfvia{border-radius:2px;text-shadow:none;padding:3px calc(6px - var(--ix,0em)/2) 3px calc(6px + var(--ix,0em)/2)}   /* --ix: "V" of VIA to the name's last letter, shared between the two side paddings */
-html.retro .dfs .dfvia,html.retro .dfs .dfvia i{letter-spacing:0!important}
+html.retro:root{--via-bar:var(--white);--via-bar-line:var(--black);--via-bar-ink:var(--black);--via-bar-strong:var(--black)}
+/* via line (list from 760px, VIA-1b): one quiet --text-dim line "via <owner>" under the GM name, no chip; T0 (no shadow);
+   --dfvb = the gap under it that keeps the name + via ink pair centred on the avatar (measured) */
+html.retro .dfs .dfvia{text-shadow:none;--dfvb:0px}
 /* board (from 1100px): cells = the --pos-* fill with black ink at full strength (Classic dims four of its lines to 70-82%: "QB"
    in the strip was 3.83:1), 2px corner, 1px black frame; a traded pick's banner = the white ticket with black ink (the TIMES
    TRADED tile's colours); an empty cell = a --blue-3 well */
