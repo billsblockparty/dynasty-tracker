@@ -868,6 +868,34 @@ links here ("Tracker"). Below, "the copy" means this page.
   Classic's Barlow values 1px / 1.7px live in draft_build.py). Slot ink in Martian Mono comes from the font's outlines (wght 600, wdth
   75, x .875), so RD / PK fields keep one x per draft view in the theme too.
 
+## Decisions (2026-11-25, Draft round bars)
+
+- 2026-11-25 · Briefs TD-7 .. TD-7d (Nicklaus 08:31 ET round bars; 09:29 ET V2 and "much more contrasting"; 10:19 ET "you have to
+  also add it to the top for round 1"; 10:20 ET "get rid of the word rookie and make the years bigger ... just a big 2026"; DESIGN.md
+  §6 "Team Hub › Draft", §9). Structure in th_build.py (block "Round bars + big year", both looks); the theme's part is theme.css
+  "Team Hub › Draft" (surface values only):
+  - below 1366px every rookie round opens with a bar, Round 1 included (directly under the year strip: no top line of its own, the
+    strip's 3px black foot is that line, 22px; elsewhere 24px = 2px black + 20px field + 2px black); empty rounds keep the 28px "–"
+    row; startup: no bars. Bar `--tqfb` = `--peri` + `--grain`, label Martian Mono 11px caps in `--tqfi` = `--black`, no shadow
+    (`text-shadow:none!important` on the bar and its children); `--tqfll` 16.33px puts the label's left ink on the year's (0.00px
+    Chromium, -0.01px WebKitGTK); `--tqfly` .33px centres it in the field for WebKitGTK (0.17px low there, 0.50px high in Chromium).
+    The number column is gone (0px track), so the pick tile drops its left 1px frame where it stands on the slate frame
+    (`inset -1px 0 0 0` only, digits re-centred with padding `1px 1.59px 0 .41px`).
+  - **Rules broken on purpose (rule 14 above):** `--peri` gets one more job (round bars; its other jobs stay), and the bar is lighter
+    than its container (surface order). Why: any dark bar is <= 2.57:1 against the round ramp and fades down it (TD-7 / TD-7b mocks);
+    the light bar is 3.04 / 3.74 / 4.62 / 5.49:1 against R1 / R2 / R3 / R4, 6.29:1 against the year strip, black ink on it 7.10:1
+    (pixels, grain included, 402P). Alternative `--peri-lt` (4.49 / 5.53 / 6.83 / 8.12:1, strip 9.31:1, ink 10.51:1) captured, not
+    shipped: Nicklaus's call.
+  - year strip label = the year alone, Martian Mono 700 18px, `--yellow`, tabular, `letter-spacing:0!important` (as the rank tiles'
+    large figures; the body's -.05em does not apply); the startup's "STARTUP" stays 12px caps after it, baseline-aligned, 8.00px of ink
+    between (`--tqfwg` 7px). Strip height unchanged (30px): digit ink 13.33px, 7.00 / 6.67px clear of the strip's top edge and of its
+    3px foot (Chromium 3x; WebKitGTK 7.00 / 6.00px with the T1 shadow), `--tqfyy` 1.89px; the count's ink centre on the digits'
+    (`--tqfcy` -.28px, -0.17px). Digits 13.33px vs the bar label's 8.33px: the strip out-ranks the bars. From 1366px the year cell
+    keeps the year over the two count lines, 8.00px of ink between all three, centred in the cell (`--tqfyd` 2.89px, `--tqfcd` 1px).
+    20px was built for comparison only (fits: 6.00 / 6.33px), not shipped.
+  Height against main at 402P: +380px a team (+304px Bill's Block Party), 0.30-0.37 screens of 1,027px. darkink 0 FAIL / 0 low
+  (402P, 360P); gapf 3 on the Draft view (main 33; the three left are startup two-digit tiles, |L-R| > .5).
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -1034,6 +1062,11 @@ tokens. Position labels on the cards are Classic's position colours lightened to
     0 1px 0 0 --plate-hi` + `--lip`; single = the full ring + 2px highlight + `--lip` (unchanged). The shade never sits under a glyph
     (rule 11 counts the shade and the highlight as the row's frame edges). This is the retro row recipe: other tabs that take plates
     inherit it.
+
+14. **Design rules are defaults, not walls (2026-11-25, Nicklaus; DESIGN.md §2 rule 18).** When following a rule would give a worse
+    result on screen, break it on purpose: say which rule, why, and what the rule-following version would have looked like, and show
+    both if it is close. Never break: contrast minimums, the 11px text floor, "nothing clipped or wrapped", never highlighting Bill's
+    Block Party, and the push / ship rules.
 
 ## Wordmark (header title, 2026-11-10)
 

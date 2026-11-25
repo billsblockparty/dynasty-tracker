@@ -1294,13 +1294,22 @@ html.retro .tqfv .tqfrk>.tqfb{border-radius:4px}
   html.retro .tqfv{--tqfhm:6px}
 }
 html.retro .tqfv .tqfr,html.retro .tqfv .tqfrk .tqfb,html.retro .tqfv .tqfh{background-image:var(--grain);background-size:96px 96px}
+/* Round bars (TD-7d, 2026-11-25; structure in th_build.py "Round bars + big year"): a light band, --peri + grain between the 2px
+   black lines, black ink, no shadow. Rule broken on purpose (RETRO.md "Decisions (2026-11-25, Draft round bars)"): --peri gets one
+   more job and the bar is lighter than its slate; any dark bar is <= 2.57:1 against the round ramp. Below 1366px the pick tile loses
+   its left 1px edge where it stands on the slate frame (the frame is the edge). */
+html.retro .tqfv{--tqfly:.33px;--tqfll:16.33px;--tqfb:var(--peri);--tqfi:var(--black)}
+html.retro .tqfv .tqfl,html.retro .tqfv .tqfl *{text-shadow:none!important}
+html.retro .tqfv .tqfl{background-image:var(--grain);background-size:96px 96px}
+@media(max-width:1365.98px){html.retro .tqfv .tqfk .dfn{box-shadow:inset -1px 0 0 var(--black);padding:1px 1.59px 0 .41px}}   /* left frame gone: digits re-centred in the 45px fill */
 html.retro .tqfv .tqfy{background-color:var(--tqf-strip);background-image:var(--grain);background-size:96px 96px}
 /* the startup strip stands on the panel's 2px black frame: no top line, 3px less above the text (27px between its lines elsewhere) */
 html.retro .tqfv .tqfsu .tqfy{padding-top:8px;box-shadow:inset 0 -3px 0 var(--black)}
 html.retro .tqfv .tqfy>span:first-child,html.retro .tqfv .tqfh>span{color:var(--yellow)}
 html.retro .tqfv .tqfy>span+span{color:var(--peri-lt)}
 /* label and count centred by ink (Martian Mono caps 0.28px low in the box); the count's dot in the middle of its two words' ink */
-html.retro .tqfv .tqfy>span{transform:translateY(-.28px)}
+html.retro .tqfv{--tqfyy:1.89px;--tqfcy:-.28px;--tqfwg:7px;--tqfyd:2.89px;--tqfcd:1px}   /* big year (TD-7d): digit ink centred in the strip, STARTUP 8px of ink after it; desktop cell --tqfyd / --tqfcd */
+html.retro .tqfv .tqfyn{letter-spacing:0!important}   /* the look's large figures (rank tiles): no tracking */
 html.retro .tqfv .tqfy i{margin:0 1px 0 -1px}
 /* -1px (moves a centred line .5px): RD / PICK ink centred over the number column / tile */
 html.retro .tqfv .tqfq>span{transform:none}   /* Classic's -1.67px is Barlow's; Martian Mono caps sit centred in the 9/8 box */

@@ -448,14 +448,20 @@ def draft_view(t):
                 f'<span class="tqfn"><b title="{e(str(pl).replace("FootballTeam","Football Team"))}">{e(str(pl).replace("FootballTeam","Football Team"))}</b>{DB.badge(nfl).replace('<em class="nfl','<em class="nfl tm',1) if nfl else ""}</span>{dot}</div>')
     def block(y,typ,R,rows,cls):
         rr=[(r,s) for r,s in rows if r[4]==t];n=len(rr);k=sum(1 for r,s in rr if s and s in mine)
-        lab=f'{str(y)[:4]} · {"Startup" if typ=="startup" else "Rookie"}'
+        # year label (TD-7d, Nicklaus 2026-11-25 10:20 ET): the year alone, big (.tqfyn); the startup adds the small word STARTUP
+        # (.tqfyw); full wording in title / aria-label
+        yy=str(y)[:4];su_=typ=='startup';full=f'{yy} {"startup" if su_ else "rookie"} draft'
+        lab=f'<b class="tqfyn">{yy}</b>'+('<small class="tqfyw">Startup</small>' if su_ else '')
         cnt=f'<em>{n} pick{"" if n==1 else "s"}</em>'+(f'<i> · </i><em>{k} on roster</em>' if n else '')
-        h=[f'<div class="tqfb {cls}"><div class="tqfy"><span>{lab}</span><span>{cnt}</span></div><div class="tqfg">']
+        h=[f'<div class="tqfb {cls}"><div class="tqfy"><span role="heading" aria-level="3" title="{full}" aria-label="{full}">{lab}</span><span>{cnt}</span></div><div class="tqfg">']
         # a draft in which the team made no pick (brief TD-1b): one row "No picks made" at the names' x; desktop spans R1-R4
         if not n:return ''.join(h)+'<div class="tqfr tqf0"><span class="tqfz">No picks made</span></div></div></div>'
         for i in range(1,R+1):
             its=sorted([x for x in rr if x[0][0]==i],key=lambda x:x[0][1])
-            h.append(f'<div class="tqfr"><div class="tqfc">'
+            # round bar .tqfl (TD-7d): every round of a rookie draft opens with one, Round 1 included (none on the startup); an empty
+            # round keeps its "–" row under its bar
+            bar=f'<div class="tqfl" role="heading" aria-level="4"><span>Round {i}</span></div>' if cls!='tqfs' else ''
+            h.append(f'<div class="tqfr">{bar}<div class="tqfc">'
                      +(''.join(item(r,s) for r,s in its) if its else f'<span class="tqfrn" aria-label="Round {i}">{i}</span><span class="tqfz" aria-label="No pick">–</span>')+'</div></div>')
         return ''.join(h)+'</div></div>'
     rk=[a for a in yrs if a[1]!='startup'];su=[a for a in yrs if a[1]=='startup']
@@ -668,6 +674,34 @@ if DFD:
       '@media(min-width:1366px){'
       '.tqfv .tqfrk{gap:0;background:none}'
       '.tqfv .tqfrk .tqfh{background:none;padding:0 2px;margin:0 0 var(--tqfhm,7px)}.tqfv .tqfrk .tqfh>span{padding-top:0;padding-bottom:0}'
+      '}')
+# Round bars + big year (brief TD-7d, 2026-11-25; Nicklaus 08:31 / 09:29 / 10:19 / 10:20 ET). Below 1366px every round of a rookie
+# draft opens with a bar .tqfl (Round 1 included; none on the startup) instead of the number column: 24px = 2px --tqf-thick line +
+# 20px field + 2px line (under the year strip the bar has no top line: the strip's 3px foot is that line, 22px); fill --tqfb
+# (Classic --text-dim, retro --peri), label 11px caps 700 in --tqfi (Classic --ink, retro --black), no shadow, left ink on the year's
+# left ink (--tqfll), ink centred in the field (--tqfly). Empty rounds keep the 28px "–" row. The number column keeps a 0px track
+# (hidden), so the pick tile sits on the slate's inner left edge.
+# Year label (every width): the year alone in big figures .tqfyn (18px, 700, tabular, no tracking; line-height 0 so the strip keeps
+# its height), digit ink centred between the strip's top edge and its 3px foot (--tqfyy); the startup adds .tqfyw "STARTUP" in the
+# strip's small caps style, baseline-aligned, 8px of ink after the year (--tqfwg); the count's ink centred on the digits' (--tqfcy).
+# From 1366px (year cell): year over the two count lines, 8px of ink between all three, the block centred in the cell (--tqfyd / --tqfcd),
+# the year's left ink on the count's (-1px).
+if DFD:
+    css+=('.tqfv .tqfl{display:none}'
+      '.tqfv .tqfy>span:first-child{transform:translateY(var(--tqfyy,-.34px))}.tqfv .tqfy>span+span{transform:translateY(var(--tqfcy,-2.34px))}'
+      '.tqfv .tqfyn{font:700 18px/0 var(--display);letter-spacing:0;font-variant-numeric:tabular-nums}'
+      '.tqfv .tqfyw{font:inherit;line-height:0;margin-left:var(--tqfwg,5.67px)}'
+      '@media(min-width:1366px){.tqfv .tqfrk .tqfy>span:first-child{transform:translateY(var(--tqfyd,1.66px))}.tqfv .tqfrk .tqfy>span+span{transform:translateY(var(--tqfcd,0px))}.tqfv .tqfrk .tqfyn{margin-left:-1px}}'
+      '@media(max-width:1365.98px){'
+      '.tqfv{--tqfrw:0px}.tqfv .tqfrn{visibility:hidden;overflow:hidden}.tqfv .tqfq>span:first-child{visibility:hidden}'
+      '.tqfv .tqfrk .tqfg{gap:0}'
+      '.tqfv .tqfrk .tqfl{display:flex;align-items:center;box-sizing:border-box;height:24px;'
+      'margin-right:calc(-1*var(--fr,16px));padding:0 16px 0 var(--tqfll,16.33px);background-color:var(--tqfb,var(--text-dim));'
+      'box-shadow:inset 0 2px 0 var(--tqf-thick),inset 0 -2px 0 var(--tqf-thick);font:700 11px/1 var(--display);'
+      'letter-spacing:.1em;text-transform:uppercase;color:var(--tqfi,var(--ink));text-shadow:none;white-space:nowrap}'
+      '.tqfv .tqfrk .tqfg>.tqfr:first-child>.tqfl{height:22px;box-shadow:inset 0 -2px 0 var(--tqf-thick)}'
+      '.tqfv .tqfrk .tqfg>.tqfr:first-child>.tqfl>span{translate:0 -1px}'
+      '.tqfv .tqfrk .tqfl>span{transform:translateY(var(--tqfly,-.84px))}'
       '}')
 open(P+'th_css.css','w',encoding='utf-8').write(css)
 if __name__=='__main__':
