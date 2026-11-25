@@ -681,9 +681,10 @@ html.retro .rox .rag.dn li::before{background:var(--loss)}
 html.retro .dfs :is(.dfo,.dfg){background:var(--blue)}
 html.retro .dfs .dfrh{background:var(--blue-3)}
 html.retro:root{--via-bar:var(--white);--via-bar-line:var(--black);--via-bar-ink:var(--black);--via-bar-strong:var(--black)}
-/* via line (list from 760px, VIA-1b): one quiet --text-dim line "via <owner>" under the GM name, no chip; T0 (no shadow);
-   --dfvb = the gap under it that keeps the name + via ink pair centred on the avatar (measured) */
-html.retro .dfs .dfvia{text-shadow:none;--dfvb:0px}
+/* via line (list from 760px, VIA-1b): one quiet --text-dim line "via <owner>" under the GM name, no chip (VIA-1c);
+   T1 like the row's other light text; word-spacing: the real space between "via" and the name gives the same 2.75px as Classic's
+   (the body's -.22em + .625px); --dfvb = the gap under it that keeps the name + via ink pair centred on the avatar (measured) */
+html.retro .dfs .dfvia{word-spacing:-2.455px;--dfvb:0px}
 /* board (from 1100px): cells = the --pos-* fill with black ink at full strength (Classic dims four of its lines to 70-82%: "QB"
    in the strip was 3.83:1), 2px corner, 1px black frame; a traded pick's banner = the white ticket with black ink (the TIMES
    TRADED tile's colours); an empty cell = a --blue-3 well */
