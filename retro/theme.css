@@ -1319,3 +1319,13 @@ html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(15){background-color:color-mix(in s
   html.retro .tqfv .tqfp.tqfrk{background:var(--black)}   /* the 3px breaks between years; the card fill above would show through */
   html.retro .tqfv .tqfrk .tqfh>span::before{background:var(--row-divider)}   /* header row: the column rule in the row's own --blue-3 (as approved: no black rule there) */
 }
+/* ================= Score columns (FR-2, 2026-11-24; FR-2b second pass). Team Hub's game lists: Could have won / lost, Close games,
+   Season highs faced, Median splits. Classic's Score tracks (92px, Close games 96px) hold Barlow's "109.92–147.32"; in Martian Mono
+   (wght 600, 16px, size-adjust .875, tracking -.05em) a pair of two 3-digit scores is 13 x 7.6 = 98.8px and ran up to 6.81px past.
+   Score: 99px = the 13-character worst case ("199.99–199.99") in whole px, right-aligned.
+   Third column: ONE 77px track for every list = the widest margin the data can produce ("−100.00", wght 600 16px: 52.90px of glyph
+   ink, from the font's outlines) + 24px (the smallest Score-to-Margin ink gap of the approved Close games list), rounded up. With the
+   6px column-gap the two figures are >= 30px of ink apart, and the Score and third-column right edges are the same on all four lists
+   (Could have's two-line Best cell, 65.2px at worst, fits the same 77px). The first column (minmax(0,1fr)) gives up the space.
+   Classic's --cols is an inline style on the table: the rows' track list is replaced, the variable is not read. */
+html.retro .sxt.tqcg:is([style*="1fr) 92px 70px"],[style*="1fr) 96px 50px"],[style*="1fr) 92px 54px"])>.sxr{grid-template-columns:minmax(0,1fr) 99px 77px}

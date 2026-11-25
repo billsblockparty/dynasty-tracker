@@ -798,6 +798,30 @@ carry over. BBP only. No link from Classic or from the loop points here yet.
   ovf3 / ovf4 0; gapf4 5 at 402P, all Stats › Ranks "10" chips, the same 5 on main.
 - **Retro is BBP only** (Nicklaus 2026-11-24 14:05 ET: "YiLM will always be Yilm, retro is only for non YILM tracker").
 
+## Decisions (2026-11-24, Team Hub score columns)
+
+- 2026-11-24 · Briefs FR-2 / FR-2b (Nicklaus approved the second pass 2026-11-24 19:49 ET; DESIGN.md §9). Team Hub's game lists in the
+  copy get one Score track and one third-column track (theme.css block "Score columns", last in the file; Classic's inline `--cols`
+  is not read, the rows' track list is replaced; no token, colour, size, component or script added; nothing under pipeline/):
+
+  | List | Classic / main tracks | retro |
+  |---|---|---|
+  | Could have won / lost | 1fr 92px 70px | 1fr 99px 77px |
+  | Close games | 1fr 96px 50px | 1fr 99px 77px |
+  | Season highs faced, Median splits (Games) | 1fr 92px 54px | 1fr 99px 77px |
+
+  Score 99px: 13 characters x 7.6px = 98.8px ("199.99–199.99", Martian Mono wght 600 16px, size-adjust .875, tracking -.05em), whole
+  px, right-aligned. Third column 77px: "−100.00" = 52.90px of glyph ink from the font's outlines + 24px, rounded up. One Score right
+  edge and one third-column right edge on all four lists (FR-2c, Chromium, 10 teams: 360P 324 / 407, 402P 373 / 456, 440P 418 / 501,
+  1440 1297 / 1380 CSS px; before: three Score edges per width). The first column gives up the space (−14px Could have, −30px the
+  others); no line count changes (0 of 387 cells at 360P / 402P / 440P / 1440, re-measured FR-2c), smallest name-to-Score ink gap
+  20.76px at 360P on real data (FR-2b; Range gap 20.69px re-measured FR-2c). Score-to-third-column ink gaps at 402P on real data
+  (FR-2b, carried): Games lists min 28.57px (was 7), Close games 51.27px, Could have 23.09px (kept under the 24px target by decision:
+  a separate 84px track would break the shared edge); Range gaps re-measured FR-2c, the same at all four widths: 29.80 / 52.59 /
+  23.94px (base 6.80 / 22.78 / 10.12). Cells past their box: 0 (base 31, up to 6.81px). Checks (FR-2c): Classic byte-identical
+  (47 chunks + index.html, build stamp aside); boxes at 402P: Stats 0 changed, Team Hub only `.sxr` game-row children resized,
+  0 moved, page heights identical; tilechk_r 360P / 402P / 440P 0; ovf4 402P / 360P 0; theme_build's 9 patches apply.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -1583,9 +1607,14 @@ Open items, most visible first. Each names where it was found.
   `retro/theme.css` were written for the 530px column and may no longer be needed or may now be wrong in that band: lines 548-551 (Compare
   section pills: 11px, tracking 0, 3px gaps for eight pills across 530px), 672 (Drafts Original order: "Anderson" allowed 1.4px into the gap
   with ten 42.8px slots) and 921 (Stats / Team Hub schedule cell column gap 4px at 450-1099px). Not changed (retro/ untouched).
-48. **For retro job 4 (found 2026-11-16, Season highs faced + Median splits):** in the copy, Team Hub's Games lists in the Season highs
+48. **Closed 2026-11-24 (FR-2):** the four Team Hub game lists now share one 99px Score track and one 77px third-column track in
+  the copy ("Decisions (2026-11-24, Team Hub score columns)"); 0 cells past their box at 360P, 402P, 440P and 1440. **For retro job 4 (found 2026-11-16, Season highs faced + Median splits):** in the copy, Team Hub's Games lists in the Season highs
   faced and Median splits blocks run the Score figures ("109.92–147.32") up to 6.81px past their 92px column (Martian Mono is wider than
   Classic's Barlow; 360P, 402P, 440P and 1440 alike; Classic 0px). Not changed (retro/ untouched).
+49. **Found 2026-11-24 (FR-2), not changed:** Team Hub › Close games' Margin is white and unsigned ("3.98"), while the other game
+  lists' third column is yellow and signed ("+3.98", "−10.46").
+50. **Found 2026-11-24 (FR-2), not changed:** Team Hub game-list rows alternate 38 / 39px in height.
+51. **Found 2026-11-24 (FR-2), not changed:** Stats › Median splits, the "Opp above" record line runs 0.44px past its 36px cell.
 
 **G. Requests parked by Nicklaus on 2026-11-11 (rechecked against the build of pass 5 on 2026-11-12, cleanup job 1; all five closed)**
 
