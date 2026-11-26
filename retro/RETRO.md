@@ -936,6 +936,22 @@ links here ("Tracker"). Below, "the copy" means this page.
     0 low (Chromium 360P / 402P / 440P / 1440, WebKitGTK 473); tilechk_r 0.
 
 
+## Decisions (2026-11-26, Paper Trail Picks: player headline)
+
+Briefs PS-1 .. PS-3c; Nicklaus chose variant A 2026-11-26 17:32 ET ("team name and player name are aligned vs offset"). Structure in
+paper_build.py (identical in both repos; DESIGN.md §6 "Paper Trail"). Retro parts:
+- theme.css: `html.retro .ptv-k{--ptg1:10px}` (player baseline -> team cap top; Martian Mono's tightest row keeps 3.58px of ink
+  between line 1, descenders and the NFL logo's box, and line 2; Classic's value is 10px too); `html.retro .ptv-k .ptvt{word-spacing:
+  -2.455px}` (the Drafts via line's spacing); `.ptv-k .pthx i` keeps `transform:none` (the heads are right-aligned by paper_build.py's
+  `ptxFit` from Martian's outlines `SGMC`: glyph ink on the 16px inset, the 1px shadow beyond, as the via). Removed: the `.ptvl` / `.pthv`
+  / `.ptvc` selectors and the slot's `--nx` translate (the VIA picture column and the slot's right-aligned form are gone).
+- theme.js item 6: only the TIMES TRADED tile width `--ptcw` from Martian's digit ink and the tiles' left edges re-snapped; the
+  `--ptca` / `--ptva` / `--ptcm` / `--ptvm` columns, `cbox()` and `--nx` removed; item 4 lists `.pane-pt .pthx i` only.
+- Measured (Chromium device emulation, real fonts; WebKitGTK 3x at the 402P layout): rows 64.56px at 402P (64.62 at 360P / 440P, 65.00 at
+  1440), was 68.09; heads' and via's last glyph ink on the inset 0.00px; "NFL" ink centre over the slot's ink span 0.00px (1/3px
+  quantum); tile shadow -> via ink >= 4.44px (Chromium phones), >= 4.78px (WebKitGTK); player 8.16 / 10.52:1, slot / via 4.80 / 6.19:1
+  on `--blue` / `--blue-2`. Full tables: the PS-3c result report.
+
 ## Tokens
 
 Palette = the loop's (`--purple --orange --blue --yellow --peri --white --black --badge-hi --badge-lo --glow --card`).
@@ -1452,6 +1468,8 @@ it had 0.8px under the capitals)~~ (superseded 2026-11-25: one text line, "Decis
 **Fit.** Original order between 760 and 1099px: "Anderson" (45.6px) may run 1.4px into the 8px gap on each side (Classic's name
 box clips at 42.8px). Board between 1100 and 1239px: last names at tracking -.085em, so the fitter keeps "England Patriots" on
 one line (11.5px; Classic 12.5px on one line, the theme's default tracking wrapped it). Glossary: a bold term does not break.
+
+**Paper Trail › Picks rows (2026-11-26):** player headline, one right column, no VIA picture column: see "Decisions (2026-11-26, Paper Trail Picks: player headline)".
 
 **Paper Trail sheet, trade step (2026-11-24):** see "Decisions (2026-11-24, Paper Trail trade step)": swap badge in the logo slot, headed team columns, `--ptak` 2px, `--swap-fill`.
 

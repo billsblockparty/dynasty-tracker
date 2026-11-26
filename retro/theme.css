@@ -683,6 +683,12 @@ html.retro:root{--via-bar:var(--white);--via-bar-line:var(--black);--via-bar-ink
 /* 2026-11-25, brief VIA-1: quiet via line, list only. T1 like the row's other light text; word-spacing = the body's -.22em + .625px
    (the real space gives Classic's 2.75px); --dfvb 0px keeps the name + via glyph ink centred on the avatar (measured) */
 html.retro .dfs .dfvia{word-spacing:-2.455px;--dfvb:0px}
+/* Paper Trail › Picks quiet via (2026-11-25, PS-2b): the Drafts via line's retro word spacing */
+html.retro .ptv-k .ptvt{word-spacing:-2.455px}
+/* Paper Trail › Picks line gap (2026-11-26, PS-3 .. PS-3c): player baseline -> team cap top, the smallest whole px >= 8 with 3px of
+   ink between line 1 (descenders, the NFL logo's box) and line 2 (team, slot, via) in all 200 drafted rows at every width (Martian
+   Mono: 10px, 3.58px at the tightest row; Classic's paper_build.py value is 10px too) */
+html.retro .ptv-k{--ptg1:10px}
 /* board (from 1100px): cells = the --pos-* fill with black ink at full strength (Classic dims four of its lines to 70-82%: "QB"
    in the strip was 3.83:1), 2px corner, 1px black frame; a traded pick's banner = the white ticket with black ink (the TIMES
    TRADED tile's colours); an empty cell = a --blue-3 well */
@@ -692,7 +698,7 @@ html.retro .dfs :is(.dfcn small,.dfcr,.dfcs>span,.dfct i){opacity:1}
 
 /* ---------- Paper Trail ---------- */
 html.retro .ptx .pthd{background:var(--blue-3)}
-html.retro :is(.ptx,.pts) .pav.av:not(#_),html.retro .ptv-k :is(.ptl1,.ptvl) .pav.av:not(#_){box-shadow:0 0 0 1px var(--white),1px 1px 0 1px var(--black)!important}
+html.retro :is(.ptx,.pts) .pav.av:not(#_),html.retro .ptv-k .ptl1 .pav.av:not(#_){box-shadow:0 0 0 1px var(--white),1px 1px 0 1px var(--black)!important}
 /* sheet: the season strip is a --blue-3 head strip (Classic: the page colour), the close button a 4px-corner button */
 html.retro .pts .ptsy{background:var(--blue-3)}
 html.retro .pts .ptsx{border-radius:4px}
@@ -742,14 +748,10 @@ html.retro .pts .ptkf[data-d="0"]{--ptrb:-0.0167em}html.retro .pts .ptkf[data-d=
 html.retro .pts .ptkr{grid-column:4;width:var(--ptkw);align-self:center;position:relative}
 /* a line 2 that wraps never ends on one word (brief PT-2d item 6) */
 html.retro .pts .ptb2{text-wrap:balance}
-/* Picks, right-hand columns (rule 11 and "by glyph ink"). Classic centres the TIMES / TRADED and VIA heads and the coach names
-   under the VIA pictures with a canvas measurement (an inline transform): glyph ink in Chromium, the advance box in WebKitGTK.
-   Here the transform is off and each line is centred by its own first and last glyph (--ix, theme.js item 4; - .05em for the
-   tracking after the last letter, - 1px for the shadow), the same in every engine. Column and tile widths and the NFL slot's right
-   edge: theme.js item 6 (--nx = the theme's word spacing, which Classic's canvas does not know, + the last glyph's right bearing
-   where the canvas gave Classic the advance box). */
-html.retro .ptv-k :is(.pthx i,.pthv,.ptvc){transform:none!important;text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
-html.retro .ptv-k .ptns{translate:var(--nx,0px) 0}
+/* Picks strip: TIMES / TRADED are right-aligned by paper_build.py's ptxFit (margin-right from the last glyph's right bearing, Martian
+   Mono outlines): each line's glyph ink ends on the 16px inset, the 1px shadow 1px beyond (as the via text). No transform here; the
+   --ix indent at the line start does not move right-aligned ink. Tile width: theme.js item 6. */
+html.retro .ptv-k .pthx i{transform:none!important;text-indent:calc(var(--ix,0em) - .05em - 1px + var(--iw,0px))}
 /* --- chips and tiles of the three tabs, rule 11 (ink + shadow >= 3px from the frame left and right, the two gaps equal within
    0.5px, >= 2px above and below); --ix from theme.js item 4 --- */
 /* pick tile (Drafts list): two centred lines beside the 1px edge line (centred in the 45px left of it) */
