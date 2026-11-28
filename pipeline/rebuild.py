@@ -142,10 +142,12 @@ try:
 except Exception as _e:print('faab skipped:',_e)
 # Shotgun tally (BBP house rule, 2026-11-08): every starter who scored zero or less, and every empty starting slot (id '0' / ''),
 # in completed weeks only (hist.json 'w' holds a week only after the weekly run has finished it; the live week is never in it),
-# regular season and playoffs alike; current season only. SGT = {team: [[week, player, points], ...]} (teams with none left out).
+# regular season and playoffs alike; current season only. SGT = {team: [[week, player, points, pos, nfl team, kind], ...]} (teams with none left out; kind '' / 'bye' / 'empty', 2026-11-27 SG-1).
 try:
     if _dt_os.environ.get('DT_PAST')!='1':
         _HSG=json.load(open(P+'hist.json',encoding='utf-8'));_SGM=_HSG['m']
+        try:_KSG=json.load(open(P+'kick.json',encoding='utf-8'))
+        except Exception:_KSG={}
         _SGT={}
         for _w in sorted(_HSG['w'],key=int):
             for _rid,_e in _HSG['w'][_w].items():
@@ -153,10 +155,14 @@ try:
                 if not _tm:continue
                 for _s in (_e[2].split(',') if _e[2] else []):
                     _f=_s.split('|');_pid=_f[0]
-                    if _pid in ('','0'):_SGT.setdefault(_tm,[]).append([int(_w),'Empty slot',0]);continue
+                    if _pid in ('','0'):_SGT.setdefault(_tm,[]).append([int(_w),'Empty slot',0,'','','empty']);continue
                     _pt=float(_f[3]) if len(_f)>3 and _f[3] not in ('','None') else 0.0
-                    if _pt<=0:_SGT.setdefault(_tm,[]).append([int(_w),_SGM.get(_pid,['',_pid])[1],round(_pt,2)])
-        d+='// shotgun tally: starters at zero or less (and empty slots), completed weeks only: team -> [[week, player, points], ...]\nconst SGT='+json.dumps(_SGT,ensure_ascii=False)+';\n'
+                    if _pt<=0:
+                        _nt=_f[1] if len(_f)>1 else ''
+                        # bye = kick.json has the week and the player's NFL team has no game in it (the rule fut_lu.mp uses)
+                        _by='bye' if (_nt and str(_w) in _KSG and _nt not in _KSG[str(_w)]) else ''
+                        _SGT.setdefault(_tm,[]).append([int(_w),_SGM.get(_pid,['',_pid])[1],round(_pt,2),_SGM.get(_pid,[''])[0] or '',_nt,_by])
+        d+='// shotgun list: starters at zero or less (and empty slots), completed weeks only: team -> [[week, player, points, pos, nfl team, kind ""|"bye"|"empty"], ...]\nconst SGT='+json.dumps(_SGT,ensure_ascii=False)+';\n'
 except Exception as _e:print('shotgun tally skipped:',_e)
 # standings seed numerals (Jaguars Rivalries art): 1-2 alabaster patch (bye), 3-6 gold glow (playoffs), 7+ white shadow
 import base64 as _b64r
@@ -177,7 +183,7 @@ if _os.path.isdir(P+'logos'):
                 _bb=_io.BytesIO();_im.save(_bb,format='WEBP',quality=90,method=6)
                 _u='data:image/webp;base64,'+_b64.b64encode(_bb.getvalue()).decode()
             except Exception:pass
-            _LG+=f'.thr .nfl.tm.n-{_t},.tqfv .nfl.tm.n-{_t},.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t},.tpb .nfl.n-{_t},.ppl .nfl.n-{_t},.wrx .nfl.n-{_t},.dfs .nfl.n-{_t},.ptx .nfl.n-{_t},.pts .nfl.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct,.tpb .nfl.n-{_t} .ct,.ppl .nfl.n-{_t} .ct,.wrx .nfl.n-{_t} .ct,.dfs .nfl.n-{_t} .ct,.ptx .nfl.n-{_t} .ct,.pts .nfl.n-{_t} .ct{{visibility:hidden}}'
+            _LG+=f'.thr .nfl.tm.n-{_t},.tqfv .nfl.tm.n-{_t},.cnm b .nfl.tm.n-{_t},.rn>b .nfl.tm.n-{_t},.cnm small .nfl.opp.n-{_t},.tpb .nfl.n-{_t},.ppl .nfl.n-{_t},.wrx .nfl.n-{_t},.dfs .nfl.n-{_t},.ptx .nfl.n-{_t},.pts .nfl.n-{_t},.sgx .nfl.n-{_t}{{background:url("{_u}") center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important;width:22px!important;height:20px!important}}.nfl.tm.n-{_t} .ct,.nfl.opp.n-{_t} .ct,.tpb .nfl.n-{_t} .ct,.ppl .nfl.n-{_t} .ct,.wrx .nfl.n-{_t} .ct,.dfs .nfl.n-{_t} .ct,.ptx .nfl.n-{_t} .ct,.pts .nfl.n-{_t} .ct,.sgx .nfl.n-{_t} .ct{{visibility:hidden}}'
 # THE WIRE tab (best available players), after Players; needs pull_wire.json
 _WR=_dt_os.path.exists(P+'pull_wire.json') and _PL
 _WRCSS=''

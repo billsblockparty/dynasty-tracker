@@ -15,7 +15,7 @@
     if(window.rrFit&&document.querySelector('.board .r .sk:not([style*="padding"])'))window.rrFit();
     if(window.tileFit&&document.querySelector('.dtt td .ch:not([style*="padding"])'))window.tileFit()}
   function refit(){requestAnimationFrame(function(){requestAnimationFrame(function(){if(window.__fitAll)window.__fitAll();setTimeout(chips,350);setTimeout(chips,900);setTimeout(chips,2000)})})}
-  document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#bh,#bm');if(t)refit()},true);
+  document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#bh,#bm,#bs');if(t)refit()},true);
 })();
 /* 2. Ink centring of the FAAB tile ("$" + digits) and of the CSS rank tile's digit, on the device-pixel grid.
       Why a script: (a) the ink is not centred in its advance box and CSS cannot see the text ("$" left bearing .0518em, last

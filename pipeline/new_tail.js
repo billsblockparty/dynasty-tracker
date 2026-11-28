@@ -69,11 +69,98 @@ const SGI='<svg class="sgi" viewBox="0 0 9 10" preserveAspectRatio="xMinYMid mee
 // IBM Plex Sans 600 letter a desktop name ends with (em, read from the font files), so icon-to-count and name-to-icon are measured glyph to glyph.
 const SGD=[.045,.067,.046,.044,.019,.053,.052,.045,.05,.039];
 const SGR={"a":.03,"b":.045,"c":.025,"d":.074,"e":.039,"f":.015,"g":0,"h":.068,"i":.062,"j":.062,"k":.005,"l":.023,"m":.068,"n":.068,"o":.039,"p":.045,"q":.074,"r":.02,"s":.039,"t":.037,"u":.074,"v":.011,"w":.022,"x":.019,"y":.01,"z":.037,"A":.021,"B":.047,"C":.031,"D":.052,"E":.058,"F":.046,"G":.071,"H":.082,"I":.053,"J":.078,"K":.015,"L":.032,"M":.082,"N":.082,"O":.052,"P":.038,"Q":.052,"R":.048,"S":.05,"T":.025,"U":.077,"V":.016,"W":.027,"X":.018,"Y":.01,"Z":.038,"0":.04,"1":.03,"2":.054,"3":.071,"4":.036,"5":.047,"6":.044,"7":.057,"8":.045,"9":.049,"'":.073,".":.07};
-function sgTag(t,dt){const a=typeof SGT!=='undefined'&&SGT[t];if(!a||!a.length)return '';const s=String(a.length);
-  const f=v=>v<0?'−'+(+Math.abs(v).toFixed(2)):'0';
-  const lab=`Shotguns this season: ${s} — `+a.map(([w,p,v])=>`W${w} ${p} (${f(v)})`).join(', ');
-  return `<i class="sgt" role="img" title="${esc(lab).replace(/"/g,'&quot;')}" aria-label="${esc(lab).replace(/"/g,'&quot;')}" style="--sgl:${SGD[+s[0]]}em${dt?';--sgr:'+(SGR[t.slice(-1)]||0)+'em':''}">${SGI}${s}</i>`}
+// Shotgun list (SG-1, 2026-11-27): one shotgun per team-week with at least one starting slot at 0 or less. sgW(t) = [[week, [rows]], ...]
+// newest first (SGT rows: [week, player, points, pos, nfl team, kind '' | 'bye' | 'empty']).
+function sgW(t){const a=typeof SGT!=='undefined'&&SGT[t]||[],m=new Map();a.forEach(r=>{if(!m.has(r[0]))m.set(r[0],[]);m.get(r[0]).push(r)});return [...m.entries()].sort((x,y)=>y[0]-x[0])}
+const sgF=v=>v<0?'−'+Math.abs(v).toFixed(2):'0.00';
+const sgQ=s=>esc(s).replace(/"/g,'&quot;');
+function sgTag(t,dt){const W=sgW(t);if(!W.length)return '';const s=String(W.length);
+  const lab=`Shotguns this season: ${s}. `+W.map(([w,ps])=>`W${w} `+ps.map(p=>p[5]==='empty'?'Empty slot':`${p[1]} (${sgF(p[2])})`).join(' + ')).join(', ')+'. Opens the shotgun list.';
+  return `<button type="button" class="sgt" data-sg="${sgQ(t)}" data-d="${s.slice(-1)}" title="${sgQ(lab)}" aria-label="${sgQ(lab)}" style="--sgl:${SGD[+s[0]]}em${dt?';--sgr:'+(SGR[t.slice(-1)]||0)+'em':''}">${SGI}${s}</button>`}
+// Shotgun mode (SG-1): the third state of the Standings switch. Order: shotgun weeks desc, then the most recent week desc, then the next
+// most recent ..., then H2H order. SGO = teams open (entered by the switch: none; by a tally: that team). Not stored.
+let SGO=new Set();
+function sgOrd(){const W={};H.forEach(t=>W[t]=sgW(t));return [...H].sort((a,b)=>{const x=W[a],y=W[b];if(x.length!==y.length)return y.length-x.length;
+  for(let i=0;i<Math.max(x.length,y.length);i++){const p=x[i]?x[i][0]:0,q=y[i]?y[i][0]:0;if(p!==q)return q-p}return H.indexOf(a)-H.indexOf(b)}).map(t=>[t,W[t]])}
+function sgPl(p){if(p[5]==='empty')return `<div class="sgp sge0"><span class="sgpn"><b class="sgpe">Empty slot</b></span><span class="sgpv">–</span></div>`;
+  const ps=(p[3]||'').toUpperCase(),nf=p[4]?`<em class="nfl n-${esc(p[4])}"><span class="ct">${esc(p[4])}</span></em>`:'';
+  return `<div class="sgp"><span class="sgpn">${ps?`<i class="pz p-${ps.toLowerCase()}">${esc(ps)}</i>`:''}<b class="sgpb" data-full="${sgQ(p[1])}">${esc(p[1])}</b>${nf}${p[5]==='bye'?'<small class="sgby">BYE</small>':''}</span><span class="sgpv">${sgF(p[2])}</span></div>`}
+function sgDraw(){const O=sgOrd();
+  // competition ranks (pass 2): 1 + the number of teams with more shotguns; ties share (1, 2, 3, 3, 5, 5, 7); zero teams '–'
+  document.getElementById('list').innerHTML='<section class="tcard sgb">'+O.map(([t,W],i)=>{const n=W.length,op=n&&SGO.has(t),id='sgx-'+i,k=1+O.filter(([,x])=>x.length>n).length;
+    const chips=W.map(([w])=>`<i class="sgk" data-d="${w%10}">W${w}</i>`).join('');   // data-d: last digit, for the right padding from glyph ink (site CSS)
+    const lab=`${t}: ${n} shotgun${n===1?'':'s'}`;
+    return `<div class="r sgr${n?'':' sg0'}${op?' open':''}" data-t="${sgQ(t)}">
+      <div class="rk"><span class="rkn" data-n="${n?k:'–'}"${n?` role="img" aria-label="Shotgun rank ${k}"`:' aria-hidden="true"'}></span>${typeof AVR!=='undefined'&&AVR[t]?`<i class="av rav av-${AVR[t]}" aria-hidden="true"></i>`:'<i class="rav nl"></i>'}</div>
+      <div class="nm"><span class="tn">${esc(t)}</span><span class="sgw">${chips}</span></div>
+      <div class="side sgs"><div class="rr"><b>${n}</b>${n?`<i class="sgm">${SGI}</i>`:''}</div>${n?'<svg class="sgcr" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
+      ${n?`<button type="button" class="sgh" aria-expanded="${op}" aria-controls="${id}" aria-label="${sgQ(lab)}. Show the weeks"></button>
+      <div class="sgx" id="${id}"${op?'':' hidden'}>${W.map(([w,ps])=>`<div class="sge"><span class="sgew"><i class="sgk">W${w}</i></span><div class="sgps">${ps.map(sgPl).join('')}</div></div>`).join('')}</div>`:''}</div>`}).join('')+'</section>'+
+    // the note (pass 3): a foot strip inside the board after the last team row, the cutoff line's strip (.pline) without its rule and count
+    '<div class="pline sgft" role="note"><b><span>One per week with a starter at 0 or less.</span> <span>Byes and empty slots count.</span></b></div>';
+  sgFit()}
+// sgRows (SG-1b): (1) ONE decision per board for the week chips: inline on line 2 of the name block when every row's chips end >= 12px
+// before its count column, else every row's chips move to their own full-width line under the logo (.sgwl: the .sgw element is moved
+// to the row, grid row 2); (2) every closed row one height: each name block reserves what its row lacks against the tallest closed row
+// (min-height), and the row's disclosure button covers the closed band. Phones only (desktop rows are always open). Reads, then writes.
+function sgRows(){const W=[...document.querySelectorAll('#list .sgr')].filter(r=>r.offsetParent);if(!W.length)return;const dsk=matchMedia('(min-width:1100px)').matches;
+  W.forEach(r=>{const w=r.querySelector('.sgw'),n=r.querySelector(':scope>.nm');if(w&&w.parentElement!==n)n.appendChild(w);r.classList.remove('sgwl');n.style.minHeight='';const h=r.querySelector('.sgh');if(h)h.style.height=''});
+  if(dsk)return;
+  const over=W.some(r=>{const k=r.querySelector('.sgw>.sgk:last-child'),c=r.querySelector('.side .rr');return k&&c&&k.getBoundingClientRect().right>c.getBoundingClientRect().left-12+.01});
+  if(over)W.forEach(r=>{const w=r.querySelector('.sgw'),x=r.querySelector(':scope>.sgx');r.classList.add('sgwl');r.insertBefore(w,x||r.querySelector('.sgh')||null)});
+  const band=r=>{const x=r.querySelector(':scope>.sgx'),R=r.getBoundingClientRect();return (x&&!x.hidden?x.getBoundingClientRect().top-parseFloat(getComputedStyle(x).marginTop):R.bottom)-R.top-parseFloat(getComputedStyle(r).borderTopWidth)};
+  for(let pass=0;pass<2;pass++){const M=W.map(r=>{const n=r.querySelector(':scope>.nm');return [n,n.getBoundingClientRect().height,band(r)]});const top=Math.max(...M.map(m=>m[2]));
+    M.forEach(([n,h,rh])=>{if(Math.abs(top-rh)>.01)n.style.minHeight=(h+top-rh).toFixed(3)+'px'})}
+  const B=W.map(r=>[r.querySelector('.sgh'),band(r)+parseFloat(getComputedStyle(r).borderTopWidth)]);B.forEach(([h,v])=>{if(h)h.style.height=v.toFixed(2)+'px'});
+  window.__sgRows={chips:over?'own line':'inline',rowH:+(B[0][1]).toFixed(2)}}
+if(typeof SGT!=='undefined')addEventListener('resize',()=>{if(typeof MODE!=='undefined'&&MODE==='s')requestAnimationFrame(()=>requestAnimationFrame(()=>{tnFit();sgFit()}))});
+// sgFit (SG-1): mug = the number's painted height (cap + T2 outline + shadow, whole px), centred
+// on the cap centre, 4px of ink to the digit; names re-fitted (tnFit: Shotgun padding clears the count column); chips and heights (sgRows);
+// then, by translate only (no layout change): count group on the picture's centre line, a zero team's name ink on it too, caret 6px of
+// ink under the number's painted foot, centred under the group; open lists: one chip width, one pill width, chip centred on the first
+// player's line; player names full -> LUA -> 11px floor; desktop name column. Reads all, then writes, per element.
+function sgCap(e){const cs=getComputedStyle(e),fs=parseFloat(cs.fontSize);_cv.font=`${cs.fontWeight} ${fs}px ${cs.fontFamily}`;const m=_cv.measureText('H');
+  const lh=parseFloat(cs.lineHeight)||fs,base=(lh-m.fontBoundingBoxAscent-m.fontBoundingBoxDescent)/2+m.fontBoundingBoxAscent;
+  const sw=parseFloat(cs.webkitTextStrokeWidth)||0,sh=(cs.textShadow||'none').match(/(-?[\d.]+)px\s+(-?[\d.]+)px/);return {cap:m.actualBoundingBoxAscent,base,sw,sy:sh?Math.max(0,+sh[2]):0,fs}}
+function sgFit(){const R=[...document.querySelectorAll('#list .sgr .rr')].filter(e=>e.offsetParent);if(!R.length&&!document.querySelector('#list .sgpb'))return;
+  const dsk=matchMedia('(min-width:1100px)').matches;
+  // 1. mug size (reads, then writes)
+  const rd=R.map(rr=>{const b=rr.querySelector('b'),m=rr.querySelector('.sgm');if(!m)return null;const q=sgCap(b),d=_cv.measureText(b.textContent.charAt(0));
+    const h=Math.round(q.cap+q.sw+q.sy);return [m,h,q.base-q.cap/2-h/2,4+d.actualBoundingBoxLeft]}).filter(Boolean);
+  rd.forEach(([m,h,top,mr])=>{m.style.setProperty('--sgh',h+'px');m.style.setProperty('--sgy',top.toFixed(2)+'px');m.style.setProperty('--sgmr',mr.toFixed(2)+'px')});
+  if(window.__sgTn!==1){window.__sgTn=1;try{tnFit()}finally{window.__sgTn=0}}
+  // zero teams: mvAl leaves them alone (their name is centred on the picture by translate below); their name block takes the same top
+  // margin as the ranked rows', so the closed band is the same
+  {const z=document.querySelector('#list .sgr:not(.sg0) .nm'),m=z?z.style.marginTop:'';document.querySelectorAll('#list .sgr.sg0 .nm').forEach(n=>n.style.marginTop=m)}
+  sgRows();
+  // 2. translates: clear, read, write
+  const rows=[...document.querySelectorAll('#list .sgr')].filter(r=>r.offsetParent);
+  rows.forEach(r=>{const s=r.querySelector('.side'),t=r.querySelector('.tn'),c=r.querySelector('.sgcr');s.style.translate='';t.style.translate='';if(c){c.style.top='';c.style.left=''}});
+  const T=rows.map(r=>{const lg=r.querySelector('.rav').getBoundingClientRect(),mid=lg.top+lg.height/2,b=r.querySelector('.side .rr b'),q=sgCap(b),bt=b.getBoundingClientRect(),cc=bt.top+q.base-q.cap/2;
+    const t=r.querySelector('.tn'),tb=t.getBoundingClientRect(),tq=sgCap(t),c=r.querySelector('.sgcr'),rr=r.querySelector('.side .rr').getBoundingClientRect(),sd=r.querySelector('.side').getBoundingClientRect();
+    return {r,dy:dsk?0:mid-cc,zero:r.classList.contains('sg0'),tdy:(()=>{const g=document.createRange();g.selectNodeContents(t);const x=g.getClientRects()[0]||tb;_cv.font=`${getComputedStyle(t).fontWeight} ${tq.fs}px ${getComputedStyle(t).fontFamily}`;const m=_cv.measureText('H'),bl=x.top+(x.height-m.fontBoundingBoxAscent-m.fontBoundingBoxDescent)/2+m.fontBoundingBoxAscent;return mid-(bl-m.actualBoundingBoxAscent/2)})(),c,foot:bt.top+q.base+q.sw/2+q.sy-sd.top,cx:(rr.left+rr.right)/2-sd.left}});
+  T.forEach(o=>{o.r.querySelector('.side').style.translate=`0 ${o.dy.toFixed(2)}px`;if(o.zero&&!dsk)o.r.querySelector('.tn').style.translate=`0 ${o.tdy.toFixed(2)}px`;
+    if(o.c){o.c.style.top=(o.foot+6-.25).toFixed(2)+'px';o.c.style.left=(o.cx).toFixed(2)+'px'}});
+  // 3. open lists: one chip width, one pill width (board-wide), chip on the first player's line centre
+  const K=[...document.querySelectorAll('#list .sgx:not([hidden]) .sgew .sgk')],P=[...document.querySelectorAll('#list .sgx:not([hidden]) .sgpn .pz')];
+  K.forEach(k=>k.style.width='');P.forEach(z=>z.style.width='');document.querySelectorAll('#list .sgew').forEach(e=>e.style.marginTop='');
+  const kw=Math.max(0,...K.map(k=>k.getBoundingClientRect().width)),pw=Math.max(0,...P.map(z=>z.getBoundingClientRect().width));
+  const E=[...document.querySelectorAll('#list .sgx:not([hidden]) .sge')].map(e=>{const p=e.querySelector('.sgp'),k=e.querySelector('.sgew .sgk');return [e.querySelector('.sgew'),(p.getBoundingClientRect().height-k.getBoundingClientRect().height)/2]});
+  K.forEach(k=>k.style.width=kw+'px');P.forEach(z=>z.style.width=pw+'px');if(!dsk)E.forEach(([w,m])=>w.style.marginTop=m.toFixed(2)+'px');
+  // 4. player names: full; else the approved short form (LUA, per word); else down to the 11px floor; never clipped
+  const N=[...document.querySelectorAll('#list .sgx:not([hidden]) .sgpb')];N.forEach(b=>{b.textContent=b.dataset.full;b.style.fontSize=''});
+  const ov=b=>{const p=b.parentElement;return p.scrollWidth>p.clientWidth+.5};
+  const L1=N.filter(ov);L1.forEach(b=>{b.textContent=b.dataset.full.split(' ').map(w=>LUA[w]||w).join(' ')});
+  const L2=L1.filter(ov);L2.forEach(b=>{let f=parseFloat(getComputedStyle(b).fontSize);while(ov(b)&&f>11){f=Math.max(11,f-.5);b.style.fontSize=f+'px'}});
+  // 5. desktop: name column = the widest name's ink + 32px, one x for every row's first week cell
+  if(dsk){const g=document.createRange();rows.forEach(r=>r.style.removeProperty('--sgnw'));const nw=Math.max(...rows.map(r=>{const t=r.querySelector('.tn');g.selectNodeContents(t);return g.getBoundingClientRect().right-r.querySelector(':scope>.nm').getBoundingClientRect().left}));
+    const z=rows[0].currentCSSZoom||1;rows.forEach(r=>r.style.setProperty('--sgnw',((nw+32)/z).toFixed(2)+'px'))}  // screen px -> the row's zoomed CSS px
+  // 6. foot strip: one line if it fits inside the 16px insets, else two (break after "less.")
+  const ft=document.querySelector('#list .sgft');if(ft){ft.classList.remove('sgft2');const fb=ft.querySelector('b'),g2=document.createRange();g2.selectNodeContents(fb);
+    const two=g2.getBoundingClientRect().right>ft.getBoundingClientRect().right-parseFloat(getComputedStyle(ft).paddingRight)+.05;ft.classList.toggle('sgft2',two);window.__sgFoot=two?'two lines':'one line'}
+  window.__sgReport={short:L1.length,shrunk:L2.length,over:L2.filter(ov).length}}
 function draw(med){
+  if(med==='s')return sgDraw();if(med==='m')med=true;else if(med==='h')med=false;
   const o=med?M:H;
   const wl=x=>{const e=T[x];return med?[e[0]+e[2],e[1]+G-e[2]]:[e[0],e[1]]};
   document.getElementById('list').innerHTML=o.map((t,i)=>{
@@ -145,17 +232,36 @@ function dtab(med){
   box.innerHTML='<div class="dtp">'+h+'</tbody></table></div>';
   if(!box.dataset.w){box.dataset.w=1;box.addEventListener('click',e=>{
     const th=e.target.closest('th.srt');if(th){const k=th.dataset.k;box.dataset.d=box.dataset.k===k?-(+box.dataset.d||1):1;box.dataset.k=k===box.dataset.k&&+box.dataset.d===1?'seed':k;if(box.dataset.k==='seed')box.dataset.d=1;dtab(document.getElementById('bm').getAttribute('aria-pressed')==='true');return}
+    const sg=e.target.closest('.sgt');if(sg){sgGo(sg.dataset.sg);return}
     const tr=e.target.closest('tr.dtr');if(!tr)return;const c=document.querySelector('#list .r[data-t="'+CSS.escape(tr.dataset.t)+'"]');
     if(c){c.scrollIntoView({behavior:'smooth',block:'start'});c.classList.remove('dfl');void c.offsetWidth;c.classList.add('dfl')}})}
 }
 const list=document.getElementById('list');
 function toggle(row){const t=row.dataset.t;OPEN.has(t)?OPEN.delete(t):OPEN.add(t);const op=OPEN.has(t);row.classList.toggle('open',op);row.setAttribute('aria-expanded',op);row.querySelector('.strip').hidden=!op}
-list.addEventListener('click',e=>{if(e.target.closest('.strip'))return;if(e.target.closest('.fab')){setTimeout(()=>{const n=document.querySelector('nav.tabs');n&&n.scrollIntoView({block:'start'})},0);return}const r=e.target.closest('.r');if(r)toggle(r)});
+// shotgun rows (SG-1): the row's own button opens / closes its weeks; rows toggle independently
+function sgTog(row){const t=row.dataset.t,b=row.querySelector('.sgh'),x=row.querySelector('.sgx');if(!b||!x)return;SGO.has(t)?SGO.delete(t):SGO.add(t);const op=SGO.has(t);
+  row.classList.toggle('open',op);b.setAttribute('aria-expanded',op);x.hidden=!op;if(op)sgFit()}
+// a tally press (card or desktop table): Shotgun mode with that team open, its row top under the nav band (+16px), focus on its button
+function sgGo(t){SGO=new Set([t]);set('s');const r=document.querySelector('#list .sgr[data-t="'+CSS.escape(t)+'"]');if(!r)return;
+  const y=r.getBoundingClientRect().top+scrollY-((parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tnh'))||0)+16);
+  scrollTo({top:y,behavior:'instant'});const b=r.querySelector('.sgh');b&&b.focus({preventScroll:true})}
+list.addEventListener('click',e=>{const sg=e.target.closest('.sgt');if(sg){e.stopPropagation();sgGo(sg.dataset.sg);return}
+  const sh=e.target.closest('.sgh');if(sh){sgTog(sh.closest('.sgr'));return}if(e.target.closest('.sgr'))return;
+  if(e.target.closest('.strip'))return;if(e.target.closest('.fab')){setTimeout(()=>{const n=document.querySelector('nav.tabs');n&&n.scrollIntoView({block:'start'})},0);return}const r=e.target.closest('.r');if(r)toggle(r)});
 list.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('r')){e.preventDefault();toggle(e.target)}});
 const bh=document.getElementById('bh'),bm=document.getElementById('bm');
-function set(med){bh.setAttribute('aria-pressed',!med);bm.setAttribute('aria-pressed',med);draw(med);dtab(med);
-  if(window.tileFit)tileFit();tnFit();s2Fit();sbFit();if(window.rrFit)rrFit();if(window.nrdFit)nrdFit();if(typeof rniSnap==='function')rniSnap();if(window.dsFit)dsFit()}  // names, Could have, streak tiles, desktop Nerd stack and the rank art's pixel snap too, in load order (2026-11-16, J1: rrFit ran 2 frames later on unfitted names, then tnFit moved the stat lines under it; a click fires no change, so rniSnap never ran)  // draw() rebuilds the rows: size their chips, then re-fit the stat lines as on load (2026-11-13; a press left Luck cut until a resize)
-bh.onclick=()=>set(false);bm.onclick=()=>set(true);
+// Shotgun (SG-1): a third button, only where SGT exists (BBP current season); YILM and past seasons keep the two-button switch byte-identical
+let bs=null;if(typeof SGT!=='undefined'){bs=document.createElement('button');bs.id='bs';bs.setAttribute('aria-pressed','false');bs.innerHTML='Shotgun';bm.after(bs);bm.parentElement.classList.add('tg3');
+}
+// MODE = 'h' | 'm' | 's' (Shotgun). set() takes a mode; a boolean still means Median (true) / H2H (false)
+let MODE='h';
+function set(med){const md=med===true?'m':med===false?'h':med;MODE=md;const s=md==='s';
+  bh.setAttribute('aria-pressed',md==='h');bm.setAttribute('aria-pressed',md==='m');if(bs)bs.setAttribute('aria-pressed',s);
+  const pn=document.querySelector('.pane-st');if(pn&&pn.classList.contains('sgm')!==s){pn.classList.toggle('sgm',s);const dn=pn.querySelector('.dens');if(dn)dn.inert=s}
+  if(!s)SGO=new Set();
+  draw(md);if(s){const d=document.getElementById('dtab');if(d)d.innerHTML=''}else dtab(md==='m');
+  if(window.tileFit)tileFit();tnFit();s2Fit();sbFit();if(window.rrFit)rrFit();if(window.nrdFit)nrdFit();if(typeof rniSnap==='function')rniSnap();if(window.dsFit)dsFit();if(s)sgFit()}  // names, Could have, streak tiles, desktop Nerd stack and the rank art's pixel snap too, in load order (2026-11-16, J1: rrFit ran 2 frames later on unfitted names, then tnFit moved the stat lines under it; a click fires no change, so rniSnap never ran)  // draw() rebuilds the rows: size their chips, then re-fit the stat lines as on load (2026-11-13; a press left Luck cut until a resize)
+bh.onclick=()=>set(false);bm.onclick=()=>set(true);if(bs)bs.onclick=()=>{SGO=new Set();set('s')};
 draw(false);if(!FL())dtab(false);
 if(typeof AVR!=='undefined')document.querySelectorAll('.pav[data-avt]').forEach(e=>{const r=AVR[e.dataset.avt];if(r)e.classList.add('av','av-'+r);else e.classList.add('nl')});
 function pfit(){document.querySelectorAll('.pr .pav.av+.psn').forEach(el=>{if(!el.offsetParent)return;el.style.fontSize='';let f=parseFloat(getComputedStyle(el).fontSize);while((el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1)&&f>11){f-=0.5;el.style.fontSize=f+'px'}})}
@@ -165,7 +271,7 @@ pfit();document.addEventListener('change',()=>requestAnimationFrame(pfit));
 function capC(e){const c=getComputedStyle(e),fs=parseFloat(c.fontSize);_cv.font=`${c.fontWeight} ${fs}px ${c.fontFamily}`;const m=_cv.measureText('H'),a=m.fontBoundingBoxAscent,d=m.fontBoundingBoxDescent,lh=c.lineHeight==='normal'?a+d:parseFloat(c.lineHeight);
   return {lh,c:(lh-a-d)/2+d+m.actualBoundingBoxAscent/2}}
 function mvAl(){
-  document.querySelectorAll('.board .r .nm').forEach(n=>{if(!n.offsetParent)return;const t=n.querySelector('.tn'),v=n.querySelector('.mv'),f=n.querySelector('.fab');if(!t)return;
+  document.querySelectorAll('.board .r:not(.sg0) .nm').forEach(n=>{if(!n.offsetParent)return;const t=n.querySelector('.tn'),v=n.querySelector('.mv'),f=n.querySelector('.fab');if(!t)return;
   const cap=e=>{const c=getComputedStyle(e);_cv.font=`${c.fontWeight} ${c.fontSize} ${c.fontFamily}`;return _cv.measureText('H').actualBoundingBoxAscent};
   if(v)v.style.verticalAlign=((cap(t)-cap(v))/2)+'px';
   // top of the name's capitals level with the top of the team logo
@@ -182,11 +288,13 @@ function tnFit(){
   // every row's record is laid out once as H2H and once as Median (the strings and .rr4 rule of draw()), read in one layout each, then
   // put back, so a name never refits when H2H / Median switches (Median "10-10" is wider than "5-5")
   const R=[...document.querySelectorAll('.board .r')].map(r=>[r.querySelector(':scope>.nm'),r.querySelector('.side .rr'),r.dataset.t]).filter(([n,k])=>n&&k&&n.offsetParent);
-  R.forEach(([n])=>n.style.paddingRight='');const gap=([n,k])=>(n.getBoundingClientRect().right-Math.min(...[...k.children].map(c=>c.getBoundingClientRect().left)))/dsK(n)+6;
+  R.forEach(([n])=>n.style.paddingRight='');const gap=([n,k])=>(n.getBoundingClientRect().right-Math.min(...[...k.children].filter(c=>!c.classList.contains('sgm')).map(c=>c.getBoundingClientRect().left)))/dsK(n)+6;
   const kb=R.map(([,k])=>[k.firstElementChild,k.firstElementChild&&k.firstElementChild.textContent,k.classList.contains('rr4')]);let pr=0;
-  if(typeof T!=='undefined'&&typeof G!=='undefined')[0,1].forEach(md=>{R.forEach(([,k,t],i)=>{const e=T[t],b=kb[i][0];if(!e||!b)return;const a=md?[e[0]+e[2],e[1]+G-e[2]]:[e[0],e[1]];
+  // Shotgun mode (SG-1b): the right column holds the count + mug, not a record: names end 6px before its ink box, measured as it stands
+  const SGR_=R.length&&R[0][0].closest('.sgr');
+  if(!SGR_&&typeof T!=='undefined'&&typeof G!=='undefined')[0,1].forEach(md=>{R.forEach(([,k,t],i)=>{const e=T[t],b=kb[i][0];if(!e||!b)return;const a=md?[e[0]+e[2],e[1]+G-e[2]]:[e[0],e[1]];
     b.textContent=a[0]+'-'+a[1];k.classList.toggle('rr4',(String(a[0])+String(a[1])).length>2)});pr=Math.max(pr,...R.map(gap))});
-  R.forEach(([,k],i)=>{const [b,tx,c4]=kb[i];if(b)b.textContent=tx;k.classList.toggle('rr4',c4)});pr=Math.max(pr,...R.map(gap));R.forEach(([n])=>n.style.paddingRight=pr+'px');
+  R.forEach(([,k],i)=>{const [b,tx,c4]=kb[i];if(b)b.textContent=tx;k.classList.toggle('rr4',c4)});if(SGR_){const P=R.map(([n,k])=>(n.getBoundingClientRect().right-k.getBoundingClientRect().left)/dsK(n)+12);R.forEach(([n],i)=>n.style.paddingRight=P[i]+'px')}else{pr=Math.max(pr,...R.map(gap));R.forEach(([n])=>n.style.paddingRight=pr+'px')}
   // the ▲/▼ change marker differs by mode too (H2H "▲1", Median "–"): each row's marker keeps the width of the wider of its two
   // (min-width in em of the marker's own size; the glyphs do not move), so the name fits the same in both modes (2026-11-17, job 2)
   if(typeof PH!=='undefined'&&typeof PM!=='undefined'&&typeof H!=='undefined'&&typeof M!=='undefined'){const tri=p=>`<svg class="tri" viewBox="0 0 8 7" aria-hidden="true"><path d="${p}"/></svg>`;
@@ -481,8 +589,8 @@ function dtPanels(box){
   box.innerHTML=groups.map((g,i)=>{const b=g.band,bh=b.querySelector('.dtbh'),em=bh&&bh.querySelector('em');if(em)em.remove();
     const band=`<tr class="${b.className}"><td class="dtbb" colspan="${NS}">${bh?bh.outerHTML:''}</td><td class="dsc" colspan="4">${i?'':'<span>20k simulations</span>'}</td></tr>`;
     return `<div class="dtp"><table class="dtt dtf" style="width:${TW}px">${cg()}${i?'<tbody>'+band:'<thead>'+band+hdr+'</thead><tbody>'}${g.rows.map(r=>r.outerHTML).join('')}</tbody></table></div>`}).join('')}
-addEventListener('resize',()=>{clearTimeout(window._dtR);window._dtR=setTimeout(()=>{const b=document.getElementById('bm');if(window.innerWidth>=1100&&typeof dtab==='function')dtab(!!b&&b.getAttribute('aria-pressed')==='true')},120)});
-document.fonts&&document.fonts.ready.then(()=>{const b=document.getElementById('bm');if(typeof dtab==='function')dtab(!!b&&b.getAttribute('aria-pressed')==='true')});
+addEventListener('resize',()=>{clearTimeout(window._dtR);window._dtR=setTimeout(()=>{const b=document.getElementById('bm');if(window.innerWidth>=1100&&typeof dtab==='function'&&MODE!=='s')dtab(!!b&&b.getAttribute('aria-pressed')==='true')},120)});
+document.fonts&&document.fonts.ready.then(()=>{const b=document.getElementById('bm');if(typeof dtab==='function'&&MODE!=='s')dtab(!!b&&b.getAttribute('aria-pressed')==='true')});
 // Desktop table: equal space either side of the simulations divider (Nicklaus, 2026-11-03). Proj finish gets 16px
 // padding; the column before the divider (Tot eff) gets the padding-right that puts its glyph ink exactly as far from the
 // divider as Proj finish's content is on the other side (judged by ink: canvas bearings on the last/first glyph).

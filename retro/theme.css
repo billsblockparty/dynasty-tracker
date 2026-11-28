@@ -1392,3 +1392,28 @@ html.retro .tqfv .tqfs .tqfg>.tqfr:nth-child(15){background-color:color-mix(in s
    (Could have's two-line Best cell, 65.2px at worst, fits the same 77px). The first column (minmax(0,1fr)) gives up the space.
    Classic's --cols is an inline style on the table: the rows' track list is replaced, the variable is not read. */
 html.retro .sxt.tqcg:is([style*="1fr) 92px 70px"],[style*="1fr) 96px 50px"],[style*="1fr) 92px 54px"])>.sxr{grid-template-columns:minmax(0,1fr) 99px 77px}
+
+/* ================= Shotgun mode (briefs SG-1 .. SG-2, 2026-11-28). Standings' third switch state; structure in pipeline/readability.css
+   "SHOTGUN MODE". Rank column: the rank tile (rule 6) with ONE neutral recipe for every ranked team (--badge, white digit; no yellow:
+   yellow = the bye tier); teams with zero: flat --blue-3 tile, --peri-lt "–". Week chips: the Standings rank chip (rgba(0,0,0,.45),
+   --peri-lt, 2px corner, no shadow, T0). Count: the record's T2 type; mug --peri-lt (--text-dim). ================= */
+html.retro .sgr .rkn::after{display:none}
+html.retro:not(.rk-art) .sgr.sg0 .rkn{position:relative}
+html.retro:not(.rk-art) .sgr.sg0 .rkn::before{content:"–";background:rgba(0,0,0,.45);border-color:transparent;color:var(--peri-lt);-webkit-text-stroke:0;text-shadow:none}
+html.retro .sgk{background:rgba(0,0,0,.45);color:var(--peri-lt);border-radius:2px;text-shadow:none;letter-spacing:0!important;font-weight:700}
+html.retro .sgr .sgpb{color:var(--white)}
+html.retro .sgr .sgpv{color:var(--white);letter-spacing:0!important}
+html.retro .sgr .pz{color:var(--black);border-radius:2px;letter-spacing:0!important;text-shadow:none}
+html.retro .sgr .pz.p-qb{--pc:var(--pos-qb)}html.retro .sgr .pz.p-rb{--pc:var(--pos-rb)}html.retro .sgr .pz.p-wr{--pc:var(--pos-wr)}
+html.retro .sgr .pz.p-te{--pc:var(--pos-te)}html.retro .sgr .pz.p-k{--pc:var(--pos-k)}html.retro .sgr .pz.p-def{--pc:var(--pos-def)}
+html.retro .pline.sgft b{color:var(--peri-lt)}
+html.retro .pane-st .tg #bs[aria-pressed="true"]{background:var(--badge)!important;color:var(--white)!important;box-shadow:inset 0 0 0 2px var(--white)!important}
+/* T1 (SG-2): the card tally's plate = the week chip's (.sgk) recipe; count without its shadow on the plate, as the chips */
+html.retro .board .r .nm button.sgt{background:rgba(0,0,0,.45);border-radius:2px;text-shadow:none;--sgpr:5px}   /* Martian Mono digits: ink R - L within .3px at 5px for 1-5, so one value (Classic's per-digit values off) */
+/* closed-row week chips: right padding from the last digit's ink (Martian Mono 700 13px), so W-ink -> left edge = last digit ink -> right
+   edge; measured in WebKitGTK (473 CSS px, 3x) with 5px each side: right gap larger by 0 .33, 1 .42, 2 .62, 3 .57, 4 .21, 5 .56,
+   6 .53, 7 .79, 8 .55, 9 .52px (SG-2 pass 3) */
+html.retro .sgw .sgk[data-d="0"]{padding-right:4.67px}html.retro .sgw .sgk[data-d="1"]{padding-right:4.58px}html.retro .sgw .sgk[data-d="2"]{padding-right:4.38px}
+html.retro .sgw .sgk[data-d="3"]{padding-right:4.43px}html.retro .sgw .sgk[data-d="4"]{padding-right:4.79px}html.retro .sgw .sgk[data-d="5"]{padding-right:4.44px}
+html.retro .sgw .sgk[data-d="6"]{padding-right:4.47px}html.retro .sgw .sgk[data-d="7"]{padding-right:4.21px}html.retro .sgw .sgk[data-d="8"]{padding-right:4.45px}
+html.retro .sgw .sgk[data-d="9"]{padding-right:4.48px}

@@ -1531,3 +1531,102 @@ html:root{--faab:#D9D0BC;--faab-ink:#101B1F}  /* FAAB tile (standings + Trades) 
    3.22:1 on --row-lt, 4.17:1 on --deck; glyph --frame 5.80:1 (was --row-divider fill + --text-dim glyph, 1.16-1.61:1 against the rows). */
 :root{--swap-fill:#5392a9}
 .txsw{background:var(--swap-fill);color:var(--frame)}
+
+/* 2026-11-28 SHOTGUN MODE (briefs SG-1 .. SG-2; BBP only: YILM has no SGT, so nothing here matches there). Structure and Classic look;
+   the retro surface is in retro/theme.css "Shotgun mode". The tally is a real button now (UA button box reset; every value it had as an
+   <i> is kept by the rules above, which are more specific); an out-of-flow ::after extends its target to 51.8 x 51.8px (44pt at 0.85),
+   starting at the tally's own left edge so it never covers the FAAB label. */
+button.sgt{text-shadow:inherit;text-transform:inherit;word-spacing:inherit;text-indent:inherit;background:none;border:0;padding-top:0;padding-bottom:0;padding-right:0;margin-top:0;margin-bottom:0;margin-right:0;border-radius:0;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dtt td.dtm .dtn button.sgt{display:inline;padding-left:0;vertical-align:baseline;position:relative}
+.board .r .nm button.sgt::after,.dtt td.dtm .dtn button.sgt::after{content:"";position:absolute;left:0;top:50%;width:max(100%,51.8px);height:51.8px;margin-top:-25.9px}
+.board .r .nm .fbl{position:relative}
+.pane-st .tg #bs{white-space:nowrap}
+/* Shotgun mode: Detail switch hidden (not removed: the switch row keeps its place), no desktop table, the one-line note (section
+   subtitle recipe .posh>.wsub: display 600 caps .1em 14px --steel, text-wrap balance) */
+.pane-st.sgm .dens{visibility:hidden}
+.pane-st.sgm #dtab{display:none!important}
+/* foot strip (pass 3): the cutoff line's strip, label in --text-dim, no rule, no count; two lines where one does not fit (.sgft2) */
+#list>.pline.sgft{justify-content:flex-start;contain:inline-size}   /* its one-line text never widens the board (Classic's wider caps did, to 516px at 402P); sgFit then picks two lines */
+.pline.sgft b{color:var(--text-dim);white-space:nowrap}
+.pline.sgft b span{color:inherit}   /* not the cutoff count's --chalk (.pline span) */
+.pline.sgft.sgft2 b span{display:block}
+.pline.sgft.sgft2 b span+span{margin-top:6px}
+/* "MODE" after the three-button switch: its ink starts as far after the switch as "DETAIL"'s ink ends before Dumb / Nerd (pass 2) */
+.pane-st .tg.tg3+.tgl{margin-left:var(--tgm,-1.66px)!important}
+@media(max-width:430px){.pane-st .tg.tg3+.tgl{margin-left:var(--tgm,-3.68px)!important}}
+/* rows: Standings row geometry (16px inset, 52px rank column, 9px, 50px logo, 9px, name block); closed rows one height */
+#list.board>.tcard>.r.sgr{display:grid!important;grid-template-columns:111px minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;column-gap:9px;row-gap:0;position:relative;cursor:default;--rpb:16px}
+#list.board>.tcard>.r.sgr>.rk{grid-column:1;grid-row:1;align-self:start}
+#list.board>.tcard>.r.sgr>.nm{grid-column:2 / 4;grid-row:1;align-self:start;min-height:50px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start}
+#list.board>.tcard>.r.sgr>.side{grid-column:3;grid-row:1;align-self:start;justify-self:end;display:flex;flex-direction:column;align-items:flex-end;position:relative;z-index:1;pointer-events:none}
+.sgr.sg0 .side .rr b{text-align:right}
+.sgr .side .rr{display:flex!important;align-items:flex-start;flex-direction:row;gap:0!important}
+.sgr .side .rr>.sgm{order:-1;flex:none;display:block;height:var(--sgh,14px);width:calc(.9*var(--sgh,14px));margin:var(--sgy,0px) calc(var(--sgmr,4px)) 0 0;color:var(--text-dim);fill:currentColor}
+.sgr .side .rr>.sgm>svg{display:block;width:100%;height:100%;fill:currentColor}
+.sgr.sg0 .side .rr b{color:var(--text-dim)}
+.sgr .sgcr{position:absolute;top:0;left:50%;width:12.75px;height:7.65px;transform:translateX(-50%);color:var(--text-dim)}   /* ink 12px wide (9.6 units x 1.25) */
+.sgr.open .sgcr{transform:translateX(-50%) rotate(180deg)}
+.sgr .rkn>.rni{display:none}
+.sgr .rkn::after{content:attr(data-n);display:flex;align-items:center;justify-content:center;width:42px;height:44px;margin:auto;border-radius:6px;background:var(--line);color:var(--chalk);font:700 24px/1 var(--display);font-variant-numeric:tabular-nums}
+.sgr.sg0 .rkn::after{color:var(--text-dim)}
+/* line 2: one chip per week, newest first (rank-chip recipe .ch: --line fill, --steel ink, radius; cap-trimmed so the frame gap is the padding) */
+.sgr .sgw{display:flex;flex-wrap:nowrap;gap:6px;min-height:21px;align-items:center;margin-top:6px}
+.sgk{display:inline-block;flex:none;font:600 13px/1 var(--display);font-style:normal;letter-spacing:0;font-variant-numeric:tabular-nums;text-box:trim-both cap alphabetic;padding:4px 5px;border-radius:4px;background:var(--line);color:var(--steel);white-space:nowrap}
+.sgr.sgwl>.sgw{grid-column:1 / -1;grid-row:2;margin-top:12px;padding-left:5px;flex-wrap:wrap;row-gap:6px;min-height:0}
+#list.board>.tcard>.r.sgr.sgwl{grid-template-rows:auto auto auto!important}
+.sgr.sgwl>.sgx{grid-row:3}
+.sgr.sg0 .nm .sgw{visibility:hidden}   /* zero team, name on two lines: its second line takes the empty chip line's place (SG-1b) */
+/* the disclosure: the whole of line 1 + chips (out of flow, over the row's first band) */
+.sgr .sgh{position:absolute;left:0;right:0;top:0;height:calc(var(--rpt) + 50px + 8px);background:none;border:0;padding:0;margin:0;cursor:pointer;z-index:2;-webkit-tap-highlight-color:transparent}
+.sgr .sgh:focus-visible{outline:2px solid var(--chalk);outline-offset:-4px}
+/* open list (pattern C inside the row, on the row's own shade): divider, entries newest first, divider between entries */
+/* lines: --row-divider drawn as a 1px inset box-shadow, not a border, so the frame-colour border rule ("body *:not(...){border-color:var(--frame)!important}") does not apply to them (pass 2) */
+.sgr .sgx{grid-column:1 / -1;grid-row:2;margin:16px calc(-1*var(--rpx)) calc(-1*var(--rpb,16px));border:0;box-shadow:inset 0 1px 0 0 var(--row-divider)}
+.sgr .sge{display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:9px;padding:var(--sgep-t,15.66px) var(--rpx) var(--sgep-b,14.35px);align-items:start}
+.sgr .sge+.sge{box-shadow:inset 0 1px 0 0 var(--row-divider)}
+.sgr .sgew{display:flex;justify-content:flex-start;padding-left:5px}   /* chip's left edge on the 42px rank tile's left edge (centred in 52px) */
+.sgr .sgew .sgk{text-align:center;box-sizing:border-box}
+.sgr .sgpn .pz{box-sizing:border-box}
+.sgr .sgps{display:flex;flex-direction:column;gap:8px;min-width:0}
+.sgr .sgp{display:flex;align-items:center;gap:8px;min-width:0}
+.sgr .sgpn{display:flex;align-items:center;gap:6px;min-width:0;flex:1 1 auto;overflow:hidden;white-space:nowrap}
+.sgr .sgpn .pz{flex:none;margin:0}
+.sgr .sgpb{font-weight:600;font-size:14px;color:var(--chalk);white-space:nowrap}
+.sgr .sgpe{font-weight:600;font-size:14px;color:var(--text-dim)}
+.sgr .sgpn .nfl{flex:none}
+.sgr .sgby{flex:none;font:600 11px/1 var(--display);letter-spacing:.06em;color:var(--text-dim)}
+.sgr .sgpv{flex:none;margin-left:auto;font:700 15px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--chalk)}
+.sgr.sg0 .sgpv{color:var(--text-dim)}
+/* desktop (>= 1100px): every row open, no caret, no button; the week entries as equal cells after the name */
+@media(min-width:1100px){
+  #list.board>.tcard>.r.sgr{grid-template-columns:111px var(--sgnw,270px) minmax(0,1fr) auto!important;grid-template-rows:auto!important;column-gap:9px}
+  #list.board>.tcard>.r.sgr>.nm{grid-column:2}
+  #list.board>.tcard>.r.sgr>.side{grid-column:4}
+  .sgr .sgh,.sgr .sgcr{display:none!important}
+  .sgr .sgx[hidden]{display:flex!important}
+  /* week cells: each as wide as it needs, 32px gutter, starting on one x (the name column = widest name ink + 32px, sgFit) */
+  .sgr .sgx{grid-column:3;grid-row:1;margin:0 12px 0 -9px;box-shadow:none;display:flex;flex-wrap:wrap;gap:12px 32px;align-items:flex-start}
+  .sgr .sge{display:block;padding:0;box-shadow:none!important}
+  .sgr .sgew{padding-left:0;margin-bottom:6px}
+  .sgr .sgps{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+  .sgr .sgp{display:flex;align-items:center;gap:0}
+  .sgr .sgpn{flex:none}
+  .sgr .sgpv{margin-left:12px}   /* 12px after its own player's last item (logo, BYE tag or name), not right-aligned in the cell (pass 3) */
+  .sgr .sgw{display:none}
+}
+/* T1 (SG-2, 2026-11-28): the card tally stands on the week-chip plate (.sgk: Classic --line, 4px radius; retro theme.css rgba(0,0,0,.45),
+   2px), no shadow, no border. The 3px dot stays outside the plate: it moves to -11px (3px dot + 8px of ink to the plate) and the button's
+   margin grows by the same 11px, so label -> dot (8px) and dot -> plate edge (8px) hold and the FAAB tile and label do not move.
+   Plate = the count's trimmed cap box + 4px above and below (17.09px retro at 13px), so it is centred on the count's cap centre; the
+   14px mug (13 x 14 box, approved 2026-11-10) is placed on the plate, centred vertically, --sgpl from the left; the count's padding-left
+   keeps its 4px of ink after the mug. Chosen by WebKitGTK pixels (DESIGN.md §8), not headless Chromium (which snaps mug and digits to
+   whole CSS px by different rounding). --sgpr: right padding (per last digit in Classic, data-d). Hit area 51.8px from the dot. */
+.board .r .nm button.sgt{padding:4px var(--sgpr,5px) 4px calc(var(--sgpl,5px) + .9*var(--sgh,14px) + 4px - var(--sgl,0em));margin-left:calc(8px - 1.364px + 11px);background:var(--line);border-radius:4px}
+.board .r .nm button.sgt .sgi{position:absolute;left:var(--sgpl,5px);top:calc(50% - var(--sgh,14px)/2);margin:0}
+.board .r .nm button.sgt::before{left:-11px}
+.board .r .nm button.sgt::after{left:-11px;width:max(100% + 11px,51.8px)}
+.board .r .nm button.sgt:focus-visible{outline:2px solid var(--chalk);outline-offset:2px}
+/* Classic (Barlow Condensed 700 tabular digits): right padding per last digit, measured at 402P (ink R - L with 5px: 1 +1.44, 2 +.95, 3 +1.18, 4 +.42, 5 +.14px) */
+.board .r .nm button.sgt[data-d="1"]{--sgpr:3.56px}.board .r .nm button.sgt[data-d="2"]{--sgpr:4.05px}.board .r .nm button.sgt[data-d="3"]{--sgpr:3.82px}.board .r .nm button.sgt[data-d="4"]{--sgpr:4.58px}.board .r .nm button.sgt[data-d="5"]{--sgpr:4.86px}
+/* foot strip: the 11px text floor at <= 380px (the cutoff strips' 10.5px rule there does not apply to it) */
+@media(max-width:380px){#list>.pline.sgft{font-size:11px}}

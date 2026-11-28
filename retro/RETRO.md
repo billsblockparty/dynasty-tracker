@@ -1778,6 +1778,13 @@ Open items, most visible first. Each names where it was found.
 37. Slate view surfaces: **already fixed by Game Day (pass 1)**: the Playoffs lineups gained the `.pox` plate; `--blue-2` measured behind
     every slate header and total line on Matchups and Playoffs. No change in cleanup job 1.
 
+## Decisions (2026-11-28, Shotgun mode)
+
+- Block "Shotgun mode" at the end of theme.css (structure in pipeline/readability.css "SHOTGUN MODE"). Rank tile: one neutral recipe for every ranked team (`--badge`, white digit; no yellow, yellow = the bye tier); zero teams: the "–" tile (`rgba(0,0,0,.45)`, `--peri-lt`). Week chips `.sgk`: `rgba(0,0,0,.45)`, `--peri-lt`, 2px radius, no shadow, weight 700. Player names / values `--white`; position pills `--black` on `--pos-*`, 2px radius. Foot strip label `--peri-lt`. Selected Shotgun button: `--badge` fill, white ink, 2px white inset ring. Caret and mug colour come from Classic's `--text-dim` mapping.
+- Closed-row week chips: right padding per last digit (`.sgw .sgk[data-d]`, 4.21-4.79px) from Martian Mono ink, so the W's ink and the last digit's ink sit equally far from the chip edges (WebKitGTK within 0.25px on all 20 chips).
+- Card tally T1: plate `rgba(0,0,0,.45)`, 2px radius, no text shadow on the count, `--sgpr` 5px (Martian Mono digits 1-5 within .3px of equal ink gaps at 5px).
+- The plate literal `rgba(0,0,0,.45)` is the existing rank-chip recipe (17 uses in theme.css). Shotgun chips, the "–" tile and the T1 plate reuse it; it is not tokenised (a rename of every use is outside this ship).
+
 ## Checks before shipping a change to the theme
 
 - `tools/tilechk.py`'s check against the copy at 360P 402P 440P, Dumb and Nerd, H2H and Median: 0 violations
