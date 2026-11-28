@@ -951,6 +951,16 @@ paper_build.py (identical in both repos; DESIGN.md §6 "Paper Trail"). Retro par
   1440), was 68.09; heads' and via's last glyph ink on the inset 0.00px; "NFL" ink centre over the slot's ink span 0.00px (1/3px
   quantum); tile shadow -> via ink >= 4.44px (Chromium phones), >= 4.78px (WebKitGTK); player 8.16 / 10.52:1, slot / via 4.80 / 6.19:1
   on `--blue` / `--blue-2`. Full tables: the PS-3c result report.
+- 2026-11-27 (briefs PS-3d .. PS-3f, rule B): the NFL slot sits on the player's line (form D) wherever every drafted row of every
+  year fits at 17px (full name, suffix dropped or `LUA` form, >= 12px of ink before the slot); otherwise the layout above (form S).
+  Structure only (paper_build.py `slotPick`); theme.css and theme.js unchanged: the slot keeps Martian 600 11px `--peri-lt`, its
+  box still ends on the name column's edge, so the `--pthnr` "NFL" label, `--ptg1` 10px and every row height are unchanged.
+  Retro is form D from 400pt portrait (402P, 440P, 874L, 956L, 1440), S at 360P and the plain 360 / 402 / 440 widths.
+  Measured (Chromium device emulation, real fonts; WebKitGTK 2.52.6 at 3x, 473 CSS px): 402P / 440P rows 64.563 / 64.625px;
+  slot baseline on the player's 0.000 / -0.016px (markers), -0.23 .. +0.11px from pixels (Chromium; one row -0.92px, Israel
+  Abanikanda "I"), -0.19 .. +0.09px (WebKitGTK); RD x spread 0.000px from pixels; "NFL" ink centre over the slot's ink span
+  -0.129px (Chromium pixels), +0.204px (WebKitGTK); logo / name -> slot >= 13.992px (402P); line 1 -> line 2 ink >= 4.288px;
+  slot 4.80 / 6.19:1 on `--blue` / `--blue-2`. Form S is box-identical to the 2026-11-26 build at 360P (0.000px).
 
 ## Tokens
 

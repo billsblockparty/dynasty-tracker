@@ -1,6 +1,7 @@
 # ptm3.py <ch|wk> <baseurl> <tok> [year ids...] : Paper Trail > Picks, from screenshots (coverage-weighted ink incl. shadow):
 #   tiles (TIMES TRADED, projected, drafted pick): ink-to-tile gaps L,R,T,B;  heads / coach names: ink centre vs the column / picture centre;
-#   NFL slot: ink right edge vs the name column's right edge
+#   NFL slot: ink right edge vs the name column's right edge (either form: line 1 or line 2 ends on that edge; 2026-11-27 the
+#   removed VIA column's checks dropped)
 import sys,json,collections;sys.path.insert(0,__import__('os').path.dirname(__import__('os').path.abspath(__file__)));import eng
 eng.PHONE.update({"874L":0,"956L":0})
 ENG,BASE,tok=sys.argv[1:4];YEARS=sys.argv[4:] or ['','pty-2026']
@@ -12,8 +13,6 @@ const free=(k,e,refc,refr)=>{if(!vis(e))return;const g=document.createRange();g.
  o.push({k,t:e.textContent.trim(),x:r.left+sx-5,y:r.top+sy-3,w:r.width+10,h:r.height+6,f:[0,0,0,0],refc:refc==null?null:refc+sx,refr:refr==null?null:refr+sx,bands:[['d',r.top+sy-3,r.bottom+sy+3,'',m.slice(0,3),m[3]===undefined?1:m[3]]]})};
 const cx=e=>{const r=e.getBoundingClientRect();return (r.left+r.right)/2};
 document.querySelectorAll('.ptv-k .pthx i').forEach(e=>free('head TIMES/TRADED vs tile column',e,(()=>{const p=e.closest('.ptp');const t=[...p.querySelectorAll('.ptxn')].find(vis);return t?cx(t):cx(e.parentElement)})()));
-document.querySelectorAll('.ptv-k .pthv').forEach(e=>free('head VIA vs picture',e,(()=>{const p=e.closest('.ptp');const t=[...p.querySelectorAll('.ptvl .pav')].find(vis);return t?cx(t):cx(e)})()));
-document.querySelectorAll('.ptv-k .ptvc').forEach(e=>free('coach vs picture',e,cx(e.parentElement.querySelector('.pav'))));
 document.querySelectorAll('.ptv-k .ptns').forEach(e=>{const its=[...e.querySelectorAll('i:not(.ptbl)')];const l=its[its.length-1];if(l)free('NFL slot right edge',l,null,e.parentElement.getBoundingClientRect().right)});
 return o}"""
 CK="(id)=>{const l=document.querySelector('label[for=\"'+id+'\"]');(l||document.getElementById(id)).click()}"
@@ -33,7 +32,7 @@ for yid in YEARS:
             R.setdefault(it['k'],[]).append((it['t'],round(it['x']+(l+r)/2/sc-it['refc'],2)))
         else:
             R.setdefault(it['k'],[]).append((it['t'],round(it['x']+r/sc-it['refr'],2)))
-    print(f'===== {E.name} {tok} Paper Trail picks {yid or "default year"}')
+    print(f'===== {E.name} {tok} Paper Trail picks {yid or "default year"} slot form {E.ev("()=>(window.__ptSlot||{}).form||null")}')
     for k,v in R.items():
         if k in ('traded','proj','pick'):
             print(f"  {k}: n={len(v)} widths {sorted(set(x[2] for x in v))} worst |L-R| {max(abs(x[1][0]-x[1][1]) for x in v):.2f} worst |T-B| {max(abs(x[1][2]-x[1][3]) for x in v):.2f} min L/R {min(min(x[1][0],x[1][1]) for x in v):.2f} min T/B {min(min(x[1][2],x[1][3]) for x in v):.2f}")
